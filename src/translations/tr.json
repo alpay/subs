@@ -1,0 +1,40 @@
+{
+  "app": {
+    "brand": "Subs",
+    "brand_initial": "S",
+    "contact_email": "hello@alpay.dev",
+    "made_with": "Özenle yapıldı",
+    "version_prefix": "v"
+  },
+  "calendar": {
+    "this_month": "Bu ay"
+  },
+  "common": {
+    "accessibility": {
+      "close_modal_hint": "Modali kapatır",
+      "close_modal_label": "Modali kapat"
+    },
+    "cancel": "İptal",
+    "close": "Kapat",
+    "coming_soon": "Çok yakında",
+    "confirm": "Onayla",
+    "delete": "Sil",
+    "error": "Hata",
+    "no_data": "Veri yok",
+    "notes": "Notlar",
+    "optional": "İsteğe bağlı",
+    "pause": "Duraklat",
+    "save": "Kaydet",
+    "saving": "Kaydediliyor...",
+    "search": "Ara",
+    "select_placeholder": "Seç..."
+  },
+  "diary": {
+    "lightbox_hint": "Kapatmak için yukarı veya aşağı kaydır"
+  },
+  "not_found": {
+    "title": "Bulunamadı",
+    "subtitle": "Bu ekran mevcut değil.",
+    "cta": "Ana sayfaya dön"
+  }
+}

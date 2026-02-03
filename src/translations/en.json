@@ -1,0 +1,40 @@
+{
+  "app": {
+    "brand": "Subs",
+    "brand_initial": "S",
+    "contact_email": "hello@alpay.dev",
+    "made_with": "Made with care",
+    "version_prefix": "v"
+  },
+  "calendar": {
+    "this_month": "This month"
+  },
+  "common": {
+    "accessibility": {
+      "close_modal_hint": "Closes the modal",
+      "close_modal_label": "Close modal"
+    },
+    "cancel": "Cancel",
+    "close": "Close",
+    "coming_soon": "Coming soon",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "error": "Error",
+    "no_data": "No data",
+    "notes": "Notes",
+    "optional": "Optional",
+    "pause": "Pause",
+    "save": "Save",
+    "saving": "Saving...",
+    "search": "Search",
+    "select_placeholder": "Select..."
+  },
+  "diary": {
+    "lightbox_hint": "Swipe up or down to dismiss"
+  },
+  "not_found": {
+    "title": "Not found",
+    "subtitle": "This screen doesn't exist.",
+    "cta": "Go home"
+  }
+}
