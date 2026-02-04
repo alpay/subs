@@ -11,6 +11,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 import { APIProvider } from '@/lib/api';
+import { useTheme } from '@/lib/hooks/use-theme';
 
 import '../global.css';
 import 'heroui-native/styles';
@@ -53,13 +54,15 @@ export default function RootLayout() {
 }
 
 function Providers({ children }: { children: ReactNode }) {
+  const { colors, isDark } = useTheme();
+
   return (
-    <GestureHandlerRootView style={styles.container}>
+    <GestureHandlerRootView style={[styles.container, { backgroundColor: colors.background }]}>
       <KeyboardProvider>
         <HeroUINativeProvider>
           <APIProvider>
             <BottomSheetModalProvider>
-              <StatusBar style="auto" />
+              <StatusBar style={isDark ? 'light' : 'dark'} />
               {children}
             </BottomSheetModalProvider>
           </APIProvider>

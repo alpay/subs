@@ -1,17 +1,18 @@
-import { useRouter } from 'expo-router';
-import { Button, Card, Input, Label, TextField, useToast } from 'heroui-native';
+import { Button, Input, Label, TextField, useToast } from 'heroui-native';
 import { useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Text, View } from 'react-native';
 
+import { GlassCard, GlassCardBody } from '@/components/glass-card';
+import { ModalHeader } from '@/components/modal-header';
+import { ScreenShell } from '@/components/screen-shell';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
+import { useTheme } from '@/lib/hooks/use-theme';
 import { useListsStore } from '@/lib/stores';
 
 export default function ListsScreen() {
   useBootstrap();
-  const router = useRouter();
   const { toast } = useToast();
-  const { top, bottom } = useSafeAreaInsets();
+  const { colors } = useTheme();
   const { lists, add, remove } = useListsStore();
   const [name, setName] = useState('');
 
@@ -26,17 +27,11 @@ export default function ListsScreen() {
   };
 
   return (
-    <View style={{ flex: 1, paddingTop: top }}>
-      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: bottom + 40, gap: 12 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text style={{ fontSize: 20, fontWeight: '700' }}>Lists</Text>
-          <Button variant="secondary" onPress={() => router.back()}>
-            Close
-          </Button>
-        </View>
-
-        <Card>
-          <Card.Body style={{ gap: 8 }}>
+    <>
+      <ModalHeader title="Lists" />
+      <ScreenShell>
+        <GlassCard>
+          <GlassCardBody style={{ gap: 12 }}>
             <TextField>
               <Label>Name</Label>
               <Input placeholder="List name" value={name} onChangeText={setName} />
@@ -44,22 +39,27 @@ export default function ListsScreen() {
             <Button variant="primary" onPress={handleAdd}>
               Add list
             </Button>
-          </Card.Body>
-        </Card>
+          </GlassCardBody>
+        </GlassCard>
 
-        {lists.map(list => (
-          <Card key={list.id}>
-            <Card.Body>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Text style={{ fontWeight: '600' }}>{list.name}</Text>
-                <Button size="sm" variant="danger" onPress={() => remove(list.id)}>
+        <GlassCard>
+          <GlassCardBody style={{ gap: 10 }}>
+            {lists.map(list => (
+              <View
+                key={list.id}
+                style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
+              >
+                <Text style={{ fontWeight: '600', color: colors.text }} selectable>
+                  {list.name}
+                </Text>
+                <Button size="sm" variant="secondary" onPress={() => remove(list.id)}>
                   Remove
                 </Button>
               </View>
-            </Card.Body>
-          </Card>
-        ))}
-      </ScrollView>
-    </View>
+            ))}
+          </GlassCardBody>
+        </GlassCard>
+      </ScreenShell>
+    </>
   );
 }

@@ -1,12 +1,18 @@
 import type { NotificationMode, ScheduleType, Subscription, SubscriptionStatus } from '@/lib/db/schema';
 
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Button, Card, Input, Label, Select, TextArea, TextField, useToast } from 'heroui-native';
+import { Button, Input, Label, Select, TextArea, TextField, useToast } from 'heroui-native';
 import { useMemo, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Text, View } from 'react-native';
 
+import { GlassCard, GlassCardBody } from '@/components/glass-card';
+import { ModalHeader } from '@/components/modal-header';
+import { Pill } from '@/components/pill';
+import { ScreenShell } from '@/components/screen-shell';
+import { SelectField } from '@/components/select-field';
+import { ServiceIcon } from '@/components/service-icon';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
+import { useTheme } from '@/lib/hooks/use-theme';
 import {
   useCategoriesStore,
   useCurrencyRatesStore,
@@ -16,8 +22,7 @@ import {
   useSettingsStore,
   useSubscriptionsStore,
 } from '@/lib/stores';
-
-type SelectOption = { label: string; value: string } | undefined;
+import { formatAmount } from '@/lib/utils/format';
 
 type FormState = {
   name: string;
@@ -74,7 +79,7 @@ export default function SubscriptionFormScreen() {
   useBootstrap();
   const router = useRouter();
   const { toast } = useToast();
-  const { top, bottom } = useSafeAreaInsets();
+  const { colors } = useTheme();
   const params = useLocalSearchParams<{ id?: string; templateId?: string }>();
 
   const { subscriptions, add, update } = useSubscriptionsStore();
@@ -227,20 +232,37 @@ export default function SubscriptionFormScreen() {
     router.back();
   };
 
-  return (
-    <View style={{ flex: 1, paddingTop: top }}>
-      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: bottom + 40, gap: 12 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text style={{ fontSize: 20, fontWeight: '700' }}>
-            {existingSubscription ? 'Edit Subscription' : 'New Subscription'}
-          </Text>
-          <Button variant="secondary" onPress={() => router.back()}>
-            Close
-          </Button>
-        </View>
+  const amountDisplay = Number.isFinite(amountValue)
+    ? formatAmount(amountValue, currency, settings.roundWholeNumbers)
+    : `0 ${currency}`;
 
-        <Card>
-          <Card.Body style={{ gap: 10 }}>
+  return (
+    <>
+      <ModalHeader title={existingSubscription ? 'Edit Subscription' : 'New Subscription'} />
+      <ScreenShell>
+        <GlassCard>
+          <GlassCardBody style={{ alignItems: 'center', gap: 12 }}>
+            <ServiceIcon iconKey={iconKey} size={72} />
+            <View style={{ alignItems: 'center', gap: 6 }}>
+              <Text style={{ fontSize: 18, fontWeight: '600', color: colors.text }} selectable>
+                {name.trim() || 'Subscription'}
+              </Text>
+              <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
+                {scheduleType.toUpperCase()}
+              </Text>
+            </View>
+            <Pill tone={status === 'active' ? 'success' : 'neutral'}>{status}</Pill>
+            <Text
+              style={{ fontSize: 22, fontWeight: '600', color: colors.text, fontVariant: ['tabular-nums'] }}
+              selectable
+            >
+              {amountDisplay}
+            </Text>
+          </GlassCardBody>
+        </GlassCard>
+
+        <GlassCard>
+          <GlassCardBody style={{ gap: 12 }}>
             <TextField>
               <Label>Name</Label>
               <Input value={name} onChangeText={setName} placeholder="Subscription name" />
@@ -253,6 +275,7 @@ export default function SubscriptionFormScreen() {
                 onChangeText={setAmount}
                 placeholder="0.00"
                 keyboardType="decimal-pad"
+                style={{ textAlign: 'center', fontSize: 20 }}
               />
             </TextField>
 
@@ -300,7 +323,11 @@ export default function SubscriptionFormScreen() {
               <Label>Start date</Label>
               <Input value={startDate} onChangeText={setStartDate} placeholder="YYYY-MM-DD" />
             </TextField>
+          </GlassCardBody>
+        </GlassCard>
 
+        <GlassCard>
+          <GlassCardBody style={{ gap: 12 }}>
             <SelectField
               label="Category"
               value={categoryId}
@@ -334,23 +361,36 @@ export default function SubscriptionFormScreen() {
             />
 
             <SelectField
-              label="Notification mode"
+              label="Notifications"
               value={notificationMode}
               options={[...NOTIFICATION_OPTIONS]}
               placeholder="Select notification mode"
               onChange={value => setNotificationMode((value as NotificationMode | undefined) ?? 'default')}
             />
+          </GlassCardBody>
+        </GlassCard>
 
-            <SelectField
-              label="Icon type"
-              value={iconType}
-              options={[
-                { label: 'Built-in', value: 'builtIn' },
-                { label: 'Image URI', value: 'image' },
-              ]}
-              placeholder="Select icon type"
-              onChange={value => setIconType((value as 'builtIn' | 'image' | undefined) ?? 'builtIn')}
-            />
+        <GlassCard>
+          <GlassCardBody style={{ gap: 12 }}>
+            <TextField>
+              <Label>Icon type</Label>
+              <Select
+                value={{ label: iconType === 'builtIn' ? 'Built-in' : 'Image URI', value: iconType }}
+                onValueChange={option => setIconType((option?.value as 'builtIn' | 'image' | undefined) ?? 'builtIn')}
+                presentation="bottom-sheet"
+              >
+                <Select.Trigger>
+                  <Select.Value placeholder="Select icon type" />
+                </Select.Trigger>
+                <Select.Portal>
+                  <Select.Overlay />
+                  <Select.Content presentation="bottom-sheet">
+                    <Select.Item value="builtIn" label="Built-in" />
+                    <Select.Item value="image" label="Image URI" />
+                  </Select.Content>
+                </Select.Portal>
+              </Select>
+            </TextField>
 
             {iconType === 'builtIn'
               ? (
@@ -379,48 +419,13 @@ export default function SubscriptionFormScreen() {
               <Label>Notes</Label>
               <TextArea value={notes} onChangeText={setNotes} placeholder="Optional notes" numberOfLines={4} />
             </TextField>
-          </Card.Body>
-        </Card>
+          </GlassCardBody>
+        </GlassCard>
 
         <Button variant="primary" onPress={handleSave}>
           {existingSubscription ? 'Save changes' : 'Create subscription'}
         </Button>
-      </ScrollView>
-    </View>
-  );
-}
-
-type SelectFieldProps = {
-  label: string;
-  value: string;
-  options: Array<{ label: string; value: string }>;
-  placeholder: string;
-  onChange: (value: string) => void;
-};
-
-function SelectField({ label, value, options, placeholder, onChange }: SelectFieldProps) {
-  const selectedOption = options.find(option => option.value === value) as SelectOption;
-
-  return (
-    <TextField>
-      <Label>{label}</Label>
-      <Select
-        value={selectedOption}
-        onValueChange={option => onChange(option?.value ?? '')}
-        presentation="bottom-sheet"
-      >
-        <Select.Trigger>
-          <Select.Value placeholder={placeholder} />
-        </Select.Trigger>
-        <Select.Portal>
-          <Select.Overlay />
-          <Select.Content presentation="bottom-sheet">
-            {options.map(option => (
-              <Select.Item key={option.value} value={option.value} label={option.label} />
-            ))}
-          </Select.Content>
-        </Select.Portal>
-      </Select>
-    </TextField>
+      </ScreenShell>
+    </>
   );
 }

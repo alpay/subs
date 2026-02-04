@@ -89,18 +89,18 @@
   --color-danger-900: #7F1D1D;
 
   /* Semantic colors - using primary for main brand color */
-  --color-background: #ffffff;
-  --color-foreground: #0a0a0a;
+  --color-background: #F3F2F0;
+  --color-foreground: #151515;
 
-  --color-card: #ffffff;
-  --color-card-foreground: #0a0a0a;
+  --color-card: #FFFFFF;
+  --color-card-foreground: #151515;
 
-  --color-muted: #f5f5f5;
-  --color-muted-foreground: #737373;
+  --color-muted: #F0EFED;
+  --color-muted-foreground: #6E6E6E;
 
-  --color-border: #e5e5e5;
-  --color-input: #e5e5e5;
-  --color-ring: #FF6C00;
+  --color-border: #E2E2E2;
+  --color-input: #E2E2E2;
+  --color-ring: #FF8A33;
 
   --color-destructive: #ef4444;
   --color-destructive-foreground: #ffffff;
@@ -109,17 +109,17 @@
 /* Dark mode colors */
 @media (prefers-color-scheme: dark) {
   @theme {
-    --color-background: #0a0a0a;
-    --color-foreground: #fafafa;
+    --color-background: #1C1C1E;
+    --color-foreground: #F5F5F5;
 
-    --color-card: #171717;
-    --color-card-foreground: #fafafa;
+    --color-card: #2C2C2E;
+    --color-card-foreground: #F5F5F5;
 
-    --color-muted: #262626;
-    --color-muted-foreground: #a3a3a3;
+    --color-muted: #343437;
+    --color-muted-foreground: #A1A1A6;
 
-    --color-border: #404040;
-    --color-input: #404040;
+    --color-border: #3A3A3C;
+    --color-input: #3A3A3C;
   }
 }
 

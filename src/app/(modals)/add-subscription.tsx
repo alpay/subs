@@ -1,16 +1,29 @@
+import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { Button, Card, Chip, Input, Label, TextField } from 'heroui-native';
+import { Button, Input, Label, TextField, useToast } from 'heroui-native';
 import { useMemo, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Pressable, ScrollView, Text, useWindowDimensions, View } from 'react-native';
 
+import { GlassCard, GlassCardBody } from '@/components/glass-card';
+import { ModalHeader } from '@/components/modal-header';
+import { ScreenShell } from '@/components/screen-shell';
+import { ServiceIcon } from '@/components/service-icon';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
+import { useTheme } from '@/lib/hooks/use-theme';
 import { useServiceTemplatesStore } from '@/lib/stores';
+
+const IMPORT_OPTIONS = [
+  { id: 'notion', label: 'Import from Notion', symbol: 'doc.richtext' },
+  { id: 'sheets', label: 'Import from Sheets', symbol: 'tablecells' },
+  { id: 'file', label: 'Import from file', symbol: 'tray.and.arrow.down' },
+];
 
 export default function AddSubscriptionScreen() {
   useBootstrap();
   const router = useRouter();
-  const { top, bottom } = useSafeAreaInsets();
+  const { toast } = useToast();
+  const { colors } = useTheme();
+  const { width } = useWindowDimensions();
   const { templates } = useServiceTemplatesStore();
   const [searchValue, setSearchValue] = useState('');
 
@@ -18,66 +31,113 @@ export default function AddSubscriptionScreen() {
     return templates.filter(template => template.name.toLowerCase().includes(searchValue.toLowerCase()));
   }, [templates, searchValue]);
 
-  return (
-    <View style={{ flex: 1, paddingTop: top }}>
-      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: bottom + 40, gap: 14 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Button variant="secondary" onPress={() => router.back()}>
-            Close
-          </Button>
-          <Text style={{ fontSize: 18, fontWeight: '600' }}>Add Subscription</Text>
-          <Button variant="primary" onPress={() => router.push('/(modals)/subscription-form')}>
-            Custom
-          </Button>
-        </View>
+  const tileGap = 12;
+  const tileWidth = Math.floor((width - 40 - tileGap) / 2);
 
-        <Card>
-          <Card.Body style={{ gap: 10 }}>
-            <Text style={{ fontSize: 14, opacity: 0.7 }}>
-              Start from a service template or create from scratch.
+  const handleImport = (id: string) => {
+    if (id === 'file') {
+      router.push('/(modals)/csv-import');
+      return;
+    }
+
+    toast.show('Import connector coming soon');
+  };
+
+  return (
+    <>
+      <ModalHeader title="Add Subscription" />
+      <ScreenShell>
+        <GlassCard>
+          <GlassCardBody style={{ gap: 12 }}>
+            <Text style={{ fontSize: 13, color: colors.textMuted }} selectable>
+              Bring in services fast or start from scratch.
+            </Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12 }}>
+              {IMPORT_OPTIONS.map(option => (
+                <Pressable key={option.id} onPress={() => handleImport(option.id)}>
+                  <View
+                    style={{
+                      width: 140,
+                      padding: 12,
+                      borderRadius: 20,
+                      borderCurve: 'continuous',
+                      backgroundColor: colors.surfaceMuted,
+                      borderWidth: 1,
+                      borderColor: colors.surfaceBorder,
+                      gap: 10,
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: 18,
+                        borderCurve: 'continuous',
+                        backgroundColor: colors.surface,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <Image
+                        source={`sf:${option.symbol}`}
+                        style={{ width: 18, height: 18 }}
+                        tintColor={colors.text}
+                      />
+                    </View>
+                    <Text style={{ fontSize: 12, fontWeight: '600', color: colors.text }} selectable>
+                      {option.label}
+                    </Text>
+                  </View>
+                </Pressable>
+              ))}
+            </ScrollView>
+            <Button variant="secondary" onPress={() => router.push('/(modals)/subscription-form')}>
+              Create custom subscription
+            </Button>
+          </GlassCardBody>
+        </GlassCard>
+
+        <GlassCard>
+          <GlassCardBody style={{ gap: 12 }}>
+            <Text style={{ fontSize: 12, color: colors.textMuted, letterSpacing: 1 }} selectable>
+              POPULAR SERVICES
             </Text>
             <TextField>
-              <Label>Search templates</Label>
-              <Input
-                placeholder="Netflix, Spotify, Cursor..."
-                value={searchValue}
-                onChangeText={setSearchValue}
-              />
+              <Label>Search services</Label>
+              <Input placeholder="Netflix, Spotify, Cursor..." value={searchValue} onChangeText={setSearchValue} />
             </TextField>
-            <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-              <Chip>
-                {templates.length}
-                {' templates'}
-              </Chip>
-              <Chip>
-                {filteredTemplates.length}
-                {' visible'}
-              </Chip>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: tileGap }}>
+              {filteredTemplates.map(template => (
+                <Pressable
+                  key={template.id}
+                  onPress={() =>
+                    router.push({ pathname: '/(modals)/subscription-form', params: { templateId: template.id } })
+                  }
+                >
+                  <View
+                    style={{
+                      width: tileWidth,
+                      padding: 14,
+                      borderRadius: 22,
+                      borderCurve: 'continuous',
+                      backgroundColor: colors.surfaceMuted,
+                      borderWidth: 1,
+                      borderColor: colors.surfaceBorder,
+                      gap: 10,
+                      alignItems: 'center',
+                    }}
+                  >
+                    <ServiceIcon iconKey={template.iconKey} size={48} />
+                    <Text style={{ fontSize: 13, fontWeight: '600', color: colors.text }} selectable>
+                      {template.name}
+                    </Text>
+                  </View>
+                </Pressable>
+              ))}
             </View>
-          </Card.Body>
-        </Card>
-
-        {filteredTemplates.map(template => (
-          <Card key={template.id}>
-            <Card.Header style={{ gap: 6 }}>
-              <Card.Title>{template.name}</Card.Title>
-              <Card.Description>
-                Icon key:
-                {' '}
-                {template.iconKey}
-              </Card.Description>
-            </Card.Header>
-            <Card.Footer>
-              <Button
-                variant="primary"
-                onPress={() => router.push({ pathname: '/(modals)/subscription-form', params: { templateId: template.id } })}
-              >
-                Use template
-              </Button>
-            </Card.Footer>
-          </Card>
-        ))}
-      </ScrollView>
-    </View>
+          </GlassCardBody>
+        </GlassCard>
+      </ScreenShell>
+    </>
   );
 }

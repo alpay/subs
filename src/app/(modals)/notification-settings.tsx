@@ -1,17 +1,20 @@
 import { useRouter } from 'expo-router';
-import { Button, Card, Checkbox, Input, Label, TextField, useToast } from 'heroui-native';
+import { Button, Checkbox, Input, Label, TextField, useToast } from 'heroui-native';
 import { useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Text, View } from 'react-native';
 
+import { GlassCard, GlassCardBody } from '@/components/glass-card';
+import { ModalHeader } from '@/components/modal-header';
+import { ScreenShell } from '@/components/screen-shell';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
+import { useTheme } from '@/lib/hooks/use-theme';
 import { useSettingsStore } from '@/lib/stores';
 
 export default function NotificationSettingsScreen() {
   useBootstrap();
   const router = useRouter();
   const { toast } = useToast();
-  const { top, bottom } = useSafeAreaInsets();
+  const { colors } = useTheme();
   const { settings, update } = useSettingsStore();
 
   const [firstDays, setFirstDays] = useState(String(settings.notificationDefaults.first.daysBefore));
@@ -41,21 +44,14 @@ export default function NotificationSettingsScreen() {
   };
 
   return (
-    <View style={{ flex: 1, paddingTop: top }}>
-      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: bottom + 40, gap: 12 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text style={{ fontSize: 20, fontWeight: '700' }}>Notifications</Text>
-          <Button variant="secondary" onPress={() => router.back()}>
-            Close
-          </Button>
-        </View>
-
-        <Card>
-          <Card.Header>
-            <Card.Title>First Reminder</Card.Title>
-            <Card.Description>This one is always enabled.</Card.Description>
-          </Card.Header>
-          <Card.Body style={{ gap: 8 }}>
+    <>
+      <ModalHeader title="Notifications" />
+      <ScreenShell>
+        <GlassCard>
+          <GlassCardBody style={{ gap: 12 }}>
+            <Text style={{ fontSize: 13, color: colors.textMuted }} selectable>
+              First Reminder
+            </Text>
             <TextField>
               <Label>Days before</Label>
               <Input keyboardType="number-pad" value={firstDays} onChangeText={setFirstDays} />
@@ -64,21 +60,19 @@ export default function NotificationSettingsScreen() {
               <Label>Time</Label>
               <Input placeholder="09:00" value={firstTime} onChangeText={setFirstTime} />
             </TextField>
-          </Card.Body>
-        </Card>
+          </GlassCardBody>
+        </GlassCard>
 
-        <Card>
-          <Card.Header>
-            <Card.Title>Second Reminder</Card.Title>
-            <Card.Description>Optional backup reminder.</Card.Description>
-          </Card.Header>
-          <Card.Body style={{ gap: 8 }}>
+        <GlassCard>
+          <GlassCardBody style={{ gap: 12 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <Checkbox
                 isSelected={hasSecondReminder}
                 onSelectedChange={setHasSecondReminder}
               />
-              <Text>Enable second reminder</Text>
+              <Text style={{ color: colors.text }} selectable>
+                Enable second reminder
+              </Text>
             </View>
 
             {hasSecondReminder && (
@@ -93,13 +87,13 @@ export default function NotificationSettingsScreen() {
                 </TextField>
               </>
             )}
-          </Card.Body>
-        </Card>
+          </GlassCardBody>
+        </GlassCard>
 
         <Button variant="primary" onPress={handleSave}>
           Save defaults
         </Button>
-      </ScrollView>
-    </View>
+      </ScreenShell>
+    </>
   );
 }

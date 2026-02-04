@@ -1,22 +1,20 @@
-import { useRouter } from 'expo-router';
-import { Button, Card, Chip } from 'heroui-native';
-import { useMemo } from 'react';
-import { ScrollView, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
+import { ModalHeader } from '@/components/modal-header';
+import { RingChart } from '@/components/ring-chart';
+import { GlassCard, GlassCardBody } from '@/components/glass-card';
+import { Pill } from '@/components/pill';
+import { ScreenShell } from '@/components/screen-shell';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
+import { useTheme } from '@/lib/hooks/use-theme';
 import { useCategoriesStore, useCurrencyRatesStore, useSettingsStore, useSubscriptionsStore } from '@/lib/stores';
+import { formatAmount } from '@/lib/utils/format';
 import { convertCurrency } from '@/lib/utils/currency';
 import { calculateAverageMonthly, calculateYearlyForecast, calculateYearToDateTotal } from '@/lib/utils/totals';
-
-function formatAmount(value: number, currency: string, roundWholeNumbers: boolean) {
-  return `${value.toFixed(roundWholeNumbers ? 0 : 2)} ${currency}`;
-}
+import { useMemo } from 'react';
+import { Text, View } from 'react-native';
 
 export default function AnalyticsScreen() {
   useBootstrap();
-  const router = useRouter();
-  const { top, bottom } = useSafeAreaInsets();
+  const { colors } = useTheme();
 
   const { subscriptions } = useSubscriptionsStore();
   const { categories } = useCategoriesStore();
@@ -59,67 +57,131 @@ export default function AnalyticsScreen() {
       .sort((a, b) => b.total - a.total);
   }, [categories, subscriptions, settings.mainCurrency, rates]);
 
-  return (
-    <View style={{ flex: 1, paddingTop: top }}>
-      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: bottom + 40, gap: 12 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text style={{ fontSize: 20, fontWeight: '700' }}>Analytics</Text>
-          <Button variant="secondary" onPress={() => router.back()}>
-            Close
-          </Button>
-        </View>
+  const totalSpend = categoryTotals.reduce((sum, category) => sum + category.total, 0);
+  const topCategory = categoryTotals[0];
 
-        <Card>
-          <Card.Body style={{ gap: 8 }}>
-            <Text style={{ opacity: 0.7 }}>Yearly Forecast</Text>
-            <Text style={{ fontSize: 30, fontWeight: '700' }}>
-              {formatAmount(yearlyForecast, settings.mainCurrency, settings.roundWholeNumbers)}
+  return (
+    <>
+      <ModalHeader title="Analytics" />
+      <ScreenShell>
+        <GlassCard>
+          <GlassCardBody style={{ gap: 16, alignItems: 'center' }}>
+            <Text style={{ fontSize: 14, color: colors.textMuted }} selectable>
+              Category Share
             </Text>
-          </Card.Body>
-        </Card>
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+              <RingChart
+                size={210}
+                strokeWidth={18}
+                segments={categoryTotals.map(category => ({
+                  value: category.total,
+                  color: category.color,
+                }))}
+              />
+              {topCategory && (
+                <View
+                  style={{
+                    position: 'absolute',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 6,
+                  }}
+                >
+                  <Text style={{ fontSize: 14, color: colors.textMuted }} selectable>
+                    {topCategory.name}
+                  </Text>
+                  <Text
+                    style={{ fontSize: 20, fontWeight: '600', color: colors.text, fontVariant: ['tabular-nums'] }}
+                    selectable
+                  >
+                    {formatAmount(topCategory.total, settings.mainCurrency, settings.roundWholeNumbers)}
+                  </Text>
+                  <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
+                    {totalSpend > 0 ? `${Math.round((topCategory.total / totalSpend) * 100)}%` : '0%'}
+                  </Text>
+                </View>
+              )}
+            </View>
+
+            <View style={{ flexDirection: 'row', gap: 8 }}>
+              {categoryTotals.map(category => (
+                <View
+                  key={category.id}
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: 99,
+                    backgroundColor: category.color,
+                  }}
+                />
+              ))}
+            </View>
+          </GlassCardBody>
+        </GlassCard>
 
         <View style={{ flexDirection: 'row', gap: 12 }}>
-          <Card style={{ flex: 1 }}>
-            <Card.Body style={{ gap: 6 }}>
-              <Text style={{ opacity: 0.7 }}>Avg Monthly</Text>
-              <Text style={{ fontSize: 18, fontWeight: '600' }}>
+          <GlassCard style={{ flex: 1 }}>
+            <GlassCardBody>
+              <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
+                Yearly Forecast
+              </Text>
+              <Text
+                style={{ fontSize: 20, fontWeight: '600', color: colors.text, fontVariant: ['tabular-nums'] }}
+                selectable
+              >
+                {formatAmount(yearlyForecast, settings.mainCurrency, settings.roundWholeNumbers)}
+              </Text>
+            </GlassCardBody>
+          </GlassCard>
+          <GlassCard style={{ flex: 1 }}>
+            <GlassCardBody>
+              <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
+                Avg Monthly
+              </Text>
+              <Text
+                style={{ fontSize: 20, fontWeight: '600', color: colors.text, fontVariant: ['tabular-nums'] }}
+                selectable
+              >
                 {formatAmount(averageMonthly, settings.mainCurrency, settings.roundWholeNumbers)}
               </Text>
-            </Card.Body>
-          </Card>
-          <Card style={{ flex: 1 }}>
-            <Card.Body style={{ gap: 6 }}>
-              <Text style={{ opacity: 0.7 }}>Year to Date</Text>
-              <Text style={{ fontSize: 18, fontWeight: '600' }}>
-                {formatAmount(yearToDate, settings.mainCurrency, settings.roundWholeNumbers)}
-              </Text>
-            </Card.Body>
-          </Card>
+            </GlassCardBody>
+          </GlassCard>
         </View>
 
-        <Card>
-          <Card.Header>
-            <Card.Title>Category Share</Card.Title>
-            <Card.Description>Based on yearly totals for active subscriptions.</Card.Description>
-          </Card.Header>
-          <Card.Body style={{ gap: 10 }}>
+        <GlassCard>
+          <GlassCardBody style={{ gap: 12 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Text style={{ fontSize: 14, color: colors.textMuted }} selectable>
+                Year to Date
+              </Text>
+              <Pill tone="accent">
+                {formatAmount(yearToDate, settings.mainCurrency, settings.roundWholeNumbers)}
+              </Pill>
+            </View>
             {categoryTotals.length === 0 && (
-              <Text style={{ opacity: 0.7 }}>No category spend yet.</Text>
+              <Text style={{ color: colors.textMuted }} selectable>
+                No category spend yet.
+              </Text>
             )}
             {categoryTotals.map(category => (
-              <View key={category.id} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <View
+                key={category.id}
+                style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
+              >
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                   <View style={{ width: 10, height: 10, borderRadius: 99, backgroundColor: category.color }} />
-                  <Text>{category.name}</Text>
+                  <Text style={{ color: colors.text }} selectable>
+                    {category.name}
+                  </Text>
                 </View>
-                <Chip>
+                <Text style={{ color: colors.text, fontWeight: '600', fontVariant: ['tabular-nums'] }} selectable>
                   {formatAmount(category.total, settings.mainCurrency, settings.roundWholeNumbers)}
-                </Chip>
+                </Text>
               </View>
             ))}
-          </Card.Body>
-        </Card>
-      </ScrollView>
-    </View>
+          </GlassCardBody>
+        </GlassCard>
+      </ScreenShell>
+    </>
   );
 }

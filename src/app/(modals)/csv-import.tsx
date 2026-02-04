@@ -3,12 +3,15 @@ import type { ScheduleType, SubscriptionStatus } from '@/lib/db/schema';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import { useRouter } from 'expo-router';
-import { Button, Card, Chip, Label, TextArea, TextField, useToast } from 'heroui-native';
+import { Button, Label, TextArea, TextField, useToast } from 'heroui-native';
 import { useMemo, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Text, View } from 'react-native';
 
+import { GlassCard, GlassCardBody } from '@/components/glass-card';
+import { ModalHeader } from '@/components/modal-header';
+import { ScreenShell } from '@/components/screen-shell';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
+import { useTheme } from '@/lib/hooks/use-theme';
 import { useCategoriesStore, useListsStore, usePaymentMethodsStore, useSubscriptionsStore } from '@/lib/stores';
 
 const REQUIRED_COLUMNS = ['name', 'amount', 'currency', 'schedule', 'start_date'];
@@ -55,7 +58,7 @@ export default function CsvImportScreen() {
   useBootstrap();
   const router = useRouter();
   const { toast } = useToast();
-  const { top, bottom } = useSafeAreaInsets();
+  const { colors } = useTheme();
 
   const { add: addCategory } = useCategoriesStore();
   const { add: addList } = useListsStore();
@@ -143,21 +146,13 @@ export default function CsvImportScreen() {
   };
 
   return (
-    <View style={{ flex: 1, paddingTop: top }}>
-      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: bottom + 40, gap: 12 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text style={{ fontSize: 20, fontWeight: '700' }}>CSV Import</Text>
-          <Button variant="secondary" onPress={() => router.back()}>
-            Close
-          </Button>
-        </View>
-
-        <Card>
-          <Card.Body style={{ gap: 10 }}>
-            <Text style={{ opacity: 0.7 }}>
-              Required columns:
-              {' '}
-              {REQUIRED_COLUMNS.join(', ')}
+    <>
+      <ModalHeader title="CSV Import" />
+      <ScreenShell>
+        <GlassCard>
+          <GlassCardBody style={{ gap: 10 }}>
+            <Text style={{ color: colors.textMuted }} selectable>
+              Required columns: {REQUIRED_COLUMNS.join(', ')}
             </Text>
 
             <TextField>
@@ -182,42 +177,39 @@ export default function CsvImportScreen() {
               </Button>
             </View>
 
-            {fileName && <Chip>{fileName}</Chip>}
-            {error && <Text style={{ color: '#DC2626' }}>{error}</Text>}
-          </Card.Body>
-        </Card>
+            {fileName && (
+              <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
+                {fileName}
+              </Text>
+            )}
+            {error && (
+              <Text style={{ color: colors.danger }} selectable>
+                {error}
+              </Text>
+            )}
+          </GlassCardBody>
+        </GlassCard>
 
         {previewRows.length > 0 && (
-          <Card>
-            <Card.Header>
-              <Card.Title>Preview</Card.Title>
-              <Card.Description>
-                {rows.length}
-                {' '}
-                row(s) parsed
-              </Card.Description>
-            </Card.Header>
-            <Card.Body style={{ gap: 8 }}>
+          <GlassCard>
+            <GlassCardBody style={{ gap: 8 }}>
+              <Text style={{ fontSize: 13, color: colors.textMuted }} selectable>
+                Preview ({rows.length} row(s))
+              </Text>
               {previewRows.map(row => (
                 <View key={`${row.name}-${row.start_date}-${row.amount}`} style={{ gap: 2 }}>
-                  <Text style={{ fontWeight: '600' }}>
-                    {row.name}
-                    {' · '}
-                    {row.amount}
-                    {' '}
-                    {row.currency}
+                  <Text style={{ fontWeight: '600', color: colors.text }} selectable>
+                    {row.name} · {row.amount} {row.currency}
                   </Text>
-                  <Text style={{ opacity: 0.7 }}>
-                    {row.schedule}
-                    {' · '}
-                    {row.start_date}
+                  <Text style={{ color: colors.textMuted }} selectable>
+                    {row.schedule} · {row.start_date}
                   </Text>
                 </View>
               ))}
-            </Card.Body>
-          </Card>
+            </GlassCardBody>
+          </GlassCard>
         )}
-      </ScrollView>
-    </View>
+      </ScreenShell>
+    </>
   );
 }

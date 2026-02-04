@@ -1,17 +1,18 @@
-import { useRouter } from 'expo-router';
-import { Button, Card, Input, Label, TextField, useToast } from 'heroui-native';
+import { Button, Input, Label, TextField, useToast } from 'heroui-native';
 import { useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Text, View } from 'react-native';
 
+import { GlassCard, GlassCardBody } from '@/components/glass-card';
+import { ModalHeader } from '@/components/modal-header';
+import { ScreenShell } from '@/components/screen-shell';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
+import { useTheme } from '@/lib/hooks/use-theme';
 import { usePaymentMethodsStore } from '@/lib/stores';
 
 export default function PaymentMethodsScreen() {
   useBootstrap();
-  const router = useRouter();
   const { toast } = useToast();
-  const { top, bottom } = useSafeAreaInsets();
+  const { colors } = useTheme();
   const { methods, add, remove } = usePaymentMethodsStore();
   const [name, setName] = useState('');
 
@@ -26,43 +27,47 @@ export default function PaymentMethodsScreen() {
   };
 
   return (
-    <View style={{ flex: 1, paddingTop: top }}>
-      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: bottom + 40, gap: 12 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text style={{ fontSize: 20, fontWeight: '700' }}>Payment Methods</Text>
-          <Button variant="secondary" onPress={() => router.back()}>
-            Close
-          </Button>
-        </View>
+    <>
+      <ModalHeader title="Payment Methods" />
+      <ScreenShell>
+        <GlassCard>
+          <GlassCardBody style={{ gap: 10 }}>
+            {methods.length === 0 && (
+              <Text style={{ color: colors.textMuted }} selectable>
+                No payment methods yet.
+              </Text>
+            )}
+            {methods.map(method => (
+              <View
+                key={method.id}
+                style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}
+              >
+                <Text style={{ fontWeight: '600', color: colors.text }} selectable>
+                  {method.name}
+                </Text>
+                <Button size="sm" variant="secondary" onPress={() => remove(method.id)}>
+                  Remove
+                </Button>
+              </View>
+            ))}
+          </GlassCardBody>
+        </GlassCard>
 
-        <Card>
-          <Card.Body style={{ gap: 8 }}>
+        <GlassCard>
+          <GlassCardBody style={{ gap: 10 }}>
             <TextField>
-              <Label>Name</Label>
-              <Input placeholder="Payment method" value={name} onChangeText={setName} />
+              <Label>New payment method</Label>
+              <Input placeholder="Credit card" value={name} onChangeText={setName} />
             </TextField>
             <Button variant="primary" onPress={handleAdd}>
               Add method
             </Button>
-            <Text style={{ fontSize: 12, opacity: 0.7 }}>
-              For safety, avoid saving complete card numbers in method names.
+            <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
+              We care about your security, so please do not store full card numbers or account details.
             </Text>
-          </Card.Body>
-        </Card>
-
-        {methods.map(method => (
-          <Card key={method.id}>
-            <Card.Body>
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Text style={{ fontWeight: '600' }}>{method.name}</Text>
-                <Button size="sm" variant="danger" onPress={() => remove(method.id)}>
-                  Remove
-                </Button>
-              </View>
-            </Card.Body>
-          </Card>
-        ))}
-      </ScrollView>
-    </View>
+          </GlassCardBody>
+        </GlassCard>
+      </ScreenShell>
+    </>
   );
 }

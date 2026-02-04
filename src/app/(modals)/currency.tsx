@@ -1,19 +1,20 @@
 import { useRouter } from 'expo-router';
-import { Button, Card, Select, useToast } from 'heroui-native';
+import { Button, Select, useToast } from 'heroui-native';
 import { useMemo, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Text, View } from 'react-native';
 
+import { GlassCard, GlassCardBody } from '@/components/glass-card';
+import { ModalHeader } from '@/components/modal-header';
+import { ScreenShell } from '@/components/screen-shell';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
+import { useTheme } from '@/lib/hooks/use-theme';
 import { useCurrencyRatesStore, useSettingsStore } from '@/lib/stores';
-
-type SelectOption = { label: string; value: string } | undefined;
 
 export default function CurrencyScreen() {
   useBootstrap();
   const router = useRouter();
   const { toast } = useToast();
-  const { top, bottom } = useSafeAreaInsets();
+  const { colors } = useTheme();
 
   const { settings, update } = useSettingsStore();
   const { rates, refreshFromBundle } = useCurrencyRatesStore();
@@ -25,7 +26,7 @@ export default function CurrencyScreen() {
 
   const [selectedCurrency, setSelectedCurrency] = useState(settings.mainCurrency);
 
-  const selectedOption = options.find(option => option.value === selectedCurrency) as SelectOption;
+  const selectedOption = options.find(option => option.value === selectedCurrency);
 
   const handleSave = () => {
     update({ mainCurrency: selectedCurrency });
@@ -34,18 +35,14 @@ export default function CurrencyScreen() {
   };
 
   return (
-    <View style={{ flex: 1, paddingTop: top }}>
-      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: bottom + 40, gap: 12 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text style={{ fontSize: 20, fontWeight: '700' }}>Main Currency</Text>
-          <Button variant="secondary" onPress={() => router.back()}>
-            Close
-          </Button>
-        </View>
-
-        <Card>
-          <Card.Body style={{ gap: 10 }}>
-            <Text style={{ opacity: 0.7 }}>Pick your reporting currency.</Text>
+    <>
+      <ModalHeader title="Main Currency" />
+      <ScreenShell>
+        <GlassCard>
+          <GlassCardBody style={{ gap: 10 }}>
+            <Text style={{ color: colors.textMuted }} selectable>
+              Pick your reporting currency.
+            </Text>
             <Select
               value={selectedOption}
               onValueChange={option => setSelectedCurrency(option?.value ?? settings.mainCurrency)}
@@ -63,7 +60,7 @@ export default function CurrencyScreen() {
                 </Select.Content>
               </Select.Portal>
             </Select>
-            <View style={{ flexDirection: 'row', gap: 8 }}>
+            <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
               <Button variant="primary" onPress={handleSave}>
                 Save
               </Button>
@@ -77,9 +74,9 @@ export default function CurrencyScreen() {
                 Refresh rates
               </Button>
             </View>
-          </Card.Body>
-        </Card>
-      </ScrollView>
-    </View>
+          </GlassCardBody>
+        </GlassCard>
+      </ScreenShell>
+    </>
   );
 }

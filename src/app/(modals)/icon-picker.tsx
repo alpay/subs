@@ -1,19 +1,20 @@
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
-import { useRouter } from 'expo-router';
-import { Button, Card, Chip, useToast } from 'heroui-native';
+import { Button, Chip, useToast } from 'heroui-native';
 import { useMemo, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Text, View } from 'react-native';
 
+import { GlassCard, GlassCardBody } from '@/components/glass-card';
+import { ModalHeader } from '@/components/modal-header';
+import { ScreenShell } from '@/components/screen-shell';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
+import { useTheme } from '@/lib/hooks/use-theme';
 import { useServiceTemplatesStore } from '@/lib/stores';
 
 export default function IconPickerScreen() {
   useBootstrap();
-  const router = useRouter();
   const { toast } = useToast();
-  const { top, bottom } = useSafeAreaInsets();
+  const { colors } = useTheme();
   const { templates } = useServiceTemplatesStore();
   const [imageUri, setImageUri] = useState<string | null>(null);
 
@@ -44,19 +45,13 @@ export default function IconPickerScreen() {
   };
 
   return (
-    <View style={{ flex: 1, paddingTop: top }}>
-      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: bottom + 40, gap: 12 }}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Text style={{ fontSize: 20, fontWeight: '700' }}>Icon Picker</Text>
-          <Button variant="secondary" onPress={() => router.back()}>
-            Close
-          </Button>
-        </View>
-
-        <Card>
-          <Card.Body style={{ gap: 8 }}>
-            <Text style={{ opacity: 0.7 }}>
-              HeroUI migration removed old icon components. Use an icon key or custom image URI.
+    <>
+      <ModalHeader title="Icon Picker" />
+      <ScreenShell>
+        <GlassCard>
+          <GlassCardBody style={{ gap: 8 }}>
+            <Text style={{ color: colors.textMuted }} selectable>
+              Use an icon key or upload a custom image.
             </Text>
             <Button variant="secondary" onPress={handlePickImage}>
               Pick image from library
@@ -65,25 +60,27 @@ export default function IconPickerScreen() {
             {imageUri && (
               <View style={{ alignItems: 'flex-start', gap: 8 }}>
                 <Image source={{ uri: imageUri }} style={{ width: 72, height: 72, borderRadius: 16 }} />
-                <Text style={{ fontSize: 12, opacity: 0.7 }} selectable>
+                <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
                   {imageUri}
                 </Text>
               </View>
             )}
-          </Card.Body>
-        </Card>
+          </GlassCardBody>
+        </GlassCard>
 
-        <Card>
-          <Card.Header>
-            <Card.Title>Available icon keys</Card.Title>
-          </Card.Header>
-          <Card.Body style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-            {iconKeys.map(iconKey => (
-              <Chip key={iconKey}>{iconKey}</Chip>
-            ))}
-          </Card.Body>
-        </Card>
-      </ScrollView>
-    </View>
+        <GlassCard>
+          <GlassCardBody style={{ gap: 10 }}>
+            <Text style={{ fontSize: 13, color: colors.textMuted }} selectable>
+              Available icon keys
+            </Text>
+            <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
+              {iconKeys.map(iconKey => (
+                <Chip key={iconKey}>{iconKey}</Chip>
+              ))}
+            </View>
+          </GlassCardBody>
+        </GlassCard>
+      </ScreenShell>
+    </>
   );
 }
