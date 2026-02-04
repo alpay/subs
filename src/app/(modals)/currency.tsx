@@ -1,8 +1,8 @@
 import { useRouter } from 'expo-router';
 
 import { Pressable, ScrollView, Text, View } from '@/components/ui';
-import { useTheme } from '@/lib/hooks/use-theme';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
+import { useTheme } from '@/lib/hooks/use-theme';
 import { useCurrencyRatesStore, useSettingsStore } from '@/lib/stores';
 
 export default function CurrencyScreen() {

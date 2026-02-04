@@ -1,8 +1,8 @@
 import { FlashList as NFlashList } from '@shopify/flash-list';
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
-import { useTranslation } from 'react-i18next';
 
 import { Text } from './text';
 

@@ -6,6 +6,7 @@ import {
 
 import colors from '@/components/ui/colors';
 import { useTheme } from '@/lib/hooks/use-theme';
+import { useSettingsStore } from '@/lib/stores/settings-store';
 
 const DarkTheme: Theme = {
   ..._DarkTheme,
@@ -33,5 +34,19 @@ const LightTheme: Theme = {
 
 export function useThemeConfig() {
   const { isDark } = useTheme();
+  const { settings } = useSettingsStore();
+
+  if (isDark && settings.trueDarkColors) {
+    return {
+      ...DarkTheme,
+      colors: {
+        ...DarkTheme.colors,
+        background: '#000000',
+        card: '#0B0B0B',
+        border: '#1F1F1F',
+      },
+    };
+  }
+
   return isDark ? DarkTheme : LightTheme;
 }

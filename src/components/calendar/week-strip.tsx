@@ -6,8 +6,8 @@
 import { addDays, format, isAfter, isSameDay, startOfDay, startOfWeek } from 'date-fns';
 import { enUS, tr } from 'date-fns/locale';
 import { useMemo } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 import { Haptic } from '@/lib/haptics';
 

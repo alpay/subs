@@ -12,8 +12,8 @@ import type {
   Settings,
   Subscription,
 } from './schema';
+import { DEFAULT_CURRENCY_RATES, DEFAULT_SETTINGS } from '@/lib/data/seed-defaults';
 import { storage } from '@/lib/storage';
-import { DEFAULT_SETTINGS, DEFAULT_CURRENCY_RATES } from '@/lib/data/seed-defaults';
 
 // ============================================
 // Storage Keys

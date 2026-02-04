@@ -1,8 +1,8 @@
-import { create } from 'zustand';
-
 import type { CurrencyRates } from '@/lib/db/schema';
-import { getCurrencyRates, saveCurrencyRates } from '@/lib/db/storage';
+
+import { create } from 'zustand';
 import { DEFAULT_CURRENCY_RATES } from '@/lib/data/seed-defaults';
+import { getCurrencyRates, saveCurrencyRates } from '@/lib/db/storage';
 
 const bundledRates = DEFAULT_CURRENCY_RATES;
 
@@ -14,7 +14,7 @@ type CurrencyRatesState = {
   setRates: (rates: CurrencyRates) => void;
 };
 
-export const useCurrencyRatesStore = create<CurrencyRatesState>((set, get) => ({
+export const useCurrencyRatesStore = create<CurrencyRatesState>(set => ({
   rates: bundledRates,
   isLoaded: false,
   load: () => {

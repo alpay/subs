@@ -1,8 +1,7 @@
+import type { Subscription } from '@/lib/db/schema';
 import { addDays, addMonths, endOfMonth, endOfWeek, format, isSameDay, isSameMonth, startOfMonth, startOfWeek, subMonths } from 'date-fns';
 import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import { memo, useMemo } from 'react';
-
-import type { Subscription } from '@/lib/db/schema';
 import { Pressable, Text, View } from '@/components/ui';
 import { useTheme } from '@/lib/hooks/use-theme';
 
@@ -18,13 +17,13 @@ type CalendarGridProps = {
 
 const WEEKDAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
-const CalendarGrid = memo(function CalendarGrid({
+const CalendarGrid = memo(({
   monthDate,
   onMonthChange,
   onDateSelect,
   dayMap,
   selectedDate,
-}: CalendarGridProps) {
+}: CalendarGridProps) => {
   const { colors } = useTheme();
 
   const weeks = useMemo(() => {
@@ -70,7 +69,7 @@ const CalendarGrid = memo(function CalendarGrid({
         ))}
       </View>
 
-      {weeks.map((week) => (
+      {weeks.map(week => (
         <View key={week[0].toISOString()} className="mb-2 flex-row justify-between">
           {week.map((date) => {
             const key = format(date, 'yyyy-MM-dd');
@@ -101,7 +100,8 @@ const CalendarGrid = memo(function CalendarGrid({
                   ))}
                   {items.length > 2 && (
                     <Text className="text-[10px]" style={{ color: colors.secondaryText }}>
-                      +{items.length - 2}
+                      +
+                      {items.length - 2}
                     </Text>
                   )}
                 </View>

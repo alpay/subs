@@ -1,7 +1,8 @@
-import { create } from 'zustand';
-
 import type { Subscription } from '@/lib/db/schema';
-import { addSubscription, deleteSubscription, getSubscriptions, saveSubscriptions, updateSubscription } from '@/lib/db/storage';
+
+import { create } from 'zustand';
+import { addSubscription, deleteSubscription, getSettings, getSubscriptions, updateSubscription } from '@/lib/db/storage';
+import { cancelSubscriptionNotifications, scheduleSubscriptionNotifications } from '@/lib/notifications';
 import { createId } from '@/lib/utils/ids';
 import { computeNextPaymentDate } from '@/lib/utils/subscription-dates';
 
@@ -58,6 +59,7 @@ export const useSubscriptionsStore = create<SubscriptionsState>((set, get) => ({
     const subscription = normalizeSubscription(input);
     addSubscription(subscription);
     set({ subscriptions: [...get().subscriptions, subscription] });
+    void scheduleSubscriptionNotifications(subscription, getSettings());
     return subscription;
   },
   update: (subscription) => {
@@ -66,10 +68,15 @@ export const useSubscriptionsStore = create<SubscriptionsState>((set, get) => ({
     set({
       subscriptions: get().subscriptions.map(sub => sub.id === updated.id ? updated : sub),
     });
+    void (async () => {
+      await cancelSubscriptionNotifications(updated.id);
+      await scheduleSubscriptionNotifications(updated, getSettings());
+    })();
   },
   remove: (subscriptionId) => {
     deleteSubscription(subscriptionId);
     set({ subscriptions: get().subscriptions.filter(sub => sub.id !== subscriptionId) });
+    void cancelSubscriptionNotifications(subscriptionId);
   },
   setStatus: (subscriptionId, status) => {
     const subscription = get().subscriptions.find(sub => sub.id === subscriptionId);
@@ -86,5 +93,11 @@ export const useSubscriptionsStore = create<SubscriptionsState>((set, get) => ({
     set({
       subscriptions: get().subscriptions.map(sub => sub.id === updated.id ? updated : sub),
     });
+    if (status === 'active') {
+      void scheduleSubscriptionNotifications(updated, getSettings());
+    }
+    else {
+      void cancelSubscriptionNotifications(updated.id);
+    }
   },
 }));

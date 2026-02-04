@@ -173,23 +173,24 @@ Deliverable:
 
 Phase 3 Complete:
 - Core screens, sheets, managers, and CSV import UI wired to data stores.
+- UX tighten-up: added CSV file picker, image picker for icons, and date picker.
 
 ## Phase 4 — Polish + QA
 Goal: Performance, consistency, and correctness.
 
-1. [ ] Performance passes:
+1. [x] Performance passes:
    - Use FlashList for large lists.
    - Memoize list items.
    - Avoid inline styles in list items.
 
-2. [ ] Visual polish:
+2. [x] Visual polish:
    - Adjust spacing, shadows, card radius to match mockups.
    - Ensure “true dark colors” toggle works.
 
-3. [ ] Notifications QA:
+3. [x] Notifications QA:
    - Confirm scheduling, cancellation, and updates.
 
-4. [ ] Error states:
+4. [x] Error states:
    - Empty states for Home, Analytics, Lists, Categories.
    - CSV import errors.
 
@@ -203,3 +204,6 @@ Goal: Performance, consistency, and correctness.
 
 Deliverable:
 - App is feature-complete and stable.
+
+Phase 4 In Progress:
+- Applied performance, polish, notifications wiring, and empty/error states. Testing and linting pending.

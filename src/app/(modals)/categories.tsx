@@ -1,9 +1,9 @@
-import { useState } from 'react';
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
 
 import { Input, Pressable, ScrollView, Text, View } from '@/components/ui';
-import { useTheme } from '@/lib/hooks/use-theme';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
+import { useTheme } from '@/lib/hooks/use-theme';
 import { useCategoriesStore } from '@/lib/stores';
 
 export default function CategoriesScreen() {
@@ -39,7 +39,7 @@ export default function CategoriesScreen() {
       </View>
 
       <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}>
-        <View className="mt-6 rounded-3xl px-4 py-4" style={{ backgroundColor: colors.card }}>
+        <View className="mt-6 rounded-3xl p-4" style={{ backgroundColor: colors.card }}>
           <Input label="Name" value={name} onChangeText={setName} placeholder="Category name" />
           <Input label="Color" value={color} onChangeText={setColor} placeholder="#RRGGBB" />
           <Pressable
@@ -54,6 +54,11 @@ export default function CategoriesScreen() {
         </View>
 
         <View className="mt-6">
+          {categories.length === 0 && (
+            <Text className="text-sm" style={{ color: colors.secondaryText }}>
+              No categories yet.
+            </Text>
+          )}
           {categories.map(cat => (
             <View key={cat.id} className="mb-3 flex-row items-center justify-between rounded-2xl px-4 py-3" style={{ backgroundColor: colors.card }}>
               <View className="flex-row items-center">

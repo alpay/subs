@@ -5,6 +5,7 @@
 
 import { X } from 'lucide-react-native';
 import { useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Dimensions,
   Image,
@@ -12,7 +13,6 @@ import {
   Pressable,
   Text,
 } from 'react-native';
-import { useTranslation } from 'react-i18next';
 import { Gesture, GestureDetector, GestureHandlerRootView } from 'react-native-gesture-handler';
 import Animated, {
   runOnJS,

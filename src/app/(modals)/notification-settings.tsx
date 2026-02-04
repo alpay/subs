@@ -1,9 +1,9 @@
-import { useState } from 'react';
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
 
 import { Input, Pressable, ScrollView, Text, View } from '@/components/ui';
-import { useTheme } from '@/lib/hooks/use-theme';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
+import { useTheme } from '@/lib/hooks/use-theme';
 import { useSettingsStore } from '@/lib/stores';
 
 export default function NotificationSettingsScreen() {
@@ -56,7 +56,7 @@ export default function NotificationSettingsScreen() {
       </View>
 
       <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}>
-        <View className="mt-6 rounded-3xl px-4 py-4" style={{ backgroundColor: colors.card }}>
+        <View className="mt-6 rounded-3xl p-4" style={{ backgroundColor: colors.card }}>
           <Text className="text-sm font-semibold" style={{ color: colors.text }}>
             First Reminder
           </Text>
@@ -64,7 +64,7 @@ export default function NotificationSettingsScreen() {
           <Input label="Time" value={firstTime} onChangeText={setFirstTime} placeholder="09:00" />
         </View>
 
-        <View className="mt-4 rounded-3xl px-4 py-4" style={{ backgroundColor: colors.card }}>
+        <View className="mt-4 rounded-3xl p-4" style={{ backgroundColor: colors.card }}>
           <Text className="text-sm font-semibold" style={{ color: colors.text }}>
             Second Reminder (optional)
           </Text>

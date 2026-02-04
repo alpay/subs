@@ -1,5 +1,7 @@
 import * as Haptics from 'expo-haptics';
 import { Platform } from 'react-native';
+import { STORAGE_KEYS } from '@/lib/db/storage';
+import { storage } from '@/lib/storage';
 
 export type HapticType = 'light' | 'medium' | 'heavy' | 'soft' | 'rigid';
 export type HapticNotificationType = 'success' | 'warning' | 'error';
@@ -25,6 +27,8 @@ const notificationMap: Record<HapticNotificationType, Haptics.NotificationFeedba
 export function triggerHaptic(type: HapticType = 'light'): void {
   if (Platform.OS === 'web')
     return;
+  if (!isHapticsEnabled())
+    return;
 
   Haptics.impactAsync(hapticMap[type]);
 }
@@ -35,6 +39,8 @@ export function triggerHaptic(type: HapticType = 'light'): void {
  */
 export function triggerHapticNotification(type: HapticNotificationType): void {
   if (Platform.OS === 'web')
+    return;
+  if (!isHapticsEnabled())
     return;
 
   Haptics.notificationAsync(notificationMap[type]);
@@ -51,3 +57,17 @@ export const Haptic = {
   Warning: () => triggerHapticNotification('warning'),
   Error: () => triggerHapticNotification('error'),
 };
+
+function isHapticsEnabled() {
+  const raw = storage.getString(STORAGE_KEYS.SETTINGS);
+  if (!raw) {
+    return true;
+  }
+  try {
+    const parsed = JSON.parse(raw) as { hapticsEnabled?: boolean };
+    return parsed.hapticsEnabled !== false;
+  }
+  catch {
+    return true;
+  }
+}

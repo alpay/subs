@@ -6,6 +6,7 @@ import type {
   ServiceTemplate,
   Settings,
 } from '@/lib/db/schema';
+import currencyRates from '../../../assets/data/currency-rates.json';
 
 const now = () => new Date().toISOString();
 
@@ -51,5 +52,4 @@ export const DEFAULT_SETTINGS: Settings = {
   },
 };
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-export const DEFAULT_CURRENCY_RATES: CurrencyRates = require('../../../assets/data/currency-rates.json');
+export const DEFAULT_CURRENCY_RATES: CurrencyRates = currencyRates as CurrencyRates;

@@ -51,8 +51,8 @@ import {
 } from '@gorhom/bottom-sheet';
 import { ChevronDown } from 'lucide-react-native';
 import { createContext, memo, use, useCallback, useImperativeHandle, useMemo, useRef } from 'react';
-import { Pressable, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { Pressable, View } from 'react-native';
 import Animated, {
   Extrapolation,
   interpolate,

@@ -1,9 +1,9 @@
-import { Switch } from 'react-native';
 import { useRouter } from 'expo-router';
+import { Switch } from 'react-native';
 
 import { Pressable, ScrollView, Text, View } from '@/components/ui';
-import { useTheme } from '@/lib/hooks/use-theme';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
+import { useTheme } from '@/lib/hooks/use-theme';
 import { useCategoriesStore, useCurrencyRatesStore, useListsStore, usePaymentMethodsStore, useSettingsStore } from '@/lib/stores';
 
 export default function SettingsScreen() {
@@ -33,7 +33,7 @@ export default function SettingsScreen() {
       </View>
 
       <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}>
-        <View className="mt-6 rounded-3xl px-4 py-4" style={{ backgroundColor: colors.card }}>
+        <View className="mt-6 rounded-3xl p-4" style={{ backgroundColor: colors.card }}>
           <Text className="text-base font-semibold" style={{ color: colors.text }}>
             Subs
           </Text>
@@ -49,7 +49,7 @@ export default function SettingsScreen() {
             </Text>
             <Switch
               value={settings.iCloudEnabled}
-              onValueChange={(value) => update({ iCloudEnabled: value })}
+              onValueChange={value => update({ iCloudEnabled: value })}
             />
           </View>
           <Pressable
@@ -69,7 +69,7 @@ export default function SettingsScreen() {
             </Text>
             <Switch
               value={settings.roundWholeNumbers}
-              onValueChange={(value) => update({ roundWholeNumbers: value })}
+              onValueChange={value => update({ roundWholeNumbers: value })}
             />
           </View>
         </View>
@@ -116,7 +116,7 @@ export default function SettingsScreen() {
             </Text>
             <Switch
               value={settings.trueDarkColors}
-              onValueChange={(value) => update({ trueDarkColors: value })}
+              onValueChange={value => update({ trueDarkColors: value })}
             />
           </View>
           <View className="flex-row items-center justify-between py-3">
@@ -125,17 +125,19 @@ export default function SettingsScreen() {
             </Text>
             <Switch
               value={settings.hapticsEnabled}
-              onValueChange={(value) => update({ hapticsEnabled: value })}
+              onValueChange={value => update({ hapticsEnabled: value })}
             />
           </View>
         </View>
 
-        <View className="mt-4 rounded-3xl px-4 py-4" style={{ backgroundColor: colors.card }}>
+        <View className="mt-4 rounded-3xl p-4" style={{ backgroundColor: colors.card }}>
           <Text className="text-xs" style={{ color: colors.secondaryText }}>
             Currency rates
           </Text>
           <Text className="mt-2 text-sm" style={{ color: colors.text }}>
-            Last update: {new Date(rates.updatedAt).toLocaleString()}
+            Last update:
+            {' '}
+            {new Date(rates.updatedAt).toLocaleString()}
           </Text>
           <Pressable
             onPress={() => router.push('/(modals)/currency')}

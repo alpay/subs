@@ -1,11 +1,11 @@
-import { useMemo, useState } from 'react';
 import { useRouter } from 'expo-router';
+import { useMemo, useState } from 'react';
 
-import { Pressable, ScrollView, Select, Text, View } from '@/components/ui';
-import { useTheme } from '@/lib/hooks/use-theme';
-import { useBootstrap } from '@/lib/hooks/use-bootstrap';
-import { useCategoriesStore, useCurrencyRatesStore, useSettingsStore, useSubscriptionsStore } from '@/lib/stores';
 import DonutChart from '@/components/subscriptions/donut-chart';
+import { Pressable, ScrollView, Select, Text, View } from '@/components/ui';
+import { useBootstrap } from '@/lib/hooks/use-bootstrap';
+import { useTheme } from '@/lib/hooks/use-theme';
+import { useCategoriesStore, useCurrencyRatesStore, useSettingsStore, useSubscriptionsStore } from '@/lib/stores';
 import { convertCurrency, roundCurrency } from '@/lib/utils/currency';
 import { calculateAverageMonthly, calculateYearlyForecast } from '@/lib/utils/totals';
 
@@ -21,12 +21,17 @@ export default function AnalyticsScreen() {
 
   const segments = useMemo(() => {
     const activeSubs = subscriptions.filter(sub => sub.status === 'active');
-    const byCategory = categories.map(cat => {
+    const byCategory = categories.map((cat) => {
       const total = activeSubs
         .filter(sub => sub.categoryId === cat.id)
         .reduce((sum, sub) => {
           const yearly = sub.amount * 12;
-          const converted = convertCurrency(yearly, sub.currency, settings.mainCurrency, rates);
+          const converted = convertCurrency({
+            amount: yearly,
+            from: sub.currency,
+            to: settings.mainCurrency,
+            rates,
+          });
           return sum + converted;
         }, 0);
       return {
@@ -40,11 +45,11 @@ export default function AnalyticsScreen() {
   }, [subscriptions, categories, settings, rates]);
 
   const yearlyForecast = useMemo(
-    () => calculateYearlyForecast(subscriptions, settings, rates),
+    () => calculateYearlyForecast({ subscriptions, settings, rates }),
     [subscriptions, settings, rates],
   );
   const averageMonthly = useMemo(
-    () => calculateAverageMonthly(subscriptions, settings, rates),
+    () => calculateAverageMonthly({ subscriptions, settings, rates }),
     [subscriptions, settings, rates],
   );
 
@@ -81,14 +86,33 @@ export default function AnalyticsScreen() {
         </View>
 
         <View className="mt-8 items-center">
-          <DonutChart
-            segments={segments}
-            centerLabel={segments[0]?.label ?? 'Categories'}
-            centerValue={`${roundCurrency(segments[0]?.value ?? 0, settings.roundWholeNumbers).toFixed(settings.roundWholeNumbers ? 0 : 2)} ${settings.mainCurrency}`}
-          />
-          <Text className="mt-4 text-sm" style={{ color: colors.secondaryText }}>
-            You have {activeCount} active subscriptions
-          </Text>
+          {segments.length === 0
+            ? (
+                <View className="items-center rounded-3xl px-6 py-8" style={{ backgroundColor: colors.card }}>
+                  <Text className="text-base font-semibold" style={{ color: colors.text }}>
+                    No analytics yet
+                  </Text>
+                  <Text className="mt-2 text-sm" style={{ color: colors.secondaryText }}>
+                    Add subscriptions to see category breakdowns.
+                  </Text>
+                </View>
+              )
+            : (
+                <>
+                  <DonutChart
+                    segments={segments}
+                    centerLabel={segments[0]?.label ?? 'Categories'}
+                    centerValue={`${roundCurrency(segments[0]?.value ?? 0, settings.roundWholeNumbers).toFixed(settings.roundWholeNumbers ? 0 : 2)} ${settings.mainCurrency}`}
+                  />
+                  <Text className="mt-4 text-sm" style={{ color: colors.secondaryText }}>
+                    You have
+                    {' '}
+                    {activeCount}
+                    {' '}
+                    active subscriptions
+                  </Text>
+                </>
+              )}
         </View>
 
         <View className="mt-8 flex-row gap-4">
@@ -97,7 +121,9 @@ export default function AnalyticsScreen() {
               Yearly Forecast
             </Text>
             <Text className="mt-3 text-2xl font-semibold" style={{ color: colors.text }}>
-              {yearlyForecast.toFixed(settings.roundWholeNumbers ? 0 : 2)} {settings.mainCurrency}
+              {yearlyForecast.toFixed(settings.roundWholeNumbers ? 0 : 2)}
+              {' '}
+              {settings.mainCurrency}
             </Text>
           </View>
           <View className="flex-1 rounded-3xl px-4 py-6" style={{ backgroundColor: colors.card }}>
@@ -105,7 +131,9 @@ export default function AnalyticsScreen() {
               Average Monthly Cost
             </Text>
             <Text className="mt-3 text-2xl font-semibold" style={{ color: colors.text }}>
-              {averageMonthly.toFixed(settings.roundWholeNumbers ? 0 : 2)} {settings.mainCurrency}
+              {averageMonthly.toFixed(settings.roundWholeNumbers ? 0 : 2)}
+              {' '}
+              {settings.mainCurrency}
             </Text>
           </View>
         </View>

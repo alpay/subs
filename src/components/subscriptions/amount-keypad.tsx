@@ -1,10 +1,10 @@
-import { useMemo } from 'react';
 import type { RefObject } from 'react';
+import { useMemo } from 'react';
 
 import { Modal, Pressable, Text, View } from '@/components/ui';
 import { useTheme } from '@/lib/hooks/use-theme';
 
-const KEYS = ['1','2','3','4','5','6','7','8','9','.','0','del'];
+const KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '0', 'del'];
 
 export type AmountKeypadProps = {
   value: string;
@@ -43,7 +43,7 @@ export default function AmountKeypad({ value, onChange, onDone, modalRef, curren
         </View>
 
         <View className="flex-row flex-wrap justify-between">
-          {KEYS.map((key) => (
+          {KEYS.map(key => (
             <Pressable
               key={key}
               onPress={() => handlePress(key)}

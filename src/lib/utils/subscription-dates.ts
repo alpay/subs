@@ -1,6 +1,6 @@
-import { addMonths, addWeeks, addYears, endOfMonth, isAfter, isBefore, isEqual, parseISO, startOfDay, startOfMonth } from 'date-fns';
-
 import type { Subscription } from '@/lib/db/schema';
+
+import { addMonths, addWeeks, addYears, endOfMonth, isAfter, isBefore, isEqual, parseISO, startOfDay, startOfMonth } from 'date-fns';
 
 function addInterval(date: Date, subscription: Subscription) {
   const interval = subscription.intervalCount || 1;

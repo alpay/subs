@@ -4,6 +4,7 @@ import { useMMKVString } from 'react-native-mmkv';
 import { Uniwind, useUniwind } from 'uniwind';
 
 import colors from '@/components/ui/colors';
+import { useSettingsStore } from '@/lib/stores/settings-store';
 import { storage } from '../storage';
 
 const SELECTED_THEME = 'SELECTED_THEME';
@@ -21,6 +22,7 @@ export function useTheme() {
   const systemColorScheme = useColorScheme();
   useUniwind(); // Keep uniwind in sync but don't need its theme value
   const [storedTheme, setStoredTheme] = useMMKVString(SELECTED_THEME, storage);
+  const { settings } = useSettingsStore();
 
   const selectedTheme = (storedTheme ?? 'system') as ColorSchemeType;
 
@@ -42,8 +44,24 @@ export function useTheme() {
     [setStoredTheme],
   );
 
+  const themeColors = useMemo(() => {
+    const base = colors[activeTheme];
+    if (activeTheme === 'dark' && settings.trueDarkColors) {
+      return {
+        ...base,
+        background: '#000000',
+        card: '#0B0B0B',
+        cardAlt: '#111111',
+        border: '#1F1F1F',
+        tabBarBackground: '#000000',
+        overlay: 'rgba(0, 0, 0, 0.8)',
+      };
+    }
+    return base;
+  }, [activeTheme, settings.trueDarkColors]);
+
   return {
-    colors: colors[activeTheme],
+    colors: themeColors,
     isDark,
     activeTheme,
     selectedTheme,

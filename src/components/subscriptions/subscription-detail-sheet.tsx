@@ -1,7 +1,7 @@
-import { format, parseISO } from 'date-fns';
 import type { RefObject } from 'react';
-
 import type { Subscription } from '@/lib/db/schema';
+
+import { format, parseISO } from 'date-fns';
 import { Modal, ModalScrollView, Pressable, Select, Text, View } from '@/components/ui';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useCategoriesStore, useCurrencyRatesStore, useListsStore, usePaymentMethodsStore, useSettingsStore, useSubscriptionsStore } from '@/lib/stores';
@@ -37,7 +37,7 @@ export default function SubscriptionDetailSheet({ subscription, onEdit, modalRef
   const category = categories.find(cat => cat.id === subscription.categoryId);
   const list = lists.find(item => item.id === subscription.listId);
   const method = methods.find(item => item.id === subscription.paymentMethodId);
-  const totalSpent = calculateTotalSpent(subscription, settings, rates);
+  const totalSpent = calculateTotalSpent({ subscription, settings, rates });
 
   return (
     <Modal ref={modalRef} snapPoints={['75%']} title={subscription.name} collapsibleTitle>
@@ -59,13 +59,15 @@ export default function SubscriptionDetailSheet({ subscription, onEdit, modalRef
           </Pressable>
         </View>
 
-        <View className="mt-4 rounded-2xl px-4 py-4" style={{ backgroundColor: colors.card }}>
+        <View className="mt-4 rounded-2xl p-4" style={{ backgroundColor: colors.card }}>
           <View className="mb-3 flex-row items-center justify-between">
             <Text className="text-sm" style={{ color: colors.secondaryText }}>
               Amount
             </Text>
             <Text className="text-base font-semibold" style={{ color: colors.text }}>
-              {subscription.amount.toFixed(2)} {subscription.currency}
+              {subscription.amount.toFixed(2)}
+              {' '}
+              {subscription.currency}
             </Text>
           </View>
           <View className="mb-3 flex-row items-center justify-between">
@@ -81,7 +83,9 @@ export default function SubscriptionDetailSheet({ subscription, onEdit, modalRef
               Total spent
             </Text>
             <Text className="text-base font-semibold" style={{ color: colors.text }}>
-              {totalSpent.toFixed(settings.roundWholeNumbers ? 0 : 2)} {settings.mainCurrency}
+              {totalSpent.toFixed(settings.roundWholeNumbers ? 0 : 2)}
+              {' '}
+              {settings.mainCurrency}
             </Text>
           </View>
           <View className="flex-row items-center justify-between">
@@ -94,7 +98,7 @@ export default function SubscriptionDetailSheet({ subscription, onEdit, modalRef
           </View>
         </View>
 
-        <View className="mt-4 rounded-2xl px-4 py-4" style={{ backgroundColor: colors.card }}>
+        <View className="mt-4 rounded-2xl p-4" style={{ backgroundColor: colors.card }}>
           <View className="mb-3 flex-row items-center justify-between">
             <Text className="text-sm" style={{ color: colors.secondaryText }}>
               Category
@@ -122,7 +126,7 @@ export default function SubscriptionDetailSheet({ subscription, onEdit, modalRef
         </View>
 
         {subscription.notes && (
-          <View className="mt-4 rounded-2xl px-4 py-4" style={{ backgroundColor: colors.card }}>
+          <View className="mt-4 rounded-2xl p-4" style={{ backgroundColor: colors.card }}>
             <Text className="text-sm" style={{ color: colors.secondaryText }}>
               Notes
             </Text>

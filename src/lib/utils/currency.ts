@@ -1,6 +1,13 @@
 import type { CurrencyRates } from '@/lib/db/schema';
 
-export function convertCurrency(amount: number, from: string, to: string, rates: CurrencyRates) {
+export type ConvertCurrencyInput = {
+  amount: number;
+  from: string;
+  to: string;
+  rates: CurrencyRates;
+};
+
+export function convertCurrency({ amount, from, to, rates }: ConvertCurrencyInput) {
   if (from === to) {
     return amount;
   }

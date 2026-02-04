@@ -1,6 +1,5 @@
-import { memo } from 'react';
-
 import type { Subscription } from '@/lib/db/schema';
+import { memo } from 'react';
 import { Pressable, Text, View } from '@/components/ui';
 import { useTheme } from '@/lib/hooks/use-theme';
 
@@ -11,12 +10,12 @@ export type SubscriptionListItemProps = {
   trailing?: string;
 };
 
-const SubscriptionListItem = memo(function SubscriptionListItem({
+const SubscriptionListItem = memo(({
   subscription,
   onPress,
   subtitle,
   trailing,
-}: SubscriptionListItemProps) {
+}: SubscriptionListItemProps) => {
   const { colors } = useTheme();
 
   return (

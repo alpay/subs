@@ -1,8 +1,8 @@
-import { create } from 'zustand';
-
 import type { List } from '@/lib/db/schema';
-import { getLists, saveLists } from '@/lib/db/storage';
+
+import { create } from 'zustand';
 import { DEFAULT_LISTS } from '@/lib/data/seed-defaults';
+import { getLists, saveLists } from '@/lib/db/storage';
 import { createId } from '@/lib/utils/ids';
 
 const nowIso = () => new Date().toISOString();

@@ -1,9 +1,11 @@
-import { useMemo, useState } from 'react';
+import * as DocumentPicker from 'expo-document-picker';
+import * as FileSystem from 'expo-file-system';
 import { useRouter } from 'expo-router';
+import { useMemo, useState } from 'react';
 
 import { Input, Pressable, ScrollView, Text, View } from '@/components/ui';
-import { useTheme } from '@/lib/hooks/use-theme';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
+import { useTheme } from '@/lib/hooks/use-theme';
 import { useCategoriesStore, useListsStore, usePaymentMethodsStore, useSubscriptionsStore } from '@/lib/stores';
 
 const REQUIRED_COLUMNS = ['name', 'amount', 'currency', 'schedule', 'start_date'];
@@ -44,6 +46,7 @@ export default function CsvImportScreen() {
   const [csvText, setCsvText] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [rows, setRows] = useState<Record<string, string>[]>([]);
+  const [fileName, setFileName] = useState<string | null>(null);
 
   const preview = useMemo(() => rows.slice(0, 5), [rows]);
 
@@ -51,6 +54,26 @@ export default function CsvImportScreen() {
     const result = parseCsv(csvText);
     setRows(result.rows);
     setError(result.error);
+  };
+
+  const handlePickFile = async () => {
+    const result = await DocumentPicker.getDocumentAsync({
+      type: ['text/csv', 'text/plain', 'application/vnd.ms-excel'],
+      copyToCacheDirectory: true,
+      multiple: false,
+    });
+
+    if (result.canceled || !result.assets?.length) {
+      return;
+    }
+
+    const file = result.assets[0];
+    const content = await FileSystem.readAsStringAsync(file.uri);
+    setFileName(file.name ?? 'CSV file');
+    setCsvText(content);
+    const parsed = parseCsv(content);
+    setRows(parsed.rows);
+    setError(parsed.error);
   };
 
   const handleImport = () => {
@@ -111,7 +134,7 @@ export default function CsvImportScreen() {
       </View>
 
       <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}>
-        <View className="mt-6 rounded-3xl px-4 py-4" style={{ backgroundColor: colors.card }}>
+        <View className="mt-6 rounded-3xl p-4" style={{ backgroundColor: colors.card }}>
           <Text className="text-sm" style={{ color: colors.secondaryText }}>
             Paste CSV text matching the strict template.
           </Text>
@@ -123,6 +146,22 @@ export default function CsvImportScreen() {
             multiline
             style={{ minHeight: 140 }}
           />
+          <Pressable
+            onPress={handlePickFile}
+            className="mt-2 items-center justify-center rounded-2xl py-3"
+            style={{ backgroundColor: colors.background }}
+          >
+            <Text className="text-sm" style={{ color: colors.text }}>
+              Pick CSV File
+            </Text>
+          </Pressable>
+          {fileName && (
+            <Text className="mt-2 text-xs" style={{ color: colors.secondaryText }}>
+              Selected:
+              {' '}
+              {fileName}
+            </Text>
+          )}
           {error && (
             <Text className="text-xs" style={{ color: colors.error }}>
               {error}
@@ -140,17 +179,32 @@ export default function CsvImportScreen() {
         </View>
 
         {preview.length > 0 && (
-          <View className="mt-4 rounded-3xl px-4 py-4" style={{ backgroundColor: colors.card }}>
+          <View className="mt-4 rounded-3xl p-4" style={{ backgroundColor: colors.card }}>
             <Text className="text-sm font-semibold" style={{ color: colors.text }}>
-              Preview ({rows.length} rows)
+              Preview
+              {' '}
+              (
+              {rows.length}
+              {' '}
+              rows)
             </Text>
-            {preview.map((row, index) => (
-              <View key={`${row.name}-${index}`} className="mt-3">
+            {preview.map(row => (
+              <View key={`${row.name}-${row.start_date}-${row.amount}`} className="mt-3">
                 <Text className="text-sm" style={{ color: colors.text }}>
-                  {row.name} · {row.amount} {row.currency}
+                  {row.name}
+                  {' '}
+                  ·
+                  {' '}
+                  {row.amount}
+                  {' '}
+                  {row.currency}
                 </Text>
                 <Text className="text-xs" style={{ color: colors.secondaryText }}>
-                  {row.schedule} · {row.start_date}
+                  {row.schedule}
+                  {' '}
+                  ·
+                  {' '}
+                  {row.start_date}
                 </Text>
               </View>
             ))}

@@ -1,14 +1,14 @@
-import { useMemo, useState } from 'react';
-import { useRouter } from 'expo-router';
 import { FlashList } from '@shopify/flash-list';
+import { useRouter } from 'expo-router';
+import { useMemo, useState } from 'react';
 
-import { Pressable, ScrollView, Text, View } from '@/components/ui';
-import { useTheme } from '@/lib/hooks/use-theme';
-import { useBootstrap } from '@/lib/hooks/use-bootstrap';
-import { useServiceTemplatesStore } from '@/lib/stores';
 import ServiceGridItem from '@/components/subscriptions/service-grid-item';
 import ServiceIcon from '@/components/subscriptions/service-icon';
+import { Pressable, Text, View } from '@/components/ui';
 import { SearchBar } from '@/components/ui/search-bar';
+import { useBootstrap } from '@/lib/hooks/use-bootstrap';
+import { useTheme } from '@/lib/hooks/use-theme';
+import { useServiceTemplatesStore } from '@/lib/stores';
 
 export default function AddSubscriptionScreen() {
   useBootstrap();
@@ -63,7 +63,7 @@ export default function AddSubscriptionScreen() {
       <FlashList
         data={filtered}
         numColumns={2}
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id}
         estimatedItemSize={160}
         contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24 }}
         renderItem={({ item }) => (
@@ -75,7 +75,7 @@ export default function AddSubscriptionScreen() {
             />
           </View>
         )}
-        ListFooterComponent={
+        ListFooterComponent={(
           <View className="mt-4 px-2">
             <ServiceGridItem
               title="Custom Service"
@@ -83,7 +83,7 @@ export default function AddSubscriptionScreen() {
               onPress={() => router.push('/(modals)/subscription-form')}
             />
           </View>
-        }
+        )}
       />
     </View>
   );

@@ -1,8 +1,8 @@
-import { create } from 'zustand';
-
 import type { ServiceTemplate } from '@/lib/db/schema';
-import { getServiceTemplates, saveServiceTemplates } from '@/lib/db/storage';
+
+import { create } from 'zustand';
 import { DEFAULT_SERVICE_TEMPLATES } from '@/lib/data/seed-defaults';
+import { getServiceTemplates, saveServiceTemplates } from '@/lib/db/storage';
 
 export type ServiceTemplatesState = {
   templates: ServiceTemplate[];
@@ -10,7 +10,7 @@ export type ServiceTemplatesState = {
   load: () => void;
 };
 
-export const useServiceTemplatesStore = create<ServiceTemplatesState>((set) => ({
+export const useServiceTemplatesStore = create<ServiceTemplatesState>(set => ({
   templates: [],
   isLoaded: false,
   load: () => {

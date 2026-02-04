@@ -1,8 +1,9 @@
-import { create } from 'zustand';
-
 import type { Settings } from '@/lib/db/schema';
-import { getSettings, saveSettings } from '@/lib/db/storage';
+
+import { create } from 'zustand';
 import { DEFAULT_SETTINGS } from '@/lib/data/seed-defaults';
+import { getSettings, getSubscriptions, saveSettings } from '@/lib/db/storage';
+import { rescheduleAllNotifications } from '@/lib/notifications';
 
 const nowSettings = () => ({ ...DEFAULT_SETTINGS });
 
@@ -24,5 +25,6 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     const next = { ...get().settings, ...partial };
     saveSettings(next);
     set({ settings: next });
+    void rescheduleAllNotifications(getSubscriptions(), next);
   },
 }));

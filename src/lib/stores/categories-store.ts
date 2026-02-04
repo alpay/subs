@@ -1,8 +1,8 @@
-import { create } from 'zustand';
-
 import type { Category } from '@/lib/db/schema';
-import { getCategories, saveCategories } from '@/lib/db/storage';
+
+import { create } from 'zustand';
 import { DEFAULT_CATEGORIES } from '@/lib/data/seed-defaults';
+import { getCategories, saveCategories } from '@/lib/db/storage';
 import { createId } from '@/lib/utils/ids';
 
 const nowIso = () => new Date().toISOString();

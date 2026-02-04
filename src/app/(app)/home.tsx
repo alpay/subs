@@ -1,20 +1,20 @@
-import { format } from 'date-fns';
-import { BarChart3, Search, Settings as SettingsIcon } from 'lucide-react-native';
-import { useMemo, useState } from 'react';
-import { useRouter } from 'expo-router';
-
 import type { Subscription } from '@/lib/db/schema';
-import { Pressable, ScrollView, Select, Text, View } from '@/components/ui';
+import { format } from 'date-fns';
+import { useRouter } from 'expo-router';
+import { BarChart3, Search, Settings as SettingsIcon } from 'lucide-react-native';
+
+import { useMemo, useState } from 'react';
 import CalendarGrid from '@/components/subscriptions/calendar-grid';
 import DaySubscriptionsSheet from '@/components/subscriptions/day-subscriptions-sheet';
 import SubscriptionDetailSheet from '@/components/subscriptions/subscription-detail-sheet';
-import { useTheme } from '@/lib/hooks/use-theme';
-import { useBootstrap } from '@/lib/hooks/use-bootstrap';
-import { useCurrencyRatesStore, useListsStore, useSettingsStore, useSubscriptionsStore } from '@/lib/stores';
-import { calculateMonthlyTotal } from '@/lib/utils/totals';
-import { getPaymentDatesForMonth } from '@/lib/utils/subscription-dates';
+import { Pressable, ScrollView, Select, Text, View } from '@/components/ui';
 import { useModal } from '@/components/ui/modal';
 import { SearchBar } from '@/components/ui/search-bar';
+import { useBootstrap } from '@/lib/hooks/use-bootstrap';
+import { useTheme } from '@/lib/hooks/use-theme';
+import { useCurrencyRatesStore, useListsStore, useSettingsStore, useSubscriptionsStore } from '@/lib/stores';
+import { getPaymentDatesForMonth } from '@/lib/utils/subscription-dates';
+import { calculateMonthlyTotal } from '@/lib/utils/totals';
 
 const ALL_LISTS = 'all';
 
@@ -73,7 +73,12 @@ export default function HomeScreen() {
   }, [filteredSubscriptions, monthDate]);
 
   const monthTotal = useMemo(
-    () => calculateMonthlyTotal(filteredSubscriptions, monthDate, settings, rates),
+    () => calculateMonthlyTotal({
+      subscriptions: filteredSubscriptions,
+      monthDate,
+      settings,
+      rates,
+    }),
     [filteredSubscriptions, monthDate, settings, rates],
   );
 
@@ -129,11 +134,23 @@ export default function HomeScreen() {
             {format(monthDate, 'MMMM yyyy')}
           </Text>
           <Text className="mt-2 text-4xl font-bold" style={{ color: colors.text }}>
-            {monthTotal.toFixed(settings.roundWholeNumbers ? 0 : 2)} {settings.mainCurrency}
+            {monthTotal.toFixed(settings.roundWholeNumbers ? 0 : 2)}
+            {' '}
+            {settings.mainCurrency}
           </Text>
         </View>
 
         <View className="mt-6 px-5">
+          {filteredSubscriptions.length === 0 && (
+            <View className="mb-4 items-center rounded-3xl px-4 py-6" style={{ backgroundColor: colors.card }}>
+              <Text className="text-base font-semibold" style={{ color: colors.text }}>
+                No subscriptions yet
+              </Text>
+              <Text className="mt-2 text-sm" style={{ color: colors.secondaryText }}>
+                Add your first subscription to see it on the calendar.
+              </Text>
+            </View>
+          )}
           <CalendarGrid
             monthDate={monthDate}
             onMonthChange={setMonthDate}

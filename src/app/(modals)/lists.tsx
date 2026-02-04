@@ -1,9 +1,9 @@
-import { useState } from 'react';
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
 
 import { Input, Pressable, ScrollView, Text, View } from '@/components/ui';
-import { useTheme } from '@/lib/hooks/use-theme';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
+import { useTheme } from '@/lib/hooks/use-theme';
 import { useListsStore } from '@/lib/stores';
 
 export default function ListsScreen() {
@@ -38,7 +38,7 @@ export default function ListsScreen() {
       </View>
 
       <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}>
-        <View className="mt-6 rounded-3xl px-4 py-4" style={{ backgroundColor: colors.card }}>
+        <View className="mt-6 rounded-3xl p-4" style={{ backgroundColor: colors.card }}>
           <Input label="Name" value={name} onChangeText={setName} placeholder="List name" />
           <Pressable
             onPress={handleAdd}
@@ -52,6 +52,11 @@ export default function ListsScreen() {
         </View>
 
         <View className="mt-6">
+          {lists.length === 0 && (
+            <Text className="text-sm" style={{ color: colors.secondaryText }}>
+              No lists yet.
+            </Text>
+          )}
           {lists.map(list => (
             <View key={list.id} className="mb-3 flex-row items-center justify-between rounded-2xl px-4 py-3" style={{ backgroundColor: colors.card }}>
               <Text className="text-sm font-semibold" style={{ color: colors.text }}>

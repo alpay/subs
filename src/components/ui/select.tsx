@@ -9,10 +9,10 @@ import {
 } from '@gorhom/bottom-sheet';
 import { FlashList } from '@shopify/flash-list';
 import { memo, useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Platform, Pressable, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 import { tv } from 'tailwind-variants';
-import { useTranslation } from 'react-i18next';
 
 import colors from '@/components/ui/colors';
 import { CaretDown } from '@/components/ui/icons';
