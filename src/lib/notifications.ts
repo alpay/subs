@@ -1,4 +1,4 @@
-import type { Settings, Subscription } from '@/lib/db/schema';
+import type { ReminderConfig, Settings, Subscription } from '@/lib/db/schema';
 import { parseISO, setHours, setMinutes, subDays } from 'date-fns';
 
 import * as Notifications from 'expo-notifications';
@@ -18,16 +18,18 @@ function setNotificationMap(map: NotificationMap) {
   storage.set(NOTIFICATION_IDS_KEY, JSON.stringify(map));
 }
 
+function isReminderConfig(reminder: ReminderConfig | null | undefined): reminder is ReminderConfig {
+  return Boolean(reminder);
+}
+
 function getReminders(subscription: Subscription, settings: Settings) {
   if (subscription.notificationMode === 'none') {
     return [];
   }
   if (subscription.notificationMode === 'custom') {
-    return [subscription.customReminder1, subscription.customReminder2]
-      .filter(Boolean) as Settings['notificationDefaults'][keyof Settings['notificationDefaults']][];
+    return [subscription.customReminder1, subscription.customReminder2].filter(isReminderConfig);
   }
-  return [settings.notificationDefaults.first, settings.notificationDefaults.second]
-    .filter(Boolean) as Settings['notificationDefaults'][keyof Settings['notificationDefaults']][];
+  return [settings.notificationDefaults.first, settings.notificationDefaults.second].filter(isReminderConfig);
 }
 
 export async function scheduleSubscriptionNotifications(subscription: Subscription, settings: Settings) {
@@ -51,7 +53,10 @@ export async function scheduleSubscriptionNotifications(subscription: Subscripti
         body: 'Payment due soon',
         data: { subscriptionId: subscription.id },
       },
-      trigger: triggerDate,
+      trigger: {
+        type: Notifications.SchedulableTriggerInputTypes.DATE,
+        date: triggerDate,
+      },
     });
     ids.push(id);
   }

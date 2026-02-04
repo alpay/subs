@@ -1,5 +1,5 @@
 import { Stack } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View } from 'react-native';
 
 import { useTheme } from '@/lib/hooks/use-theme';
 
@@ -7,8 +7,8 @@ export default function AppLayout() {
   const { colors } = useTheme();
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['top']}>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       <Stack screenOptions={{ headerShown: false }} />
-    </SafeAreaView>
+    </View>
   );
 }

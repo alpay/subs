@@ -2,6 +2,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Input, Pressable, ScrollView, Text, View } from '@/components/ui';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
@@ -42,6 +43,7 @@ export default function CsvImportScreen() {
   const { add: addList } = useListsStore();
   const { add: addMethod } = usePaymentMethodsStore();
   const { add: addSubscription } = useSubscriptionsStore();
+  const { top } = useSafeAreaInsets();
 
   const [csvText, setCsvText] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -118,7 +120,7 @@ export default function CsvImportScreen() {
   };
 
   return (
-    <View className="flex-1" style={{ backgroundColor: colors.background }}>
+    <View className="flex-1" style={{ backgroundColor: colors.background, paddingTop: top }}>
       <View className="px-5 pt-4">
         <View className="flex-row items-center justify-between">
           <Pressable onPress={() => router.back()}>

@@ -30,7 +30,7 @@ export default function SubscriptionDetailSheet({ subscription, onEdit, modalRef
 
   if (!subscription) {
     return (
-      <Modal ref={modalRef} snapPoints={['60%']} title="Subscription" />
+      <Modal ref={modalRef} snapPoints={['90%']} title="Subscription" />
     );
   }
 
@@ -40,7 +40,7 @@ export default function SubscriptionDetailSheet({ subscription, onEdit, modalRef
   const totalSpent = calculateTotalSpent({ subscription, settings, rates });
 
   return (
-    <Modal ref={modalRef} snapPoints={['75%']} title={subscription.name} collapsibleTitle>
+    <Modal ref={modalRef} snapPoints={['90%']} title={subscription.name} collapsibleTitle>
       <ModalScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 20 }}>
         <View className="mt-4 flex-row items-center justify-between">
           <Select

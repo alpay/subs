@@ -17,7 +17,7 @@
  * function DisplayModal() {
  *   const { ref, present, dismiss } = useModal();
  *   return (
- *     <Modal snapPoints={['60%']} title="Modal Title" ref={ref}>
+ *     <Modal snapPoints={['90%']} title="Modal Title" ref={ref}>
  *       <ModalScrollView>Modal Content</ModalScrollView>
  *     </Modal>
  *   );
@@ -27,7 +27,7 @@
  * function CollapsibleModal() {
  *   const { ref, present, dismiss } = useModal();
  *   return (
- *     <Modal snapPoints={['60%']} title="Title" collapsibleTitle ref={ref}>
+ *     <Modal snapPoints={['90%']} title="Title" collapsibleTitle ref={ref}>
  *       <ModalScrollView>
  *         <ModalLargeHeader title="Title" subtitle="Optional subtitle" />
  *         Content...
@@ -112,7 +112,7 @@ export function useModal() {
 
 export function Modal({
   ref,
-  snapPoints: _snapPoints = ['60%'] as (string | number)[],
+  snapPoints: _snapPoints = ['90%'] as (string | number)[],
   title,
   collapsibleTitle = false,
   headerBackgroundClassName = 'bg-white dark:bg-gray-900',

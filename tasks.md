@@ -198,7 +198,7 @@ Goal: Performance, consistency, and correctness.
    - Manual test checklist for all flows.
    - Optional unit tests for date calculations.
 
-6. [ ] Lint & type-check:
+6. [x] Lint & type-check:
    - `pnpm lint`
    - `pnpm type-check`
 
@@ -206,4 +206,4 @@ Deliverable:
 - App is feature-complete and stable.
 
 Phase 4 In Progress:
-- Applied performance, polish, notifications wiring, and empty/error states. Testing and linting pending.
+- Applied performance, polish, notifications wiring, empty/error states, safe-area top padding, and 90% snap points. Testing pending.

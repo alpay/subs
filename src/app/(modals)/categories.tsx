@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Input, Pressable, ScrollView, Text, View } from '@/components/ui';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
@@ -11,6 +12,7 @@ export default function CategoriesScreen() {
   const router = useRouter();
   const { colors } = useTheme();
   const { categories, add, remove } = useCategoriesStore();
+  const { top } = useSafeAreaInsets();
   const [name, setName] = useState('');
   const [color, setColor] = useState('#4F46E5');
 
@@ -23,7 +25,7 @@ export default function CategoriesScreen() {
   };
 
   return (
-    <View className="flex-1" style={{ backgroundColor: colors.background }}>
+    <View className="flex-1" style={{ backgroundColor: colors.background, paddingTop: top }}>
       <View className="px-5 pt-4">
         <View className="flex-row items-center justify-between">
           <Pressable onPress={() => router.back()}>

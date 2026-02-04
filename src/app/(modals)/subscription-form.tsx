@@ -4,6 +4,7 @@ import { format, formatISO, parseISO } from 'date-fns';
 import * as ImagePicker from 'expo-image-picker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo, useRef, useState } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import DatePicker from 'rn-awesome-date-picker';
 import AmountKeypad from '@/components/subscriptions/amount-keypad';
@@ -176,6 +177,7 @@ function SubscriptionFormContent({
   const router = useRouter();
   const { colors } = useTheme();
   const { add, update } = useSubscriptionsStore();
+  const { top } = useSafeAreaInsets();
 
   const [name, setName] = useState(() => initialState.name);
   const [scheduleType, setScheduleType] = useState<Subscription['scheduleType']>(() => initialState.scheduleType);
@@ -299,7 +301,7 @@ function SubscriptionFormContent({
   const displayDate = startDateValue ? format(startDateValue, 'd MMM yyyy') : 'Select date';
 
   return (
-    <View className="flex-1" style={{ backgroundColor: colors.background }}>
+    <View className="flex-1" style={{ backgroundColor: colors.background, paddingTop: top }}>
       <View className="px-5 pt-4">
         <View className="flex-row items-center justify-between">
           <Pressable onPress={() => router.back()}>
@@ -499,7 +501,7 @@ function SubscriptionFormContent({
         dateTextColor={colors.text}
         farDateTextColor={colors.secondaryText}
         bottomSheetModalProps={{
-          snapPoints: ['60%'],
+          snapPoints: ['90%'],
         }}
         cancelButtonText="Cancel"
         chooseDateButtonText="Choose date"

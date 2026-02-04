@@ -31,7 +31,7 @@ export default function AmountKeypad({ value, onChange, onDone, modalRef, curren
   };
 
   return (
-    <Modal ref={modalRef} snapPoints={['70%']} title="Amount">
+    <Modal ref={modalRef} snapPoints={['90%']} title="Amount">
       <View className="flex-1 px-6 pb-6">
         <View className="items-center py-6">
           <Text className="text-sm" style={{ color: colors.secondaryText }}>

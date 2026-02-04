@@ -1,6 +1,7 @@
 import { FlashList } from '@shopify/flash-list';
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import ServiceGridItem from '@/components/subscriptions/service-grid-item';
 import ServiceIcon from '@/components/subscriptions/service-icon';
@@ -15,6 +16,7 @@ export default function AddSubscriptionScreen() {
   const router = useRouter();
   const { colors } = useTheme();
   const { templates } = useServiceTemplatesStore();
+  const { top } = useSafeAreaInsets();
   const [searchValue, setSearchValue] = useState('');
 
   const filtered = useMemo(
@@ -23,7 +25,7 @@ export default function AddSubscriptionScreen() {
   );
 
   return (
-    <View className="flex-1" style={{ backgroundColor: colors.background }}>
+    <View className="flex-1" style={{ backgroundColor: colors.background, paddingTop: top }}>
       <View className="px-5 pt-4">
         <View className="flex-row items-center justify-between">
           <Pressable onPress={() => router.back()}>
@@ -64,7 +66,6 @@ export default function AddSubscriptionScreen() {
         data={filtered}
         numColumns={2}
         keyExtractor={item => item.id}
-        estimatedItemSize={160}
         contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24 }}
         renderItem={({ item }) => (
           <View className="mb-4 flex-1 px-2">

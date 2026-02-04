@@ -47,7 +47,7 @@ export default function DaySubscriptionsSheet({
   return (
     <Modal
       ref={modalRef}
-      snapPoints={['70%']}
+      snapPoints={['90%']}
       title="Subscriptions"
       collapsibleTitle
     >
@@ -59,7 +59,6 @@ export default function DaySubscriptionsSheet({
         <FlashList
           data={subscriptions}
           keyExtractor={item => item.id}
-          estimatedItemSize={72}
           renderItem={({ item }) => (
             <SubscriptionListItem
               subscription={item}

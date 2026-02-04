@@ -27,7 +27,8 @@
     "save": "Kaydet",
     "saving": "Kaydediliyor...",
     "search": "Ara",
-    "select_placeholder": "Seç..."
+    "select_placeholder": "Seç...",
+    "something_went_wrong": "Bir şeyler ters gitti"
   },
   "diary": {
     "lightbox_hint": "Kapatmak için yukarı veya aşağı kaydır"

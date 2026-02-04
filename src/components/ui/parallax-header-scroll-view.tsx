@@ -8,7 +8,7 @@
 import type { ImageProps } from 'expo-image';
 import type { ReactNode } from 'react';
 
-import type { ScrollViewProps, StyleProp, ViewStyle } from 'react-native';
+import type { ColorValue, ScrollViewProps, StyleProp, ViewStyle } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useMemo, useRef } from 'react';
@@ -26,6 +26,8 @@ type HeaderAction = {
   accessibilityHint?: string;
 };
 
+type GradientColors = readonly [ColorValue, ColorValue, ...ColorValue[]];
+
 type ParallaxHeaderScrollViewProps = ScrollViewProps & {
   imageSource: ImageProps['source'];
   headerHeight?: number;
@@ -34,8 +36,8 @@ type ParallaxHeaderScrollViewProps = ScrollViewProps & {
   stickyTitle?: string;
   leftAction?: HeaderAction;
   rightAction?: HeaderAction;
-  scrimColors?: string[];
-  bottomFadeColors?: string[];
+  scrimColors?: GradientColors;
+  bottomFadeColors?: GradientColors;
   bottomFadeHeight?: number;
 };
 
@@ -70,7 +72,8 @@ export function ParallaxHeaderScrollView({
     [scrollY, onScroll],
   );
 
-  const fadeColors = bottomFadeColors ?? ['transparent', colors.background];
+  const fallbackFadeColors = ['transparent', colors.background] as GradientColors;
+  const fadeColors = bottomFadeColors ?? fallbackFadeColors;
   const stickyHeaderHeight = insets.top + 50;
 
   return (

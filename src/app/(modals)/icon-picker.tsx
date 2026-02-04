@@ -1,6 +1,7 @@
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import ServiceIcon from '@/components/subscriptions/service-icon';
 import { Image, Pressable, ScrollView, Text, View } from '@/components/ui';
@@ -13,6 +14,7 @@ export default function IconPickerScreen() {
   const router = useRouter();
   const { colors } = useTheme();
   const { templates } = useServiceTemplatesStore();
+  const { top } = useSafeAreaInsets();
   const [imageUri, setImageUri] = useState<string | null>(null);
 
   const handlePickImage = async () => {
@@ -33,7 +35,7 @@ export default function IconPickerScreen() {
   };
 
   return (
-    <View className="flex-1" style={{ backgroundColor: colors.background }}>
+    <View className="flex-1" style={{ backgroundColor: colors.background, paddingTop: top }}>
       <View className="px-5 pt-4">
         <View className="flex-row items-center justify-between">
           <Pressable onPress={() => router.back()}>

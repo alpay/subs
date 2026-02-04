@@ -27,7 +27,8 @@
     "save": "Save",
     "saving": "Saving...",
     "search": "Search",
-    "select_placeholder": "Select..."
+    "select_placeholder": "Select...",
+    "something_went_wrong": "Something went wrong"
   },
   "diary": {
     "lightbox_hint": "Swipe up or down to dismiss"

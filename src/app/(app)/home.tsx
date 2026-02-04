@@ -2,8 +2,9 @@ import type { Subscription } from '@/lib/db/schema';
 import { format } from 'date-fns';
 import { useRouter } from 'expo-router';
 import { BarChart3, Search, Settings as SettingsIcon } from 'lucide-react-native';
-
 import { useMemo, useState } from 'react';
+
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import CalendarGrid from '@/components/subscriptions/calendar-grid';
 import DaySubscriptionsSheet from '@/components/subscriptions/day-subscriptions-sheet';
 import SubscriptionDetailSheet from '@/components/subscriptions/subscription-detail-sheet';
@@ -27,8 +28,9 @@ export default function HomeScreen() {
   const { settings } = useSettingsStore();
   const { rates } = useCurrencyRatesStore();
 
-  const [monthDate, setMonthDate] = useState(new Date());
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const { top } = useSafeAreaInsets();
+  const [monthDate, setMonthDate] = useState(() => new Date());
+  const [selectedDate, setSelectedDate] = useState(() => new Date());
   const [selectedListId, setSelectedListId] = useState<string>(ALL_LISTS);
   const [searchValue, setSearchValue] = useState('');
   const [isSearching, setIsSearching] = useState(false);
@@ -91,7 +93,7 @@ export default function HomeScreen() {
   };
 
   return (
-    <View className="flex-1" style={{ backgroundColor: colors.background }}>
+    <View className="flex-1" style={{ backgroundColor: colors.background, paddingTop: top }}>
       <ScrollView contentContainerStyle={{ paddingBottom: 32 }}>
         <View className="px-5 pt-4">
           <View className="flex-row items-center justify-between">

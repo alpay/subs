@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
 import { Switch } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Pressable, ScrollView, Text, View } from '@/components/ui';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
@@ -15,9 +16,10 @@ export default function SettingsScreen() {
   const { lists } = useListsStore();
   const { methods } = usePaymentMethodsStore();
   const { rates } = useCurrencyRatesStore();
+  const { top } = useSafeAreaInsets();
 
   return (
-    <View className="flex-1" style={{ backgroundColor: colors.background }}>
+    <View className="flex-1" style={{ backgroundColor: colors.background, paddingTop: top }}>
       <View className="px-5 pt-4">
         <View className="flex-row items-center justify-between">
           <Pressable onPress={() => router.back()}>

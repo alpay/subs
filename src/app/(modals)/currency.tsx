@@ -1,4 +1,5 @@
 import { useRouter } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Pressable, ScrollView, Text, View } from '@/components/ui';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
@@ -11,11 +12,12 @@ export default function CurrencyScreen() {
   const { colors } = useTheme();
   const { settings, update } = useSettingsStore();
   const { rates, refreshFromBundle } = useCurrencyRatesStore();
+  const { top } = useSafeAreaInsets();
 
   const currencies = Object.keys(rates.rates);
 
   return (
-    <View className="flex-1" style={{ backgroundColor: colors.background }}>
+    <View className="flex-1" style={{ backgroundColor: colors.background, paddingTop: top }}>
       <View className="px-5 pt-4">
         <View className="flex-row items-center justify-between">
           <Pressable onPress={() => router.back()}>

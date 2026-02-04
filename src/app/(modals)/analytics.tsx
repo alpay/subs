@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
 import { useMemo, useState } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import DonutChart from '@/components/subscriptions/donut-chart';
 import { Pressable, ScrollView, Select, Text, View } from '@/components/ui';
@@ -17,7 +18,8 @@ export default function AnalyticsScreen() {
   const { categories } = useCategoriesStore();
   const { settings } = useSettingsStore();
   const { rates } = useCurrencyRatesStore();
-  const [year] = useState(new Date().getFullYear());
+  const { top } = useSafeAreaInsets();
+  const [year] = useState(() => new Date().getFullYear());
 
   const segments = useMemo(() => {
     const activeSubs = subscriptions.filter(sub => sub.status === 'active');
@@ -56,7 +58,7 @@ export default function AnalyticsScreen() {
   const activeCount = subscriptions.filter(sub => sub.status === 'active').length;
 
   return (
-    <View className="flex-1" style={{ backgroundColor: colors.background }}>
+    <View className="flex-1" style={{ backgroundColor: colors.background, paddingTop: top }}>
       <View className="px-5 pt-4">
         <View className="flex-row items-center justify-between">
           <Pressable onPress={() => router.back()}>
