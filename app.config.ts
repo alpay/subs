@@ -38,7 +38,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   orientation: 'portrait',
   icon: './assets/icon.png',
   userInterfaceStyle: 'automatic',
-  newArchEnabled: true,
   updates: {
     fallbackToCacheTimeout: 0,
   },
@@ -54,6 +53,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     },
   },
   experiments: {
+    reactCompiler: true,
     typedRoutes: true,
   },
   android: {
@@ -108,6 +108,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         photosPermission: 'Allow $(PRODUCT_NAME) to access your photos to add product images.',
       },
     ],
+    'expo-image',
+    'expo-video',
     [
       'expo-location',
       {
