@@ -1,40 +1,56 @@
 import { useCallback, useMemo } from 'react';
 import { useColorScheme } from 'react-native';
 import { useMMKVString } from 'react-native-mmkv';
-import { Uniwind, useUniwind } from 'uniwind';
+import { Uniwind } from 'uniwind';
 
-import colors from '@/components/ui/colors';
 import { useSettingsStore } from '@/lib/stores/settings-store';
 import { storage } from '../storage';
 
 const SELECTED_THEME = 'SELECTED_THEME';
+
 export type ColorSchemeType = 'light' | 'dark' | 'system';
 
-/**
- * Unified theme hook that provides:
- * - colors: Semantic color palette for the active theme
- * - isDark: Boolean indicating if dark mode is active
- * - activeTheme: The resolved theme ('light' | 'dark')
- * - selectedTheme: User's preference ('light' | 'dark' | 'system')
- * - setTheme: Function to change the theme
- */
+type ThemePalette = {
+  background: string;
+  card: string;
+  text: string;
+  secondaryText: string;
+  border: string;
+  primary: string;
+};
+
+const THEME_COLORS: Record<'light' | 'dark', ThemePalette> = {
+  light: {
+    background: '#FFFFFF',
+    card: '#F7F7F8',
+    text: '#0F172A',
+    secondaryText: '#64748B',
+    border: '#E2E8F0',
+    primary: '#FF6C00',
+  },
+  dark: {
+    background: '#0B0B0B',
+    card: '#171717',
+    text: '#F8FAFC',
+    secondaryText: '#94A3B8',
+    border: '#262626',
+    primary: '#FF8A33',
+  },
+};
+
 export function useTheme() {
   const systemColorScheme = useColorScheme();
-  useUniwind(); // Keep uniwind in sync but don't need its theme value
   const [storedTheme, setStoredTheme] = useMMKVString(SELECTED_THEME, storage);
   const { settings } = useSettingsStore();
 
   const selectedTheme = (storedTheme ?? 'system') as ColorSchemeType;
 
-  // Determine active theme based on user preference or system
   const activeTheme: 'light' | 'dark' = useMemo(() => {
     if (selectedTheme === 'system') {
       return systemColorScheme === 'dark' ? 'dark' : 'light';
     }
     return selectedTheme;
   }, [selectedTheme, systemColorScheme]);
-
-  const isDark = activeTheme === 'dark';
 
   const setTheme = useCallback(
     (theme: ColorSchemeType) => {
@@ -44,35 +60,30 @@ export function useTheme() {
     [setStoredTheme],
   );
 
-  const themeColors = useMemo(() => {
-    const base = colors[activeTheme];
+  const colors = useMemo(() => {
+    const base = THEME_COLORS[activeTheme];
+
     if (activeTheme === 'dark' && settings.trueDarkColors) {
       return {
         ...base,
         background: '#000000',
         card: '#0B0B0B',
-        cardAlt: '#111111',
         border: '#1F1F1F',
-        tabBarBackground: '#000000',
-        overlay: 'rgba(0, 0, 0, 0.8)',
       };
     }
+
     return base;
   }, [activeTheme, settings.trueDarkColors]);
 
   return {
-    colors: themeColors,
-    isDark,
+    colors,
+    isDark: activeTheme === 'dark',
     activeTheme,
     selectedTheme,
     setTheme,
   };
 }
 
-/**
- * Load selected theme from storage on app initialization.
- * Call this in the root _layout.tsx before rendering.
- */
 export function loadSelectedTheme() {
   const theme = storage.getString(SELECTED_THEME);
   if (theme !== undefined) {

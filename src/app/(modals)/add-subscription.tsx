@@ -1,91 +1,83 @@
-import { FlashList } from '@shopify/flash-list';
 import { useRouter } from 'expo-router';
+import { Button, Card, Chip, Input, Label, TextField } from 'heroui-native';
 import { useMemo, useState } from 'react';
+import { ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import ServiceGridItem from '@/components/subscriptions/service-grid-item';
-import ServiceIcon from '@/components/subscriptions/service-icon';
-import { Pressable, Text, View } from '@/components/ui';
-import { SearchBar } from '@/components/ui/search-bar';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
-import { useTheme } from '@/lib/hooks/use-theme';
 import { useServiceTemplatesStore } from '@/lib/stores';
 
 export default function AddSubscriptionScreen() {
   useBootstrap();
   const router = useRouter();
-  const { colors } = useTheme();
+  const { top, bottom } = useSafeAreaInsets();
   const { templates } = useServiceTemplatesStore();
-  const { top } = useSafeAreaInsets();
   const [searchValue, setSearchValue] = useState('');
 
-  const filtered = useMemo(
-    () => templates.filter(template => template.name.toLowerCase().includes(searchValue.toLowerCase())),
-    [templates, searchValue],
-  );
+  const filteredTemplates = useMemo(() => {
+    return templates.filter(template => template.name.toLowerCase().includes(searchValue.toLowerCase()));
+  }, [templates, searchValue]);
 
   return (
-    <View className="flex-1" style={{ backgroundColor: colors.background, paddingTop: top }}>
-      <View className="px-5 pt-4">
-        <View className="flex-row items-center justify-between">
-          <Pressable onPress={() => router.back()}>
-            <Text className="text-base" style={{ color: colors.primary }}>
-              Cancel
-            </Text>
-          </Pressable>
-          <Text className="text-base font-semibold" style={{ color: colors.text }}>
-            Add Subscription
-          </Text>
-          <View className="w-12" />
+    <View style={{ flex: 1, paddingTop: top }}>
+      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: bottom + 40, gap: 14 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Button variant="secondary" onPress={() => router.back()}>
+            Close
+          </Button>
+          <Text style={{ fontSize: 18, fontWeight: '600' }}>Add Subscription</Text>
+          <Button variant="primary" onPress={() => router.push('/(modals)/subscription-form')}>
+            Custom
+          </Button>
         </View>
 
-        <View className="mt-4 flex-row items-center justify-between rounded-2xl px-4 py-3" style={{ backgroundColor: colors.card }}>
-          <Text className="text-sm" style={{ color: colors.text }}>
-            Import from file
-          </Text>
-          <Pressable onPress={() => router.push('/(modals)/csv-import')}>
-            <Text className="text-sm font-semibold" style={{ color: colors.primary }}>
-              Import
+        <Card>
+          <Card.Body style={{ gap: 10 }}>
+            <Text style={{ fontSize: 14, opacity: 0.7 }}>
+              Start from a service template or create from scratch.
             </Text>
-          </Pressable>
-        </View>
+            <TextField>
+              <Label>Search templates</Label>
+              <Input
+                placeholder="Netflix, Spotify, Cursor..."
+                value={searchValue}
+                onChangeText={setSearchValue}
+              />
+            </TextField>
+            <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
+              <Chip>
+                {templates.length}
+                {' templates'}
+              </Chip>
+              <Chip>
+                {filteredTemplates.length}
+                {' visible'}
+              </Chip>
+            </View>
+          </Card.Body>
+        </Card>
 
-        <Text className="mt-6 text-xs uppercase" style={{ color: colors.secondaryText }}>
-          Popular services
-        </Text>
-      </View>
-
-      <SearchBar
-        value={searchValue}
-        onChangeText={setSearchValue}
-        placeholder="Search services"
-        containerClassName="mx-5"
-      />
-
-      <FlashList
-        data={filtered}
-        numColumns={2}
-        keyExtractor={item => item.id}
-        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24 }}
-        renderItem={({ item }) => (
-          <View className="mb-4 flex-1 px-2">
-            <ServiceGridItem
-              title={item.name}
-              icon={<ServiceIcon iconKey={item.iconKey} />}
-              onPress={() => router.push({ pathname: '/(modals)/subscription-form', params: { templateId: item.id } })}
-            />
-          </View>
-        )}
-        ListFooterComponent={(
-          <View className="mt-4 px-2">
-            <ServiceGridItem
-              title="Custom Service"
-              icon={<ServiceIcon iconKey="custom" />}
-              onPress={() => router.push('/(modals)/subscription-form')}
-            />
-          </View>
-        )}
-      />
+        {filteredTemplates.map(template => (
+          <Card key={template.id}>
+            <Card.Header style={{ gap: 6 }}>
+              <Card.Title>{template.name}</Card.Title>
+              <Card.Description>
+                Icon key:
+                {' '}
+                {template.iconKey}
+              </Card.Description>
+            </Card.Header>
+            <Card.Footer>
+              <Button
+                variant="primary"
+                onPress={() => router.push({ pathname: '/(modals)/subscription-form', params: { templateId: template.id } })}
+              >
+                Use template
+              </Button>
+            </Card.Footer>
+          </Card>
+        ))}
+      </ScrollView>
     </View>
   );
 }

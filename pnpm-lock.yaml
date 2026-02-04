@@ -11,9 +11,6 @@ importers:
       '@expo/metro-runtime':
         specifier: ^55.0.4
         version: 55.0.4(@expo/dom-webview@55.0.2)(expo@55.0.0-preview.9)(react-dom@19.2.0(react@19.2.0))(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0)
-      '@expo/ui':
-        specifier: 55.0.0-preview.4
-        version: 55.0.0-preview.4(expo@55.0.0-preview.9)(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0)
       '@gorhom/bottom-sheet':
         specifier: ^5.2.8
         version: 5.2.8(@types/react@19.2.10)(react-native-gesture-handler@2.30.0(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0))(react-native-reanimated@4.2.1(react-native-worklets@0.7.2(@babel/core@7.29.0)(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0))(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0))(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0)
@@ -116,6 +113,9 @@ importers:
       expo-video:
         specifier: ^55.0.4
         version: 55.0.4(expo@55.0.0-preview.9)(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0)
+      heroui-native:
+        specifier: 1.0.0-beta.13
+        version: 1.0.0-beta.13(be2f6710f7f84cfaac09798c83a208db)
       i18next:
         specifier: ^25.8.0
         version: 25.8.1(typescript@5.9.3)
@@ -1376,13 +1376,6 @@ packages:
 
   '@expo/sudo-prompt@9.3.2':
     resolution: {integrity: sha512-HHQigo3rQWKMDzYDLkubN5WQOYXJJE2eNqIQC2axC2iO3mHdwnIR7FgZVvHWtBwAdzBgAP0ECp8KqS8TiMKvgw==}
-
-  '@expo/ui@55.0.0-preview.4':
-    resolution: {integrity: sha512-tTygtx7zf/Pqkl00eiMwqweZo9neWtv9DZXzzutcoVxXOjnUbTILFJXlg/V00w78X8yRcjLg6L3I74iySUhasw==}
-    peerDependencies:
-      expo: '*'
-      react: '*'
-      react-native: '*'
 
   '@expo/vector-icons@15.0.3':
     resolution: {integrity: sha512-SBUyYKphmlfUBqxSfDdJ3jAdEVSALS2VUPOUyqn48oZmb2TL/O7t7/PQm5v4NQujYEPLPMTLn9KVw6H7twwbTA==}
@@ -4955,6 +4948,20 @@ packages:
 
   hermes-parser@0.32.0:
     resolution: {integrity: sha512-g4nBOWFpuiTqjR3LZdRxKUkij9iyveWeuks7INEsMX741f3r9xxrOe8TeQfUxtda0eXmiIFiMQzoeSQEno33Hw==}
+
+  heroui-native@1.0.0-beta.13:
+    resolution: {integrity: sha512-bpR/R1V5cJZpzcFIdPBaJyl/OpiEClFFcAdKU6sTX7OAQRgbgBXz1vHcA3pB1jaj1ilk9KLUa7MGDevDGAASnw==}
+    peerDependencies:
+      '@gorhom/bottom-sheet': ^5
+      react: '>=19.0.0'
+      react-native: '>=0.81.0'
+      react-native-reanimated: ~4.1.1
+      react-native-safe-area-context: ~5.6.0
+      react-native-screens: '>=4'
+      react-native-svg: 15.12.1
+      react-native-worklets: 0.5.1
+      tailwind-merge: ^3.4.0
+      tailwind-variants: ^3.2.2
 
   hey-listen@1.0.8:
     resolution: {integrity: sha512-COpmrF2NOg4TBWUJ5UVyaCU2A88wEMkUPK4hNqyCkqHbxT92BbvfjoSozkAIIm6XhicGlJHhFdullInrdhwU8Q==}
@@ -9585,13 +9592,6 @@ snapshots:
 
   '@expo/sudo-prompt@9.3.2': {}
 
-  '@expo/ui@55.0.0-preview.4(expo@55.0.0-preview.9)(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0)':
-    dependencies:
-      expo: 55.0.0-preview.9(@babel/core@7.29.0)(@expo/dom-webview@55.0.2)(@expo/metro-runtime@55.0.4)(expo-router@55.0.0-preview.6)(react-dom@19.2.0(react@19.2.0))(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0)
-      react: 19.2.0
-      react-native: 0.83.1(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0)
-      sf-symbols-typescript: 2.2.0
-
   '@expo/vector-icons@15.0.3(expo-font@55.0.3)(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0)':
     dependencies:
       expo-font: 55.0.3(expo@55.0.0-preview.9)(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0)
@@ -13630,6 +13630,19 @@ snapshots:
   hermes-parser@0.32.0:
     dependencies:
       hermes-estree: 0.32.0
+
+  heroui-native@1.0.0-beta.13(be2f6710f7f84cfaac09798c83a208db):
+    dependencies:
+      '@gorhom/bottom-sheet': 5.2.8(@types/react@19.2.10)(react-native-gesture-handler@2.30.0(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0))(react-native-reanimated@4.2.1(react-native-worklets@0.7.2(@babel/core@7.29.0)(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0))(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0))(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0)
+      react: 19.2.0
+      react-native: 0.83.1(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0)
+      react-native-reanimated: 4.2.1(react-native-worklets@0.7.2(@babel/core@7.29.0)(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0))(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0)
+      react-native-safe-area-context: 5.6.2(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0)
+      react-native-screens: 4.22.0(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0)
+      react-native-svg: 15.15.1(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0)
+      react-native-worklets: 0.7.2(@babel/core@7.29.0)(react-native@0.83.1(@babel/core@7.29.0)(@types/react@19.2.10)(react@19.2.0))(react@19.2.0)
+      tailwind-merge: 3.4.0
+      tailwind-variants: 3.2.2(tailwind-merge@3.4.0)(tailwindcss@4.1.18)
 
   hey-listen@1.0.8: {}
 

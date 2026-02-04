@@ -1,24 +1,25 @@
-import { Link, Stack } from 'expo-router';
-import { useTranslation } from 'react-i18next';
-
-import { Text, View } from '@/components/ui';
+import { Stack, useRouter } from 'expo-router';
+import { Button, Card } from 'heroui-native';
+import { View } from 'react-native';
 
 export default function NotFoundScreen() {
-  const { t } = useTranslation();
+  const router = useRouter();
 
   return (
     <>
-      <Stack.Screen options={{ title: t('not_found.title') }} />
-      <View className="flex-1 items-center justify-center p-4">
-        <Text className="mb-4 text-2xl font-bold">
-          {t('not_found.subtitle')}
-        </Text>
-
-        <Link href="/" className="mt-4">
-          <Text className="text-blue-500 underline">
-            {t('not_found.cta')}
-          </Text>
-        </Link>
+      <Stack.Screen options={{ title: 'Not found' }} />
+      <View className="flex-1 items-center justify-center px-6">
+        <Card className="w-full max-w-lg">
+          <Card.Header>
+            <Card.Title>Page not found</Card.Title>
+            <Card.Description>This route does not exist in the new HeroUI flow.</Card.Description>
+          </Card.Header>
+          <Card.Footer className="gap-3">
+            <Button variant="primary" onPress={() => router.replace('/home')}>
+              Back to Home
+            </Button>
+          </Card.Footer>
+        </Card>
       </View>
     </>
   );

@@ -41,7 +41,6 @@
   },
   "dependencies": {
     "@expo/metro-runtime": "^55.0.4",
-    "@expo/ui": "55.0.0-preview.4",
     "@gorhom/bottom-sheet": "^5.2.8",
     "@quidone/react-native-wheel-picker": "^1.6.1",
     "@quidone/react-native-wheel-picker-feedback": "^2.0.0",
@@ -76,6 +75,7 @@
     "expo-system-ui": "~55.0.4",
     "expo-updates": "~55.0.6",
     "expo-video": "^55.0.4",
+    "heroui-native": "1.0.0-beta.13",
     "i18next": "^25.8.0",
     "lodash.memoize": "^4.1.2",
     "lucide-react-native": "^0.563.0",

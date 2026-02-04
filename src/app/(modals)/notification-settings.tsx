@@ -1,23 +1,24 @@
 import { useRouter } from 'expo-router';
+import { Button, Card, Checkbox, Input, Label, TextField, useToast } from 'heroui-native';
 import { useState } from 'react';
+import { ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Input, Pressable, ScrollView, Text, View } from '@/components/ui';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
-import { useTheme } from '@/lib/hooks/use-theme';
 import { useSettingsStore } from '@/lib/stores';
 
 export default function NotificationSettingsScreen() {
   useBootstrap();
   const router = useRouter();
-  const { colors } = useTheme();
+  const { toast } = useToast();
+  const { top, bottom } = useSafeAreaInsets();
   const { settings, update } = useSettingsStore();
-  const { top } = useSafeAreaInsets();
 
   const [firstDays, setFirstDays] = useState(String(settings.notificationDefaults.first.daysBefore));
   const [firstTime, setFirstTime] = useState(settings.notificationDefaults.first.time);
-  const [secondDays, setSecondDays] = useState(settings.notificationDefaults.second?.daysBefore?.toString() ?? '');
-  const [secondTime, setSecondTime] = useState(settings.notificationDefaults.second?.time ?? '');
+  const [hasSecondReminder, setHasSecondReminder] = useState(Boolean(settings.notificationDefaults.second));
+  const [secondDays, setSecondDays] = useState(String(settings.notificationDefaults.second?.daysBefore ?? 0));
+  const [secondTime, setSecondTime] = useState(settings.notificationDefaults.second?.time ?? '09:00');
 
   const handleSave = () => {
     update({
@@ -26,7 +27,7 @@ export default function NotificationSettingsScreen() {
           daysBefore: Number(firstDays) || 0,
           time: firstTime || '09:00',
         },
-        second: secondDays
+        second: hasSecondReminder
           ? {
               daysBefore: Number(secondDays) || 0,
               time: secondTime || '09:00',
@@ -34,45 +35,70 @@ export default function NotificationSettingsScreen() {
           : null,
       },
     });
+
+    toast.show('Notification defaults updated');
     router.back();
   };
 
   return (
-    <View className="flex-1" style={{ backgroundColor: colors.background, paddingTop: top }}>
-      <View className="px-5 pt-4">
-        <View className="flex-row items-center justify-between">
-          <Pressable onPress={() => router.back()}>
-            <Text className="text-base" style={{ color: colors.primary }}>
-              Close
-            </Text>
-          </Pressable>
-          <Text className="text-base font-semibold" style={{ color: colors.text }}>
-            Notifications
-          </Text>
-          <Pressable onPress={handleSave}>
-            <Text className="text-base" style={{ color: colors.primary }}>
-              Save
-            </Text>
-          </Pressable>
-        </View>
-      </View>
-
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}>
-        <View className="mt-6 rounded-3xl p-4" style={{ backgroundColor: colors.card }}>
-          <Text className="text-sm font-semibold" style={{ color: colors.text }}>
-            First Reminder
-          </Text>
-          <Input label="Days before" value={firstDays} onChangeText={setFirstDays} keyboardType="number-pad" />
-          <Input label="Time" value={firstTime} onChangeText={setFirstTime} placeholder="09:00" />
+    <View style={{ flex: 1, paddingTop: top }}>
+      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: bottom + 40, gap: 12 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Text style={{ fontSize: 20, fontWeight: '700' }}>Notifications</Text>
+          <Button variant="secondary" onPress={() => router.back()}>
+            Close
+          </Button>
         </View>
 
-        <View className="mt-4 rounded-3xl p-4" style={{ backgroundColor: colors.card }}>
-          <Text className="text-sm font-semibold" style={{ color: colors.text }}>
-            Second Reminder (optional)
-          </Text>
-          <Input label="Days before" value={secondDays} onChangeText={setSecondDays} keyboardType="number-pad" />
-          <Input label="Time" value={secondTime} onChangeText={setSecondTime} placeholder="09:00" />
-        </View>
+        <Card>
+          <Card.Header>
+            <Card.Title>First Reminder</Card.Title>
+            <Card.Description>This one is always enabled.</Card.Description>
+          </Card.Header>
+          <Card.Body style={{ gap: 8 }}>
+            <TextField>
+              <Label>Days before</Label>
+              <Input keyboardType="number-pad" value={firstDays} onChangeText={setFirstDays} />
+            </TextField>
+            <TextField>
+              <Label>Time</Label>
+              <Input placeholder="09:00" value={firstTime} onChangeText={setFirstTime} />
+            </TextField>
+          </Card.Body>
+        </Card>
+
+        <Card>
+          <Card.Header>
+            <Card.Title>Second Reminder</Card.Title>
+            <Card.Description>Optional backup reminder.</Card.Description>
+          </Card.Header>
+          <Card.Body style={{ gap: 8 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              <Checkbox
+                isSelected={hasSecondReminder}
+                onSelectedChange={setHasSecondReminder}
+              />
+              <Text>Enable second reminder</Text>
+            </View>
+
+            {hasSecondReminder && (
+              <>
+                <TextField>
+                  <Label>Days before</Label>
+                  <Input keyboardType="number-pad" value={secondDays} onChangeText={setSecondDays} />
+                </TextField>
+                <TextField>
+                  <Label>Time</Label>
+                  <Input placeholder="09:00" value={secondTime} onChangeText={setSecondTime} />
+                </TextField>
+              </>
+            )}
+          </Card.Body>
+        </Card>
+
+        <Button variant="primary" onPress={handleSave}>
+          Save defaults
+        </Button>
       </ScrollView>
     </View>
   );

@@ -1,67 +1,84 @@
 import { useRouter } from 'expo-router';
+import { Button, Card, Select, useToast } from 'heroui-native';
+import { useMemo, useState } from 'react';
+import { ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Pressable, ScrollView, Text, View } from '@/components/ui';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
-import { useTheme } from '@/lib/hooks/use-theme';
 import { useCurrencyRatesStore, useSettingsStore } from '@/lib/stores';
+
+type SelectOption = { label: string; value: string } | undefined;
 
 export default function CurrencyScreen() {
   useBootstrap();
   const router = useRouter();
-  const { colors } = useTheme();
+  const { toast } = useToast();
+  const { top, bottom } = useSafeAreaInsets();
+
   const { settings, update } = useSettingsStore();
   const { rates, refreshFromBundle } = useCurrencyRatesStore();
-  const { top } = useSafeAreaInsets();
 
-  const currencies = Object.keys(rates.rates);
+  const options = useMemo(
+    () => Object.keys(rates.rates).sort().map(code => ({ label: code, value: code })),
+    [rates.rates],
+  );
+
+  const [selectedCurrency, setSelectedCurrency] = useState(settings.mainCurrency);
+
+  const selectedOption = options.find(option => option.value === selectedCurrency) as SelectOption;
+
+  const handleSave = () => {
+    update({ mainCurrency: selectedCurrency });
+    toast.show(`Main currency updated to ${selectedCurrency}`);
+    router.back();
+  };
 
   return (
-    <View className="flex-1" style={{ backgroundColor: colors.background, paddingTop: top }}>
-      <View className="px-5 pt-4">
-        <View className="flex-row items-center justify-between">
-          <Pressable onPress={() => router.back()}>
-            <Text className="text-base" style={{ color: colors.primary }}>
-              Close
-            </Text>
-          </Pressable>
-          <Text className="text-base font-semibold" style={{ color: colors.text }}>
-            Main Currency
-          </Text>
-          <View className="w-12" />
+    <View style={{ flex: 1, paddingTop: top }}>
+      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: bottom + 40, gap: 12 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Text style={{ fontSize: 20, fontWeight: '700' }}>Main Currency</Text>
+          <Button variant="secondary" onPress={() => router.back()}>
+            Close
+          </Button>
         </View>
-      </View>
 
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}>
-        <View className="mt-6">
-          {currencies.map(code => (
-            <Pressable
-              key={code}
-              onPress={() => update({ mainCurrency: code })}
-              className="mb-3 flex-row items-center justify-between rounded-2xl px-4 py-3"
-              style={{ backgroundColor: colors.card }}
+        <Card>
+          <Card.Body style={{ gap: 10 }}>
+            <Text style={{ opacity: 0.7 }}>Pick your reporting currency.</Text>
+            <Select
+              value={selectedOption}
+              onValueChange={option => setSelectedCurrency(option?.value ?? settings.mainCurrency)}
+              presentation="bottom-sheet"
             >
-              <Text className="text-sm font-semibold" style={{ color: colors.text }}>
-                {code}
-              </Text>
-              {settings.mainCurrency === code && (
-                <Text className="text-xs" style={{ color: colors.primary }}>
-                  Selected
-                </Text>
-              )}
-            </Pressable>
-          ))}
-        </View>
-
-        <Pressable
-          onPress={refreshFromBundle}
-          className="mt-2 items-center justify-center rounded-2xl px-4 py-3"
-          style={{ backgroundColor: colors.card }}
-        >
-          <Text className="text-sm" style={{ color: colors.text }}>
-            Update Now
-          </Text>
-        </Pressable>
+              <Select.Trigger>
+                <Select.Value placeholder="Choose currency" />
+              </Select.Trigger>
+              <Select.Portal>
+                <Select.Overlay />
+                <Select.Content presentation="bottom-sheet">
+                  {options.map(option => (
+                    <Select.Item key={option.value} value={option.value} label={option.label} />
+                  ))}
+                </Select.Content>
+              </Select.Portal>
+            </Select>
+            <View style={{ flexDirection: 'row', gap: 8 }}>
+              <Button variant="primary" onPress={handleSave}>
+                Save
+              </Button>
+              <Button
+                variant="secondary"
+                onPress={() => {
+                  refreshFromBundle();
+                  toast.show('Currency rates refreshed from bundled data');
+                }}
+              >
+                Refresh rates
+              </Button>
+            </View>
+          </Card.Body>
+        </Card>
       </ScrollView>
     </View>
   );

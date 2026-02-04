@@ -1,18 +1,12 @@
-import type { DatePickerRef } from 'rn-awesome-date-picker';
-import type { Category, List, PaymentMethod, ServiceTemplate, Subscription } from '@/lib/db/schema';
-import { format, formatISO, parseISO } from 'date-fns';
-import * as ImagePicker from 'expo-image-picker';
+import type { NotificationMode, ScheduleType, Subscription, SubscriptionStatus } from '@/lib/db/schema';
+
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useMemo, useRef, useState } from 'react';
+import { Button, Card, Input, Label, Select, TextArea, TextField, useToast } from 'heroui-native';
+import { useMemo, useState } from 'react';
+import { ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import DatePicker from 'rn-awesome-date-picker';
-import AmountKeypad from '@/components/subscriptions/amount-keypad';
-import ServiceIcon from '@/components/subscriptions/service-icon';
-import { Image, Input, Pressable, ScrollView, Select, Text, View } from '@/components/ui';
-import { useModal } from '@/components/ui/modal';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
-import { useTheme } from '@/lib/hooks/use-theme';
 import {
   useCategoriesStore,
   useCurrencyRatesStore,
@@ -23,92 +17,67 @@ import {
   useSubscriptionsStore,
 } from '@/lib/stores';
 
+type SelectOption = { label: string; value: string } | undefined;
+
+type FormState = {
+  name: string;
+  amount: string;
+  currency: string;
+  scheduleType: ScheduleType;
+  intervalCount: string;
+  intervalUnit: 'week' | 'month';
+  startDate: string;
+  categoryId: string;
+  listId: string;
+  paymentMethodId: string;
+  status: SubscriptionStatus;
+  notificationMode: NotificationMode;
+  iconType: 'builtIn' | 'image';
+  iconKey: string;
+  iconUri: string;
+  notes: string;
+};
+
 const SCHEDULE_OPTIONS = [
   { label: 'Monthly', value: 'monthly' },
   { label: 'Yearly', value: 'yearly' },
   { label: 'Weekly', value: 'weekly' },
   { label: 'Custom', value: 'custom' },
-];
+] as const;
+
+const STATUS_OPTIONS = [
+  { label: 'Active', value: 'active' },
+  { label: 'Paused', value: 'paused' },
+  { label: 'Canceled', value: 'canceled' },
+] as const;
 
 const NOTIFICATION_OPTIONS = [
   { label: 'Default', value: 'default' },
   { label: 'Custom', value: 'custom' },
   { label: 'None', value: 'none' },
-];
+] as const;
 
-type InitialState = {
-  name: string;
-  scheduleType: Subscription['scheduleType'];
-  intervalCount: string;
-  intervalUnit: 'week' | 'month';
-  startDateValue: Date | null;
-  amountValue: string;
-  currency: string;
-  categoryId: string;
-  listId: string;
-  paymentMethodId?: string;
-  notificationMode: 'default' | 'custom' | 'none';
-  notes: string;
-  iconType: 'builtIn' | 'image';
-  iconKey: string;
-  iconUri?: string;
-};
+const INTERVAL_UNIT_OPTIONS = [
+  { label: 'Month', value: 'month' },
+  { label: 'Week', value: 'week' },
+] as const;
 
-type InitialStateInput = {
-  existing?: Subscription;
-  template?: ServiceTemplate;
-  categories: Category[];
-  lists: List[];
-  settingsCurrency: string;
-};
+function todayIsoDate() {
+  return new Date().toISOString().slice(0, 10);
+}
 
-function buildInitialState({ existing, template, categories, lists, settingsCurrency }: InitialStateInput): InitialState {
-  if (existing) {
-    return {
-      name: existing.name,
-      scheduleType: existing.scheduleType,
-      intervalCount: String(existing.intervalCount),
-      intervalUnit: existing.intervalUnit ?? 'month',
-      startDateValue: parseISO(existing.startDate),
-      amountValue: String(existing.amount),
-      currency: existing.currency,
-      categoryId: existing.categoryId,
-      listId: existing.listId,
-      paymentMethodId: existing.paymentMethodId,
-      notificationMode: existing.notificationMode,
-      notes: existing.notes ?? '',
-      iconType: existing.iconType,
-      iconKey: existing.iconKey ?? 'custom',
-      iconUri: existing.iconUri,
-    };
-  }
-
-  const categoryId = template?.defaultCategoryId ?? categories[0]?.id ?? '';
-  const listId = lists[0]?.id ?? '';
-
-  return {
-    name: template?.name ?? '',
-    scheduleType: template?.defaultScheduleType ?? 'monthly',
-    intervalCount: '1',
-    intervalUnit: 'month',
-    startDateValue: new Date(),
-    amountValue: '',
-    currency: settingsCurrency,
-    categoryId,
-    listId,
-    paymentMethodId: undefined,
-    notificationMode: 'default',
-    notes: '',
-    iconType: 'builtIn',
-    iconKey: template?.iconKey ?? 'custom',
-    iconUri: undefined,
-  };
+function isValidDateString(value: string) {
+  return !Number.isNaN(new Date(value).getTime());
 }
 
 export default function SubscriptionFormScreen() {
   useBootstrap();
+  const router = useRouter();
+  const { toast } = useToast();
+  const { top, bottom } = useSafeAreaInsets();
   const params = useLocalSearchParams<{ id?: string; templateId?: string }>();
-  const { subscriptions } = useSubscriptionsStore();
+
+  const { subscriptions, add, update } = useSubscriptionsStore();
   const { categories } = useCategoriesStore();
   const { lists } = useListsStore();
   const { methods } = usePaymentMethodsStore();
@@ -116,95 +85,82 @@ export default function SubscriptionFormScreen() {
   const { settings } = useSettingsStore();
   const { rates } = useCurrencyRatesStore();
 
-  const existing = useMemo(
-    () => (params.id ? subscriptions.find(sub => sub.id === params.id) : undefined),
+  const existingSubscription = useMemo(
+    () => (params.id ? subscriptions.find(subscription => subscription.id === params.id) : undefined),
     [params.id, subscriptions],
   );
-  const template = useMemo(
-    () => (params.templateId ? templates.find(item => item.id === params.templateId) : undefined),
+
+  const selectedTemplate = useMemo(
+    () => (params.templateId ? templates.find(template => template.id === params.templateId) : undefined),
     [params.templateId, templates],
   );
 
-  const initialState = useMemo(
-    () => buildInitialState({
-      existing,
-      template,
-      categories,
-      lists,
-      settingsCurrency: settings.mainCurrency,
-    }),
-    [existing, template, categories, lists, settings.mainCurrency],
-  );
+  const formSeed = useMemo<FormState>(() => {
+    if (existingSubscription) {
+      return {
+        name: existingSubscription.name,
+        amount: String(existingSubscription.amount),
+        currency: existingSubscription.currency,
+        scheduleType: existingSubscription.scheduleType,
+        intervalCount: String(existingSubscription.intervalCount || 1),
+        intervalUnit: existingSubscription.intervalUnit ?? 'month',
+        startDate: existingSubscription.startDate,
+        categoryId: existingSubscription.categoryId,
+        listId: existingSubscription.listId,
+        paymentMethodId: existingSubscription.paymentMethodId ?? '',
+        status: existingSubscription.status,
+        notificationMode: existingSubscription.notificationMode,
+        iconType: existingSubscription.iconType,
+        iconKey: existingSubscription.iconKey ?? 'custom',
+        iconUri: existingSubscription.iconUri ?? '',
+        notes: existingSubscription.notes ?? '',
+      };
+    }
 
-  const formKey = existing?.id ?? template?.id ?? 'new';
+    return {
+      name: selectedTemplate?.name ?? '',
+      amount: '',
+      currency: settings.mainCurrency,
+      scheduleType: selectedTemplate?.defaultScheduleType ?? 'monthly',
+      intervalCount: '1',
+      intervalUnit: 'month',
+      startDate: todayIsoDate(),
+      categoryId: selectedTemplate?.defaultCategoryId ?? categories[0]?.id ?? '',
+      listId: lists[0]?.id ?? '',
+      paymentMethodId: '',
+      status: 'active',
+      notificationMode: 'default',
+      iconType: 'builtIn',
+      iconKey: selectedTemplate?.iconKey ?? 'custom',
+      iconUri: '',
+      notes: '',
+    };
+  }, [existingSubscription, selectedTemplate, settings.mainCurrency, categories, lists]);
 
-  return (
-    <SubscriptionFormContent
-      key={formKey}
-      existing={existing}
-      categories={categories}
-      lists={lists}
-      methods={methods}
-      templates={templates}
-      settingsCurrency={settings.mainCurrency}
-      rates={rates}
-      initialState={initialState}
-    />
-  );
-}
-
-type FormContentProps = {
-  existing?: Subscription;
-  categories: Category[];
-  lists: List[];
-  methods: PaymentMethod[];
-  templates: ServiceTemplate[];
-  settingsCurrency: string;
-  rates: { rates: Record<string, number> };
-  initialState: InitialState;
-};
-
-function SubscriptionFormContent({
-  existing,
-  categories,
-  lists,
-  methods,
-  templates,
-  settingsCurrency,
-  rates,
-  initialState,
-}: FormContentProps) {
-  const router = useRouter();
-  const { colors } = useTheme();
-  const { add, update } = useSubscriptionsStore();
-  const { top } = useSafeAreaInsets();
-
-  const [name, setName] = useState(() => initialState.name);
-  const [scheduleType, setScheduleType] = useState<Subscription['scheduleType']>(() => initialState.scheduleType);
-  const [intervalCount, setIntervalCount] = useState(() => initialState.intervalCount);
-  const [intervalUnit, setIntervalUnit] = useState<'week' | 'month'>(() => initialState.intervalUnit);
-  const [startDateValue, setStartDateValue] = useState<Date | null>(() => initialState.startDateValue);
-  const [amountValue, setAmountValue] = useState(() => initialState.amountValue);
-  const [currency, setCurrency] = useState(() => initialState.currency || settingsCurrency);
-  const [categoryId, setCategoryId] = useState(() => initialState.categoryId);
-  const [listId, setListId] = useState(() => initialState.listId);
-  const [paymentMethodId, setPaymentMethodId] = useState<string | undefined>(() => initialState.paymentMethodId);
-  const [notificationMode, setNotificationMode] = useState<'default' | 'custom' | 'none'>(() => initialState.notificationMode);
-  const [notes, setNotes] = useState(() => initialState.notes);
-  const [iconType, setIconType] = useState<'builtIn' | 'image'>(() => initialState.iconType);
-  const [iconKey, setIconKey] = useState(() => initialState.iconKey);
-  const [iconUri, setIconUri] = useState<string | undefined>(() => initialState.iconUri);
-
-  const amountSheet = useModal();
-  const datePickerRef = useRef<DatePickerRef>(null);
+  const [name, setName] = useState(formSeed.name);
+  const [amount, setAmount] = useState(formSeed.amount);
+  const [currency, setCurrency] = useState(formSeed.currency);
+  const [scheduleType, setScheduleType] = useState<ScheduleType>(formSeed.scheduleType);
+  const [intervalCount, setIntervalCount] = useState(formSeed.intervalCount);
+  const [intervalUnit, setIntervalUnit] = useState<'week' | 'month'>(formSeed.intervalUnit);
+  const [startDate, setStartDate] = useState(formSeed.startDate);
+  const [categoryId, setCategoryId] = useState(formSeed.categoryId);
+  const [listId, setListId] = useState(formSeed.listId);
+  const [paymentMethodId, setPaymentMethodId] = useState(formSeed.paymentMethodId);
+  const [status, setStatus] = useState<SubscriptionStatus>(formSeed.status);
+  const [notificationMode, setNotificationMode] = useState<NotificationMode>(formSeed.notificationMode);
+  const [iconType, setIconType] = useState<'builtIn' | 'image'>(formSeed.iconType);
+  const [iconKey, setIconKey] = useState(formSeed.iconKey);
+  const [iconUri, setIconUri] = useState(formSeed.iconUri);
+  const [notes, setNotes] = useState(formSeed.notes);
 
   const currencyOptions = useMemo(
-    () => Object.keys(rates.rates).map(code => ({ label: code, value: code })),
+    () => Object.keys(rates.rates).sort().map(code => ({ label: code, value: code })),
     [rates.rates],
   );
 
   const categoryOptions = useMemo(
-    () => categories.map(cat => ({ label: cat.name, value: cat.id })),
+    () => categories.map(category => ({ label: category.name, value: category.id })),
     [categories],
   );
 
@@ -213,299 +169,258 @@ function SubscriptionFormContent({
     [lists],
   );
 
-  const paymentOptions = useMemo(
-    () => methods.map(method => ({ label: method.name, value: method.id })),
+  const paymentMethodOptions = useMemo(
+    () => [
+      { label: 'None', value: '' },
+      ...methods.map(method => ({ label: method.name, value: method.id })),
+    ],
     [methods],
   );
 
-  const iconOptions = useMemo(() => {
-    const seen = new Set<string>();
-    return templates
-      .map(item => item.iconKey)
-      .filter((key) => {
-        if (seen.has(key)) {
-          return false;
-        }
-        seen.add(key);
-        return true;
-      });
-  }, [templates]);
-
-  const startDate = startDateValue
-    ? formatISO(startDateValue, { representation: 'date' })
-    : formatISO(new Date(), { representation: 'date' });
-
-  const isValid = name.trim().length > 0 && Number(amountValue) > 0 && Boolean(startDate);
-
-  const handlePickImage = async () => {
-    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!permission.granted) {
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.8,
-    });
-
-    if (result.canceled || !result.assets?.length) {
-      return;
-    }
-
-    const asset = result.assets[0];
-    setIconType('image');
-    setIconUri(asset.uri);
-  };
+  const amountValue = Number(amount);
+  const isValid = name.trim().length > 0 && Number.isFinite(amountValue) && amountValue > 0;
 
   const handleSave = () => {
     if (!isValid) {
+      toast.show('Please fill name and amount before saving');
       return;
     }
 
-    const base = {
+    const normalizedDate = isValidDateString(startDate) ? startDate : todayIsoDate();
+    const normalizedSchedule = scheduleType;
+    const normalizedIntervalCount = normalizedSchedule === 'custom'
+      ? Math.max(1, Number(intervalCount) || 1)
+      : 1;
+
+    const payload: Omit<Subscription, 'id' | 'createdAt' | 'updatedAt' | 'nextPaymentDate'> = {
       name: name.trim(),
-      status: existing?.status ?? 'active',
+      status,
       iconType,
-      iconKey: iconType === 'builtIn' ? iconKey : undefined,
-      iconUri: iconType === 'image' ? iconUri : undefined,
-      amount: Number(amountValue),
+      iconKey: iconKey.trim() || 'custom',
+      iconUri: iconType === 'image' && iconUri.trim() ? iconUri.trim() : undefined,
+      amount: amountValue,
       currency,
-      scheduleType,
-      intervalCount: Number(intervalCount) || 1,
-      intervalUnit: scheduleType === 'custom' ? intervalUnit : undefined,
-      billingAnchor: startDate,
-      startDate,
-      categoryId: categoryId || categories[0]?.id || 'cat-utilities',
-      listId: listId || lists[0]?.id || 'list-personal',
-      paymentMethodId,
+      scheduleType: normalizedSchedule,
+      intervalCount: normalizedIntervalCount,
+      intervalUnit: normalizedSchedule === 'custom' ? intervalUnit : undefined,
+      billingAnchor: normalizedDate,
+      startDate: normalizedDate,
+      categoryId: categoryId || categoryOptions[0]?.value || '',
+      listId: listId || listOptions[0]?.value || '',
+      paymentMethodId: paymentMethodId || undefined,
       notificationMode,
-      notes: notes.trim().length ? notes.trim() : undefined,
+      notes: notes.trim() ? notes.trim() : undefined,
     };
 
-    if (existing) {
+    if (existingSubscription) {
       update({
-        ...existing,
-        ...base,
-        updatedAt: new Date().toISOString(),
+        ...existingSubscription,
+        ...payload,
       });
+      toast.show('Subscription updated');
     }
     else {
-      add(base as any);
+      add(payload);
+      toast.show('Subscription created');
     }
 
     router.back();
   };
 
-  const displayDate = startDateValue ? format(startDateValue, 'd MMM yyyy') : 'Select date';
+  return (
+    <View style={{ flex: 1, paddingTop: top }}>
+      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: bottom + 40, gap: 12 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Text style={{ fontSize: 20, fontWeight: '700' }}>
+            {existingSubscription ? 'Edit Subscription' : 'New Subscription'}
+          </Text>
+          <Button variant="secondary" onPress={() => router.back()}>
+            Close
+          </Button>
+        </View>
+
+        <Card>
+          <Card.Body style={{ gap: 10 }}>
+            <TextField>
+              <Label>Name</Label>
+              <Input value={name} onChangeText={setName} placeholder="Subscription name" />
+            </TextField>
+
+            <TextField>
+              <Label>Amount</Label>
+              <Input
+                value={amount}
+                onChangeText={setAmount}
+                placeholder="0.00"
+                keyboardType="decimal-pad"
+              />
+            </TextField>
+
+            <SelectField
+              label="Currency"
+              value={currency}
+              options={currencyOptions}
+              placeholder="Select currency"
+              onChange={setCurrency}
+            />
+
+            <SelectField
+              label="Schedule"
+              value={scheduleType}
+              options={[...SCHEDULE_OPTIONS]}
+              placeholder="Select schedule"
+              onChange={value => setScheduleType((value as ScheduleType | undefined) ?? 'monthly')}
+            />
+
+            {scheduleType === 'custom' && (
+              <View style={{ flexDirection: 'row', gap: 10 }}>
+                <View style={{ flex: 1 }}>
+                  <TextField>
+                    <Label>Interval count</Label>
+                    <Input
+                      value={intervalCount}
+                      onChangeText={setIntervalCount}
+                      keyboardType="number-pad"
+                    />
+                  </TextField>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <SelectField
+                    label="Interval unit"
+                    value={intervalUnit}
+                    options={[...INTERVAL_UNIT_OPTIONS]}
+                    placeholder="Select unit"
+                    onChange={value => setIntervalUnit((value as 'week' | 'month' | undefined) ?? 'month')}
+                  />
+                </View>
+              </View>
+            )}
+
+            <TextField>
+              <Label>Start date</Label>
+              <Input value={startDate} onChangeText={setStartDate} placeholder="YYYY-MM-DD" />
+            </TextField>
+
+            <SelectField
+              label="Category"
+              value={categoryId}
+              options={categoryOptions}
+              placeholder="Select category"
+              onChange={setCategoryId}
+            />
+
+            <SelectField
+              label="List"
+              value={listId}
+              options={listOptions}
+              placeholder="Select list"
+              onChange={setListId}
+            />
+
+            <SelectField
+              label="Payment method"
+              value={paymentMethodId}
+              options={paymentMethodOptions}
+              placeholder="Select payment method"
+              onChange={setPaymentMethodId}
+            />
+
+            <SelectField
+              label="Status"
+              value={status}
+              options={[...STATUS_OPTIONS]}
+              placeholder="Select status"
+              onChange={value => setStatus((value as SubscriptionStatus | undefined) ?? 'active')}
+            />
+
+            <SelectField
+              label="Notification mode"
+              value={notificationMode}
+              options={[...NOTIFICATION_OPTIONS]}
+              placeholder="Select notification mode"
+              onChange={value => setNotificationMode((value as NotificationMode | undefined) ?? 'default')}
+            />
+
+            <SelectField
+              label="Icon type"
+              value={iconType}
+              options={[
+                { label: 'Built-in', value: 'builtIn' },
+                { label: 'Image URI', value: 'image' },
+              ]}
+              placeholder="Select icon type"
+              onChange={value => setIconType((value as 'builtIn' | 'image' | undefined) ?? 'builtIn')}
+            />
+
+            {iconType === 'builtIn'
+              ? (
+                  <TextField>
+                    <Label>Icon key</Label>
+                    <Input value={iconKey} onChangeText={setIconKey} placeholder="custom" />
+                  </TextField>
+                )
+              : (
+                  <TextField>
+                    <Label>Image URI</Label>
+                    <Input
+                      value={iconUri}
+                      onChangeText={setIconUri}
+                      placeholder="https://..."
+                      autoCapitalize="none"
+                    />
+                  </TextField>
+                )}
+
+            <Button variant="secondary" onPress={() => router.push('/(modals)/icon-picker')}>
+              Open icon picker helper
+            </Button>
+
+            <TextField>
+              <Label>Notes</Label>
+              <TextArea value={notes} onChangeText={setNotes} placeholder="Optional notes" numberOfLines={4} />
+            </TextField>
+          </Card.Body>
+        </Card>
+
+        <Button variant="primary" onPress={handleSave}>
+          {existingSubscription ? 'Save changes' : 'Create subscription'}
+        </Button>
+      </ScrollView>
+    </View>
+  );
+}
+
+type SelectFieldProps = {
+  label: string;
+  value: string;
+  options: Array<{ label: string; value: string }>;
+  placeholder: string;
+  onChange: (value: string) => void;
+};
+
+function SelectField({ label, value, options, placeholder, onChange }: SelectFieldProps) {
+  const selectedOption = options.find(option => option.value === value) as SelectOption;
 
   return (
-    <View className="flex-1" style={{ backgroundColor: colors.background, paddingTop: top }}>
-      <View className="px-5 pt-4">
-        <View className="flex-row items-center justify-between">
-          <Pressable onPress={() => router.back()}>
-            <Text className="text-base" style={{ color: colors.primary }}>
-              Cancel
-            </Text>
-          </Pressable>
-          <Text className="text-base font-semibold" style={{ color: colors.text }}>
-            {existing ? 'Edit Subscription' : 'New Subscription'}
-          </Text>
-          <View className="w-12" />
-        </View>
-      </View>
-
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}>
-        <View className="mt-6 rounded-3xl p-4" style={{ backgroundColor: colors.card }}>
-          <Text className="text-sm" style={{ color: colors.secondaryText }}>
-            Icon
-          </Text>
-          <View className="mt-3 flex-row items-center">
-            <View className="mr-4 size-12 items-center justify-center rounded-2xl" style={{ backgroundColor: colors.background }}>
-              {iconType === 'image' && iconUri
-                ? (
-                    <Image source={{ uri: iconUri }} className="size-10 rounded-xl" />
-                  )
-                : (
-                    <ServiceIcon iconKey={iconKey} size={24} />
-                  )}
-            </View>
-            <Pressable
-              onPress={handlePickImage}
-              className="rounded-2xl px-4 py-2"
-              style={{ backgroundColor: colors.background }}
-            >
-              <Text className="text-sm" style={{ color: colors.text }}>
-                Pick Image
-              </Text>
-            </Pressable>
-          </View>
-
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} className="mt-4">
-            <View className="flex-row">
-              {iconOptions.map(key => (
-                <Pressable
-                  key={key}
-                  onPress={() => {
-                    setIconType('builtIn');
-                    setIconKey(key);
-                    setIconUri(undefined);
-                  }}
-                  className="mr-3 items-center justify-center rounded-2xl p-3"
-                  style={{ backgroundColor: colors.background }}
-                >
-                  <ServiceIcon iconKey={key} size={20} />
-                </Pressable>
-              ))}
-            </View>
-          </ScrollView>
-        </View>
-
-        <View className="mt-4 rounded-3xl p-4" style={{ backgroundColor: colors.card }}>
-          <Input
-            label="Name"
-            value={name}
-            onChangeText={setName}
-            placeholder="Service name"
-          />
-          <Select
-            label="Schedule"
-            value={scheduleType}
-            options={SCHEDULE_OPTIONS}
-            onSelect={value => setScheduleType(value as Subscription['scheduleType'])}
-          />
-          {scheduleType === 'custom' && (
-            <View className="flex-row">
-              <View className="mr-3 flex-1">
-                <Input
-                  label="Every"
-                  value={intervalCount}
-                  keyboardType="number-pad"
-                  onChangeText={setIntervalCount}
-                />
-              </View>
-              <View className="flex-1">
-                <Select
-                  label="Unit"
-                  value={intervalUnit}
-                  options={[
-                    { label: 'Weeks', value: 'week' },
-                    { label: 'Months', value: 'month' },
-                  ]}
-                  onSelect={value => setIntervalUnit(value as 'week' | 'month')}
-                />
-              </View>
-            </View>
-          )}
-          <Pressable
-            onPress={() => datePickerRef.current?.open()}
-            className="mt-2 rounded-2xl px-4 py-3"
-            style={{ backgroundColor: colors.background }}
-          >
-            <Text className="text-xs" style={{ color: colors.secondaryText }}>
-              Start Date
-            </Text>
-            <Text className="mt-2 text-sm font-semibold" style={{ color: colors.text }}>
-              {displayDate}
-            </Text>
-          </Pressable>
-        </View>
-
-        <View className="mt-4 rounded-3xl p-4" style={{ backgroundColor: colors.card }}>
-          <Pressable onPress={() => amountSheet.present()}>
-            <Text className="text-sm" style={{ color: colors.secondaryText }}>
-              Amount
-            </Text>
-            <Text className="mt-2 text-xl font-semibold" style={{ color: colors.text }}>
-              {amountValue.length ? amountValue : '0.00'}
-              {' '}
-              {currency}
-            </Text>
-          </Pressable>
-          <Select
-            label="Currency"
-            value={currency}
-            options={currencyOptions}
-            onSelect={value => setCurrency(String(value))}
-          />
-        </View>
-
-        <View className="mt-4 rounded-3xl p-4" style={{ backgroundColor: colors.card }}>
-          <Select
-            label="Category"
-            value={categoryId}
-            options={categoryOptions}
-            onSelect={value => setCategoryId(String(value))}
-          />
-          <Select
-            label="List"
-            value={listId}
-            options={listOptions}
-            onSelect={value => setListId(String(value))}
-          />
-          <Select
-            label="Payment Method"
-            value={paymentMethodId}
-            options={paymentOptions}
-            onSelect={value => setPaymentMethodId(String(value))}
-            placeholder="Select..."
-          />
-          <Select
-            label="Notifications"
-            value={notificationMode}
-            options={NOTIFICATION_OPTIONS}
-            onSelect={value => setNotificationMode(value as 'default' | 'custom' | 'none')}
-          />
-        </View>
-
-        <View className="mt-4 rounded-3xl p-4" style={{ backgroundColor: colors.card }}>
-          <Input
-            label="Notes"
-            value={notes}
-            onChangeText={setNotes}
-            placeholder="Optional"
-            multiline
-            style={{ minHeight: 80 }}
-          />
-        </View>
-
-        <Pressable
-          onPress={handleSave}
-          disabled={!isValid}
-          className="mt-6 items-center justify-center rounded-2xl py-4"
-          style={{ backgroundColor: isValid ? colors.primary : colors.border }}
-        >
-          <Text className="text-base font-semibold" style={{ color: colors.headerText }}>
-            {existing ? 'Save Changes' : 'Add Subscription'}
-          </Text>
-        </Pressable>
-      </ScrollView>
-
-      <AmountKeypad
-        modalRef={amountSheet.ref}
-        value={amountValue}
-        onChange={setAmountValue}
-        onDone={() => amountSheet.dismiss()}
-        currency={currency}
-      />
-
-      <DatePicker
-        ref={datePickerRef}
-        mode="single"
-        value={startDateValue}
-        onChange={date => setStartDateValue(date)}
-        showInput={false}
-        activeDateBackgroundColor={colors.primary}
-        activeDateTextColor={colors.headerText}
-        dateTextColor={colors.text}
-        farDateTextColor={colors.secondaryText}
-        bottomSheetModalProps={{
-          snapPoints: ['90%'],
-        }}
-        cancelButtonText="Cancel"
-        chooseDateButtonText="Choose date"
-      />
-    </View>
+    <TextField>
+      <Label>{label}</Label>
+      <Select
+        value={selectedOption}
+        onValueChange={option => onChange(option?.value ?? '')}
+        presentation="bottom-sheet"
+      >
+        <Select.Trigger>
+          <Select.Value placeholder={placeholder} />
+        </Select.Trigger>
+        <Select.Portal>
+          <Select.Overlay />
+          <Select.Content presentation="bottom-sheet">
+            {options.map(option => (
+              <Select.Item key={option.value} value={option.value} label={option.label} />
+            ))}
+          </Select.Content>
+        </Select.Portal>
+      </Select>
+    </TextField>
   );
 }

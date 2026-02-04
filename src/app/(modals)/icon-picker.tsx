@@ -1,85 +1,88 @@
+import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { Button, Card, Chip, useToast } from 'heroui-native';
+import { useMemo, useState } from 'react';
+import { ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import ServiceIcon from '@/components/subscriptions/service-icon';
-import { Image, Pressable, ScrollView, Text, View } from '@/components/ui';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
-import { useTheme } from '@/lib/hooks/use-theme';
 import { useServiceTemplatesStore } from '@/lib/stores';
 
 export default function IconPickerScreen() {
   useBootstrap();
   const router = useRouter();
-  const { colors } = useTheme();
+  const { toast } = useToast();
+  const { top, bottom } = useSafeAreaInsets();
   const { templates } = useServiceTemplatesStore();
-  const { top } = useSafeAreaInsets();
   const [imageUri, setImageUri] = useState<string | null>(null);
+
+  const iconKeys = useMemo(() => {
+    const unique = new Set(templates.map(template => template.iconKey));
+    return [...unique].sort();
+  }, [templates]);
 
   const handlePickImage = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
+      toast.show('Photo permission is required to pick an image');
       return;
     }
+
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [1, 1],
       quality: 0.8,
     });
-    if (result.canceled || !result.assets?.length) {
+
+    if (result.canceled || !result.assets.length) {
       return;
     }
+
     setImageUri(result.assets[0].uri);
   };
 
   return (
-    <View className="flex-1" style={{ backgroundColor: colors.background, paddingTop: top }}>
-      <View className="px-5 pt-4">
-        <View className="flex-row items-center justify-between">
-          <Pressable onPress={() => router.back()}>
-            <Text className="text-base" style={{ color: colors.primary }}>
-              Close
-            </Text>
-          </Pressable>
-          <Text className="text-base font-semibold" style={{ color: colors.text }}>
-            Icon Picker
-          </Text>
-          <View className="w-12" />
+    <View style={{ flex: 1, paddingTop: top }}>
+      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: bottom + 40, gap: 12 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Text style={{ fontSize: 20, fontWeight: '700' }}>Icon Picker</Text>
+          <Button variant="secondary" onPress={() => router.back()}>
+            Close
+          </Button>
         </View>
-      </View>
 
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}>
-        <Text className="mt-6 text-sm" style={{ color: colors.secondaryText }}>
-          Pick a built-in icon or select an image from your library.
-        </Text>
-        <Pressable
-          onPress={handlePickImage}
-          className="mt-4 items-center justify-center rounded-2xl px-4 py-3"
-          style={{ backgroundColor: colors.card }}
-        >
-          <Text className="text-sm" style={{ color: colors.text }}>
-            Pick Image
-          </Text>
-        </Pressable>
-        {imageUri && (
-          <View className="mt-4 items-center">
-            <Image source={{ uri: imageUri }} className="size-20 rounded-2xl" />
-          </View>
-        )}
-        <View className="mt-4 flex-row flex-wrap">
-          {templates.map(template => (
-            <View key={template.id} className="mb-4 w-1/3 items-center">
-              <View className="rounded-2xl p-3" style={{ backgroundColor: colors.card }}>
-                <ServiceIcon iconKey={template.iconKey} />
+        <Card>
+          <Card.Body style={{ gap: 8 }}>
+            <Text style={{ opacity: 0.7 }}>
+              HeroUI migration removed old icon components. Use an icon key or custom image URI.
+            </Text>
+            <Button variant="secondary" onPress={handlePickImage}>
+              Pick image from library
+            </Button>
+
+            {imageUri && (
+              <View style={{ alignItems: 'flex-start', gap: 8 }}>
+                <Image source={{ uri: imageUri }} style={{ width: 72, height: 72, borderRadius: 16 }} />
+                <Text style={{ fontSize: 12, opacity: 0.7 }} selectable>
+                  {imageUri}
+                </Text>
               </View>
-              <Text className="mt-2 text-xs" style={{ color: colors.text }}>
-                {template.name}
-              </Text>
-            </View>
-          ))}
-        </View>
+            )}
+          </Card.Body>
+        </Card>
+
+        <Card>
+          <Card.Header>
+            <Card.Title>Available icon keys</Card.Title>
+          </Card.Header>
+          <Card.Body style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
+            {iconKeys.map(iconKey => (
+              <Chip key={iconKey}>{iconKey}</Chip>
+            ))}
+          </Card.Body>
+        </Card>
       </ScrollView>
     </View>
   );

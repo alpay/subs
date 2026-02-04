@@ -1,157 +1,129 @@
 import { useRouter } from 'expo-router';
-import { Switch } from 'react-native';
+import { Button, Card, Switch } from 'heroui-native';
+import { ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { Pressable, ScrollView, Text, View } from '@/components/ui';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
-import { useTheme } from '@/lib/hooks/use-theme';
 import { useCategoriesStore, useCurrencyRatesStore, useListsStore, usePaymentMethodsStore, useSettingsStore } from '@/lib/stores';
 
 export default function SettingsScreen() {
   useBootstrap();
   const router = useRouter();
-  const { colors } = useTheme();
+  const { top, bottom } = useSafeAreaInsets();
+
   const { settings, update } = useSettingsStore();
   const { categories } = useCategoriesStore();
   const { lists } = useListsStore();
   const { methods } = usePaymentMethodsStore();
   const { rates } = useCurrencyRatesStore();
-  const { top } = useSafeAreaInsets();
 
   return (
-    <View className="flex-1" style={{ backgroundColor: colors.background, paddingTop: top }}>
-      <View className="px-5 pt-4">
-        <View className="flex-row items-center justify-between">
-          <Pressable onPress={() => router.back()}>
-            <Text className="text-base" style={{ color: colors.primary }}>
-              Close
-            </Text>
-          </Pressable>
-          <Text className="text-base font-semibold" style={{ color: colors.text }}>
-            Settings
-          </Text>
-          <View className="w-12" />
-        </View>
-      </View>
-
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}>
-        <View className="mt-6 rounded-3xl p-4" style={{ backgroundColor: colors.card }}>
-          <Text className="text-base font-semibold" style={{ color: colors.text }}>
-            Subs
-          </Text>
-          <Text className="mt-1 text-xs" style={{ color: colors.secondaryText }}>
-            Free
-          </Text>
+    <View style={{ flex: 1, paddingTop: top }}>
+      <ScrollView contentContainerStyle={{ padding: 20, paddingBottom: bottom + 40, gap: 12 }}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Text style={{ fontSize: 20, fontWeight: '700' }}>Settings</Text>
+          <Button variant="secondary" onPress={() => router.back()}>
+            Close
+          </Button>
         </View>
 
-        <View className="mt-4 rounded-3xl px-4 py-2" style={{ backgroundColor: colors.card }}>
-          <View className="flex-row items-center justify-between py-3">
-            <Text className="text-sm" style={{ color: colors.text }}>
-              iCloud & Data
-            </Text>
-            <Switch
-              value={settings.iCloudEnabled}
-              onValueChange={value => update({ iCloudEnabled: value })}
+        <Card>
+          <Card.Header>
+            <Card.Title>General</Card.Title>
+            <Card.Description>Global app behavior and preferences.</Card.Description>
+          </Card.Header>
+          <Card.Body style={{ gap: 14 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Text>Main currency</Text>
+              <Button size="sm" variant="secondary" onPress={() => router.push('/(modals)/currency')}>
+                {settings.mainCurrency}
+              </Button>
+            </View>
+
+            <SettingRow
+              label="iCloud & Data"
+              isSelected={settings.iCloudEnabled}
+              onSelectedChange={isSelected => update({ iCloudEnabled: isSelected })}
             />
-          </View>
-          <Pressable
-            onPress={() => router.push('/(modals)/currency')}
-            className="flex-row items-center justify-between py-3"
-          >
-            <Text className="text-sm" style={{ color: colors.text }}>
-              Main Currency
-            </Text>
-            <Text className="text-sm" style={{ color: colors.secondaryText }}>
-              {settings.mainCurrency}
-            </Text>
-          </Pressable>
-          <View className="flex-row items-center justify-between py-3">
-            <Text className="text-sm" style={{ color: colors.text }}>
-              Round to Whole Numbers
-            </Text>
-            <Switch
-              value={settings.roundWholeNumbers}
-              onValueChange={value => update({ roundWholeNumbers: value })}
-            />
-          </View>
-        </View>
 
-        <View className="mt-4 rounded-3xl px-4 py-2" style={{ backgroundColor: colors.card }}>
-          <Pressable onPress={() => router.push('/(modals)/categories')} className="flex-row items-center justify-between py-3">
-            <Text className="text-sm" style={{ color: colors.text }}>
-              Categories
-            </Text>
-            <Text className="text-sm" style={{ color: colors.secondaryText }}>
+            <SettingRow
+              label="Round to whole numbers"
+              isSelected={settings.roundWholeNumbers}
+              onSelectedChange={isSelected => update({ roundWholeNumbers: isSelected })}
+            />
+
+            <SettingRow
+              label="True dark colors"
+              isSelected={settings.trueDarkColors}
+              onSelectedChange={isSelected => update({ trueDarkColors: isSelected })}
+            />
+
+            <SettingRow
+              label="Haptic feedback"
+              isSelected={settings.hapticsEnabled}
+              onSelectedChange={isSelected => update({ hapticsEnabled: isSelected })}
+            />
+          </Card.Body>
+        </Card>
+
+        <Card>
+          <Card.Header>
+            <Card.Title>Data</Card.Title>
+            <Card.Description>Manage the entities used in your subscriptions.</Card.Description>
+          </Card.Header>
+          <Card.Body style={{ gap: 10 }}>
+            <Button variant="secondary" onPress={() => router.push('/(modals)/categories')}>
+              Categories (
               {categories.length}
-            </Text>
-          </Pressable>
-          <Pressable onPress={() => router.push('/(modals)/lists')} className="flex-row items-center justify-between py-3">
-            <Text className="text-sm" style={{ color: colors.text }}>
-              Lists
-            </Text>
-            <Text className="text-sm" style={{ color: colors.secondaryText }}>
+              )
+            </Button>
+            <Button variant="secondary" onPress={() => router.push('/(modals)/lists')}>
+              Lists (
               {lists.length}
-            </Text>
-          </Pressable>
-          <Pressable onPress={() => router.push('/(modals)/payment-methods')} className="flex-row items-center justify-between py-3">
-            <Text className="text-sm" style={{ color: colors.text }}>
-              Payment Methods
-            </Text>
-            <Text className="text-sm" style={{ color: colors.secondaryText }}>
+              )
+            </Button>
+            <Button variant="secondary" onPress={() => router.push('/(modals)/payment-methods')}>
+              Payment Methods (
               {methods.length}
-            </Text>
-          </Pressable>
-        </View>
+              )
+            </Button>
+            <Button variant="secondary" onPress={() => router.push('/(modals)/notification-settings')}>
+              Notification defaults
+            </Button>
+          </Card.Body>
+        </Card>
 
-        <View className="mt-4 rounded-3xl px-4 py-2" style={{ backgroundColor: colors.card }}>
-          <Pressable onPress={() => router.push('/(modals)/notification-settings')} className="flex-row items-center justify-between py-3">
-            <Text className="text-sm" style={{ color: colors.text }}>
-              Notifications
+        <Card>
+          <Card.Header>
+            <Card.Title>Currency Rates</Card.Title>
+          </Card.Header>
+          <Card.Body style={{ gap: 8 }}>
+            <Text style={{ fontSize: 12, opacity: 0.7 }}>
+              Last update:
+              {' '}
+              {new Date(rates.updatedAt).toLocaleString()}
             </Text>
-            <Text className="text-sm" style={{ color: colors.secondaryText }}>
-              Default
-            </Text>
-          </Pressable>
-          <View className="flex-row items-center justify-between py-3">
-            <Text className="text-sm" style={{ color: colors.text }}>
-              True Dark Colors
-            </Text>
-            <Switch
-              value={settings.trueDarkColors}
-              onValueChange={value => update({ trueDarkColors: value })}
-            />
-          </View>
-          <View className="flex-row items-center justify-between py-3">
-            <Text className="text-sm" style={{ color: colors.text }}>
-              Haptic Feedback
-            </Text>
-            <Switch
-              value={settings.hapticsEnabled}
-              onValueChange={value => update({ hapticsEnabled: value })}
-            />
-          </View>
-        </View>
-
-        <View className="mt-4 rounded-3xl p-4" style={{ backgroundColor: colors.card }}>
-          <Text className="text-xs" style={{ color: colors.secondaryText }}>
-            Currency rates
-          </Text>
-          <Text className="mt-2 text-sm" style={{ color: colors.text }}>
-            Last update:
-            {' '}
-            {new Date(rates.updatedAt).toLocaleString()}
-          </Text>
-          <Pressable
-            onPress={() => router.push('/(modals)/currency')}
-            className="mt-3 items-center justify-center rounded-2xl px-4 py-2"
-            style={{ backgroundColor: colors.background }}
-          >
-            <Text className="text-sm" style={{ color: colors.text }}>
-              Update Now
-            </Text>
-          </Pressable>
-        </View>
+            <Button variant="primary" onPress={() => router.push('/(modals)/currency')}>
+              Open currency settings
+            </Button>
+          </Card.Body>
+        </Card>
       </ScrollView>
+    </View>
+  );
+}
+
+type SettingRowProps = {
+  label: string;
+  isSelected: boolean;
+  onSelectedChange: (value: boolean) => void;
+};
+
+function SettingRow({ label, isSelected, onSelectedChange }: SettingRowProps) {
+  return (
+    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+      <Text>{label}</Text>
+      <Switch isSelected={isSelected} onSelectedChange={onSelectedChange} />
     </View>
   );
 }
