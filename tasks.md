@@ -61,14 +61,14 @@ Phase 1 Complete:
 ## Phase 2 — Data + Logic Foundation
 Goal: Define data models, storage, stores, and core calculations.
 
-1. [ ] Add new schema types:
+1. [x] Add new schema types:
    - Replace `src/lib/db/schema.ts` with subscription tracker models.
    - Add types for Subscription, Category, List, PaymentMethod, Settings, CurrencyRates, ReminderConfig, ServiceTemplate.
 
-2. [ ] Update MMKV storage:
+2. [x] Update MMKV storage:
    - Replace `src/lib/db/storage.ts` with new keys and CRUD for new models.
 
-3. [ ] Create Zustand stores:
+3. [x] Create Zustand stores:
    - `src/lib/stores/subscriptions-store.ts`
    - `src/lib/stores/categories-store.ts`
    - `src/lib/stores/lists-store.ts`
@@ -77,26 +77,29 @@ Goal: Define data models, storage, stores, and core calculations.
    - `src/lib/stores/currency-rates-store.ts`
    - `src/lib/stores/service-templates-store.ts`
 
-4. [ ] Add core utility functions:
+4. [x] Add core utility functions:
    - `src/lib/utils/subscription-dates.ts` for next-payment logic.
    - `src/lib/utils/currency.ts` for conversion + rounding.
    - `src/lib/utils/totals.ts` for monthly total, yearly forecast, average monthly.
 
-5. [ ] Add bundled currency rates file:
+5. [x] Add bundled currency rates file:
    - `assets/data/currency-rates.json`
    - Base EUR, include EUR, USD, GBP, JPY, CAD, AUD, CHF.
    - Load into store on app start.
 
-6. [ ] Seed defaults:
+6. [x] Seed defaults:
    - Create default categories, lists, payment methods, and service templates.
 
-7. [ ] Add notification scheduler:
+7. [x] Add notification scheduler:
    - `src/lib/notifications.ts`
    - Schedule local notifications based on reminder settings.
 
 Deliverable:
 - Data layer complete and tested with mocked entries.
 - Core computations verified with unit-style checks.
+
+Phase 2 Complete:
+- Data models, storage, stores, utilities, defaults, and notifications scaffolded.
 
 ## Phase 3 — Core UI and Screens
 Goal: Implement all screens and sheets matching the mockups.
