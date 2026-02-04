@@ -5,10 +5,11 @@ import { BarChart3, Search, Settings as SettingsIcon } from 'lucide-react-native
 import { useMemo, useState } from 'react';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Menu } from '@/components/native/menu';
 import CalendarGrid from '@/components/subscriptions/calendar-grid';
 import DaySubscriptionsSheet from '@/components/subscriptions/day-subscriptions-sheet';
 import SubscriptionDetailSheet from '@/components/subscriptions/subscription-detail-sheet';
-import { Pressable, ScrollView, Select, Text, View } from '@/components/ui';
+import { Pressable, ScrollView, Text, View } from '@/components/ui';
 import { useModal } from '@/components/ui/modal';
 import { SearchBar } from '@/components/ui/search-bar';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
@@ -98,11 +99,13 @@ export default function HomeScreen() {
         <View className="px-5 pt-4">
           <View className="flex-row items-center justify-between">
             <View className="w-44">
-              <Select
+              <Menu
                 value={selectedListId}
                 options={listOptions}
                 onSelect={value => setSelectedListId(String(value))}
                 placeholder="All Subs"
+                systemImage="chevron.up.chevron.down"
+                iconPosition="end"
               />
             </View>
             <View className="flex-row items-center">
