@@ -62,8 +62,8 @@ const CalendarGrid = memo(({
       </View>
 
       <View className="mb-2 flex-row justify-between">
-        {WEEKDAYS.map(day => (
-          <Text key={day} className="w-8 text-center text-xs font-semibold" style={{ color: colors.secondaryText }}>
+        {WEEKDAYS.map((day, index) => (
+          <Text key={`${day}-${index}`} className="w-8 text-center text-xs font-semibold" style={{ color: colors.secondaryText }}>
             {day}
           </Text>
         ))}
