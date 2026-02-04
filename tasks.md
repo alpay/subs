@@ -104,45 +104,45 @@ Phase 2 Complete:
 ## Phase 3 — Core UI and Screens
 Goal: Implement all screens and sheets matching the mockups.
 
-1. [ ] Home Screen (calendar view):
+1. [x] Home Screen (calendar view):
    - Header: list filter dropdown, search, analytics, settings icons.
    - Month label + monthly total.
    - Calendar grid with subscription icons.
    - “Add subscription” CTA.
 
-2. [ ] Day Subscriptions Sheet:
+2. [x] Day Subscriptions Sheet:
    - Title and date.
    - List of due subscriptions.
    - Total at bottom.
    - Add Subscription row.
 
-3. [ ] Subscription Detail Sheet:
+3. [x] Subscription Detail Sheet:
    - Status dropdown, Edit button.
    - Amount, Next Payment, Total Spent, Notifications.
    - Category, List, Payment Method, Notes.
 
-4. [ ] Add Subscription (Service Picker):
+4. [x] Add Subscription (Service Picker):
    - Import from file row.
    - Popular services grid.
    - Search services.
    - Custom service option.
 
-5. [ ] Subscription Form:
+5. [x] Subscription Form:
    - Icon picker.
    - Name, Schedule, Start Date, Amount, Currency.
    - Category, List, Payment Method, Notifications, Notes.
    - Save/Add button with validation.
 
-6. [ ] Amount Keypad:
+6. [x] Amount Keypad:
    - Currency selector.
    - Numeric keypad, Done button.
 
-7. [ ] Analytics Screen:
+7. [x] Analytics Screen:
    - Year selector, category selector.
    - Donut chart.
    - Yearly Forecast and Avg Monthly Cost cards.
 
-8. [ ] Settings Screen:
+8. [x] Settings Screen:
    - Account card (“Subs”).
    - iCloud & Data toggle (UI only).
    - Main Currency selector.
@@ -154,7 +154,7 @@ Goal: Implement all screens and sheets matching the mockups.
    - Currency rates + Update Now.
    - Rate & Review, Ideas & Roadmap.
 
-9. [ ] Managers/Selectors:
+9. [x] Managers/Selectors:
    - Categories manager.
    - Lists manager.
    - Currency picker.
@@ -162,7 +162,7 @@ Goal: Implement all screens and sheets matching the mockups.
    - Payment methods modal.
    - Icon picker.
 
-10. [ ] CSV Import:
+10. [x] CSV Import:
    - File picker.
    - Validate strict template.
    - Preview import.
@@ -170,6 +170,9 @@ Goal: Implement all screens and sheets matching the mockups.
 
 Deliverable:
 - All screens and flows working end-to-end with local data.
+
+Phase 3 Complete:
+- Core screens, sheets, managers, and CSV import UI wired to data stores.
 
 ## Phase 4 — Polish + QA
 Goal: Performance, consistency, and correctness.

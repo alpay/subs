@@ -14,7 +14,7 @@ const envSchema = z.object({
   EXPO_PUBLIC_ASSOCIATED_DOMAIN: z.string().url().optional(),
   EXPO_PUBLIC_VAR_NUMBER: z.number(),
   EXPO_PUBLIC_VAR_BOOL: z.boolean(),
-  EXPO_PUBLIC_APP_NAME: z.string().default('Shine Care'),
+  EXPO_PUBLIC_APP_NAME: z.string().default('Subs'),
   EXPO_PUBLIC_DEFAULT_LOCALE: z.string().default('tr-TR'),
 
   // only available for app.config.ts usage
@@ -26,24 +26,24 @@ const EXPO_PUBLIC_APP_ENV = (process.env.EXPO_PUBLIC_APP_ENV
   ?? 'development') as z.infer<typeof envSchema>['EXPO_PUBLIC_APP_ENV'];
 
 const BUNDLE_IDS = {
-  development: 'com.shinecare.development',
-  preview: 'com.shinecare.preview',
-  production: 'com.shinecare',
+  development: 'com.subs.development',
+  preview: 'com.subs.preview',
+  production: 'com.subs',
 } as const;
 
 const PACKAGES = {
-  development: 'com.shinecare.development',
-  preview: 'com.shinecare.preview',
-  production: 'com.shinecare',
+  development: 'com.subs.development',
+  preview: 'com.subs.preview',
+  production: 'com.subs',
 } as const;
 
 const SCHEMES = {
-  development: 'shinecare',
-  preview: 'shinecare.preview',
-  production: 'shinecare',
+  development: 'subs',
+  preview: 'subs.preview',
+  production: 'subs',
 } as const;
 
-const NAME = 'Shine: Care Routine';
+const NAME = 'Subs';
 
 // Check if strict validation is required (before prebuild)
 const STRICT_ENV_VALIDATION = process.env.STRICT_ENV_VALIDATION === '1';
@@ -60,7 +60,7 @@ const _env: z.infer<typeof envSchema> = {
   EXPO_PUBLIC_ASSOCIATED_DOMAIN: process.env.EXPO_PUBLIC_ASSOCIATED_DOMAIN,
   EXPO_PUBLIC_VAR_NUMBER: Number(process.env.EXPO_PUBLIC_VAR_NUMBER ?? 0),
   EXPO_PUBLIC_VAR_BOOL: process.env.EXPO_PUBLIC_VAR_BOOL === 'true',
-  EXPO_PUBLIC_APP_NAME: NAME ?? 'Shine Care',
+  EXPO_PUBLIC_APP_NAME: NAME ?? 'Subs',
   EXPO_PUBLIC_DEFAULT_LOCALE: process.env.EXPO_PUBLIC_DEFAULT_LOCALE ?? 'tr-TR',
   APP_BUILD_ONLY_VAR: process.env.APP_BUILD_ONLY_VAR,
 };

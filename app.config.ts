@@ -9,7 +9,7 @@ import 'tsx/cjs';
 import Env from './env';
 
 const EXPO_ACCOUNT_OWNER = 'mangoser';
-const EAS_PROJECT_ID = 'f69a80ef-dfce-4490-8c3d-c95ef8115d63';
+const EAS_PROJECT_ID = '';
 
 const appIconBadgeConfig: AppIconBadgeConfig = {
   enabled: Env.EXPO_PUBLIC_APP_ENV !== 'production',
@@ -33,7 +33,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   description: `${Env.EXPO_PUBLIC_NAME} Mobile App`,
   owner: EXPO_ACCOUNT_OWNER,
   scheme: Env.EXPO_PUBLIC_SCHEME,
-  slug: 'shine',
+  slug: 'subs',
   version: Env.EXPO_PUBLIC_VERSION.toString(),
   orientation: 'portrait',
   icon: './assets/icon.png',
