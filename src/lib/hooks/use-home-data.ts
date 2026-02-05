@@ -11,11 +11,17 @@ type HomeListOption = {
   value: string;
 };
 
-export function useHomeData() {
+type UseHomeDataOptions = {
+  monthDate?: Date;
+};
+
+export function useHomeData({ monthDate }: UseHomeDataOptions = {}) {
   const { subscriptions } = useSubscriptionsStore();
   const { lists } = useListsStore();
   const { settings } = useSettingsStore();
   const { rates } = useCurrencyRatesStore();
+
+  const resolvedMonthDate = useMemo(() => monthDate ?? new Date(), [monthDate]);
 
   const [selectedListId, setSelectedListId] = useState(ALL_LISTS);
   const [selectedDay, setSelectedDay] = useState<Date | null>(null);
@@ -67,11 +73,11 @@ export function useHomeData() {
   const monthlyTotal = useMemo(
     () => calculateMonthlyTotal({
       subscriptions: filteredSubscriptions,
-      monthDate: new Date(),
+      monthDate: resolvedMonthDate,
       settings,
       rates,
     }),
-    [filteredSubscriptions, settings, rates],
+    [filteredSubscriptions, resolvedMonthDate, settings, rates],
   );
 
   const averageMonthly = useMemo(

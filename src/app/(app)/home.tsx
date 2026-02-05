@@ -1,4 +1,6 @@
 import { Stack, useRouter } from 'expo-router';
+import { startOfMonth } from 'date-fns';
+import { useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -16,6 +18,7 @@ export default function HomeScreen() {
   const router = useRouter();
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
+  const [visibleMonth, setVisibleMonth] = useState(() => startOfMonth(new Date()));
 
   const {
     averageMonthly,
@@ -34,7 +37,7 @@ export default function HomeScreen() {
     setQuery,
     setSelectedListId,
     settings,
-  } = useHomeData();
+  } = useHomeData({ monthDate: visibleMonth });
 
   return (
     <>
@@ -66,19 +69,20 @@ export default function HomeScreen() {
         <Stack.Toolbar.Button icon="chart.bar" onPress={() => router.push('/(modals)/analytics')} />
         <Stack.Toolbar.Button icon="gearshape" onPress={() => router.push('/(sheets)/settings')} />
       </Stack.Toolbar>
-      <Stack.SearchBar
-        placeholder="Search subscriptions"
-        onChangeText={(event) => {
-          if (typeof event === 'string') {
-            setQuery(event);
-            return;
-          }
-          setQuery(event.nativeEvent.text);
-        }}
-        onCancelButtonPress={() => setQuery('')}
-        hideNavigationBar={false}
-      />
+
       <Stack.Toolbar placement="bottom">
+        <Stack.SearchBar
+          placeholder="Search subscriptions"
+          onChangeText={(event) => {
+            if (typeof event === 'string') {
+              setQuery(event);
+              return;
+            }
+            setQuery(event.nativeEvent.text);
+          }}
+          onCancelButtonPress={() => setQuery('')}
+          hideNavigationBar={false}
+        />
         <Stack.Toolbar.SearchBarSlot />
         <Stack.Toolbar.Spacer />
         <Stack.Toolbar.Button icon="plus" onPress={() => router.push('/(sheets)/add-subscription')} />
@@ -113,8 +117,18 @@ export default function HomeScreen() {
                 gap: 48,
               }}
             >
-              <HomeSummary monthlyTotal={monthlyTotal} averageMonthly={averageMonthly} settings={settings} />
-              <MonthCalendar date={new Date()} subscriptions={filteredSubscriptions} onDayPress={handleDayPress} />
+              <HomeSummary
+                monthlyTotal={monthlyTotal}
+                averageMonthly={averageMonthly}
+                settings={settings}
+                monthDate={visibleMonth}
+              />
+              <MonthCalendar
+                date={visibleMonth}
+                subscriptions={filteredSubscriptions}
+                onDayPress={handleDayPress}
+                onMonthChange={setVisibleMonth}
+              />
             </View>
           )}
 

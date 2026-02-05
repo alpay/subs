@@ -1,9 +1,17 @@
 import type { StyleProp, ViewStyle } from 'react-native';
 import type { Subscription } from '@/lib/db/schema';
 
-import { format, getDay, getDaysInMonth, isSameMonth, isToday, startOfMonth } from 'date-fns';
-import { useMemo } from 'react';
+import { addMonths, format, getDay, getDaysInMonth, isSameMonth, isToday, startOfMonth } from 'date-fns';
+import { useEffect, useMemo, useRef } from 'react';
 import { Pressable, Text, useWindowDimensions, View } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, {
+  cancelAnimation,
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { useTheme } from '@/lib/hooks/use-theme';
 
@@ -14,6 +22,24 @@ type MonthCalendarProps = {
   subscriptions: Subscription[];
   style?: StyleProp<ViewStyle>;
   onDayPress?: (date: Date) => void;
+  onMonthChange?: (date: Date) => void;
+};
+
+type ThemeColors = ReturnType<typeof useTheme>['colors'];
+
+type MonthGridProps = {
+  date: Date;
+  subscriptions: Subscription[];
+  onDayPress?: (date: Date) => void;
+  cellSize: number;
+  cellHeight: number;
+  cellRadius: number;
+  iconSize: number;
+  badgeSize: number;
+  gap: number;
+  width: number;
+  colors: ThemeColors;
+  isDark: boolean;
 };
 
 const WEEKDAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
@@ -37,20 +63,28 @@ function withAlpha(hex: string, alpha: number) {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
-export function MonthCalendar({ date, subscriptions, style, onDayPress }: MonthCalendarProps) {
-  const { width } = useWindowDimensions();
-  const { colors, isDark } = useTheme();
+function clamp(value: number, min: number, max: number) {
+  return Math.min(Math.max(value, min), max);
+}
 
+function MonthGrid({
+  date,
+  subscriptions,
+  onDayPress,
+  cellSize,
+  cellHeight,
+  cellRadius,
+  iconSize,
+  badgeSize,
+  gap,
+  width,
+  colors,
+  isDark,
+}: MonthGridProps) {
   const monthStart = startOfMonth(date);
   const daysInMonth = getDaysInMonth(date);
   const leadingEmpty = getMondayIndex(monthStart);
   const totalCells = Math.ceil((leadingEmpty + daysInMonth) / 7) * 7;
-  const gap = 10;
-  const cellSize = Math.floor((width - 40 - gap * 6) / 7);
-  const cellHeight = Math.round(cellSize * 1.3);
-  const cellRadius = Math.round(Math.min(cellSize, cellHeight) * 0.3);
-  const iconSize = Math.max(26, Math.floor(cellSize * 0.6));
-  const badgeSize = Math.max(18, Math.floor(cellSize * 0.28));
 
   const paymentMap = useMemo(() => {
     const map = new Map<string, Subscription[]>();
@@ -86,7 +120,7 @@ export function MonthCalendar({ date, subscriptions, style, onDayPress }: MonthC
   }, [date, daysInMonth, leadingEmpty, totalCells]);
 
   return (
-    <View style={[{ gap: 14 }, style]}>
+    <View style={{ width, gap: 14 }}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         {WEEKDAYS.map((day, index) => (
           <Text
@@ -219,5 +253,161 @@ export function MonthCalendar({ date, subscriptions, style, onDayPress }: MonthC
         })}
       </View>
     </View>
+  );
+}
+
+export function MonthCalendar({ date, subscriptions, style, onDayPress, onMonthChange }: MonthCalendarProps) {
+  const { width } = useWindowDimensions();
+  const { colors, isDark } = useTheme();
+
+  const gap = 10;
+  const cellSize = Math.floor((width - 40 - gap * 6) / 7);
+  const cellHeight = Math.round(cellSize * 1.3);
+  const cellRadius = Math.round(Math.min(cellSize, cellHeight) * 0.3);
+  const iconSize = Math.max(26, Math.floor(cellSize * 0.6));
+  const badgeSize = Math.max(18, Math.floor(cellSize * 0.28));
+  const calendarWidth = cellSize * 7 + gap * 6;
+
+  const translateX = useSharedValue(-calendarWidth);
+  const isAnimatingRef = useRef(false);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const animatedRowStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value }],
+  }));
+
+  useEffect(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    isAnimatingRef.current = false;
+    translateX.value = -calendarWidth;
+  }, [calendarWidth, date, translateX]);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
+
+  const swipeGesture = useMemo(
+    () => Gesture.Pan()
+      .enabled(Boolean(onMonthChange))
+      .activeOffsetX([-12, 12])
+      .failOffsetY([-12, 12])
+      .onBegin(() => {
+        if (!onMonthChange) {
+          return;
+        }
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+          timeoutRef.current = null;
+        }
+        isAnimatingRef.current = false;
+        cancelAnimation(translateX);
+      })
+      .onUpdate((event) => {
+        if (!onMonthChange || isAnimatingRef.current) {
+          return;
+        }
+        const min = -2 * calendarWidth;
+        const max = 0;
+        translateX.value = clamp(-calendarWidth + event.translationX, min, max);
+      })
+      .onEnd((event) => {
+        if (!onMonthChange || isAnimatingRef.current) {
+          return;
+        }
+        const threshold = calendarWidth * 0.25;
+        let direction: 'prev' | 'next' | null = null;
+
+        if (event.translationX > threshold) {
+          direction = 'prev';
+        }
+        else if (event.translationX < -threshold) {
+          direction = 'next';
+        }
+
+        if (!direction) {
+          translateX.value = withTiming(-calendarWidth, {
+            duration: 200,
+            easing: Easing.out(Easing.cubic),
+          });
+          return;
+        }
+
+        const duration = 260;
+        const target = direction === 'next' ? -2 * calendarWidth : 0;
+        isAnimatingRef.current = true;
+        translateX.value = withTiming(target, {
+          duration,
+          easing: Easing.out(Easing.cubic),
+        });
+
+        timeoutRef.current = setTimeout(() => {
+          onMonthChange(addMonths(date, direction === 'next' ? 1 : -1));
+          translateX.value = -calendarWidth;
+          isAnimatingRef.current = false;
+        }, duration);
+      })
+      .runOnJS(true),
+    [calendarWidth, date, onMonthChange, translateX],
+  );
+
+  const prevMonth = useMemo(() => addMonths(date, -1), [date]);
+  const nextMonth = useMemo(() => addMonths(date, 1), [date]);
+
+  return (
+    <GestureDetector gesture={swipeGesture}>
+      <View style={[{ width: calendarWidth, overflow: 'hidden' }, style]}>
+        <Animated.View style={[{ flexDirection: 'row', width: calendarWidth * 3 }, animatedRowStyle]}>
+          <MonthGrid
+            date={prevMonth}
+            subscriptions={subscriptions}
+            onDayPress={onDayPress}
+            cellSize={cellSize}
+            cellHeight={cellHeight}
+            cellRadius={cellRadius}
+            iconSize={iconSize}
+            badgeSize={badgeSize}
+            gap={gap}
+            width={calendarWidth}
+            colors={colors}
+            isDark={isDark}
+          />
+          <MonthGrid
+            date={date}
+            subscriptions={subscriptions}
+            onDayPress={onDayPress}
+            cellSize={cellSize}
+            cellHeight={cellHeight}
+            cellRadius={cellRadius}
+            iconSize={iconSize}
+            badgeSize={badgeSize}
+            gap={gap}
+            width={calendarWidth}
+            colors={colors}
+            isDark={isDark}
+          />
+          <MonthGrid
+            date={nextMonth}
+            subscriptions={subscriptions}
+            onDayPress={onDayPress}
+            cellSize={cellSize}
+            cellHeight={cellHeight}
+            cellRadius={cellRadius}
+            iconSize={iconSize}
+            badgeSize={badgeSize}
+            gap={gap}
+            width={calendarWidth}
+            colors={colors}
+            isDark={isDark}
+          />
+        </Animated.View>
+      </View>
+    </GestureDetector>
   );
 }

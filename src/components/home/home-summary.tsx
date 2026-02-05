@@ -9,6 +9,7 @@ type HomeSummaryProps = {
   monthlyTotal: number;
   averageMonthly: number;
   settings: Settings;
+  monthDate: Date;
 };
 
 type MonthBadge = {
@@ -32,14 +33,14 @@ function getMonthBadge(monthlyTotal: number, averageMonthly: number): MonthBadge
   return { label: 'Regular Month', tone: 'success' };
 }
 
-export function HomeSummary({ monthlyTotal, averageMonthly, settings }: HomeSummaryProps) {
+export function HomeSummary({ monthlyTotal, averageMonthly, settings, monthDate }: HomeSummaryProps) {
   const { colors } = useTheme();
   const badge = getMonthBadge(monthlyTotal, averageMonthly);
 
   return (
     <View style={{ alignItems: 'center', gap: 10, paddingVertical: 6 }}>
       <Text style={{ fontSize: 14, color: colors.textMuted }} selectable>
-        {formatMonthYear(new Date())}
+        {formatMonthYear(monthDate)}
       </Text>
       <Text
         style={{ fontSize: 52, fontWeight: '700', color: colors.text, fontVariant: ['tabular-nums'] }}
