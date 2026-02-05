@@ -129,7 +129,7 @@ export default function HomeScreen() {
             >
               <IconButton symbol="magnifyingglass" size={30} variant="muted" onPress={() => router.push('/search')} />
               <IconButton symbol="chart.bar" size={30} variant="muted" onPress={() => router.push('/(modals)/analytics')} />
-              <IconButton symbol="gearshape" size={30} variant="muted" onPress={() => router.push('/(modals)/settings')} />
+              <IconButton symbol="gearshape" size={30} variant="muted" onPress={() => router.push('/(sheets)/settings')} />
             </View>
           ),
         }}
@@ -154,7 +154,7 @@ export default function HomeScreen() {
         <MonthCalendar date={new Date()} subscriptions={filteredSubscriptions} onDayPress={handleDayPress} />
 
         <View style={{ alignItems: 'center', marginTop: 4 }}>
-          <Pressable onPress={() => router.push('/(modals)/add-subscription')}>
+          <Pressable onPress={() => router.push('/(sheets)/add-subscription')}>
             <View
               style={{
                 flexDirection: 'row',
@@ -199,7 +199,7 @@ export default function HomeScreen() {
         settings={settings}
         rates={rates}
         onClose={handleSheetClose}
-        onAddPress={() => router.push('/(modals)/add-subscription')}
+        onAddPress={() => router.push('/(sheets)/add-subscription')}
         onSubscriptionPress={(subscriptionId) => {
           router.push({ pathname: '/(modals)/subscription-form', params: { id: subscriptionId } });
         }}

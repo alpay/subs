@@ -49,6 +49,17 @@ export default function RootLayout() {
             contentStyle: { backgroundColor: 'transparent' },
           }}
         />
+        <Stack.Screen
+          name="(sheets)"
+          options={{
+            headerShown: false,
+            presentation: 'formSheet',
+            sheetAllowedDetents: [0.9],
+            sheetGrabberVisible: true,
+            headerTransparent: true,
+            contentStyle: { backgroundColor: 'transparent' },
+          }}
+        />
       </Stack>
     </Providers>
   );

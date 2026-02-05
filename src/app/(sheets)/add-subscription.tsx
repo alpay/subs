@@ -1,19 +1,19 @@
 import type { DatePickerRef } from 'rn-awesome-date-picker';
-import type { AmountKey } from '@/components/amount-picker-sheet';
 import { Image } from 'expo-image';
 import { Button } from 'heroui-native';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
+import { useRouter } from 'expo-router';
 import DatePicker from 'rn-awesome-date-picker';
-import { AmountPickerSheet } from '@/components/amount-picker-sheet';
+import { FormSheet } from '@/components/form-sheet';
 import { GlassCard, GlassCardBody } from '@/components/glass-card';
-import { ModalSheet } from '@/components/modal-sheet';
 import { SelectPill } from '@/components/select-pill';
 import { SheetInput, SheetTextArea } from '@/components/sheet-input';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
 import { useTheme } from '@/lib/hooks/use-theme';
 import {
+  useAddSubscriptionDraftStore,
   useCategoriesStore,
   useCurrencyRatesStore,
   useListsStore,
@@ -42,27 +42,25 @@ function formatDateLabel(date: Date) {
 
 export default function AddSubscriptionScreen() {
   useBootstrap();
+  const router = useRouter();
   const { colors, isDark } = useTheme();
   const { settings } = useSettingsStore();
   const { categories } = useCategoriesStore();
   const { lists } = useListsStore();
   const { rates } = useCurrencyRatesStore();
+  const { amount, currency, setCurrency, reset } = useAddSubscriptionDraftStore();
   const datePickerRef = useRef<DatePickerRef>(null);
 
   const [name, setName] = useState('');
   const [schedule, setSchedule] = useState<(typeof SCHEDULE_OPTIONS)[number]['value']>('monthly');
   const [startDate, setStartDate] = useState(() => new Date());
-  const [amount, setAmount] = useState('0');
   const [notes, setNotes] = useState('');
-  const [currency, setCurrency] = useState(settings.mainCurrency || 'USD');
   const [categoryId, setCategoryId] = useState(categories[0]?.id ?? '');
   const [listId, setListId] = useState(lists[0]?.id ?? '');
   const [notificationMode, setNotificationMode] = useState<(typeof NOTIFICATION_OPTIONS)[number]['value']>('default');
-  const [isAmountSheetOpen, setIsAmountSheetOpen] = useState(false);
 
   const amountValue = Number(amount);
   const formattedAmount = Number.isFinite(amountValue) ? amountValue.toFixed(2) : '0.00';
-  const sheetAmount = amount.trim().length > 0 ? amount : '0';
 
   const isValid = name.trim().length > 0 && Number.isFinite(amountValue) && amountValue > 0;
 
@@ -110,45 +108,18 @@ export default function AddSubscriptionScreen() {
     if (currencyOptions.length > 0 && !currencyOptions.some(option => option.value === currency)) {
       setCurrency(currencyOptions[0].value);
     }
-  }, [currency, currencyOptions]);
+  }, [currency, currencyOptions, setCurrency]);
+
+  useEffect(() => {
+    reset({ amount: '0', currency: settings.mainCurrency || 'USD' });
+  }, [reset, settings.mainCurrency]);
 
   const handleAmountPress = useCallback(() => {
-    setIsAmountSheetOpen(true);
-  }, []);
-
-  const handleAmountClose = useCallback(() => {
-    setIsAmountSheetOpen(false);
-  }, []);
+    router.push('/(sheets)/amount-picker');
+  }, [router]);
 
   const handleDatePress = useCallback(() => {
     datePickerRef.current?.open();
-  }, []);
-
-  const handleAmountKeyPress = useCallback((key: AmountKey) => {
-    setAmount((prev) => {
-      if (key === 'back') {
-        const next = prev.length > 1 ? prev.slice(0, -1) : '0';
-        return next === '' ? '0' : next;
-      }
-
-      if (key === '.') {
-        if (prev.includes('.')) {
-          return prev;
-        }
-        return `${prev}.`;
-      }
-
-      if (prev === '0') {
-        return key;
-      }
-
-      const [whole, fraction] = prev.split('.');
-      if (fraction !== undefined && fraction.length >= 2) {
-        return prev;
-      }
-
-      return `${prev}${key}`;
-    });
   }, []);
 
   const rowStyle = {
@@ -168,7 +139,7 @@ export default function AddSubscriptionScreen() {
 
   return (
     <>
-      <ModalSheet
+      <FormSheet
         title="New Subscription"
         footer={(
           <Button variant="primary" size="lg" isDisabled={!isValid} style={{ width: '100%' }}>
@@ -398,17 +369,7 @@ export default function AddSubscriptionScreen() {
             />
           </GlassCardBody>
         </GlassCard>
-      </ModalSheet>
-
-      <AmountPickerSheet
-        isOpen={isAmountSheetOpen}
-        amountLabel={sheetAmount}
-        currencyOption={currencyOption}
-        currencyOptions={currencyOptions}
-        onCurrencyChange={value => setCurrency(value || currency)}
-        onKeyPress={handleAmountKeyPress}
-        onClose={handleAmountClose}
-      />
+      </FormSheet>
 
       <DatePicker
         ref={datePickerRef}

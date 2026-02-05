@@ -10,8 +10,8 @@ import { useMemo } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { FormSheet } from '@/components/form-sheet';
 import { GlassCard, GlassCardBody } from '@/components/glass-card';
-import { ModalSheet } from '@/components/modal-sheet';
 import { Pill } from '@/components/pill';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
 import { useTheme } from '@/lib/hooks/use-theme';
@@ -285,7 +285,7 @@ export default function SettingsScreen() {
   const iconDividerInset = 36;
 
   return (
-    <ModalSheet
+    <FormSheet
       title="Settings"
       closeVariant="muted"
       contentContainerStyle={{
@@ -587,6 +587,6 @@ export default function SettingsScreen() {
           Version: 1.0
         </Text>
       </View>
-    </ModalSheet>
+    </FormSheet>
   );
 }
