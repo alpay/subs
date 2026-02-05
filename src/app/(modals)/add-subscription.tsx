@@ -1,13 +1,13 @@
 import type { DatePickerRef } from 'rn-awesome-date-picker';
 import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
 import { Button, useToast } from 'heroui-native';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
 
-import { useRouter } from 'expo-router';
+import { Pressable, Text, View } from 'react-native';
 import DatePicker from 'rn-awesome-date-picker';
-import { FormSheet } from '@/components/form-sheet';
 import { GlassCard, GlassCardBody } from '@/components/glass-card';
+import { ModalSheet } from '@/components/modal-sheet';
 import { SelectPill } from '@/components/select-pill';
 import { SheetInput, SheetTextArea } from '@/components/sheet-input';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
@@ -118,7 +118,7 @@ export default function AddSubscriptionScreen() {
   }, [reset, settings.mainCurrency]);
 
   const handleAmountPress = useCallback(() => {
-    router.push('/(sheets)/amount-picker');
+    router.push('/(modals)/amount-picker');
   }, [router]);
 
   const handleDatePress = useCallback(() => {
@@ -189,7 +189,7 @@ export default function AddSubscriptionScreen() {
 
   return (
     <>
-      <FormSheet
+      <ModalSheet
         title="New Subscription"
         footer={(
           <Button
@@ -425,7 +425,7 @@ export default function AddSubscriptionScreen() {
             />
           </GlassCardBody>
         </GlassCard>
-      </FormSheet>
+      </ModalSheet>
 
       <DatePicker
         ref={datePickerRef}

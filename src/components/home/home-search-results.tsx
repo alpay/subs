@@ -1,10 +1,10 @@
+import type { Settings, Subscription } from '@/lib/db/schema';
 import { Image } from 'expo-image';
-import { Pressable, Text, View } from 'react-native';
 
+import { Pressable, Text, View } from 'react-native';
 import { Pill } from '@/components/pill';
 import { ServiceIcon } from '@/components/service-icon';
 import { useTheme } from '@/lib/hooks/use-theme';
-import type { Settings, Subscription } from '@/lib/db/schema';
 import { formatAmount } from '@/lib/utils/format';
 
 type HomeSearchResultsProps = {

@@ -91,7 +91,7 @@ export function SelectPill({
           style,
         ]}
       >
-        {leading ? leading : null}
+        {leading || null}
         <Text
           style={[
             {

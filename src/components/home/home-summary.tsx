@@ -1,8 +1,8 @@
-import { Text, View } from 'react-native';
+import type { Settings } from '@/lib/db/schema';
 
+import { Text, View } from 'react-native';
 import { Pill } from '@/components/pill';
 import { useTheme } from '@/lib/hooks/use-theme';
-import type { Settings } from '@/lib/db/schema';
 import { formatAmount, formatMonthYear } from '@/lib/utils/format';
 
 type HomeSummaryProps = {

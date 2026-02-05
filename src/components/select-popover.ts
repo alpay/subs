@@ -1,11 +1,11 @@
-import { useMemo } from 'react';
 import type { ViewStyle } from 'react-native';
+import { useMemo } from 'react';
 
 import { useTheme } from '@/lib/hooks/use-theme';
 
 const MIN_POPOVER_WIDTH = 200;
 
-const withAlpha = (hex: string, alpha: number) => {
+function withAlpha(hex: string, alpha: number) {
   const normalized = hex.replace('#', '');
   const full = normalized.length === 3
     ? normalized.split('').map(char => char + char).join('')
@@ -20,7 +20,7 @@ const withAlpha = (hex: string, alpha: number) => {
   const b = Number.parseInt(full.slice(4, 6), 16);
 
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-};
+}
 
 export function useSelectPopoverStyles() {
   const { colors, isDark } = useTheme();

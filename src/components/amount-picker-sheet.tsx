@@ -98,14 +98,15 @@ export function AmountPickerSheet({
           }}
           selectable
         >
-          ${amountLabel}
+          $
+          {amountLabel}
         </Text>
       </View>
 
       <View style={{ gap: 12 }}>
         {AMOUNT_KEYS.map(row => (
           <View key={row.join('-')} style={{ flexDirection: 'row', gap: 12 }}>
-            {row.map(key => {
+            {row.map((key) => {
               const isBackspace = key === 'back';
               return (
                 <Pressable

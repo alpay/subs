@@ -10,11 +10,28 @@ type ModalHeaderProps = {
   right?: ReactNode;
   onClose?: () => void;
   closeVariant?: 'plain' | 'muted';
+  closeLabel?: string;
+  closeSymbol?: string;
 };
 
-export function ModalHeader({ title, right, onClose, closeVariant = 'plain' }: ModalHeaderProps) {
+export function ModalHeader({
+  title,
+  right,
+  onClose,
+  closeVariant = 'plain',
+  closeLabel = 'Back',
+  closeSymbol,
+}: ModalHeaderProps) {
   const { colors } = useTheme();
   const isMuted = closeVariant === 'muted';
+  const resolvedCloseSymbol = closeSymbol ?? (closeLabel.toLowerCase() === 'cancel' ? 'xmark' : 'chevron.left');
+  const rightContent = typeof right === 'string' || typeof right === 'number'
+    ? (
+        <Text style={{ color: colors.textMuted, fontWeight: '600', fontSize: 14 }} selectable>
+          {right}
+        </Text>
+      )
+    : right;
 
   return (
     <View
@@ -25,47 +42,52 @@ export function ModalHeader({ title, right, onClose, closeVariant = 'plain' }: M
         paddingBottom: 12,
         borderBottomWidth: 1,
         borderBottomColor: colors.surfaceBorder,
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 8,
       }}
     >
-      <View style={{ flex: 1, alignItems: 'center' }}>
-        <Text style={{ color: colors.text, fontWeight: '600', fontSize: 16 }}>
-          {title}
-        </Text>
-      </View>
-      <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
-        {right}
-        {onClose
-          ? (
-              <Pressable
-                accessibilityRole="button"
-                hitSlop={10}
-                onPress={onClose}
-                style={({ pressed }) => [
-                  {
-                    width: 32,
-                    height: 32,
-                    borderRadius: 16,
-                    borderCurve: 'continuous',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: isMuted ? colors.surfaceMuted : 'transparent',
-                    borderWidth: isMuted ? 1 : 0,
-                    borderColor: isMuted ? colors.surfaceBorder : 'transparent',
-                  },
-                  pressed && { opacity: 0.7 },
-                ]}
-              >
-                <Image
-                  source="sf:xmark"
-                  style={{ width: 12, height: 12 }}
-                  tintColor={colors.text}
-                />
-              </Pressable>
-            )
-          : null}
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{ minWidth: 80, alignItems: 'flex-start' }}>
+          {onClose
+            ? (
+                <Pressable
+                  accessibilityRole="button"
+                  hitSlop={10}
+                  onPress={onClose}
+                  style={({ pressed }) => [
+                    {
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      gap: 6,
+                      paddingVertical: 6,
+                      paddingHorizontal: 4,
+                      borderRadius: 999,
+                      borderCurve: 'continuous',
+                      backgroundColor: isMuted ? colors.surfaceMuted : 'transparent',
+                      borderWidth: isMuted ? 1 : 0,
+                      borderColor: isMuted ? colors.surfaceBorder : 'transparent',
+                    },
+                    pressed && { opacity: 0.7 },
+                  ]}
+                >
+                  <Image
+                    source={`sf:${resolvedCloseSymbol}`}
+                    style={{ width: 14, height: 14 }}
+                    tintColor={colors.accent}
+                  />
+                  <Text style={{ color: colors.accent, fontWeight: '600', fontSize: 14 }} selectable>
+                    {closeLabel}
+                  </Text>
+                </Pressable>
+              )
+            : null}
+        </View>
+        <View style={{ flex: 1, alignItems: 'center' }}>
+          <Text style={{ color: colors.text, fontWeight: '600', fontSize: 16 }} selectable>
+            {title}
+          </Text>
+        </View>
+        <View style={{ minWidth: 80, alignItems: 'flex-end' }}>
+          {rightContent}
+        </View>
       </View>
     </View>
   );

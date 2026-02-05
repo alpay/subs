@@ -1,5 +1,5 @@
-import { Stack, useRouter } from 'expo-router';
 import { startOfMonth } from 'date-fns';
+import { Stack, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -67,7 +67,7 @@ export default function HomeScreen() {
 
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Button icon="chart.bar" onPress={() => router.push('/(modals)/analytics')} />
-        <Stack.Toolbar.Button icon="gearshape" onPress={() => router.push('/(sheets)/settings')} />
+        <Stack.Toolbar.Button icon="gearshape" onPress={() => router.push('/(modals)/settings')} />
       </Stack.Toolbar>
 
       <Stack.Toolbar placement="bottom">
@@ -85,7 +85,7 @@ export default function HomeScreen() {
         />
         <Stack.Toolbar.SearchBarSlot />
         <Stack.Toolbar.Spacer />
-        <Stack.Toolbar.Button icon="plus" onPress={() => router.push('/(sheets)/add-subscription')} />
+        <Stack.Toolbar.Button icon="plus" onPress={() => router.push('/(modals)/add-subscription')} />
       </Stack.Toolbar>
 
       {hasQuery
@@ -138,7 +138,7 @@ export default function HomeScreen() {
         settings={settings}
         rates={rates}
         onClose={handleSheetClose}
-        onAddPress={() => router.push('/(sheets)/add-subscription')}
+        onAddPress={() => router.push('/(modals)/add-subscription')}
         onSubscriptionPress={(subscriptionId) => {
           router.push({ pathname: '/(modals)/subscription-form', params: { id: subscriptionId } });
         }}

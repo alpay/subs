@@ -30,6 +30,8 @@ type ModalSheetProps = {
   footer?: ReactNode;
   footerContainerStyle?: StyleProp<ViewStyle>;
   closeVariant?: 'plain' | 'muted';
+  closeLabel?: string;
+  closeSymbol?: string;
   lockSnapPoint?: boolean;
 };
 
@@ -42,6 +44,8 @@ export function ModalSheet({
   footer,
   footerContainerStyle,
   closeVariant = 'plain',
+  closeLabel,
+  closeSymbol,
   lockSnapPoint = false,
 }: ModalSheetProps) {
   const router = useRouter();
@@ -130,7 +134,14 @@ export function ModalSheet({
         keyboardBlurBehavior="restore"
       >
         <View style={{ flex: 1 }}>
-          <ModalHeader title={title} right={right} onClose={handleClose} closeVariant={closeVariant} />
+          <ModalHeader
+            title={title}
+            right={right}
+            onClose={handleClose}
+            closeVariant={closeVariant}
+            closeLabel={closeLabel}
+            closeSymbol={closeSymbol}
+          />
           <BottomSheetScrollView
             {...scrollViewProps}
             style={[{ flex: 1 }, scrollViewProps?.style]}

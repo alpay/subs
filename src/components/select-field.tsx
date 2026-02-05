@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react';
 
+import type { SelectOption } from '@/components/select-pill';
 import { Label, TextField } from 'heroui-native';
-import { View } from 'react-native';
 
-import { SelectPill, type SelectOption } from '@/components/select-pill';
+import { View } from 'react-native';
+import { SelectPill } from '@/components/select-pill';
 import { useTheme } from '@/lib/hooks/use-theme';
 
 type SelectFieldProps = {

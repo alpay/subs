@@ -1,7 +1,8 @@
+import type { AmountKey } from '@/components/amount-picker-sheet';
 import { useRouter } from 'expo-router';
-import { useCallback, useEffect, useMemo } from 'react';
 
-import { AmountPickerSheet, type AmountKey } from '@/components/amount-picker-sheet';
+import { useCallback, useEffect, useMemo } from 'react';
+import { AmountPickerSheet } from '@/components/amount-picker-sheet';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
 import { useAddSubscriptionDraftStore, useCurrencyRatesStore } from '@/lib/stores';
 
