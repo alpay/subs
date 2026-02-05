@@ -1,8 +1,7 @@
-import { Button, Label, TextField, useToast } from 'heroui-native';
+import { Card, Button, Label, TextField, useToast } from 'heroui-native';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { GlassCard, GlassCardBody } from '@/components/glass-card';
 import { ModalSheet } from '@/components/modal-sheet';
 import { SheetInput } from '@/components/sheet-input';
 import { useTheme } from '@/lib/hooks/use-theme';
@@ -26,8 +25,8 @@ export default function ListsScreen() {
 
   return (
     <ModalSheet title="Lists">
-      <GlassCard>
-        <GlassCardBody style={{ gap: 12 }}>
+      <Card>
+        <Card.Body style={{ gap: 12 }}>
           <TextField>
             <Label>Name</Label>
             <SheetInput placeholder="List name" value={name} onChangeText={setName} />
@@ -35,11 +34,11 @@ export default function ListsScreen() {
           <Button variant="primary" onPress={handleAdd}>
             Add list
           </Button>
-        </GlassCardBody>
-      </GlassCard>
+        </Card.Body>
+      </Card>
 
-      <GlassCard>
-        <GlassCardBody style={{ gap: 10 }}>
+      <Card>
+        <Card.Body style={{ gap: 10 }}>
           {lists.map(list => (
             <View
               key={list.id}
@@ -53,8 +52,8 @@ export default function ListsScreen() {
               </Button>
             </View>
           ))}
-        </GlassCardBody>
-      </GlassCard>
+        </Card.Body>
+      </Card>
     </ModalSheet>
   );
 }

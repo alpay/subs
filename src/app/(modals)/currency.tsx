@@ -1,9 +1,8 @@
 import { useRouter } from 'expo-router';
-import { Button, useToast } from 'heroui-native';
+import { Button, Card, useToast } from 'heroui-native';
 import { useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { GlassCard, GlassCardBody } from '@/components/glass-card';
 import { ModalSheet } from '@/components/modal-sheet';
 import { SelectPill } from '@/components/select-pill';
 import { useTheme } from '@/lib/hooks/use-theme';
@@ -34,8 +33,8 @@ export default function CurrencyScreen() {
 
   return (
     <ModalSheet title="Main Currency">
-      <GlassCard>
-        <GlassCardBody style={{ gap: 10 }}>
+      <Card>
+        <Card.Body style={{ gap: 10 }}>
           <Text style={{ color: colors.textMuted }} selectable>
             Pick your reporting currency.
           </Text>
@@ -60,8 +59,8 @@ export default function CurrencyScreen() {
               Refresh rates
             </Button>
           </View>
-        </GlassCardBody>
-      </GlassCard>
+        </Card.Body>
+      </Card>
     </ModalSheet>
   );
 }

@@ -1,10 +1,9 @@
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
-import { Button, Chip, useToast } from 'heroui-native';
+import { Button, Card, Chip, useToast } from 'heroui-native';
 import { useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { GlassCard, GlassCardBody } from '@/components/glass-card';
 import { ModalSheet } from '@/components/modal-sheet';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useServiceTemplatesStore } from '@/lib/stores';
@@ -43,8 +42,8 @@ export default function IconPickerScreen() {
 
   return (
     <ModalSheet title="Icon Picker">
-      <GlassCard>
-        <GlassCardBody style={{ gap: 8 }}>
+      <Card>
+        <Card.Body style={{ gap: 8 }}>
           <Text style={{ color: colors.textMuted }} selectable>
             Use an icon key or upload a custom image.
           </Text>
@@ -60,11 +59,11 @@ export default function IconPickerScreen() {
               </Text>
             </View>
           )}
-        </GlassCardBody>
-      </GlassCard>
+        </Card.Body>
+      </Card>
 
-      <GlassCard>
-        <GlassCardBody style={{ gap: 10 }}>
+      <Card>
+        <Card.Body style={{ gap: 10 }}>
           <Text style={{ fontSize: 13, color: colors.textMuted }} selectable>
             Available icon keys
           </Text>
@@ -73,8 +72,8 @@ export default function IconPickerScreen() {
               <Chip key={iconKey}>{iconKey}</Chip>
             ))}
           </View>
-        </GlassCardBody>
-      </GlassCard>
+        </Card.Body>
+      </Card>
     </ModalSheet>
   );
 }

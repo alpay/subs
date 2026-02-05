@@ -1,11 +1,10 @@
 import type { NotificationMode, ScheduleType, Subscription, SubscriptionStatus } from '@/lib/db/schema';
 
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Button, Label, TextField, useToast } from 'heroui-native';
+import { Button, Card, Label, TextField, useToast } from 'heroui-native';
 import { useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { GlassCard, GlassCardBody } from '@/components/glass-card';
 import { ModalSheet } from '@/components/modal-sheet';
 import { Pill } from '@/components/pill';
 import { SelectField } from '@/components/select-field';
@@ -236,8 +235,8 @@ export default function SubscriptionFormScreen() {
 
   return (
     <ModalSheet title={existingSubscription ? 'Edit Subscription' : 'New Subscription'}>
-      <GlassCard>
-        <GlassCardBody style={{ alignItems: 'center', gap: 12 }}>
+      <Card>
+        <Card.Body style={{ alignItems: 'center', gap: 12 }}>
           <ServiceIcon iconKey={iconKey} size={72} />
           <View style={{ alignItems: 'center', gap: 6 }}>
             <Text style={{ fontSize: 18, fontWeight: '600', color: colors.text }} selectable>
@@ -254,11 +253,11 @@ export default function SubscriptionFormScreen() {
           >
             {amountDisplay}
           </Text>
-        </GlassCardBody>
-      </GlassCard>
+        </Card.Body>
+      </Card>
 
-      <GlassCard>
-        <GlassCardBody style={{ gap: 12 }}>
+      <Card>
+        <Card.Body style={{ gap: 12 }}>
           <TextField>
             <Label>Name</Label>
             <SheetInput value={name} onChangeText={setName} placeholder="Subscription name" />
@@ -319,11 +318,11 @@ export default function SubscriptionFormScreen() {
             <Label>Start date</Label>
             <SheetInput value={startDate} onChangeText={setStartDate} placeholder="YYYY-MM-DD" />
           </TextField>
-        </GlassCardBody>
-      </GlassCard>
+        </Card.Body>
+      </Card>
 
-      <GlassCard>
-        <GlassCardBody style={{ gap: 12 }}>
+      <Card>
+        <Card.Body style={{ gap: 12 }}>
           <SelectField
             label="Category"
             value={categoryId}
@@ -363,11 +362,11 @@ export default function SubscriptionFormScreen() {
             placeholder="Select notification mode"
             onChange={value => setNotificationMode((value as NotificationMode | undefined) ?? 'default')}
           />
-        </GlassCardBody>
-      </GlassCard>
+        </Card.Body>
+      </Card>
 
-      <GlassCard>
-        <GlassCardBody style={{ gap: 12 }}>
+      <Card>
+        <Card.Body style={{ gap: 12 }}>
           <SelectField
             label="Icon type"
             value={iconType}
@@ -406,8 +405,8 @@ export default function SubscriptionFormScreen() {
             <Label>Notes</Label>
             <SheetTextArea value={notes} onChangeText={setNotes} placeholder="Optional notes" numberOfLines={4} />
           </TextField>
-        </GlassCardBody>
-      </GlassCard>
+        </Card.Body>
+      </Card>
 
       <Button variant="primary" onPress={handleSave}>
         {existingSubscription ? 'Save changes' : 'Create subscription'}

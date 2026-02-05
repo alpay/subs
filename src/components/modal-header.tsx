@@ -8,35 +8,45 @@ import { useTheme } from '@/lib/hooks/use-theme';
 type ModalHeaderProps = {
   title: string;
   right?: ReactNode;
+  topRightActionBar?: ReactNode;
   onClose?: () => void;
   closeVariant?: 'plain' | 'muted';
   closeLabel?: string;
+  closeButtonTitle?: string;
   closeSymbol?: string;
 };
 
 export function ModalHeader({
   title,
   right,
+  topRightActionBar,
   onClose,
   closeVariant = 'plain',
-  closeLabel = 'Back',
+  closeLabel,
+  closeButtonTitle,
   closeSymbol,
 }: ModalHeaderProps) {
   const { colors } = useTheme();
   const isMuted = closeVariant === 'muted';
-  const resolvedCloseSymbol = closeSymbol ?? (closeLabel.toLowerCase() === 'cancel' ? 'xmark' : 'chevron.left');
-  const rightContent = typeof right === 'string' || typeof right === 'number'
+  const resolvedCloseLabel = closeButtonTitle ?? closeLabel ?? 'Close';
+  const normalizedCloseLabel = resolvedCloseLabel.trim().toLowerCase();
+  const useDismissSymbol = normalizedCloseLabel === 'cancel'
+    || normalizedCloseLabel === 'close'
+    || normalizedCloseLabel === 'done';
+  const resolvedCloseSymbol = closeSymbol ?? (useDismissSymbol ? 'xmark' : 'chevron.left');
+  const resolvedRight = topRightActionBar ?? right;
+  const rightContent = typeof resolvedRight === 'string' || typeof resolvedRight === 'number'
     ? (
         <Text style={{ color: colors.textMuted, fontWeight: '600', fontSize: 14 }} selectable>
-          {right}
+          {resolvedRight}
         </Text>
       )
-    : right;
+    : resolvedRight;
 
   return (
     <View
       style={{
-        backgroundColor: colors.background,
+        backgroundColor: colors.surface,
         paddingHorizontal: 20,
         paddingTop: 8,
         paddingBottom: 12,
@@ -45,7 +55,7 @@ export function ModalHeader({
       }}
     >
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <View style={{ minWidth: 80, alignItems: 'flex-start' }}>
+        <View style={{ minWidth: 88, maxWidth: '40%', alignItems: 'flex-start' }}>
           {onClose
             ? (
                 <Pressable
@@ -74,19 +84,21 @@ export function ModalHeader({
                     tintColor={colors.accent}
                   />
                   <Text style={{ color: colors.accent, fontWeight: '600', fontSize: 14 }} selectable>
-                    {closeLabel}
+                    {resolvedCloseLabel}
                   </Text>
                 </Pressable>
               )
             : null}
         </View>
-        <View style={{ flex: 1, alignItems: 'center' }}>
-          <Text style={{ color: colors.text, fontWeight: '600', fontSize: 16 }} selectable>
+        <View style={{ flex: 1, alignItems: 'center', paddingHorizontal: 10 }}>
+          <Text numberOfLines={1} style={{ color: colors.text, fontWeight: '600', fontSize: 16 }} selectable>
             {title}
           </Text>
         </View>
-        <View style={{ minWidth: 80, alignItems: 'flex-end' }}>
-          {rightContent}
+        <View style={{ minWidth: 88, maxWidth: '45%', alignItems: 'flex-end' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            {rightContent}
+          </View>
         </View>
       </View>
     </View>

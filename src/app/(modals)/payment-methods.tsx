@@ -1,8 +1,7 @@
-import { Button, Label, TextField, useToast } from 'heroui-native';
+import { Card, Button, Label, TextField, useToast } from 'heroui-native';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { GlassCard, GlassCardBody } from '@/components/glass-card';
 import { ModalSheet } from '@/components/modal-sheet';
 import { SheetInput } from '@/components/sheet-input';
 import { useTheme } from '@/lib/hooks/use-theme';
@@ -26,8 +25,8 @@ export default function PaymentMethodsScreen() {
 
   return (
     <ModalSheet title="Payment Methods">
-      <GlassCard>
-        <GlassCardBody style={{ gap: 10 }}>
+      <Card>
+        <Card.Body style={{ gap: 10 }}>
           {methods.length === 0 && (
             <Text style={{ color: colors.textMuted }} selectable>
               No payment methods yet.
@@ -46,11 +45,11 @@ export default function PaymentMethodsScreen() {
               </Button>
             </View>
           ))}
-        </GlassCardBody>
-      </GlassCard>
+        </Card.Body>
+      </Card>
 
-      <GlassCard>
-        <GlassCardBody style={{ gap: 10 }}>
+      <Card>
+        <Card.Body style={{ gap: 10 }}>
           <TextField>
             <Label>New payment method</Label>
             <SheetInput placeholder="Credit card" value={name} onChangeText={setName} />
@@ -61,8 +60,8 @@ export default function PaymentMethodsScreen() {
           <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
             We care about your security, so please do not store full card numbers or account details.
           </Text>
-        </GlassCardBody>
-      </GlassCard>
+        </Card.Body>
+      </Card>
     </ModalSheet>
   );
 }

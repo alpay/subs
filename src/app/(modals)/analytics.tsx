@@ -1,6 +1,6 @@
+import { Card } from 'heroui-native';
 import { useMemo } from 'react';
 import { Text, View } from 'react-native';
-import { GlassCard, GlassCardBody } from '@/components/glass-card';
 import { ModalSheet } from '@/components/modal-sheet';
 import { Pill } from '@/components/pill';
 import { RingChart } from '@/components/ring-chart';
@@ -59,8 +59,8 @@ export default function AnalyticsScreen() {
 
   return (
     <ModalSheet title="Analytics">
-      <GlassCard>
-        <GlassCardBody style={{ gap: 16, alignItems: 'center' }}>
+      <Card>
+        <Card.Body style={{ gap: 16, alignItems: 'center' }}>
           <Text style={{ fontSize: 14, color: colors.textMuted }} selectable>
             Category Share
           </Text>
@@ -111,12 +111,12 @@ export default function AnalyticsScreen() {
               />
             ))}
           </View>
-        </GlassCardBody>
-      </GlassCard>
+        </Card.Body>
+      </Card>
 
       <View style={{ flexDirection: 'row', gap: 12 }}>
-        <GlassCard style={{ flex: 1 }}>
-          <GlassCardBody>
+        <Card style={{ flex: 1 }}>
+          <Card.Body>
             <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
               Yearly Forecast
             </Text>
@@ -126,10 +126,10 @@ export default function AnalyticsScreen() {
             >
               {formatAmount(yearlyForecast, settings.mainCurrency, settings.roundWholeNumbers)}
             </Text>
-          </GlassCardBody>
-        </GlassCard>
-        <GlassCard style={{ flex: 1 }}>
-          <GlassCardBody>
+          </Card.Body>
+        </Card>
+        <Card style={{ flex: 1 }}>
+          <Card.Body>
             <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
               Avg Monthly
             </Text>
@@ -139,12 +139,12 @@ export default function AnalyticsScreen() {
             >
               {formatAmount(averageMonthly, settings.mainCurrency, settings.roundWholeNumbers)}
             </Text>
-          </GlassCardBody>
-        </GlassCard>
+          </Card.Body>
+        </Card>
       </View>
 
-      <GlassCard>
-        <GlassCardBody style={{ gap: 12 }}>
+      <Card>
+        <Card.Body style={{ gap: 12 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
             <Text style={{ fontSize: 14, color: colors.textMuted }} selectable>
               Year to Date
@@ -174,8 +174,8 @@ export default function AnalyticsScreen() {
               </Text>
             </View>
           ))}
-        </GlassCardBody>
-      </GlassCard>
+        </Card.Body>
+      </Card>
     </ModalSheet>
   );
 }

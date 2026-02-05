@@ -3,6 +3,8 @@ import { useRouter } from 'expo-router';
 
 import { useCallback, useEffect, useMemo } from 'react';
 import { AmountPickerSheet } from '@/components/amount-picker-sheet';
+import { ModalSheet } from '@/components/modal-sheet';
+import { SelectPill } from '@/components/select-pill';
 import { useAddSubscriptionDraftStore, useCurrencyRatesStore } from '@/lib/stores';
 
 export default function AmountPickerScreen() {
@@ -46,7 +48,7 @@ export default function AmountPickerScreen() {
         return key;
       }
 
-      const [whole, fraction] = prev.split('.');
+      const [, fraction] = prev.split('.');
       if (fraction !== undefined && fraction.length >= 2) {
         return prev;
       }
@@ -56,13 +58,27 @@ export default function AmountPickerScreen() {
   }, [setAmount]);
 
   return (
-    <AmountPickerSheet
-      amountLabel={sheetAmount}
-      currencyOption={currencyOption}
-      currencyOptions={currencyOptions}
-      onCurrencyChange={setCurrency}
-      onKeyPress={handleAmountKeyPress}
-      onClose={() => router.back()}
-    />
+    <ModalSheet
+      title="Amount"
+      closeButtonTitle="Close"
+      topRightActionBar={(
+        <SelectPill
+          value={currencyOption}
+          options={currencyOptions}
+          onValueChange={option => setCurrency(option?.value ?? '')}
+          size="sm"
+          variant="muted"
+        />
+      )}
+      snapPoints={['88%']}
+      lockSnapPoint
+      bottomScrollSpacer={88}
+    >
+      <AmountPickerSheet
+        amountLabel={sheetAmount}
+        onKeyPress={handleAmountKeyPress}
+        onDone={() => router.back()}
+      />
+    </ModalSheet>
   );
 }

@@ -1,9 +1,8 @@
 import { useRouter } from 'expo-router';
-import { Button, Checkbox, Label, TextField, useToast } from 'heroui-native';
+import { Button, Card, Checkbox, Label, TextField, useToast } from 'heroui-native';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { GlassCard, GlassCardBody } from '@/components/glass-card';
 import { ModalSheet } from '@/components/modal-sheet';
 import { SheetInput } from '@/components/sheet-input';
 import { useTheme } from '@/lib/hooks/use-theme';
@@ -43,8 +42,8 @@ export default function NotificationSettingsScreen() {
 
   return (
     <ModalSheet title="Notifications">
-      <GlassCard>
-        <GlassCardBody style={{ gap: 12 }}>
+      <Card>
+        <Card.Body style={{ gap: 12 }}>
           <Text style={{ fontSize: 13, color: colors.textMuted }} selectable>
             First Reminder
           </Text>
@@ -56,11 +55,11 @@ export default function NotificationSettingsScreen() {
             <Label>Time</Label>
             <SheetInput placeholder="09:00" value={firstTime} onChangeText={setFirstTime} />
           </TextField>
-        </GlassCardBody>
-      </GlassCard>
+        </Card.Body>
+      </Card>
 
-      <GlassCard>
-        <GlassCardBody style={{ gap: 12 }}>
+      <Card>
+        <Card.Body style={{ gap: 12 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             <Checkbox
               isSelected={hasSecondReminder}
@@ -83,8 +82,8 @@ export default function NotificationSettingsScreen() {
               </TextField>
             </>
           )}
-        </GlassCardBody>
-      </GlassCard>
+        </Card.Body>
+      </Card>
 
       <Button variant="primary" onPress={handleSave}>
         Save defaults

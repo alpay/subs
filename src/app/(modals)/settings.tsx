@@ -4,12 +4,11 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
-import { Switch, useToast } from 'heroui-native';
+import { Card, Switch, useToast } from 'heroui-native';
 import { useMemo } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { GlassCard, GlassCardBody } from '@/components/glass-card';
 import { ModalSheet } from '@/components/modal-sheet';
 import { Pill } from '@/components/pill';
 import { useTheme } from '@/lib/hooks/use-theme';
@@ -294,8 +293,8 @@ export default function SettingsScreen() {
         paddingBottom: bottom + 20,
       }}
     >
-      <GlassCard style={cardStyle}>
-        <GlassCardBody style={{ padding: 12, gap: 8 }}>
+      <Card style={cardStyle}>
+        <Card.Body style={{ padding: 12, gap: 8 }}>
           <SettingsRow
             leading={<SubscriptionBadge />}
             label="Subscription Day"
@@ -308,11 +307,11 @@ export default function SettingsScreen() {
           <Text style={{ fontSize: 13, color: colors.textMuted }} selectable>
             In Beta, your purchases aren't charged.
           </Text>
-        </GlassCardBody>
-      </GlassCard>
+        </Card.Body>
+      </Card>
 
-      <GlassCard style={cardStyle}>
-        <GlassCardBody style={cardBodyStyle}>
+      <Card style={cardStyle}>
+        <Card.Body style={cardBodyStyle}>
           <SettingsRow
             leading={<LeadingIcon symbol="externaldrive" />}
             label="iCloud & Data"
@@ -324,11 +323,11 @@ export default function SettingsScreen() {
             accessorySymbol="chevron.right"
             onPress={() => update({ iCloudEnabled: !settings.iCloudEnabled })}
           />
-        </GlassCardBody>
-      </GlassCard>
+        </Card.Body>
+      </Card>
 
-      <GlassCard style={cardStyle}>
-        <GlassCardBody style={cardBodyStyle}>
+      <Card style={cardStyle}>
+        <Card.Body style={cardBodyStyle}>
           <SettingsRow
             label="Main Currency"
             onPress={() => router.push('/(modals)/currency')}
@@ -361,11 +360,11 @@ export default function SettingsScreen() {
               />
             )}
           />
-        </GlassCardBody>
-      </GlassCard>
+        </Card.Body>
+      </Card>
 
-      <GlassCard style={cardStyle}>
-        <GlassCardBody style={cardBodyStyle}>
+      <Card style={cardStyle}>
+        <Card.Body style={cardBodyStyle}>
           <SettingsRow
             leading={<LeadingIcon symbol="square.grid.2x2" />}
             label="Categories"
@@ -389,15 +388,15 @@ export default function SettingsScreen() {
             )}
             accessorySymbol="chevron.right"
           />
-        </GlassCardBody>
-      </GlassCard>
+        </Card.Body>
+      </Card>
 
       <View style={{ gap: 6 }}>
         <Text style={sectionLabelStyle} selectable>
           NOTIFICATIONS
         </Text>
-        <GlassCard style={cardStyle}>
-          <GlassCardBody style={cardBodyStyle}>
+        <Card style={cardStyle}>
+          <Card.Body style={cardBodyStyle}>
             <SettingsRow
               label="First Reminder"
               onPress={() => router.push('/(modals)/notification-settings')}
@@ -458,8 +457,8 @@ export default function SettingsScreen() {
               labelStyle={{ fontWeight: '600' }}
               onPress={handleTestNotification}
             />
-          </GlassCardBody>
-        </GlassCard>
+          </Card.Body>
+        </Card>
         <Text style={noteStyle} selectable>
           If Focus Modes are enabled, notifications might not appear.
         </Text>
@@ -469,8 +468,8 @@ export default function SettingsScreen() {
         <Text style={sectionLabelStyle} selectable>
           INTERFACE
         </Text>
-        <GlassCard style={cardStyle}>
-          <GlassCardBody style={cardBodyStyle}>
+        <Card style={cardStyle}>
+          <Card.Body style={cardBodyStyle}>
             <SettingsRow
               label="True Dark Colors"
               right={(
@@ -490,16 +489,16 @@ export default function SettingsScreen() {
                 />
               )}
             />
-          </GlassCardBody>
-        </GlassCard>
+          </Card.Body>
+        </Card>
       </View>
 
       <View style={{ gap: 6 }}>
         <Text style={sectionLabelStyle} selectable>
           CURRENCY RATES
         </Text>
-        <GlassCard style={cardStyle}>
-          <GlassCardBody style={{ padding: 16, gap: 12 }}>
+        <Card style={cardStyle}>
+          <Card.Body style={{ padding: 16, gap: 12 }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
               <View style={{ flex: 1, gap: 4 }}>
                 <Text style={{ color: colors.text, fontSize: 14 }} selectable>
@@ -530,16 +529,16 @@ export default function SettingsScreen() {
                 </Text>
               </Pressable>
             </View>
-          </GlassCardBody>
-        </GlassCard>
+          </Card.Body>
+        </Card>
         <Text style={noteStyle} selectable>
           Currency rates can be automatically updated via our server. These currency rates are
           approximate and may differ from your local currency rates.
         </Text>
       </View>
 
-      <GlassCard style={cardStyle}>
-        <GlassCardBody style={cardBodyStyle}>
+      <Card style={cardStyle}>
+        <Card.Body style={cardBodyStyle}>
           <SettingsRow
             leading={<LeadingIcon symbol="star" />}
             label="Rate & Review"
@@ -569,8 +568,8 @@ export default function SettingsScreen() {
             label="Share with a friend"
             accessorySymbol="chevron.right"
           />
-        </GlassCardBody>
-      </GlassCard>
+        </Card.Body>
+      </Card>
 
       <View style={{ alignItems: 'center', gap: 6, paddingTop: 0 }}>
         <Image

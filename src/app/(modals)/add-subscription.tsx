@@ -1,12 +1,11 @@
 import type { DatePickerRef } from 'rn-awesome-date-picker';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { Button, useToast } from 'heroui-native';
+import { Button, Card, useToast } from 'heroui-native';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Pressable, Text, View } from 'react-native';
 import DatePicker from 'rn-awesome-date-picker';
-import { GlassCard, GlassCardBody } from '@/components/glass-card';
 import { ModalSheet } from '@/components/modal-sheet';
 import { SelectPill } from '@/components/select-pill';
 import { SheetInput, SheetTextArea } from '@/components/sheet-input';
@@ -226,8 +225,8 @@ export default function AddSubscriptionScreen() {
           </View>
         </View>
 
-        <GlassCard>
-          <GlassCardBody style={{ padding: 0, gap: 0 }}>
+        <Card>
+          <Card.Body style={{ padding: 0, gap: 0 }}>
             <View style={[rowStyle, rowDivider]}>
               <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
                 Name
@@ -292,11 +291,11 @@ export default function AddSubscriptionScreen() {
                 </Text>
               </View>
             </Pressable>
-          </GlassCardBody>
-        </GlassCard>
+          </Card.Body>
+        </Card>
 
-        <GlassCard>
-          <GlassCardBody style={{ padding: 0, gap: 0 }}>
+        <Card>
+          <Card.Body style={{ padding: 0, gap: 0 }}>
             <Pressable
               onPress={handleAmountPress}
               hitSlop={8}
@@ -324,11 +323,11 @@ export default function AddSubscriptionScreen() {
                 </Text>
               </View>
             </Pressable>
-          </GlassCardBody>
-        </GlassCard>
+          </Card.Body>
+        </Card>
 
-        <GlassCard>
-          <GlassCardBody style={{ padding: 0, gap: 0 }}>
+        <Card>
+          <Card.Body style={{ padding: 0, gap: 0 }}>
             <View style={[rowStyle, rowDivider]}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                 <Image
@@ -395,11 +394,11 @@ export default function AddSubscriptionScreen() {
                 size="sm"
               />
             </View>
-          </GlassCardBody>
-        </GlassCard>
+          </Card.Body>
+        </Card>
 
-        <GlassCard>
-          <GlassCardBody style={{ padding: 16, gap: 10 }}>
+        <Card>
+          <Card.Body style={{ padding: 16, gap: 10 }}>
             <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
               Notes
             </Text>
@@ -421,8 +420,8 @@ export default function AddSubscriptionScreen() {
                 color: colors.text,
               }}
             />
-          </GlassCardBody>
-        </GlassCard>
+          </Card.Body>
+        </Card>
       </ModalSheet>
 
       <DatePicker

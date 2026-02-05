@@ -3,11 +3,10 @@ import type { ScheduleType, SubscriptionStatus } from '@/lib/db/schema';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import { useRouter } from 'expo-router';
-import { Button, Label, TextField, useToast } from 'heroui-native';
+import { Button, Card, Label, TextField, useToast } from 'heroui-native';
 import { useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { GlassCard, GlassCardBody } from '@/components/glass-card';
 import { ModalSheet } from '@/components/modal-sheet';
 import { SheetTextArea } from '@/components/sheet-input';
 import { useTheme } from '@/lib/hooks/use-theme';
@@ -145,8 +144,8 @@ export default function CsvImportScreen() {
 
   return (
     <ModalSheet title="CSV Import">
-      <GlassCard>
-        <GlassCardBody style={{ gap: 10 }}>
+      <Card>
+        <Card.Body style={{ gap: 10 }}>
           <Text style={{ color: colors.textMuted }} selectable>
             Required columns:
             {' '}
@@ -185,12 +184,12 @@ export default function CsvImportScreen() {
               {error}
             </Text>
           )}
-        </GlassCardBody>
-      </GlassCard>
+        </Card.Body>
+      </Card>
 
       {previewRows.length > 0 && (
-        <GlassCard>
-          <GlassCardBody style={{ gap: 8 }}>
+        <Card>
+          <Card.Body style={{ gap: 8 }}>
             <Text style={{ fontSize: 13, color: colors.textMuted }} selectable>
               Preview (
               {rows.length}
@@ -215,8 +214,8 @@ export default function CsvImportScreen() {
                 </Text>
               </View>
             ))}
-          </GlassCardBody>
-        </GlassCard>
+          </Card.Body>
+        </Card>
       )}
     </ModalSheet>
   );

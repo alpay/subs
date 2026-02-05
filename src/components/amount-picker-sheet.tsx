@@ -1,10 +1,7 @@
 import { Image } from 'expo-image';
 import { Pressable, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTheme } from '@/lib/hooks/use-theme';
-
-import { SelectPill } from './select-pill';
 
 const AMOUNT_KEYS = [
   ['1', '2', '3'],
@@ -15,76 +12,27 @@ const AMOUNT_KEYS = [
 
 export type AmountKey = (typeof AMOUNT_KEYS)[number][number];
 
-type SelectOption = {
-  label: string;
-  value: string;
-};
-
 type AmountPickerSheetProps = {
   amountLabel: string;
-  currencyOption?: SelectOption;
-  currencyOptions: SelectOption[];
-  onCurrencyChange: (value: string) => void;
   onKeyPress: (key: AmountKey) => void;
-  onClose: () => void;
+  onDone: () => void;
 };
 
 export function AmountPickerSheet({
   amountLabel,
-  currencyOption,
-  currencyOptions,
-  onCurrencyChange,
   onKeyPress,
-  onClose,
+  onDone,
 }: AmountPickerSheetProps) {
   const { colors, isDark } = useTheme();
-  const { bottom } = useSafeAreaInsets();
 
   return (
     <View
       style={{
-        flex: 1,
         backgroundColor: colors.surface,
-        paddingHorizontal: 20,
-        paddingTop: 8,
-        paddingBottom: bottom + 16,
+        paddingTop: 4,
         gap: 18,
       }}
     >
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <SelectPill
-          value={currencyOption}
-          options={currencyOptions}
-          onValueChange={option => onCurrencyChange(option?.value ?? '')}
-          size="sm"
-          variant="muted"
-        />
-
-        <Pressable
-          onPress={onClose}
-          style={({ pressed }) => [
-            {
-              width: 32,
-              height: 32,
-              borderRadius: 16,
-              borderCurve: 'continuous',
-              backgroundColor: colors.surfaceMuted,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderWidth: 1,
-              borderColor: colors.surfaceBorder,
-            },
-            pressed && { opacity: 0.7 },
-          ]}
-        >
-          <Image
-            source="sf:xmark"
-            style={{ width: 12, height: 12 }}
-            tintColor={colors.textMuted}
-          />
-        </Pressable>
-      </View>
-
       <View style={{ alignItems: 'center', gap: 6 }}>
         <Text style={{ fontSize: 12, letterSpacing: 1.4, color: colors.textMuted }} selectable>
           AMOUNT
@@ -154,7 +102,7 @@ export function AmountPickerSheet({
       </View>
 
       <Pressable
-        onPress={onClose}
+        onPress={onDone}
         style={({ pressed }) => [
           {
             marginTop: 8,
