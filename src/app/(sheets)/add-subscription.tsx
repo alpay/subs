@@ -1,6 +1,6 @@
 import type { DatePickerRef } from 'rn-awesome-date-picker';
 import { Image } from 'expo-image';
-import { Button } from 'heroui-native';
+import { Button, useToast } from 'heroui-native';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
@@ -18,6 +18,7 @@ import {
   useCurrencyRatesStore,
   useListsStore,
   useSettingsStore,
+  useSubscriptionsStore,
 } from '@/lib/stores';
 
 const SCHEDULE_OPTIONS = [
@@ -43,11 +44,13 @@ function formatDateLabel(date: Date) {
 export default function AddSubscriptionScreen() {
   useBootstrap();
   const router = useRouter();
+  const { toast } = useToast();
   const { colors, isDark } = useTheme();
   const { settings } = useSettingsStore();
   const { categories } = useCategoriesStore();
   const { lists } = useListsStore();
   const { rates } = useCurrencyRatesStore();
+  const { add } = useSubscriptionsStore();
   const { amount, currency, setCurrency, reset } = useAddSubscriptionDraftStore();
   const datePickerRef = useRef<DatePickerRef>(null);
 
@@ -122,6 +125,53 @@ export default function AddSubscriptionScreen() {
     datePickerRef.current?.open();
   }, []);
 
+  const handleSave = useCallback(() => {
+    if (!isValid) {
+      toast.show('Please fill name and amount before saving');
+      return;
+    }
+
+    const normalizedDate = startDate.toISOString().slice(0, 10);
+
+    add({
+      name: name.trim(),
+      status: 'active',
+      iconType: 'builtIn',
+      iconKey: 'custom',
+      amount: amountValue,
+      currency,
+      scheduleType: schedule,
+      intervalCount: 1,
+      billingAnchor: normalizedDate,
+      startDate: normalizedDate,
+      categoryId: categoryId || categoryOptions[0]?.value || '',
+      listId: listId || listOptions[0]?.value || '',
+      notificationMode,
+      notes: notes.trim() ? notes.trim() : undefined,
+    });
+
+    reset({ amount: '0', currency: settings.mainCurrency || 'USD' });
+    router.back();
+  }, [
+    add,
+    amountValue,
+    categoryId,
+    categoryOptions,
+    currency,
+    isValid,
+    listId,
+    listOptions,
+    name,
+    notificationMode,
+    notes,
+    reset,
+    router,
+    schedule,
+    settings.mainCurrency,
+    startDate,
+    toast,
+  ]);
+
   const rowStyle = {
     flexDirection: 'row' as const,
     alignItems: 'center' as const,
@@ -142,7 +192,13 @@ export default function AddSubscriptionScreen() {
       <FormSheet
         title="New Subscription"
         footer={(
-          <Button variant="primary" size="lg" isDisabled={!isValid} style={{ width: '100%' }}>
+          <Button
+            variant="primary"
+            size="lg"
+            isDisabled={!isValid}
+            onPress={handleSave}
+            style={{ width: '100%' }}
+          >
             Add Subscription
           </Button>
         )}

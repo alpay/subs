@@ -19,6 +19,7 @@ export function ModalHeader({ title, right, onClose, closeVariant = 'plain' }: M
   return (
     <View
       style={{
+        backgroundColor: colors.background,
         paddingHorizontal: 20,
         paddingTop: 8,
         paddingBottom: 12,
