@@ -1,4 +1,6 @@
 import { Stack, useRouter } from 'expo-router';
+import { View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { DaySubscriptionsSheet } from '@/components/day-subscriptions-sheet';
 import { HomeSearchResults } from '@/components/home/home-search-results';
@@ -13,6 +15,7 @@ export default function HomeScreen() {
   useBootstrap();
   const router = useRouter();
   const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
 
   const {
     averageMonthly,
@@ -81,9 +84,14 @@ export default function HomeScreen() {
         <Stack.Toolbar.Button icon="plus" onPress={() => router.push('/(sheets)/add-subscription')} />
       </Stack.Toolbar>
 
-      <ScreenShell contentContainerStyle={{ gap: 22, paddingTop: 12 }}>
-        {hasQuery
-          ? (
+      {hasQuery
+        ? (
+            <ScreenShell
+              contentContainerStyle={{
+                paddingTop: insets.top,
+                paddingBottom: insets.bottom + 20,
+              }}
+            >
               <HomeSearchResults
                 results={searchResults}
                 settings={settings}
@@ -91,14 +99,24 @@ export default function HomeScreen() {
                   router.push({ pathname: '/(modals)/subscription-form', params: { id: subscriptionId } });
                 }}
               />
-            )
-          : (
-              <>
-                <HomeSummary monthlyTotal={monthlyTotal} averageMonthly={averageMonthly} settings={settings} />
-                <MonthCalendar date={new Date()} subscriptions={filteredSubscriptions} onDayPress={handleDayPress} />
-              </>
-            )}
-      </ScreenShell>
+            </ScreenShell>
+          )
+        : (
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: colors.background,
+                paddingHorizontal: 20,
+                paddingTop: insets.top + 12,
+                paddingBottom: insets.bottom + 12,
+                justifyContent: 'center',
+                gap: 48,
+              }}
+            >
+              <HomeSummary monthlyTotal={monthlyTotal} averageMonthly={averageMonthly} settings={settings} />
+              <MonthCalendar date={new Date()} subscriptions={filteredSubscriptions} onDayPress={handleDayPress} />
+            </View>
+          )}
 
       <DaySubscriptionsSheet
         date={selectedDay}
