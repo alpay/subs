@@ -1,7 +1,6 @@
 import { isSameDay } from 'date-fns';
 import { Image } from 'expo-image';
 import { Stack, useRouter } from 'expo-router';
-import { Select } from 'heroui-native';
 import { useCallback, useMemo, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
@@ -10,7 +9,7 @@ import { IconButton } from '@/components/icon-button';
 import { MonthCalendar } from '@/components/month-calendar';
 import { Pill } from '@/components/pill';
 import { ScreenShell } from '@/components/screen-shell';
-import { useSelectPopoverStyles } from '@/components/select-popover';
+import { SelectPill } from '@/components/select-pill';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useCurrencyRatesStore, useListsStore, useSettingsStore, useSubscriptionsStore } from '@/lib/stores';
@@ -41,7 +40,6 @@ export default function HomeScreen() {
   useBootstrap();
   const router = useRouter();
   const { colors, isDark } = useTheme();
-  const popoverStyles = useSelectPopoverStyles();
 
   const { subscriptions } = useSubscriptionsStore();
   const { lists } = useListsStore();
@@ -114,49 +112,12 @@ export default function HomeScreen() {
           headerTintColor: colors.text,
           headerTitleStyle: { color: colors.text },
           headerLeft: () => (
-            <Select
+            <SelectPill
               value={selectedListOption}
+              options={listOptions}
               onValueChange={option => setSelectedListId(option?.value ?? ALL_LISTS)}
-              presentation="popover"
-            >
-              <Select.Trigger>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    gap: 6,
-                    paddingHorizontal: 12,
-                    paddingVertical: 8,
-                    borderRadius: 999,
-                    borderCurve: 'continuous',
-                    backgroundColor: colors.surface,
-                    borderWidth: 1,
-                    borderColor: colors.surfaceBorder,
-                    boxShadow: isDark
-                      ? '0 16px 28px rgba(0, 0, 0, 0.35)'
-                      : '0 16px 28px rgba(15, 23, 42, 0.12)',
-                  }}
-                >
-                  <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
-                    {selectedListOption?.label ?? 'All Subs'}
-                  </Text>
-                  <Image source="sf:chevron.down" style={{ width: 12, height: 12 }} tintColor={colors.text} />
-                </View>
-              </Select.Trigger>
-              <Select.Portal>
-                <Select.Overlay />
-                <Select.Content
-                  presentation="popover"
-                  align="start"
-                  width="trigger"
-                  style={popoverStyles.content}
-                >
-                  {listOptions.map(option => (
-                    <Select.Item key={option.value} value={option.value} label={option.label} />
-                  ))}
-                </Select.Content>
-              </Select.Portal>
-            </Select>
+              placeholder="All Subs"
+            />
           ),
           headerRight: () => (
             <View

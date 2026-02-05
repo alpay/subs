@@ -1,16 +1,15 @@
-import type { BottomSheetBackdropProps, BottomSheetMethods } from '@gorhom/bottom-sheet';
-
-import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import type { DatePickerRef } from 'rn-awesome-date-picker';
+import type { AmountKey } from '@/components/amount-picker-sheet';
 import { Image } from 'expo-image';
-import { Button, Select } from 'heroui-native';
+import { Button } from 'heroui-native';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import DatePicker, { type DatePickerRef } from 'rn-awesome-date-picker';
 
+import DatePicker from 'rn-awesome-date-picker';
+import { AmountPickerSheet } from '@/components/amount-picker-sheet';
 import { GlassCard, GlassCardBody } from '@/components/glass-card';
 import { ModalSheet } from '@/components/modal-sheet';
-import { useSelectPopoverStyles } from '@/components/select-popover';
+import { SelectPill } from '@/components/select-pill';
 import { SheetInput, SheetTextArea } from '@/components/sheet-input';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
 import { useTheme } from '@/lib/hooks/use-theme';
@@ -33,15 +32,6 @@ const NOTIFICATION_OPTIONS = [
   { label: 'None', value: 'none' },
 ] as const;
 
-const AMOUNT_KEYS = [
-  ['1', '2', '3'],
-  ['4', '5', '6'],
-  ['7', '8', '9'],
-  ['.', '0', 'back'],
-] as const;
-
-type AmountKey = (typeof AMOUNT_KEYS)[number][number];
-
 function formatDateLabel(date: Date) {
   return date.toLocaleDateString('en-GB', {
     day: '2-digit',
@@ -53,13 +43,10 @@ function formatDateLabel(date: Date) {
 export default function AddSubscriptionScreen() {
   useBootstrap();
   const { colors, isDark } = useTheme();
-  const popoverStyles = useSelectPopoverStyles();
   const { settings } = useSettingsStore();
   const { categories } = useCategoriesStore();
   const { lists } = useListsStore();
   const { rates } = useCurrencyRatesStore();
-  const { bottom } = useSafeAreaInsets();
-  const amountSheetRef = useRef<BottomSheetMethods>(null);
   const datePickerRef = useRef<DatePickerRef>(null);
 
   const [name, setName] = useState('');
@@ -79,8 +66,6 @@ export default function AddSubscriptionScreen() {
 
   const isValid = name.trim().length > 0 && Number.isFinite(amountValue) && amountValue > 0;
 
-  const amountSnapPoints = useMemo(() => ['72%'], []);
-  const amountSheetIndex = isAmountSheetOpen ? 0 : -1;
   const scheduleOption = useMemo(
     () => SCHEDULE_OPTIONS.find(option => option.value === schedule),
     [schedule],
@@ -109,11 +94,6 @@ export default function AddSubscriptionScreen() {
     () => categories.find(category => category.id === categoryId),
     [categories, categoryId],
   );
-  const selectedList = useMemo(
-    () => lists.find(list => list.id === listId),
-    [lists, listId],
-  );
-
   useEffect(() => {
     if (!categoryId && categoryOptions.length > 0) {
       setCategoryId(categoryOptions[0].value);
@@ -145,7 +125,7 @@ export default function AddSubscriptionScreen() {
   }, []);
 
   const handleAmountKeyPress = useCallback((key: AmountKey) => {
-    setAmount(prev => {
+    setAmount((prev) => {
       if (key === 'back') {
         const next = prev.length > 1 ? prev.slice(0, -1) : '0';
         return next === '' ? '0' : next;
@@ -171,25 +151,6 @@ export default function AddSubscriptionScreen() {
     });
   }, []);
 
-  const renderBackdrop = useCallback(
-    (props: BottomSheetBackdropProps) => (
-      <BottomSheetBackdrop
-        {...props}
-        appearsOnIndex={0}
-        disappearsOnIndex={-1}
-        pressBehavior="close"
-        opacity={0.4}
-      />
-    ),
-    [],
-  );
-
-  const handleAmountSheetChange = useCallback((index: number) => {
-    if (index === -1) {
-      setIsAmountSheetOpen(false);
-    }
-  }, []);
-
   const rowStyle = {
     flexDirection: 'row' as const,
     alignItems: 'center' as const,
@@ -209,11 +170,11 @@ export default function AddSubscriptionScreen() {
     <>
       <ModalSheet
         title="New Subscription"
-        footer={
+        footer={(
           <Button variant="primary" size="lg" isDisabled={!isValid} style={{ width: '100%' }}>
             Add Subscription
           </Button>
-        }
+        )}
       >
         <View style={{ alignItems: 'center', paddingVertical: 6 }}>
           <View
@@ -267,48 +228,17 @@ export default function AddSubscriptionScreen() {
               </View>
             </View>
 
-            <Select
-              value={scheduleOption}
-              onValueChange={option => setSchedule((option?.value as typeof schedule) ?? 'monthly')}
-              presentation="popover"
-            >
-              <Select.Trigger
-                style={({ pressed }) => [
-                  rowStyle,
-                  rowDivider,
-                  pressed ? { opacity: 0.85 } : null,
-                ]}
-              >
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
-                    Schedule
-                  </Text>
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                  <Text style={{ fontSize: 14, color: colors.textMuted }} selectable>
-                    {scheduleOption?.label ?? 'Select'}
-                  </Text>
-                  <Image
-                    source="sf:chevron.down"
-                    style={{ width: 12, height: 12 }}
-                    tintColor={colors.textMuted}
-                  />
-                </View>
-              </Select.Trigger>
-              <Select.Portal>
-                <Select.Overlay />
-                <Select.Content
-                  presentation="popover"
-                  align="start"
-                  width="trigger"
-                  style={popoverStyles.content}
-                >
-                  {SCHEDULE_OPTIONS.map(option => (
-                    <Select.Item key={option.value} value={option.value} label={option.label} />
-                  ))}
-                </Select.Content>
-              </Select.Portal>
-            </Select>
+            <View style={[rowStyle, rowDivider]}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
+                Schedule
+              </Text>
+              <SelectPill
+                value={scheduleOption}
+                options={[...SCHEDULE_OPTIONS]}
+                onValueChange={option => setSchedule((option?.value as typeof schedule) ?? 'monthly')}
+                size="sm"
+              />
+            </View>
 
             <Pressable onPress={handleDatePress} style={rowStyle}>
               <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
@@ -360,7 +290,12 @@ export default function AddSubscriptionScreen() {
                   }}
                   selectable
                 >
-                  ${formattedAmount} ({currency})
+                  $
+                  {formattedAmount}
+                  {' '}
+                  (
+                  {currency}
+                  )
                 </Text>
               </View>
             </Pressable>
@@ -369,29 +304,23 @@ export default function AddSubscriptionScreen() {
 
         <GlassCard>
           <GlassCardBody style={{ padding: 0, gap: 0 }}>
-            <Select
-              value={categoryOptions.find(option => option.value === categoryId)}
-              onValueChange={option => setCategoryId(option?.value ?? '')}
-              presentation="popover"
-            >
-              <Select.Trigger
-                style={({ pressed }) => [
-                  rowStyle,
-                  rowDivider,
-                  pressed ? { opacity: 0.85 } : null,
-                ]}
-              >
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                  <Image
-                    source="sf:tag"
-                    style={{ width: 16, height: 16 }}
-                    tintColor={colors.textMuted}
-                  />
-                  <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
-                    Category
-                  </Text>
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            <View style={[rowStyle, rowDivider]}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <Image
+                  source="sf:tag"
+                  style={{ width: 16, height: 16 }}
+                  tintColor={colors.textMuted}
+                />
+                <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
+                  Category
+                </Text>
+              </View>
+              <SelectPill
+                value={categoryOptions.find(option => option.value === categoryId)}
+                options={categoryOptions}
+                onValueChange={option => setCategoryId(option?.value ?? '')}
+                size="sm"
+                leading={(
                   <View
                     style={{
                       width: 8,
@@ -400,125 +329,47 @@ export default function AddSubscriptionScreen() {
                       backgroundColor: selectedCategory?.color ?? colors.accent,
                     }}
                   />
-                  <Text style={{ fontSize: 14, color: colors.textMuted }} selectable>
-                    {selectedCategory?.name ?? 'Select'}
-                  </Text>
-                  <Image
-                    source="sf:chevron.down"
-                    style={{ width: 12, height: 12 }}
-                    tintColor={colors.textMuted}
-                  />
-                </View>
-              </Select.Trigger>
-              <Select.Portal>
-                <Select.Overlay />
-                <Select.Content
-                  presentation="popover"
-                  align="start"
-                  width="trigger"
-                  style={popoverStyles.content}
-                >
-                  {categoryOptions.map(option => (
-                    <Select.Item key={option.value} value={option.value} label={option.label} />
-                  ))}
-                </Select.Content>
-              </Select.Portal>
-            </Select>
+                )}
+              />
+            </View>
 
-            <Select
-              value={listOptions.find(option => option.value === listId)}
-              onValueChange={option => setListId(option?.value ?? '')}
-              presentation="popover"
-            >
-              <Select.Trigger
-                style={({ pressed }) => [
-                  rowStyle,
-                  rowDivider,
-                  pressed ? { opacity: 0.85 } : null,
-                ]}
-              >
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                  <Image
-                    source="sf:list.bullet"
-                    style={{ width: 16, height: 16 }}
-                    tintColor={colors.textMuted}
-                  />
-                  <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
-                    List
-                  </Text>
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                  <Text style={{ fontSize: 14, color: colors.textMuted }} selectable>
-                    {selectedList?.name ?? 'Select'}
-                  </Text>
-                  <Image
-                    source="sf:chevron.down"
-                    style={{ width: 12, height: 12 }}
-                    tintColor={colors.textMuted}
-                  />
-                </View>
-              </Select.Trigger>
-              <Select.Portal>
-                <Select.Overlay />
-                <Select.Content
-                  presentation="popover"
-                  align="start"
-                  width="trigger"
-                  style={popoverStyles.content}
-                >
-                  {listOptions.map(option => (
-                    <Select.Item key={option.value} value={option.value} label={option.label} />
-                  ))}
-                </Select.Content>
-              </Select.Portal>
-            </Select>
+            <View style={[rowStyle, rowDivider]}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <Image
+                  source="sf:list.bullet"
+                  style={{ width: 16, height: 16 }}
+                  tintColor={colors.textMuted}
+                />
+                <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
+                  List
+                </Text>
+              </View>
+              <SelectPill
+                value={listOptions.find(option => option.value === listId)}
+                options={listOptions}
+                onValueChange={option => setListId(option?.value ?? '')}
+                size="sm"
+              />
+            </View>
 
-            <Select
-              value={notificationOption}
-              onValueChange={option => setNotificationMode((option?.value as typeof notificationMode) ?? 'default')}
-              presentation="popover"
-            >
-              <Select.Trigger
-                style={({ pressed }) => [
-                  rowStyle,
-                  pressed ? { opacity: 0.85 } : null,
-                ]}
-              >
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                  <Image
-                    source="sf:bell"
-                    style={{ width: 16, height: 16 }}
-                    tintColor={colors.textMuted}
-                  />
-                  <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
-                    Notifications
-                  </Text>
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                  <Text style={{ fontSize: 14, color: colors.textMuted }} selectable>
-                    {notificationOption?.label ?? 'Select'}
-                  </Text>
-                  <Image
-                    source="sf:chevron.down"
-                    style={{ width: 12, height: 12 }}
-                    tintColor={colors.textMuted}
-                  />
-                </View>
-              </Select.Trigger>
-              <Select.Portal>
-                <Select.Overlay />
-                <Select.Content
-                  presentation="popover"
-                  align="start"
-                  width="trigger"
-                  style={popoverStyles.content}
-                >
-                  {NOTIFICATION_OPTIONS.map(option => (
-                    <Select.Item key={option.value} value={option.value} label={option.label} />
-                  ))}
-                </Select.Content>
-              </Select.Portal>
-            </Select>
+            <View style={rowStyle}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <Image
+                  source="sf:bell"
+                  style={{ width: 16, height: 16 }}
+                  tintColor={colors.textMuted}
+                />
+                <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
+                  Notifications
+                </Text>
+              </View>
+              <SelectPill
+                value={notificationOption}
+                options={[...NOTIFICATION_OPTIONS]}
+                onValueChange={option => setNotificationMode((option?.value as typeof notificationMode) ?? 'default')}
+                size="sm"
+              />
+            </View>
           </GlassCardBody>
         </GlassCard>
 
@@ -549,189 +400,15 @@ export default function AddSubscriptionScreen() {
         </GlassCard>
       </ModalSheet>
 
-      <View
-        pointerEvents={isAmountSheetOpen ? 'auto' : 'none'}
-        style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0 }}
-      >
-        <BottomSheet
-          ref={amountSheetRef}
-          index={amountSheetIndex}
-          snapPoints={amountSnapPoints}
-          onChange={handleAmountSheetChange}
-          enablePanDownToClose
-          backdropComponent={renderBackdrop}
-          backgroundStyle={{ backgroundColor: colors.surface }}
-          handleIndicatorStyle={{ backgroundColor: colors.surfaceBorder, width: 40 }}
-        >
-          <View style={{ flex: 1, paddingHorizontal: 20, paddingTop: 8, paddingBottom: bottom + 16, gap: 18 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Select
-              value={currencyOption}
-              onValueChange={option => setCurrency(option?.value ?? currency)}
-              presentation="popover"
-            >
-              <Select.Trigger
-                style={({ pressed }) => [
-                  {
-                    paddingHorizontal: 12,
-                    paddingVertical: 8,
-                    borderRadius: 999,
-                    borderCurve: 'continuous',
-                    backgroundColor: colors.surfaceMuted,
-                    borderWidth: 1,
-                    borderColor: colors.surfaceBorder,
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    gap: 6,
-                  },
-                  pressed && { opacity: 0.8 },
-                ]}
-              >
-                <Text style={{ fontSize: 13, fontWeight: '600', color: colors.text }} selectable>
-                  {currencyOption?.label ?? currency}
-                </Text>
-                <Image
-                  source="sf:chevron.down"
-                  style={{ width: 12, height: 12 }}
-                  tintColor={colors.textMuted}
-                />
-              </Select.Trigger>
-              <Select.Portal>
-                <Select.Overlay />
-                <Select.Content
-                  presentation="popover"
-                  align="start"
-                  width="trigger"
-                  style={popoverStyles.content}
-                >
-                  {currencyOptions.map(option => (
-                    <Select.Item key={option.value} value={option.value} label={option.label} />
-                  ))}
-                </Select.Content>
-              </Select.Portal>
-            </Select>
-
-            <Pressable
-              onPress={handleAmountClose}
-              style={({ pressed }) => [
-                {
-                  width: 32,
-                  height: 32,
-                  borderRadius: 16,
-                  borderCurve: 'continuous',
-                  backgroundColor: colors.surfaceMuted,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderWidth: 1,
-                  borderColor: colors.surfaceBorder,
-                },
-                pressed && { opacity: 0.7 },
-              ]}
-            >
-              <Image
-                source="sf:xmark"
-                style={{ width: 12, height: 12 }}
-                tintColor={colors.textMuted}
-              />
-            </Pressable>
-          </View>
-
-          <View style={{ alignItems: 'center', gap: 6 }}>
-            <Text style={{ fontSize: 12, letterSpacing: 1.4, color: colors.textMuted }} selectable>
-              AMOUNT
-            </Text>
-            <Text
-              style={{
-                fontSize: 54,
-                fontWeight: '600',
-                color: colors.text,
-                fontVariant: ['tabular-nums'],
-              }}
-              selectable
-            >
-              ${sheetAmount}
-            </Text>
-          </View>
-
-          <View style={{ gap: 12 }}>
-            {AMOUNT_KEYS.map(row => (
-              <View key={row.join('-')} style={{ flexDirection: 'row', gap: 12 }}>
-                {row.map(key => {
-                  const isBackspace = key === 'back';
-                  return (
-                    <Pressable
-                      key={key}
-                      onPress={() => handleAmountKeyPress(key)}
-                      style={({ pressed }) => [
-                        {
-                          flex: 1,
-                          height: 56,
-                          borderRadius: 18,
-                          borderCurve: 'continuous',
-                          backgroundColor: colors.surfaceMuted,
-                          borderWidth: 1,
-                          borderColor: colors.surfaceBorder,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          boxShadow: isDark
-                            ? '0 8px 14px rgba(0, 0, 0, 0.25)'
-                            : '0 8px 14px rgba(15, 23, 42, 0.08)',
-                        },
-                        pressed && { opacity: 0.75 },
-                      ]}
-                    >
-                      {isBackspace
-                        ? (
-                            <Image
-                              source="sf:delete.left"
-                              style={{ width: 20, height: 20 }}
-                              tintColor={colors.text}
-                            />
-                          )
-                        : (
-                            <Text
-                              style={{ fontSize: 20, fontWeight: '600', color: colors.text }}
-                              selectable
-                            >
-                              {key}
-                            </Text>
-                          )}
-                    </Pressable>
-                  );
-                })}
-              </View>
-            ))}
-          </View>
-
-          <Pressable
-            onPress={handleAmountClose}
-            style={({ pressed }) => [
-              {
-                marginTop: 8,
-                borderRadius: 999,
-                borderCurve: 'continuous',
-                paddingVertical: 14,
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: isDark ? '#F5F5F5' : colors.text,
-              },
-              pressed && { opacity: 0.85 },
-            ]}
-          >
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: '600',
-                color: isDark ? '#1C1C1E' : colors.background,
-              }}
-              selectable
-            >
-              Done
-            </Text>
-          </Pressable>
-        </View>
-        </BottomSheet>
-      </View>
+      <AmountPickerSheet
+        isOpen={isAmountSheetOpen}
+        amountLabel={sheetAmount}
+        currencyOption={currencyOption}
+        currencyOptions={currencyOptions}
+        onCurrencyChange={value => setCurrency(value || currency)}
+        onKeyPress={handleAmountKeyPress}
+        onClose={handleAmountClose}
+      />
 
       <DatePicker
         ref={datePickerRef}

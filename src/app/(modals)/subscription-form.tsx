@@ -1,7 +1,7 @@
 import type { NotificationMode, ScheduleType, Subscription, SubscriptionStatus } from '@/lib/db/schema';
 
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Button, Label, Select, TextField, useToast } from 'heroui-native';
+import { Button, Label, TextField, useToast } from 'heroui-native';
 import { useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
 
@@ -9,7 +9,6 @@ import { GlassCard, GlassCardBody } from '@/components/glass-card';
 import { ModalSheet } from '@/components/modal-sheet';
 import { Pill } from '@/components/pill';
 import { SelectField } from '@/components/select-field';
-import { useSelectPopoverStyles } from '@/components/select-popover';
 import { ServiceIcon } from '@/components/service-icon';
 import { SheetInput, SheetTextArea } from '@/components/sheet-input';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
@@ -81,7 +80,6 @@ export default function SubscriptionFormScreen() {
   const router = useRouter();
   const { toast } = useToast();
   const { colors } = useTheme();
-  const popoverStyles = useSelectPopoverStyles();
   const params = useLocalSearchParams<{ id?: string; templateId?: string }>();
 
   const { subscriptions, add, update } = useSubscriptionsStore();
@@ -372,30 +370,16 @@ export default function SubscriptionFormScreen() {
 
       <GlassCard>
         <GlassCardBody style={{ gap: 12 }}>
-          <TextField>
-            <Label>Icon type</Label>
-            <Select
-              value={{ label: iconType === 'builtIn' ? 'Built-in' : 'Image URI', value: iconType }}
-              onValueChange={option => setIconType((option?.value as 'builtIn' | 'image' | undefined) ?? 'builtIn')}
-              presentation="popover"
-            >
-              <Select.Trigger>
-                <Select.Value placeholder="Select icon type" />
-              </Select.Trigger>
-              <Select.Portal>
-                <Select.Overlay />
-                <Select.Content
-                  presentation="popover"
-                  align="start"
-                  width="trigger"
-                  style={popoverStyles.content}
-                >
-                  <Select.Item value="builtIn" label="Built-in" />
-                  <Select.Item value="image" label="Image URI" />
-                </Select.Content>
-              </Select.Portal>
-            </Select>
-          </TextField>
+          <SelectField
+            label="Icon type"
+            value={iconType}
+            options={[
+              { label: 'Built-in', value: 'builtIn' },
+              { label: 'Image URI', value: 'image' },
+            ]}
+            placeholder="Select icon type"
+            onChange={value => setIconType((value as 'builtIn' | 'image' | undefined) ?? 'builtIn')}
+          />
 
           {iconType === 'builtIn'
             ? (

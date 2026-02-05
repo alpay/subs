@@ -17,6 +17,10 @@ const ICON_MAP: Record<string, { symbol: string; color: string }> = {
   custom: { symbol: 'sparkles', color: '#FF8A3D' },
 };
 
+export function getServiceColor(iconKey?: string) {
+  return (ICON_MAP[iconKey ?? 'custom'] ?? ICON_MAP.custom).color;
+}
+
 type ServiceIconProps = {
   iconKey?: string;
   size?: number;
