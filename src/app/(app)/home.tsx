@@ -5,18 +5,14 @@ import { useCallback, useMemo, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { DaySubscriptionsSheet } from '@/components/day-subscriptions-sheet';
-import { IconButton } from '@/components/icon-button';
 import { MonthCalendar } from '@/components/month-calendar';
 import { Pill } from '@/components/pill';
 import { ScreenShell } from '@/components/screen-shell';
-import { SelectPill } from '@/components/select-pill';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useCurrencyRatesStore, useListsStore, useSettingsStore, useSubscriptionsStore } from '@/lib/stores';
 import { formatAmount, formatMonthYear } from '@/lib/utils/format';
 import { calculateAverageMonthly, calculateMonthlyTotal } from '@/lib/utils/totals';
-
-type SelectOption = { label: string; value: string } | undefined;
 
 const ALL_LISTS = 'all';
 
@@ -99,8 +95,10 @@ export default function HomeScreen() {
     [filteredSubscriptions, settings, rates],
   );
 
-  const selectedListOption = listOptions.find(option => option.value === selectedListId) as SelectOption;
   const badge = getMonthBadge(monthlyTotal, averageMonthly);
+
+  const selectedListLabel
+    = listOptions.find(option => option.value === selectedListId)?.label ?? 'All Subs';
 
   return (
     <>
@@ -111,29 +109,33 @@ export default function HomeScreen() {
           headerStyle: { backgroundColor: colors.background },
           headerTintColor: colors.text,
           headerTitleStyle: { color: colors.text },
-          headerLeft: () => (
-            <SelectPill
-              value={selectedListOption}
-              options={listOptions}
-              onValueChange={option => setSelectedListId(option?.value ?? ALL_LISTS)}
-              placeholder="All Subs"
-            />
-          ),
-          headerRight: () => (
-            <View
-              style={{
-                flexDirection: 'row',
-                gap: 6,
-                padding: 2,
-              }}
-            >
-              <IconButton symbol="magnifyingglass" size={30} variant="muted" onPress={() => router.push('/search')} />
-              <IconButton symbol="chart.bar" size={30} variant="muted" onPress={() => router.push('/(modals)/analytics')} />
-              <IconButton symbol="gearshape" size={30} variant="muted" onPress={() => router.push('/(sheets)/settings')} />
-            </View>
-          ),
         }}
       />
+      <Stack.Toolbar placement="left">
+        <Stack.Toolbar.Menu>
+          <Stack.Toolbar.Label>{selectedListLabel}</Stack.Toolbar.Label>
+          {listOptions.map(option => (
+            <Stack.Toolbar.MenuAction
+              key={option.value}
+              isOn={option.value === selectedListId}
+              onPress={() => setSelectedListId(option.value)}
+            >
+              {option.label}
+            </Stack.Toolbar.MenuAction>
+          ))}
+        </Stack.Toolbar.Menu>
+      </Stack.Toolbar>
+
+      <Stack.Toolbar placement="right">
+        <Stack.Toolbar.Button icon="chart.bar" onPress={() => router.push('/(modals)/analytics')} />
+        <Stack.Toolbar.Button icon="gearshape" onPress={() => router.push('/(sheets)/settings')} />
+      </Stack.Toolbar>
+      <Stack.SearchBar placeholder="Search subscriptions" onFocus={() => router.push('/search')} />
+      <Stack.Toolbar placement="bottom">
+        <Stack.Toolbar.SearchBarSlot />
+        <Stack.Toolbar.Spacer />
+        <Stack.Toolbar.Button icon="plus" onPress={() => router.push('/(sheets)/add-subscription')} />
+      </Stack.Toolbar>
 
       <ScreenShell contentContainerStyle={{ gap: 22, paddingTop: 12 }}>
         <View style={{ alignItems: 'center', gap: 10, paddingVertical: 6 }}>
