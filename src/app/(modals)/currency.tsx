@@ -6,12 +6,10 @@ import { Text, View } from 'react-native';
 import { GlassCard, GlassCardBody } from '@/components/glass-card';
 import { ModalSheet } from '@/components/modal-sheet';
 import { SelectPill } from '@/components/select-pill';
-import { useBootstrap } from '@/lib/hooks/use-bootstrap';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useCurrencyRatesStore, useSettingsStore } from '@/lib/stores';
 
 export default function CurrencyScreen() {
-  useBootstrap();
   const router = useRouter();
   const { toast } = useToast();
   const { colors } = useTheme();

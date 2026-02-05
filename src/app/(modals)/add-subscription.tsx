@@ -10,7 +10,6 @@ import { GlassCard, GlassCardBody } from '@/components/glass-card';
 import { ModalSheet } from '@/components/modal-sheet';
 import { SelectPill } from '@/components/select-pill';
 import { SheetInput, SheetTextArea } from '@/components/sheet-input';
-import { useBootstrap } from '@/lib/hooks/use-bootstrap';
 import { useTheme } from '@/lib/hooks/use-theme';
 import {
   useAddSubscriptionDraftStore,
@@ -42,7 +41,6 @@ function formatDateLabel(date: Date) {
 }
 
 export default function AddSubscriptionScreen() {
-  useBootstrap();
   const router = useRouter();
   const { toast } = useToast();
   const { colors, isDark } = useTheme();

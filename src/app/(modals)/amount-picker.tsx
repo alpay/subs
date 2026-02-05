@@ -3,11 +3,9 @@ import { useRouter } from 'expo-router';
 
 import { useCallback, useEffect, useMemo } from 'react';
 import { AmountPickerSheet } from '@/components/amount-picker-sheet';
-import { useBootstrap } from '@/lib/hooks/use-bootstrap';
 import { useAddSubscriptionDraftStore, useCurrencyRatesStore } from '@/lib/stores';
 
 export default function AmountPickerScreen() {
-  useBootstrap();
   const router = useRouter();
   const { rates } = useCurrencyRatesStore();
   const { amount, currency, setAmount, setCurrency } = useAddSubscriptionDraftStore();

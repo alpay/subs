@@ -10,7 +10,6 @@ import { Text, View } from 'react-native';
 import { GlassCard, GlassCardBody } from '@/components/glass-card';
 import { ModalSheet } from '@/components/modal-sheet';
 import { SheetTextArea } from '@/components/sheet-input';
-import { useBootstrap } from '@/lib/hooks/use-bootstrap';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useCategoriesStore, useListsStore, usePaymentMethodsStore, useSubscriptionsStore } from '@/lib/stores';
 
@@ -55,7 +54,6 @@ function normalizeStatus(value: string): SubscriptionStatus {
 }
 
 export default function CsvImportScreen() {
-  useBootstrap();
   const router = useRouter();
   const { toast } = useToast();
   const { colors } = useTheme();

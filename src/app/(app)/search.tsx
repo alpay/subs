@@ -6,13 +6,11 @@ import { Pressable, Text, TextInput, View } from 'react-native';
 import { Pill } from '@/components/pill';
 import { ScreenShell } from '@/components/screen-shell';
 import { ServiceIcon } from '@/components/service-icon';
-import { useBootstrap } from '@/lib/hooks/use-bootstrap';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useSettingsStore, useSubscriptionsStore } from '@/lib/stores';
 import { formatAmount } from '@/lib/utils/format';
 
 export default function SearchScreen() {
-  useBootstrap();
   const router = useRouter();
   const { colors, isDark } = useTheme();
 

@@ -11,6 +11,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { KeyboardProvider } from 'react-native-keyboard-controller';
 
 import { APIProvider } from '@/lib/api';
+import { useBootstrap } from '@/lib/hooks/use-bootstrap';
 import { useTheme } from '@/lib/hooks/use-theme';
 
 import '../global.css';
@@ -29,6 +30,8 @@ SplashScreen.setOptions({
 });
 
 export default function RootLayout() {
+  useBootstrap();
+
   useEffect(() => {
     SplashScreen.hideAsync().catch(() => {
       // Ignore splash hide errors in development.

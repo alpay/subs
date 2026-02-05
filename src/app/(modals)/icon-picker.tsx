@@ -6,12 +6,10 @@ import { Text, View } from 'react-native';
 
 import { GlassCard, GlassCardBody } from '@/components/glass-card';
 import { ModalSheet } from '@/components/modal-sheet';
-import { useBootstrap } from '@/lib/hooks/use-bootstrap';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useServiceTemplatesStore } from '@/lib/stores';
 
 export default function IconPickerScreen() {
-  useBootstrap();
   const { toast } = useToast();
   const { colors } = useTheme();
   const { templates } = useServiceTemplatesStore();

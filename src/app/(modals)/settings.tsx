@@ -12,7 +12,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { GlassCard, GlassCardBody } from '@/components/glass-card';
 import { ModalSheet } from '@/components/modal-sheet';
 import { Pill } from '@/components/pill';
-import { useBootstrap } from '@/lib/hooks/use-bootstrap';
 import { useTheme } from '@/lib/hooks/use-theme';
 import {
   useCategoriesStore,
@@ -229,7 +228,6 @@ function SubscriptionBadge() {
 }
 
 export default function SettingsScreen() {
-  useBootstrap();
   const router = useRouter();
   const { toast } = useToast();
   const { colors } = useTheme();

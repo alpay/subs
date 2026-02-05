@@ -4,7 +4,6 @@ import { GlassCard, GlassCardBody } from '@/components/glass-card';
 import { ModalSheet } from '@/components/modal-sheet';
 import { Pill } from '@/components/pill';
 import { RingChart } from '@/components/ring-chart';
-import { useBootstrap } from '@/lib/hooks/use-bootstrap';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useCategoriesStore, useCurrencyRatesStore, useSettingsStore, useSubscriptionsStore } from '@/lib/stores';
 import { convertCurrency } from '@/lib/utils/currency';
@@ -12,7 +11,6 @@ import { formatAmount } from '@/lib/utils/format';
 import { calculateAverageMonthly, calculateYearlyForecast, calculateYearToDateTotal } from '@/lib/utils/totals';
 
 export default function AnalyticsScreen() {
-  useBootstrap();
   const { colors } = useTheme();
 
   const { subscriptions } = useSubscriptionsStore();

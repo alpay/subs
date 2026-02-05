@@ -11,15 +11,15 @@ import {
 } from '@/lib/stores';
 
 export function useBootstrap() {
-  const subscriptions = useSubscriptionsStore();
-  const categories = useCategoriesStore();
-  const lists = useListsStore();
-  const methods = usePaymentMethodsStore();
-  const settings = useSettingsStore();
-  const rates = useCurrencyRatesStore();
-  const templates = useServiceTemplatesStore();
-
   useEffect(() => {
+    const subscriptions = useSubscriptionsStore.getState();
+    const categories = useCategoriesStore.getState();
+    const lists = useListsStore.getState();
+    const methods = usePaymentMethodsStore.getState();
+    const settings = useSettingsStore.getState();
+    const rates = useCurrencyRatesStore.getState();
+    const templates = useServiceTemplatesStore.getState();
+
     if (!subscriptions.isLoaded) {
       subscriptions.load();
     }
@@ -41,13 +41,5 @@ export function useBootstrap() {
     if (!templates.isLoaded) {
       templates.load();
     }
-  }, [
-    subscriptions,
-    categories,
-    lists,
-    methods,
-    settings,
-    rates,
-    templates,
-  ]);
+  }, []);
 }

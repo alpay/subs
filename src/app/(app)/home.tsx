@@ -9,12 +9,10 @@ import { HomeSearchResults } from '@/components/home/home-search-results';
 import { HomeSummary } from '@/components/home/home-summary';
 import { MonthCalendar } from '@/components/month-calendar';
 import { ScreenShell } from '@/components/screen-shell';
-import { useBootstrap } from '@/lib/hooks/use-bootstrap';
 import { useHomeData } from '@/lib/hooks/use-home-data';
 import { useTheme } from '@/lib/hooks/use-theme';
 
 export default function HomeScreen() {
-  useBootstrap();
   const router = useRouter();
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();

@@ -11,7 +11,6 @@ import { Pill } from '@/components/pill';
 import { SelectField } from '@/components/select-field';
 import { ServiceIcon } from '@/components/service-icon';
 import { SheetInput, SheetTextArea } from '@/components/sheet-input';
-import { useBootstrap } from '@/lib/hooks/use-bootstrap';
 import { useTheme } from '@/lib/hooks/use-theme';
 import {
   useCategoriesStore,
@@ -76,7 +75,6 @@ function isValidDateString(value: string) {
 }
 
 export default function SubscriptionFormScreen() {
-  useBootstrap();
   const router = useRouter();
   const { toast } = useToast();
   const { colors } = useTheme();
