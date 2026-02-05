@@ -24,17 +24,21 @@ export function SettingRow({ label, value, description, children, onPress, style
           <Text style={{ color: colors.text, fontWeight: '500' }} selectable>
             {label}
           </Text>
-          {description ? (
-            <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
-              {description}
-            </Text>
-          ) : null}
+          {description
+            ? (
+                <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
+                  {description}
+                </Text>
+              )
+            : null}
         </View>
-        {value ? (
-          <Text style={{ color: colors.textMuted }} selectable>
-            {value}
-          </Text>
-        ) : null}
+        {value
+          ? (
+              <Text style={{ color: colors.textMuted }} selectable>
+                {value}
+              </Text>
+            )
+          : null}
         {children}
       </View>
     </Pressable>

@@ -1,13 +1,13 @@
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { Button, Input, Label, TextField, useToast } from 'heroui-native';
+import { Button, Label, TextField, useToast } from 'heroui-native';
 import { useMemo, useState } from 'react';
 import { Pressable, ScrollView, Text, useWindowDimensions, View } from 'react-native';
 
 import { GlassCard, GlassCardBody } from '@/components/glass-card';
-import { ModalHeader } from '@/components/modal-header';
-import { ScreenShell } from '@/components/screen-shell';
+import { ModalSheet } from '@/components/modal-sheet';
 import { ServiceIcon } from '@/components/service-icon';
+import { SheetInput } from '@/components/sheet-input';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useServiceTemplatesStore } from '@/lib/stores';
@@ -44,100 +44,96 @@ export default function AddSubscriptionScreen() {
   };
 
   return (
-    <>
-      <ModalHeader title="Add Subscription" />
-      <ScreenShell>
-        <GlassCard>
-          <GlassCardBody style={{ gap: 12 }}>
-            <Text style={{ fontSize: 13, color: colors.textMuted }} selectable>
-              Bring in services fast or start from scratch.
-            </Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12 }}>
-              {IMPORT_OPTIONS.map(option => (
-                <Pressable key={option.id} onPress={() => handleImport(option.id)}>
-                  <View
-                    style={{
-                      width: 140,
-                      padding: 12,
-                      borderRadius: 20,
-                      borderCurve: 'continuous',
-                      backgroundColor: colors.surfaceMuted,
-                      borderWidth: 1,
-                      borderColor: colors.surfaceBorder,
-                      gap: 10,
-                    }}
-                  >
-                    <View
-                      style={{
-                        width: 36,
-                        height: 36,
-                        borderRadius: 18,
-                        borderCurve: 'continuous',
-                        backgroundColor: colors.surface,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}
-                    >
-                      <Image
-                        source={`sf:${option.symbol}`}
-                        style={{ width: 18, height: 18 }}
-                        tintColor={colors.text}
-                      />
-                    </View>
-                    <Text style={{ fontSize: 12, fontWeight: '600', color: colors.text }} selectable>
-                      {option.label}
-                    </Text>
-                  </View>
-                </Pressable>
-              ))}
-            </ScrollView>
-            <Button variant="secondary" onPress={() => router.push('/(modals)/subscription-form')}>
-              Create custom subscription
-            </Button>
-          </GlassCardBody>
-        </GlassCard>
-
-        <GlassCard>
-          <GlassCardBody style={{ gap: 12 }}>
-            <Text style={{ fontSize: 12, color: colors.textMuted, letterSpacing: 1 }} selectable>
-              POPULAR SERVICES
-            </Text>
-            <TextField>
-              <Label>Search services</Label>
-              <Input placeholder="Netflix, Spotify, Cursor..." value={searchValue} onChangeText={setSearchValue} />
-            </TextField>
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: tileGap }}>
-              {filteredTemplates.map(template => (
-                <Pressable
-                  key={template.id}
-                  onPress={() =>
-                    router.push({ pathname: '/(modals)/subscription-form', params: { templateId: template.id } })
-                  }
+    <ModalSheet title="Add Subscription">
+      <GlassCard>
+        <GlassCardBody style={{ gap: 12 }}>
+          <Text style={{ fontSize: 13, color: colors.textMuted }} selectable>
+            Bring in services fast or start from scratch.
+          </Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12 }}>
+            {IMPORT_OPTIONS.map(option => (
+              <Pressable key={option.id} onPress={() => handleImport(option.id)}>
+                <View
+                  style={{
+                    width: 140,
+                    padding: 12,
+                    borderRadius: 20,
+                    borderCurve: 'continuous',
+                    backgroundColor: colors.surfaceMuted,
+                    borderWidth: 1,
+                    borderColor: colors.surfaceBorder,
+                    gap: 10,
+                  }}
                 >
                   <View
                     style={{
-                      width: tileWidth,
-                      padding: 14,
-                      borderRadius: 22,
+                      width: 36,
+                      height: 36,
+                      borderRadius: 18,
                       borderCurve: 'continuous',
-                      backgroundColor: colors.surfaceMuted,
-                      borderWidth: 1,
-                      borderColor: colors.surfaceBorder,
-                      gap: 10,
+                      backgroundColor: colors.surface,
                       alignItems: 'center',
+                      justifyContent: 'center',
                     }}
                   >
-                    <ServiceIcon iconKey={template.iconKey} size={48} />
-                    <Text style={{ fontSize: 13, fontWeight: '600', color: colors.text }} selectable>
-                      {template.name}
-                    </Text>
+                    <Image
+                      source={`sf:${option.symbol}`}
+                      style={{ width: 18, height: 18 }}
+                      tintColor={colors.text}
+                    />
                   </View>
-                </Pressable>
-              ))}
-            </View>
-          </GlassCardBody>
-        </GlassCard>
-      </ScreenShell>
-    </>
+                  <Text style={{ fontSize: 12, fontWeight: '600', color: colors.text }} selectable>
+                    {option.label}
+                  </Text>
+                </View>
+              </Pressable>
+            ))}
+          </ScrollView>
+          <Button variant="secondary" onPress={() => router.push('/(modals)/subscription-form')}>
+            Create custom subscription
+          </Button>
+        </GlassCardBody>
+      </GlassCard>
+
+      <GlassCard>
+        <GlassCardBody style={{ gap: 12 }}>
+          <Text style={{ fontSize: 12, color: colors.textMuted, letterSpacing: 1 }} selectable>
+            POPULAR SERVICES
+          </Text>
+          <TextField>
+            <Label>Search services</Label>
+            <SheetInput placeholder="Netflix, Spotify, Cursor..." value={searchValue} onChangeText={setSearchValue} />
+          </TextField>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: tileGap }}>
+            {filteredTemplates.map(template => (
+              <Pressable
+                key={template.id}
+                onPress={() =>
+                  router.push({ pathname: '/(modals)/subscription-form', params: { templateId: template.id } })}
+              >
+                <View
+                  style={{
+                    width: tileWidth,
+                    padding: 14,
+                    borderRadius: 22,
+                    borderCurve: 'continuous',
+                    backgroundColor: colors.surfaceMuted,
+                    borderWidth: 1,
+                    borderColor: colors.surfaceBorder,
+                    gap: 10,
+                    alignItems: 'center',
+                  }}
+                >
+                  <ServiceIcon iconKey={template.iconKey} size={48} />
+                  <Text style={{ fontSize: 13, fontWeight: '600', color: colors.text }} selectable>
+                    {template.name}
+                  </Text>
+                </View>
+              </Pressable>
+            ))}
+          </View>
+        </GlassCardBody>
+      </GlassCard>
+    </ModalSheet>
   );
 }

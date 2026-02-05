@@ -1,11 +1,11 @@
 import { useRouter } from 'expo-router';
-import { Button, Checkbox, Input, Label, TextField, useToast } from 'heroui-native';
+import { Button, Checkbox, Label, TextField, useToast } from 'heroui-native';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 
 import { GlassCard, GlassCardBody } from '@/components/glass-card';
-import { ModalHeader } from '@/components/modal-header';
-import { ScreenShell } from '@/components/screen-shell';
+import { ModalSheet } from '@/components/modal-sheet';
+import { SheetInput } from '@/components/sheet-input';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useSettingsStore } from '@/lib/stores';
@@ -44,56 +44,53 @@ export default function NotificationSettingsScreen() {
   };
 
   return (
-    <>
-      <ModalHeader title="Notifications" />
-      <ScreenShell>
-        <GlassCard>
-          <GlassCardBody style={{ gap: 12 }}>
-            <Text style={{ fontSize: 13, color: colors.textMuted }} selectable>
-              First Reminder
+    <ModalSheet title="Notifications">
+      <GlassCard>
+        <GlassCardBody style={{ gap: 12 }}>
+          <Text style={{ fontSize: 13, color: colors.textMuted }} selectable>
+            First Reminder
+          </Text>
+          <TextField>
+            <Label>Days before</Label>
+            <SheetInput keyboardType="number-pad" value={firstDays} onChangeText={setFirstDays} />
+          </TextField>
+          <TextField>
+            <Label>Time</Label>
+            <SheetInput placeholder="09:00" value={firstTime} onChangeText={setFirstTime} />
+          </TextField>
+        </GlassCardBody>
+      </GlassCard>
+
+      <GlassCard>
+        <GlassCardBody style={{ gap: 12 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <Checkbox
+              isSelected={hasSecondReminder}
+              onSelectedChange={setHasSecondReminder}
+            />
+            <Text style={{ color: colors.text }} selectable>
+              Enable second reminder
             </Text>
-            <TextField>
-              <Label>Days before</Label>
-              <Input keyboardType="number-pad" value={firstDays} onChangeText={setFirstDays} />
-            </TextField>
-            <TextField>
-              <Label>Time</Label>
-              <Input placeholder="09:00" value={firstTime} onChangeText={setFirstTime} />
-            </TextField>
-          </GlassCardBody>
-        </GlassCard>
+          </View>
 
-        <GlassCard>
-          <GlassCardBody style={{ gap: 12 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-              <Checkbox
-                isSelected={hasSecondReminder}
-                onSelectedChange={setHasSecondReminder}
-              />
-              <Text style={{ color: colors.text }} selectable>
-                Enable second reminder
-              </Text>
-            </View>
+          {hasSecondReminder && (
+            <>
+              <TextField>
+                <Label>Days before</Label>
+                <SheetInput keyboardType="number-pad" value={secondDays} onChangeText={setSecondDays} />
+              </TextField>
+              <TextField>
+                <Label>Time</Label>
+                <SheetInput placeholder="09:00" value={secondTime} onChangeText={setSecondTime} />
+              </TextField>
+            </>
+          )}
+        </GlassCardBody>
+      </GlassCard>
 
-            {hasSecondReminder && (
-              <>
-                <TextField>
-                  <Label>Days before</Label>
-                  <Input keyboardType="number-pad" value={secondDays} onChangeText={setSecondDays} />
-                </TextField>
-                <TextField>
-                  <Label>Time</Label>
-                  <Input placeholder="09:00" value={secondTime} onChangeText={setSecondTime} />
-                </TextField>
-              </>
-            )}
-          </GlassCardBody>
-        </GlassCard>
-
-        <Button variant="primary" onPress={handleSave}>
-          Save defaults
-        </Button>
-      </ScreenShell>
-    </>
+      <Button variant="primary" onPress={handleSave}>
+        Save defaults
+      </Button>
+    </ModalSheet>
   );
 }

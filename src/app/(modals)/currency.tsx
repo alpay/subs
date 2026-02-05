@@ -4,8 +4,7 @@ import { useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
 
 import { GlassCard, GlassCardBody } from '@/components/glass-card';
-import { ModalHeader } from '@/components/modal-header';
-import { ScreenShell } from '@/components/screen-shell';
+import { ModalSheet } from '@/components/modal-sheet';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useCurrencyRatesStore, useSettingsStore } from '@/lib/stores';
@@ -35,48 +34,45 @@ export default function CurrencyScreen() {
   };
 
   return (
-    <>
-      <ModalHeader title="Main Currency" />
-      <ScreenShell>
-        <GlassCard>
-          <GlassCardBody style={{ gap: 10 }}>
-            <Text style={{ color: colors.textMuted }} selectable>
-              Pick your reporting currency.
-            </Text>
-            <Select
-              value={selectedOption}
-              onValueChange={option => setSelectedCurrency(option?.value ?? settings.mainCurrency)}
-              presentation="bottom-sheet"
+    <ModalSheet title="Main Currency">
+      <GlassCard>
+        <GlassCardBody style={{ gap: 10 }}>
+          <Text style={{ color: colors.textMuted }} selectable>
+            Pick your reporting currency.
+          </Text>
+          <Select
+            value={selectedOption}
+            onValueChange={option => setSelectedCurrency(option?.value ?? settings.mainCurrency)}
+            presentation="bottom-sheet"
+          >
+            <Select.Trigger>
+              <Select.Value placeholder="Choose currency" />
+            </Select.Trigger>
+            <Select.Portal>
+              <Select.Overlay />
+              <Select.Content presentation="bottom-sheet">
+                {options.map(option => (
+                  <Select.Item key={option.value} value={option.value} label={option.label} />
+                ))}
+              </Select.Content>
+            </Select.Portal>
+          </Select>
+          <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
+            <Button variant="primary" onPress={handleSave}>
+              Save
+            </Button>
+            <Button
+              variant="secondary"
+              onPress={() => {
+                refreshFromBundle();
+                toast.show('Currency rates refreshed from bundled data');
+              }}
             >
-              <Select.Trigger>
-                <Select.Value placeholder="Choose currency" />
-              </Select.Trigger>
-              <Select.Portal>
-                <Select.Overlay />
-                <Select.Content presentation="bottom-sheet">
-                  {options.map(option => (
-                    <Select.Item key={option.value} value={option.value} label={option.label} />
-                  ))}
-                </Select.Content>
-              </Select.Portal>
-            </Select>
-            <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-              <Button variant="primary" onPress={handleSave}>
-                Save
-              </Button>
-              <Button
-                variant="secondary"
-                onPress={() => {
-                  refreshFromBundle();
-                  toast.show('Currency rates refreshed from bundled data');
-                }}
-              >
-                Refresh rates
-              </Button>
-            </View>
-          </GlassCardBody>
-        </GlassCard>
-      </ScreenShell>
-    </>
+              Refresh rates
+            </Button>
+          </View>
+        </GlassCardBody>
+      </GlassCard>
+    </ModalSheet>
   );
 }

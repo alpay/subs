@@ -1,16 +1,16 @@
 import type { NotificationMode, ScheduleType, Subscription, SubscriptionStatus } from '@/lib/db/schema';
 
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Button, Input, Label, Select, TextArea, TextField, useToast } from 'heroui-native';
+import { Button, Label, Select, TextField, useToast } from 'heroui-native';
 import { useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
 
 import { GlassCard, GlassCardBody } from '@/components/glass-card';
-import { ModalHeader } from '@/components/modal-header';
+import { ModalSheet } from '@/components/modal-sheet';
 import { Pill } from '@/components/pill';
-import { ScreenShell } from '@/components/screen-shell';
 import { SelectField } from '@/components/select-field';
 import { ServiceIcon } from '@/components/service-icon';
+import { SheetInput, SheetTextArea } from '@/components/sheet-input';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
 import { useTheme } from '@/lib/hooks/use-theme';
 import {
@@ -237,195 +237,192 @@ export default function SubscriptionFormScreen() {
     : `0 ${currency}`;
 
   return (
-    <>
-      <ModalHeader title={existingSubscription ? 'Edit Subscription' : 'New Subscription'} />
-      <ScreenShell>
-        <GlassCard>
-          <GlassCardBody style={{ alignItems: 'center', gap: 12 }}>
-            <ServiceIcon iconKey={iconKey} size={72} />
-            <View style={{ alignItems: 'center', gap: 6 }}>
-              <Text style={{ fontSize: 18, fontWeight: '600', color: colors.text }} selectable>
-                {name.trim() || 'Subscription'}
-              </Text>
-              <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
-                {scheduleType.toUpperCase()}
-              </Text>
-            </View>
-            <Pill tone={status === 'active' ? 'success' : 'neutral'}>{status}</Pill>
-            <Text
-              style={{ fontSize: 22, fontWeight: '600', color: colors.text, fontVariant: ['tabular-nums'] }}
-              selectable
-            >
-              {amountDisplay}
+    <ModalSheet title={existingSubscription ? 'Edit Subscription' : 'New Subscription'}>
+      <GlassCard>
+        <GlassCardBody style={{ alignItems: 'center', gap: 12 }}>
+          <ServiceIcon iconKey={iconKey} size={72} />
+          <View style={{ alignItems: 'center', gap: 6 }}>
+            <Text style={{ fontSize: 18, fontWeight: '600', color: colors.text }} selectable>
+              {name.trim() || 'Subscription'}
             </Text>
-          </GlassCardBody>
-        </GlassCard>
+            <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
+              {scheduleType.toUpperCase()}
+            </Text>
+          </View>
+          <Pill tone={status === 'active' ? 'success' : 'neutral'}>{status}</Pill>
+          <Text
+            style={{ fontSize: 22, fontWeight: '600', color: colors.text, fontVariant: ['tabular-nums'] }}
+            selectable
+          >
+            {amountDisplay}
+          </Text>
+        </GlassCardBody>
+      </GlassCard>
 
-        <GlassCard>
-          <GlassCardBody style={{ gap: 12 }}>
-            <TextField>
-              <Label>Name</Label>
-              <Input value={name} onChangeText={setName} placeholder="Subscription name" />
-            </TextField>
+      <GlassCard>
+        <GlassCardBody style={{ gap: 12 }}>
+          <TextField>
+            <Label>Name</Label>
+            <SheetInput value={name} onChangeText={setName} placeholder="Subscription name" />
+          </TextField>
 
-            <TextField>
-              <Label>Amount</Label>
-              <Input
-                value={amount}
-                onChangeText={setAmount}
-                placeholder="0.00"
-                keyboardType="decimal-pad"
-                style={{ textAlign: 'center', fontSize: 20 }}
-              />
-            </TextField>
-
-            <SelectField
-              label="Currency"
-              value={currency}
-              options={currencyOptions}
-              placeholder="Select currency"
-              onChange={setCurrency}
+          <TextField>
+            <Label>Amount</Label>
+            <SheetInput
+              value={amount}
+              onChangeText={setAmount}
+              placeholder="0.00"
+              keyboardType="decimal-pad"
+              style={{ textAlign: 'center', fontSize: 20 }}
             />
+          </TextField>
 
-            <SelectField
-              label="Schedule"
-              value={scheduleType}
-              options={[...SCHEDULE_OPTIONS]}
-              placeholder="Select schedule"
-              onChange={value => setScheduleType((value as ScheduleType | undefined) ?? 'monthly')}
-            />
+          <SelectField
+            label="Currency"
+            value={currency}
+            options={currencyOptions}
+            placeholder="Select currency"
+            onChange={setCurrency}
+          />
 
-            {scheduleType === 'custom' && (
-              <View style={{ flexDirection: 'row', gap: 10 }}>
-                <View style={{ flex: 1 }}>
-                  <TextField>
-                    <Label>Interval count</Label>
-                    <Input
-                      value={intervalCount}
-                      onChangeText={setIntervalCount}
-                      keyboardType="number-pad"
-                    />
-                  </TextField>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <SelectField
-                    label="Interval unit"
-                    value={intervalUnit}
-                    options={[...INTERVAL_UNIT_OPTIONS]}
-                    placeholder="Select unit"
-                    onChange={value => setIntervalUnit((value as 'week' | 'month' | undefined) ?? 'month')}
+          <SelectField
+            label="Schedule"
+            value={scheduleType}
+            options={[...SCHEDULE_OPTIONS]}
+            placeholder="Select schedule"
+            onChange={value => setScheduleType((value as ScheduleType | undefined) ?? 'monthly')}
+          />
+
+          {scheduleType === 'custom' && (
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              <View style={{ flex: 1 }}>
+                <TextField>
+                  <Label>Interval count</Label>
+                  <SheetInput
+                    value={intervalCount}
+                    onChangeText={setIntervalCount}
+                    keyboardType="number-pad"
                   />
-                </View>
+                </TextField>
               </View>
-            )}
+              <View style={{ flex: 1 }}>
+                <SelectField
+                  label="Interval unit"
+                  value={intervalUnit}
+                  options={[...INTERVAL_UNIT_OPTIONS]}
+                  placeholder="Select unit"
+                  onChange={value => setIntervalUnit((value as 'week' | 'month' | undefined) ?? 'month')}
+                />
+              </View>
+            </View>
+          )}
 
-            <TextField>
-              <Label>Start date</Label>
-              <Input value={startDate} onChangeText={setStartDate} placeholder="YYYY-MM-DD" />
-            </TextField>
-          </GlassCardBody>
-        </GlassCard>
+          <TextField>
+            <Label>Start date</Label>
+            <SheetInput value={startDate} onChangeText={setStartDate} placeholder="YYYY-MM-DD" />
+          </TextField>
+        </GlassCardBody>
+      </GlassCard>
 
-        <GlassCard>
-          <GlassCardBody style={{ gap: 12 }}>
-            <SelectField
-              label="Category"
-              value={categoryId}
-              options={categoryOptions}
-              placeholder="Select category"
-              onChange={setCategoryId}
-            />
+      <GlassCard>
+        <GlassCardBody style={{ gap: 12 }}>
+          <SelectField
+            label="Category"
+            value={categoryId}
+            options={categoryOptions}
+            placeholder="Select category"
+            onChange={setCategoryId}
+          />
 
-            <SelectField
-              label="List"
-              value={listId}
-              options={listOptions}
-              placeholder="Select list"
-              onChange={setListId}
-            />
+          <SelectField
+            label="List"
+            value={listId}
+            options={listOptions}
+            placeholder="Select list"
+            onChange={setListId}
+          />
 
-            <SelectField
-              label="Payment method"
-              value={paymentMethodId}
-              options={paymentMethodOptions}
-              placeholder="Select payment method"
-              onChange={setPaymentMethodId}
-            />
+          <SelectField
+            label="Payment method"
+            value={paymentMethodId}
+            options={paymentMethodOptions}
+            placeholder="Select payment method"
+            onChange={setPaymentMethodId}
+          />
 
-            <SelectField
-              label="Status"
-              value={status}
-              options={[...STATUS_OPTIONS]}
-              placeholder="Select status"
-              onChange={value => setStatus((value as SubscriptionStatus | undefined) ?? 'active')}
-            />
+          <SelectField
+            label="Status"
+            value={status}
+            options={[...STATUS_OPTIONS]}
+            placeholder="Select status"
+            onChange={value => setStatus((value as SubscriptionStatus | undefined) ?? 'active')}
+          />
 
-            <SelectField
-              label="Notifications"
-              value={notificationMode}
-              options={[...NOTIFICATION_OPTIONS]}
-              placeholder="Select notification mode"
-              onChange={value => setNotificationMode((value as NotificationMode | undefined) ?? 'default')}
-            />
-          </GlassCardBody>
-        </GlassCard>
+          <SelectField
+            label="Notifications"
+            value={notificationMode}
+            options={[...NOTIFICATION_OPTIONS]}
+            placeholder="Select notification mode"
+            onChange={value => setNotificationMode((value as NotificationMode | undefined) ?? 'default')}
+          />
+        </GlassCardBody>
+      </GlassCard>
 
-        <GlassCard>
-          <GlassCardBody style={{ gap: 12 }}>
-            <TextField>
-              <Label>Icon type</Label>
-              <Select
-                value={{ label: iconType === 'builtIn' ? 'Built-in' : 'Image URI', value: iconType }}
-                onValueChange={option => setIconType((option?.value as 'builtIn' | 'image' | undefined) ?? 'builtIn')}
-                presentation="bottom-sheet"
-              >
-                <Select.Trigger>
-                  <Select.Value placeholder="Select icon type" />
-                </Select.Trigger>
-                <Select.Portal>
-                  <Select.Overlay />
-                  <Select.Content presentation="bottom-sheet">
-                    <Select.Item value="builtIn" label="Built-in" />
-                    <Select.Item value="image" label="Image URI" />
-                  </Select.Content>
-                </Select.Portal>
-              </Select>
-            </TextField>
+      <GlassCard>
+        <GlassCardBody style={{ gap: 12 }}>
+          <TextField>
+            <Label>Icon type</Label>
+            <Select
+              value={{ label: iconType === 'builtIn' ? 'Built-in' : 'Image URI', value: iconType }}
+              onValueChange={option => setIconType((option?.value as 'builtIn' | 'image' | undefined) ?? 'builtIn')}
+              presentation="bottom-sheet"
+            >
+              <Select.Trigger>
+                <Select.Value placeholder="Select icon type" />
+              </Select.Trigger>
+              <Select.Portal>
+                <Select.Overlay />
+                <Select.Content presentation="bottom-sheet">
+                  <Select.Item value="builtIn" label="Built-in" />
+                  <Select.Item value="image" label="Image URI" />
+                </Select.Content>
+              </Select.Portal>
+            </Select>
+          </TextField>
 
-            {iconType === 'builtIn'
-              ? (
-                  <TextField>
-                    <Label>Icon key</Label>
-                    <Input value={iconKey} onChangeText={setIconKey} placeholder="custom" />
-                  </TextField>
-                )
-              : (
-                  <TextField>
-                    <Label>Image URI</Label>
-                    <Input
-                      value={iconUri}
-                      onChangeText={setIconUri}
-                      placeholder="https://..."
-                      autoCapitalize="none"
-                    />
-                  </TextField>
-                )}
+          {iconType === 'builtIn'
+            ? (
+                <TextField>
+                  <Label>Icon key</Label>
+                  <SheetInput value={iconKey} onChangeText={setIconKey} placeholder="custom" />
+                </TextField>
+              )
+            : (
+                <TextField>
+                  <Label>Image URI</Label>
+                  <SheetInput
+                    value={iconUri}
+                    onChangeText={setIconUri}
+                    placeholder="https://..."
+                    autoCapitalize="none"
+                  />
+                </TextField>
+              )}
 
-            <Button variant="secondary" onPress={() => router.push('/(modals)/icon-picker')}>
-              Open icon picker helper
-            </Button>
+          <Button variant="secondary" onPress={() => router.push('/(modals)/icon-picker')}>
+            Open icon picker helper
+          </Button>
 
-            <TextField>
-              <Label>Notes</Label>
-              <TextArea value={notes} onChangeText={setNotes} placeholder="Optional notes" numberOfLines={4} />
-            </TextField>
-          </GlassCardBody>
-        </GlassCard>
+          <TextField>
+            <Label>Notes</Label>
+            <SheetTextArea value={notes} onChangeText={setNotes} placeholder="Optional notes" numberOfLines={4} />
+          </TextField>
+        </GlassCardBody>
+      </GlassCard>
 
-        <Button variant="primary" onPress={handleSave}>
-          {existingSubscription ? 'Save changes' : 'Create subscription'}
-        </Button>
-      </ScreenShell>
-    </>
+      <Button variant="primary" onPress={handleSave}>
+        {existingSubscription ? 'Save changes' : 'Create subscription'}
+      </Button>
+    </ModalSheet>
   );
 }

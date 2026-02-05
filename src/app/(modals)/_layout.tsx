@@ -4,8 +4,8 @@ export default function ModalsLayout() {
   return (
     <Stack
       screenOptions={{
-        headerShown: true,
-        headerShadowVisible: false,
+        headerShown: false,
+        contentStyle: { backgroundColor: 'transparent' },
       }}
     />
   );

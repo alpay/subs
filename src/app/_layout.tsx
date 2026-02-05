@@ -44,8 +44,9 @@ export default function RootLayout() {
           name="(modals)"
           options={{
             headerShown: false,
-            presentation: 'card',
-            animation: 'slide_from_bottom',
+            presentation: 'transparentModal',
+            animation: 'fade',
+            contentStyle: { backgroundColor: 'transparent' },
           }}
         />
       </Stack>

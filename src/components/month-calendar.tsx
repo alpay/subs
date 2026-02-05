@@ -1,15 +1,15 @@
-import type { Subscription } from '@/lib/db/schema';
 import type { StyleProp, ViewStyle } from 'react-native';
+import type { Subscription } from '@/lib/db/schema';
 
+import { format, getDay, getDaysInMonth, isSameMonth, isToday, startOfMonth } from 'date-fns';
 import { useMemo } from 'react';
 import { Text, useWindowDimensions, View } from 'react-native';
-import { format, getDay, getDaysInMonth, isSameMonth, isToday, startOfMonth } from 'date-fns';
 
 import { useTheme } from '@/lib/hooks/use-theme';
 
 import { ServiceIcon } from './service-icon';
 
-type CalendarGridProps = {
+type MonthCalendarProps = {
   date: Date;
   subscriptions: Subscription[];
   style?: StyleProp<ViewStyle>;
@@ -22,7 +22,7 @@ function getMondayIndex(date: Date) {
   return (day + 6) % 7;
 }
 
-export function CalendarGrid({ date, subscriptions, style }: CalendarGridProps) {
+export function MonthCalendar({ date, subscriptions, style }: MonthCalendarProps) {
   const { width } = useWindowDimensions();
   const { colors, isDark } = useTheme();
 
@@ -30,7 +30,7 @@ export function CalendarGrid({ date, subscriptions, style }: CalendarGridProps) 
   const daysInMonth = getDaysInMonth(date);
   const leadingEmpty = getMondayIndex(monthStart);
   const totalCells = Math.ceil((leadingEmpty + daysInMonth) / 7) * 7;
-  const gap = 8;
+  const gap = 10;
   const cellSize = Math.floor((width - 40 - gap * 6) / 7);
 
   const paymentMap = useMemo(() => {
@@ -67,11 +67,11 @@ export function CalendarGrid({ date, subscriptions, style }: CalendarGridProps) 
   }, [date, daysInMonth, leadingEmpty, totalCells]);
 
   return (
-    <View style={[{ gap: 12 }, style]}>
+    <View style={[{ gap: 14 }, style]}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        {WEEKDAYS.map(day => (
+        {WEEKDAYS.map((day, index) => (
           <Text
-            key={day}
+            key={`${day}-${index}`}
             style={{ width: cellSize, textAlign: 'center', fontSize: 11, color: colors.textMuted }}
             selectable
           >
@@ -94,6 +94,7 @@ export function CalendarGrid({ date, subscriptions, style }: CalendarGridProps) 
           const key = format(cell.date, 'yyyy-MM-dd');
           const items = paymentMap.get(key) ?? [];
           const highlight = isToday(cell.date);
+          const dayLabel = cell.date.getDate();
 
           return (
             <View
@@ -101,36 +102,61 @@ export function CalendarGrid({ date, subscriptions, style }: CalendarGridProps) 
               style={{
                 width: cellSize,
                 height: cellSize,
-                borderRadius: 16,
+                borderRadius: 18,
                 borderCurve: 'continuous',
                 backgroundColor: colors.surfaceMuted,
                 borderWidth: highlight ? 1.5 : 1,
-                borderColor: highlight ? colors.accent : colors.surfaceBorder,
-                padding: 6,
-                justifyContent: 'space-between',
+                borderColor: highlight ? colors.text : colors.surfaceBorder,
+                alignItems: 'center',
+                justifyContent: 'center',
                 boxShadow: isDark
-                  ? '0 10px 18px rgba(0, 0, 0, 0.2)'
-                  : '0 10px 18px rgba(15, 23, 42, 0.08)',
+                  ? '0 12px 22px rgba(0, 0, 0, 0.35)'
+                  : '0 12px 22px rgba(15, 23, 42, 0.12)',
               }}
             >
-              <Text style={{ fontSize: 12, color: colors.text, opacity: 0.8 }} selectable>
-                {cell.date.getDate()}
+              <Text
+                style={{
+                  position: 'absolute',
+                  top: 6,
+                  right: 8,
+                  fontSize: 11,
+                  color: colors.textMuted,
+                  opacity: 0.85,
+                }}
+                selectable
+              >
+                {dayLabel}
               </Text>
-              <View style={{ alignItems: 'flex-end' }}>
-                {items.slice(0, 1).map(subscription => (
-                  <ServiceIcon
-                    key={subscription.id}
-                    iconKey={subscription.iconKey}
-                    size={Math.max(20, Math.floor(cellSize * 0.38))}
-                    style={{ boxShadow: 'none' }}
-                  />
-                ))}
-                {items.length > 1 && (
+
+              {items.length > 0 && (
+                <ServiceIcon
+                  iconKey={items[0].iconKey}
+                  size={Math.max(24, Math.floor(cellSize * 0.56))}
+                  style={{ boxShadow: 'none' }}
+                />
+              )}
+
+              {items.length > 1 && (
+                <View
+                  style={{
+                    position: 'absolute',
+                    bottom: 6,
+                    right: 8,
+                    paddingHorizontal: 6,
+                    paddingVertical: 2,
+                    borderRadius: 999,
+                    borderCurve: 'continuous',
+                    backgroundColor: colors.surface,
+                    borderWidth: 1,
+                    borderColor: colors.surfaceBorder,
+                  }}
+                >
                   <Text style={{ fontSize: 10, color: colors.textMuted }} selectable>
-                    +{items.length - 1}
+                    +
+                    {items.length - 1}
                   </Text>
-                )}
-              </View>
+                </View>
+              )}
             </View>
           );
         })}

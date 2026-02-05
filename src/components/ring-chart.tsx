@@ -25,10 +25,12 @@ export function RingChart({ segments, size = 200, strokeWidth = 18, style }: Rin
 
   const { normalizedSegments } = useMemo(() => {
     const total = segments.reduce((sum, segment) => sum + segment.value, 0);
-    const normalizedSegments = total === 0 ? [] : segments.map(segment => ({
-      ...segment,
-      value: segment.value / total,
-    }));
+    const normalizedSegments = total === 0
+      ? []
+      : segments.map(segment => ({
+          ...segment,
+          value: segment.value / total,
+        }));
     return { normalizedSegments };
   }, [segments]);
 
