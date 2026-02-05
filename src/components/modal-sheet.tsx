@@ -1,5 +1,6 @@
 import type {
   BottomSheetBackdropProps,
+  BottomSheetFooterProps,
   BottomSheetMethods,
   BottomSheetScrollViewProps,
 } from '@gorhom/bottom-sheet';
@@ -8,6 +9,7 @@ import type { StyleProp, ViewStyle } from 'react-native';
 
 import BottomSheet, {
   BottomSheetBackdrop,
+  BottomSheetFooter,
   BottomSheetScrollView,
 } from '@gorhom/bottom-sheet';
 import { useRouter } from 'expo-router';
@@ -25,6 +27,10 @@ type ModalSheetProps = {
   children: ReactNode;
   contentContainerStyle?: StyleProp<ViewStyle>;
   scrollViewProps?: Omit<BottomSheetScrollViewProps, 'contentContainerStyle'>;
+  footer?: ReactNode;
+  footerContainerStyle?: StyleProp<ViewStyle>;
+  closeVariant?: 'plain' | 'muted';
+  lockSnapPoint?: boolean;
 };
 
 export function ModalSheet({
@@ -33,11 +39,16 @@ export function ModalSheet({
   children,
   contentContainerStyle,
   scrollViewProps,
+  footer,
+  footerContainerStyle,
+  closeVariant = 'plain',
+  lockSnapPoint = false,
 }: ModalSheetProps) {
   const router = useRouter();
   const { colors } = useTheme();
   const { bottom } = useSafeAreaInsets();
   const sheetRef = useRef<BottomSheetMethods>(null);
+  const hasFooter = Boolean(footer);
 
   const snapPoints = useMemo(() => ['90%'], []);
 
@@ -67,6 +78,36 @@ export function ModalSheet({
     [],
   );
 
+  const renderFooter = useCallback(
+    (props: BottomSheetFooterProps) => {
+      if (!footer) {
+        return null;
+      }
+
+      return (
+        <BottomSheetFooter {...props}>
+          <View
+            style={[
+              {
+                paddingHorizontal: 20,
+                paddingTop: 12,
+                paddingBottom: bottom + 12,
+                borderTopWidth: 1,
+                borderTopColor: colors.surfaceBorder,
+                backgroundColor: colors.background,
+                gap: 12,
+              },
+              footerContainerStyle,
+            ]}
+          >
+            {footer}
+          </View>
+        </BottomSheetFooter>
+      );
+    },
+    [bottom, colors.background, colors.surfaceBorder, footer, footerContainerStyle],
+  );
+
   return (
     <View style={{ flex: 1 }}>
       <BottomSheet
@@ -75,7 +116,11 @@ export function ModalSheet({
         snapPoints={snapPoints}
         onChange={handleSheetChange}
         enablePanDownToClose
+        enableDynamicSizing={false}
+        enableOverDrag={!lockSnapPoint}
+        enableContentPanningGesture={!lockSnapPoint}
         backdropComponent={renderBackdrop}
+        footerComponent={hasFooter ? renderFooter : undefined}
         backgroundStyle={{ backgroundColor: colors.background }}
         handleIndicatorStyle={{
           backgroundColor: colors.surfaceBorder,
@@ -84,23 +129,25 @@ export function ModalSheet({
         keyboardBehavior="interactive"
         keyboardBlurBehavior="restore"
       >
-        <ModalHeader title={title} right={right} onClose={handleClose} />
-        <BottomSheetScrollView
-          {...scrollViewProps}
-          style={[{ flex: 1 }, scrollViewProps?.style]}
-          contentInsetAdjustmentBehavior="automatic"
-          keyboardShouldPersistTaps="handled"
-          contentContainerStyle={[
-            {
-              padding: 20,
-              paddingBottom: bottom + 40,
-              gap: 16,
-            },
-            contentContainerStyle,
-          ]}
-        >
-          {children}
-        </BottomSheetScrollView>
+        <View style={{ flex: 1 }}>
+          <ModalHeader title={title} right={right} onClose={handleClose} closeVariant={closeVariant} />
+          <BottomSheetScrollView
+            {...scrollViewProps}
+            style={[{ flex: 1 }, scrollViewProps?.style]}
+            contentInsetAdjustmentBehavior="automatic"
+            keyboardShouldPersistTaps="handled"
+            contentContainerStyle={[
+              {
+                padding: 20,
+                paddingBottom: hasFooter ? bottom + 120 : bottom + 40,
+                gap: 16,
+              },
+              contentContainerStyle,
+            ]}
+          >
+            {children}
+          </BottomSheetScrollView>
+        </View>
       </BottomSheet>
     </View>
   );

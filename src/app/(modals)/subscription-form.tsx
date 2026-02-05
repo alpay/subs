@@ -9,6 +9,7 @@ import { GlassCard, GlassCardBody } from '@/components/glass-card';
 import { ModalSheet } from '@/components/modal-sheet';
 import { Pill } from '@/components/pill';
 import { SelectField } from '@/components/select-field';
+import { useSelectPopoverStyles } from '@/components/select-popover';
 import { ServiceIcon } from '@/components/service-icon';
 import { SheetInput, SheetTextArea } from '@/components/sheet-input';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
@@ -80,6 +81,7 @@ export default function SubscriptionFormScreen() {
   const router = useRouter();
   const { toast } = useToast();
   const { colors } = useTheme();
+  const popoverStyles = useSelectPopoverStyles();
   const params = useLocalSearchParams<{ id?: string; templateId?: string }>();
 
   const { subscriptions, add, update } = useSubscriptionsStore();
@@ -375,14 +377,19 @@ export default function SubscriptionFormScreen() {
             <Select
               value={{ label: iconType === 'builtIn' ? 'Built-in' : 'Image URI', value: iconType }}
               onValueChange={option => setIconType((option?.value as 'builtIn' | 'image' | undefined) ?? 'builtIn')}
-              presentation="bottom-sheet"
+              presentation="popover"
             >
               <Select.Trigger>
                 <Select.Value placeholder="Select icon type" />
               </Select.Trigger>
               <Select.Portal>
                 <Select.Overlay />
-                <Select.Content presentation="bottom-sheet">
+                <Select.Content
+                  presentation="popover"
+                  align="start"
+                  width="trigger"
+                  style={popoverStyles.content}
+                >
                   <Select.Item value="builtIn" label="Built-in" />
                   <Select.Item value="image" label="Image URI" />
                 </Select.Content>

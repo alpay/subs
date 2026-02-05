@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { X } from 'lucide-react-native';
+import { Image } from 'expo-image';
 import { Pressable, Text, View } from 'react-native';
 
 import { useTheme } from '@/lib/hooks/use-theme';
@@ -9,10 +9,12 @@ type ModalHeaderProps = {
   title: string;
   right?: ReactNode;
   onClose?: () => void;
+  closeVariant?: 'plain' | 'muted';
 };
 
-export function ModalHeader({ title, right, onClose }: ModalHeaderProps) {
+export function ModalHeader({ title, right, onClose, closeVariant = 'plain' }: ModalHeaderProps) {
   const { colors } = useTheme();
+  const isMuted = closeVariant === 'muted';
 
   return (
     <View
@@ -40,15 +42,26 @@ export function ModalHeader({ title, right, onClose }: ModalHeaderProps) {
                 accessibilityRole="button"
                 hitSlop={10}
                 onPress={onClose}
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 16,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
+                style={({ pressed }) => [
+                  {
+                    width: 32,
+                    height: 32,
+                    borderRadius: 16,
+                    borderCurve: 'continuous',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    backgroundColor: isMuted ? colors.surfaceMuted : 'transparent',
+                    borderWidth: isMuted ? 1 : 0,
+                    borderColor: isMuted ? colors.surfaceBorder : 'transparent',
+                  },
+                  pressed && { opacity: 0.7 },
+                ]}
               >
-                <X color={colors.text} size={20} />
+                <Image
+                  source="sf:xmark"
+                  style={{ width: 12, height: 12 }}
+                  tintColor={colors.text}
+                />
               </Pressable>
             )
           : null}

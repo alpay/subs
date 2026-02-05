@@ -1,13 +1,16 @@
+import { isSameDay } from 'date-fns';
 import { Image } from 'expo-image';
 import { Stack, useRouter } from 'expo-router';
 import { Select } from 'heroui-native';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
+import { DaySubscriptionsSheet } from '@/components/day-subscriptions-sheet';
 import { IconButton } from '@/components/icon-button';
 import { MonthCalendar } from '@/components/month-calendar';
 import { Pill } from '@/components/pill';
 import { ScreenShell } from '@/components/screen-shell';
+import { useSelectPopoverStyles } from '@/components/select-popover';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useCurrencyRatesStore, useListsStore, useSettingsStore, useSubscriptionsStore } from '@/lib/stores';
@@ -38,6 +41,7 @@ export default function HomeScreen() {
   useBootstrap();
   const router = useRouter();
   const { colors, isDark } = useTheme();
+  const popoverStyles = useSelectPopoverStyles();
 
   const { subscriptions } = useSubscriptionsStore();
   const { lists } = useListsStore();
@@ -45,6 +49,7 @@ export default function HomeScreen() {
   const { rates } = useCurrencyRatesStore();
 
   const [selectedListId, setSelectedListId] = useState(ALL_LISTS);
+  const [selectedDay, setSelectedDay] = useState<Date | null>(null);
 
   const listOptions = useMemo(
     () => [
@@ -65,6 +70,21 @@ export default function HomeScreen() {
       return true;
     });
   }, [subscriptions, selectedListId]);
+
+  const selectedSubscriptions = useMemo(() => {
+    if (!selectedDay) {
+      return [];
+    }
+    return filteredSubscriptions.filter(sub => isSameDay(new Date(sub.nextPaymentDate), selectedDay));
+  }, [filteredSubscriptions, selectedDay]);
+
+  const handleDayPress = useCallback((day: Date) => {
+    setSelectedDay(day);
+  }, []);
+
+  const handleSheetClose = useCallback(() => {
+    setSelectedDay(null);
+  }, []);
 
   const monthlyTotal = useMemo(
     () => calculateMonthlyTotal({
@@ -97,7 +117,7 @@ export default function HomeScreen() {
             <Select
               value={selectedListOption}
               onValueChange={option => setSelectedListId(option?.value ?? ALL_LISTS)}
-              presentation="bottom-sheet"
+              presentation="popover"
             >
               <Select.Trigger>
                 <View
@@ -125,7 +145,12 @@ export default function HomeScreen() {
               </Select.Trigger>
               <Select.Portal>
                 <Select.Overlay />
-                <Select.Content presentation="bottom-sheet" snapPoints={['90%']}>
+                <Select.Content
+                  presentation="popover"
+                  align="start"
+                  width="trigger"
+                  style={popoverStyles.content}
+                >
                   {listOptions.map(option => (
                     <Select.Item key={option.value} value={option.value} label={option.label} />
                   ))}
@@ -138,20 +163,12 @@ export default function HomeScreen() {
               style={{
                 flexDirection: 'row',
                 gap: 6,
-                padding: 6,
-                borderRadius: 999,
-                borderCurve: 'continuous',
-                backgroundColor: colors.surface,
-                borderWidth: 1,
-                borderColor: colors.surfaceBorder,
-                boxShadow: isDark
-                  ? '0 16px 28px rgba(0, 0, 0, 0.35)'
-                  : '0 16px 28px rgba(15, 23, 42, 0.12)',
+                padding: 2,
               }}
             >
-              <IconButton symbol="magnifyingglass" size={30} variant="clear" onPress={() => router.push('/search')} />
-              <IconButton symbol="chart.bar" size={30} variant="clear" onPress={() => router.push('/(modals)/analytics')} />
-              <IconButton symbol="gearshape" size={30} variant="clear" onPress={() => router.push('/(modals)/settings')} />
+              <IconButton symbol="magnifyingglass" size={30} variant="muted" onPress={() => router.push('/search')} />
+              <IconButton symbol="chart.bar" size={30} variant="muted" onPress={() => router.push('/(modals)/analytics')} />
+              <IconButton symbol="gearshape" size={30} variant="muted" onPress={() => router.push('/(modals)/settings')} />
             </View>
           ),
         }}
@@ -173,7 +190,7 @@ export default function HomeScreen() {
           </Pill>
         </View>
 
-        <MonthCalendar date={new Date()} subscriptions={filteredSubscriptions} />
+        <MonthCalendar date={new Date()} subscriptions={filteredSubscriptions} onDayPress={handleDayPress} />
 
         <View style={{ alignItems: 'center', marginTop: 4 }}>
           <Pressable onPress={() => router.push('/(modals)/add-subscription')}>
@@ -214,6 +231,18 @@ export default function HomeScreen() {
           </Pressable>
         </View>
       </ScreenShell>
+
+      <DaySubscriptionsSheet
+        date={selectedDay}
+        subscriptions={selectedSubscriptions}
+        settings={settings}
+        rates={rates}
+        onClose={handleSheetClose}
+        onAddPress={() => router.push('/(modals)/add-subscription')}
+        onSubscriptionPress={(subscriptionId) => {
+          router.push({ pathname: '/(modals)/subscription-form', params: { id: subscriptionId } });
+        }}
+      />
     </>
   );
 }

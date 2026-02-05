@@ -5,6 +5,7 @@ import { Text, View } from 'react-native';
 
 import { GlassCard, GlassCardBody } from '@/components/glass-card';
 import { ModalSheet } from '@/components/modal-sheet';
+import { useSelectPopoverStyles } from '@/components/select-popover';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useCurrencyRatesStore, useSettingsStore } from '@/lib/stores';
@@ -14,6 +15,7 @@ export default function CurrencyScreen() {
   const router = useRouter();
   const { toast } = useToast();
   const { colors } = useTheme();
+  const popoverStyles = useSelectPopoverStyles();
 
   const { settings, update } = useSettingsStore();
   const { rates, refreshFromBundle } = useCurrencyRatesStore();
@@ -43,14 +45,19 @@ export default function CurrencyScreen() {
           <Select
             value={selectedOption}
             onValueChange={option => setSelectedCurrency(option?.value ?? settings.mainCurrency)}
-            presentation="bottom-sheet"
+            presentation="popover"
           >
             <Select.Trigger>
               <Select.Value placeholder="Choose currency" />
             </Select.Trigger>
             <Select.Portal>
               <Select.Overlay />
-              <Select.Content presentation="bottom-sheet">
+              <Select.Content
+                presentation="popover"
+                align="start"
+                width="trigger"
+                style={popoverStyles.content}
+              >
                 {options.map(option => (
                   <Select.Item key={option.value} value={option.value} label={option.label} />
                 ))}

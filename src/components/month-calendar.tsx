@@ -3,7 +3,7 @@ import type { Subscription } from '@/lib/db/schema';
 
 import { format, getDay, getDaysInMonth, isSameMonth, isToday, startOfMonth } from 'date-fns';
 import { useMemo } from 'react';
-import { Text, useWindowDimensions, View } from 'react-native';
+import { Pressable, Text, useWindowDimensions, View } from 'react-native';
 
 import { useTheme } from '@/lib/hooks/use-theme';
 
@@ -13,6 +13,7 @@ type MonthCalendarProps = {
   date: Date;
   subscriptions: Subscription[];
   style?: StyleProp<ViewStyle>;
+  onDayPress?: (date: Date) => void;
 };
 
 const WEEKDAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
@@ -22,7 +23,7 @@ function getMondayIndex(date: Date) {
   return (day + 6) % 7;
 }
 
-export function MonthCalendar({ date, subscriptions, style }: MonthCalendarProps) {
+export function MonthCalendar({ date, subscriptions, style, onDayPress }: MonthCalendarProps) {
   const { width } = useWindowDimensions();
   const { colors, isDark } = useTheme();
 
@@ -97,22 +98,27 @@ export function MonthCalendar({ date, subscriptions, style }: MonthCalendarProps
           const dayLabel = cell.date.getDate();
 
           return (
-            <View
+            <Pressable
               key={key}
-              style={{
-                width: cellSize,
-                height: cellSize,
-                borderRadius: 18,
-                borderCurve: 'continuous',
-                backgroundColor: colors.surfaceMuted,
-                borderWidth: highlight ? 1.5 : 1,
-                borderColor: highlight ? colors.text : colors.surfaceBorder,
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: isDark
-                  ? '0 12px 22px rgba(0, 0, 0, 0.35)'
-                  : '0 12px 22px rgba(15, 23, 42, 0.12)',
-              }}
+              accessibilityRole="button"
+              onPress={() => onDayPress?.(cell.date)}
+              style={({ pressed }) => [
+                {
+                  width: cellSize,
+                  height: cellSize,
+                  borderRadius: 18,
+                  borderCurve: 'continuous',
+                  backgroundColor: colors.surfaceMuted,
+                  borderWidth: highlight ? 1.5 : 1,
+                  borderColor: highlight ? colors.text : colors.surfaceBorder,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: isDark
+                    ? '0 12px 22px rgba(0, 0, 0, 0.35)'
+                    : '0 12px 22px rgba(15, 23, 42, 0.12)',
+                },
+                pressed ? { opacity: 0.88, transform: [{ scale: 0.98 }] } : null,
+              ]}
             >
               <Text
                 style={{
@@ -157,7 +163,7 @@ export function MonthCalendar({ date, subscriptions, style }: MonthCalendarProps
                   </Text>
                 </View>
               )}
-            </View>
+            </Pressable>
           );
         })}
       </View>

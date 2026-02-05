@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 
 import { Label, Select, TextField } from 'heroui-native';
 
+import { useSelectPopoverStyles } from '@/components/select-popover';
 import { useTheme } from '@/lib/hooks/use-theme';
 
 export type SelectOption = { label: string; value: string } | undefined;
@@ -17,6 +18,7 @@ type SelectFieldProps = {
 
 export function SelectField({ label, value, options, placeholder, onChange, trailing }: SelectFieldProps) {
   const { colors } = useTheme();
+  const popoverStyles = useSelectPopoverStyles();
   const selectedOption = options.find(option => option.value === value) as SelectOption;
 
   return (
@@ -25,7 +27,7 @@ export function SelectField({ label, value, options, placeholder, onChange, trai
       <Select
         value={selectedOption}
         onValueChange={option => onChange(option?.value ?? '')}
-        presentation="bottom-sheet"
+        presentation="popover"
       >
         <Select.Trigger>
           <Select.Value placeholder={placeholder} />
@@ -33,7 +35,12 @@ export function SelectField({ label, value, options, placeholder, onChange, trai
         </Select.Trigger>
         <Select.Portal>
           <Select.Overlay />
-          <Select.Content presentation="bottom-sheet">
+          <Select.Content
+            presentation="popover"
+            align="start"
+            width="trigger"
+            style={popoverStyles.content}
+          >
             {options.map(option => (
               <Select.Item key={option.value} value={option.value} label={option.label} />
             ))}
