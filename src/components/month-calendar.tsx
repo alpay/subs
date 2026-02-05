@@ -2,16 +2,8 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import type { Subscription } from '@/lib/db/schema';
 
 import { addMonths, format, getDay, getDaysInMonth, isSameMonth, isToday, startOfMonth } from 'date-fns';
-import { useEffect, useMemo, useRef } from 'react';
-import { Pressable, Text, useWindowDimensions, View } from 'react-native';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import Animated, {
-  cancelAnimation,
-  Easing,
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from 'react-native-reanimated';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import { useTheme } from '@/lib/hooks/use-theme';
 
@@ -43,6 +35,8 @@ type MonthGridProps = {
 };
 
 const WEEKDAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+const GRID_ROWS = 6;
+const TOTAL_CELLS = GRID_ROWS * 7;
 
 function getMondayIndex(date: Date) {
   const day = getDay(date);
@@ -63,8 +57,23 @@ function withAlpha(hex: string, alpha: number) {
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
-function clamp(value: number, min: number, max: number) {
-  return Math.min(Math.max(value, min), max);
+function buildMonthCells(date: Date) {
+  const monthStart = startOfMonth(date);
+  const daysInMonth = getDaysInMonth(date);
+  const leadingEmpty = getMondayIndex(monthStart);
+  const cells: Array<{ date: Date | null; index: number }> = [];
+
+  for (let i = 0; i < TOTAL_CELLS; i += 1) {
+    const dayIndex = i - leadingEmpty + 1;
+    if (dayIndex <= 0 || dayIndex > daysInMonth) {
+      cells.push({ date: null, index: i });
+    }
+    else {
+      cells.push({ date: new Date(date.getFullYear(), date.getMonth(), dayIndex), index: i });
+    }
+  }
+
+  return cells;
 }
 
 function MonthGrid({
@@ -81,11 +90,6 @@ function MonthGrid({
   colors,
   isDark,
 }: MonthGridProps) {
-  const monthStart = startOfMonth(date);
-  const daysInMonth = getDaysInMonth(date);
-  const leadingEmpty = getMondayIndex(monthStart);
-  const totalCells = Math.ceil((leadingEmpty + daysInMonth) / 7) * 7;
-
   const paymentMap = useMemo(() => {
     const map = new Map<string, Subscription[]>();
 
@@ -104,28 +108,32 @@ function MonthGrid({
   }, [subscriptions, date]);
 
   const cells = useMemo(() => {
-    const items: Array<{ date: Date | null; index: number }> = [];
+    return buildMonthCells(date);
+  }, [date]);
 
-    for (let i = 0; i < totalCells; i += 1) {
-      const dayIndex = i - leadingEmpty + 1;
-      if (dayIndex <= 0 || dayIndex > daysInMonth) {
-        items.push({ date: null, index: i });
-      }
-      else {
-        items.push({ date: new Date(date.getFullYear(), date.getMonth(), dayIndex), index: i });
-      }
-    }
+  const cellShape = useMemo(
+    () => ({
+      width: cellSize,
+      height: cellHeight,
+      borderRadius: cellRadius,
+    }),
+    [cellHeight, cellRadius, cellSize],
+  );
 
-    return items;
-  }, [date, daysInMonth, leadingEmpty, totalCells]);
+  const handleDayPress = useCallback(
+    (selectedDate: Date) => {
+      onDayPress?.(selectedDate);
+    },
+    [onDayPress],
+  );
 
   return (
-    <View style={{ width, gap: 14 }}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+    <View style={[styles.gridContainer, { width, gap: 14 }]}>
+      <View style={styles.weekdayRow}>
         {WEEKDAYS.map((day, index) => (
           <Text
             key={`${day}-${index}`}
-            style={{ width: cellSize, textAlign: 'center', fontSize: 11, color: colors.textMuted }}
+            style={[styles.weekdayLabel, { width: cellSize, color: colors.textMuted }]}
             selectable
           >
             {day}
@@ -133,24 +141,24 @@ function MonthGrid({
         ))}
       </View>
 
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap }}>
+      <View style={[styles.cells, { gap }]}>
         {cells.map((cell) => {
           if (!cell.date) {
             return (
               <View
                 key={`empty-${cell.index}`}
-                style={{
-                  width: cellSize,
-                  height: cellHeight,
-                  borderRadius: cellRadius,
-                  borderCurve: 'continuous',
-                  backgroundColor: withAlpha(colors.surfaceMuted, isDark ? 0.28 : 0.45),
-                  borderWidth: 1,
-                  borderColor: withAlpha(colors.surfaceBorder, isDark ? 0.22 : 0.35),
-                  boxShadow: isDark
-                    ? '0 6px 12px rgba(0, 0, 0, 0.18)'
-                    : '0 6px 12px rgba(15, 23, 42, 0.07)',
-                }}
+                style={[
+                  styles.cellBase,
+                  cellShape,
+                  {
+                    backgroundColor: withAlpha(colors.surfaceMuted, isDark ? 0.28 : 0.45),
+                    borderWidth: 1,
+                    borderColor: withAlpha(colors.surfaceBorder, isDark ? 0.22 : 0.35),
+                    boxShadow: isDark
+                      ? '0 6px 12px rgba(0, 0, 0, 0.18)'
+                      : '0 6px 12px rgba(15, 23, 42, 0.07)',
+                  },
+                ]}
               />
             );
           }
@@ -174,35 +182,23 @@ function MonthGrid({
             <Pressable
               key={key}
               accessibilityRole="button"
-              onPress={() => onDayPress?.(cell.date)}
+              onPress={() => handleDayPress(cell.date)}
               style={({ pressed }) => [
+                styles.cellBase,
+                cellShape,
                 {
-                  width: cellSize,
-                  height: cellHeight,
-                  borderRadius: cellRadius,
-                  borderCurve: 'continuous',
                   backgroundColor: cellBackground,
                   borderWidth: highlight ? 1.5 : 1,
                   borderColor: highlight ? colors.text : cellBorderColor,
-                  alignItems: 'center',
-                  justifyContent: 'center',
                   boxShadow: isDark
                     ? '0 12px 22px rgba(0, 0, 0, 0.32)'
                     : '0 12px 22px rgba(15, 23, 42, 0.12)',
                 },
-                pressed ? { opacity: 0.88, transform: [{ scale: 0.98 }] } : null,
+                pressed ? styles.cellPressed : null,
               ]}
             >
               <Text
-                style={{
-                  position: 'absolute',
-                  bottom: 8,
-                  right: 8,
-                  fontSize: 11,
-                  color: dayLabelColor,
-                  opacity: 0.85,
-                  fontVariant: ['tabular-nums'],
-                }}
+                style={[styles.dayLabel, { color: dayLabelColor }]}
                 selectable
               >
                 {dayLabel}
@@ -234,12 +230,13 @@ function MonthGrid({
                       }}
                     >
                       <Text
-                        style={{
-                          fontSize: Math.max(10, Math.round(badgeSize * 0.42)),
-                          fontWeight: '600',
-                          color: colors.iconOnColor,
-                          fontVariant: ['tabular-nums'],
-                        }}
+                        style={[
+                          styles.badgeText,
+                          {
+                            fontSize: Math.max(10, Math.round(badgeSize * 0.42)),
+                            color: colors.iconOnColor,
+                          },
+                        ]}
                         selectable
                       >
                         {items.length}
@@ -257,157 +254,196 @@ function MonthGrid({
 }
 
 export function MonthCalendar({ date, subscriptions, style, onDayPress, onMonthChange }: MonthCalendarProps) {
-  const { width } = useWindowDimensions();
+  const { width: windowWidth } = useWindowDimensions();
   const { colors, isDark } = useTheme();
+  const [containerWidth, setContainerWidth] = useState<number | null>(null);
 
-  const gap = 10;
-  const cellSize = Math.floor((width - 40 - gap * 6) / 7);
-  const cellHeight = Math.round(cellSize * 1.3);
-  const cellRadius = Math.round(Math.min(cellSize, cellHeight) * 0.3);
-  const iconSize = Math.max(26, Math.floor(cellSize * 0.6));
-  const badgeSize = Math.max(18, Math.floor(cellSize * 0.28));
-  const calendarWidth = cellSize * 7 + gap * 6;
+  const scrollRef = useRef<ScrollView>(null);
 
-  const translateX = useSharedValue(-calendarWidth);
-  const isAnimatingRef = useRef(false);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const animatedRowStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: translateX.value }],
-  }));
-
-  useEffect(() => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-    isAnimatingRef.current = false;
-    translateX.value = -calendarWidth;
-  }, [calendarWidth, date, translateX]);
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-    };
+  const handleLayout = useCallback((event: { nativeEvent: { layout: { width: number } } }) => {
+    const nextWidth = Math.round(event.nativeEvent.layout.width);
+    setContainerWidth(prev => (prev === nextWidth ? prev : nextWidth));
   }, []);
 
-  const swipeGesture = useMemo(
-    () => Gesture.Pan()
-      .enabled(Boolean(onMonthChange))
-      .activeOffsetX([-12, 12])
-      .failOffsetY([-12, 12])
-      .onBegin(() => {
-        if (!onMonthChange) {
-          return;
-        }
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-          timeoutRef.current = null;
-        }
-        isAnimatingRef.current = false;
-        cancelAnimation(translateX);
-      })
-      .onUpdate((event) => {
-        if (!onMonthChange || isAnimatingRef.current) {
-          return;
-        }
-        const min = -2 * calendarWidth;
-        const max = 0;
-        translateX.value = clamp(-calendarWidth + event.translationX, min, max);
-      })
-      .onEnd((event) => {
-        if (!onMonthChange || isAnimatingRef.current) {
-          return;
-        }
-        const threshold = calendarWidth * 0.25;
-        let direction: 'prev' | 'next' | null = null;
+  const metrics = useMemo(() => {
+    const gap = 10;
+    const availableWidth = containerWidth ?? windowWidth;
+    const pageWidth = Math.max(0, Math.floor(availableWidth));
+    const cellSize = Math.floor((pageWidth - gap * 6) / 7);
+    const cellHeight = Math.round(cellSize * 1.3);
+    const cellRadius = Math.round(Math.min(cellSize, cellHeight) * 0.3);
+    const iconSize = Math.max(26, Math.floor(cellSize * 0.6));
+    const badgeSize = Math.max(18, Math.floor(cellSize * 0.28));
+    const calendarWidth = cellSize * 7 + gap * 6;
 
-        if (event.translationX > threshold) {
-          direction = 'prev';
-        }
-        else if (event.translationX < -threshold) {
-          direction = 'next';
-        }
+    return {
+      gap,
+      cellSize,
+      cellHeight,
+      cellRadius,
+      iconSize,
+      badgeSize,
+      calendarWidth,
+      pageWidth,
+    };
+  }, [containerWidth, windowWidth]);
 
-        if (!direction) {
-          translateX.value = withTiming(-calendarWidth, {
-            duration: 200,
-            easing: Easing.out(Easing.cubic),
-          });
-          return;
-        }
+  const {
+    gap,
+    cellSize,
+    cellHeight,
+    cellRadius,
+    iconSize,
+    badgeSize,
+    calendarWidth,
+    pageWidth,
+  } = metrics;
 
-        const duration = 260;
-        const target = direction === 'next' ? -2 * calendarWidth : 0;
-        isAnimatingRef.current = true;
-        translateX.value = withTiming(target, {
-          duration,
-          easing: Easing.out(Easing.cubic),
-        });
+  const resetScroll = useCallback(() => {
+    if (pageWidth <= 0) {
+      return;
+    }
+    requestAnimationFrame(() => {
+      scrollRef.current?.scrollTo({ x: pageWidth, animated: false });
+    });
+  }, [pageWidth]);
 
-        timeoutRef.current = setTimeout(() => {
-          onMonthChange(addMonths(date, direction === 'next' ? 1 : -1));
-          translateX.value = -calendarWidth;
-          isAnimatingRef.current = false;
-        }, duration);
-      })
-      .runOnJS(true),
-    [calendarWidth, date, onMonthChange, translateX],
+  useEffect(() => {
+    resetScroll();
+  }, [date, resetScroll]);
+
+  const handleMomentumEnd = useCallback(
+    (event: { nativeEvent: { contentOffset: { x: number } } }) => {
+      if (!onMonthChange || pageWidth <= 0) {
+        return;
+      }
+      const offsetX = event.nativeEvent.contentOffset.x;
+      const page = Math.round(offsetX / pageWidth);
+      if (page === 1) {
+        return;
+      }
+      const direction = page === 0 ? -1 : 1;
+      onMonthChange(addMonths(date, direction));
+      resetScroll();
+    },
+    [date, onMonthChange, pageWidth, resetScroll],
   );
 
   const prevMonth = useMemo(() => addMonths(date, -1), [date]);
   const nextMonth = useMemo(() => addMonths(date, 1), [date]);
+  const scrollEnabled = Boolean(onMonthChange);
 
   return (
-    <GestureDetector gesture={swipeGesture}>
-      <View style={[{ width: calendarWidth, overflow: 'hidden' }, style]}>
-        <Animated.View style={[{ flexDirection: 'row', width: calendarWidth * 3 }, animatedRowStyle]}>
-          <MonthGrid
-            date={prevMonth}
-            subscriptions={subscriptions}
-            onDayPress={onDayPress}
-            cellSize={cellSize}
-            cellHeight={cellHeight}
-            cellRadius={cellRadius}
-            iconSize={iconSize}
-            badgeSize={badgeSize}
-            gap={gap}
-            width={calendarWidth}
-            colors={colors}
-            isDark={isDark}
-          />
-          <MonthGrid
-            date={date}
-            subscriptions={subscriptions}
-            onDayPress={onDayPress}
-            cellSize={cellSize}
-            cellHeight={cellHeight}
-            cellRadius={cellRadius}
-            iconSize={iconSize}
-            badgeSize={badgeSize}
-            gap={gap}
-            width={calendarWidth}
-            colors={colors}
-            isDark={isDark}
-          />
-          <MonthGrid
-            date={nextMonth}
-            subscriptions={subscriptions}
-            onDayPress={onDayPress}
-            cellSize={cellSize}
-            cellHeight={cellHeight}
-            cellRadius={cellRadius}
-            iconSize={iconSize}
-            badgeSize={badgeSize}
-            gap={gap}
-            width={calendarWidth}
-            colors={colors}
-            isDark={isDark}
-          />
-        </Animated.View>
-      </View>
-    </GestureDetector>
+    <View onLayout={handleLayout} style={[styles.root, style]}>
+      <ScrollView
+        ref={scrollRef}
+        horizontal
+        pagingEnabled
+        bounces={false}
+        scrollEnabled={scrollEnabled}
+        showsHorizontalScrollIndicator={false}
+        onMomentumScrollEnd={handleMomentumEnd}
+        contentContainerStyle={{ width: pageWidth * 3 }}
+        scrollEventThrottle={16}
+        style={{ width: pageWidth }}
+      >
+        <View style={{ flexDirection: 'row' }}>
+          <View style={[styles.page, { width: pageWidth }]}>
+            <MonthGrid
+              date={prevMonth}
+              subscriptions={subscriptions}
+              onDayPress={onDayPress}
+              cellSize={cellSize}
+              cellHeight={cellHeight}
+              cellRadius={cellRadius}
+              iconSize={iconSize}
+              badgeSize={badgeSize}
+              gap={gap}
+              width={calendarWidth}
+              colors={colors}
+              isDark={isDark}
+            />
+          </View>
+          <View style={[styles.page, { width: pageWidth }]}>
+            <MonthGrid
+              date={date}
+              subscriptions={subscriptions}
+              onDayPress={onDayPress}
+              cellSize={cellSize}
+              cellHeight={cellHeight}
+              cellRadius={cellRadius}
+              iconSize={iconSize}
+              badgeSize={badgeSize}
+              gap={gap}
+              width={calendarWidth}
+              colors={colors}
+              isDark={isDark}
+            />
+          </View>
+          <View style={[styles.page, { width: pageWidth }]}>
+            <MonthGrid
+              date={nextMonth}
+              subscriptions={subscriptions}
+              onDayPress={onDayPress}
+              cellSize={cellSize}
+              cellHeight={cellHeight}
+              cellRadius={cellRadius}
+              iconSize={iconSize}
+              badgeSize={badgeSize}
+              gap={gap}
+              width={calendarWidth}
+              colors={colors}
+              isDark={isDark}
+            />
+          </View>
+        </View>
+      </ScrollView>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  root: {
+    overflow: 'hidden',
+    alignSelf: 'stretch',
+  },
+  page: {
+    alignItems: 'center',
+  },
+  gridContainer: {
+    alignSelf: 'center',
+  },
+  weekdayRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  weekdayLabel: {
+    textAlign: 'center',
+    fontSize: 11,
+  },
+  cells: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  cellBase: {
+    borderCurve: 'continuous',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cellPressed: {
+    opacity: 0.88,
+    transform: [{ scale: 0.98 }],
+  },
+  dayLabel: {
+    position: 'absolute',
+    bottom: 8,
+    right: 8,
+    fontSize: 11,
+    opacity: 0.85,
+    fontVariant: ['tabular-nums'],
+  },
+  badgeText: {
+    fontWeight: '600',
+    fontVariant: ['tabular-nums'],
+  },
+});

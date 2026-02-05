@@ -110,7 +110,6 @@ export default function HomeScreen() {
               style={{
                 flex: 1,
                 backgroundColor: colors.background,
-                paddingHorizontal: 20,
                 paddingTop: insets.top + 12,
                 paddingBottom: insets.bottom + 12,
                 justifyContent: 'center',
