@@ -63,7 +63,7 @@ export function ModalSheet({
   scrollViewProps,
   footer,
   footerContainerStyle,
-  closeVariant = 'plain',
+  closeVariant = 'muted',
   closeIconOnly = true,
   closeLabel,
   closeButtonTitle,

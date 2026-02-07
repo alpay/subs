@@ -74,8 +74,9 @@ export function DaySubscriptionsSheet({
       )}
       onClose={onClose}
       isVisible={Boolean(date)}
-      snapPoints={['92%']}
-      bottomScrollSpacer={96}
+      snapPoints={['90%']}
+      enableDynamicSizing
+      bottomScrollSpacer={24}
     >
       <View
         style={{

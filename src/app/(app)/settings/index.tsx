@@ -1,16 +1,20 @@
-import type { ComponentProps, ReactNode } from 'react';
-
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
-import { Card, Switch, useToast } from 'heroui-native';
+import { Switch, useToast } from 'heroui-native';
 import { useMemo } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ModalSheet } from '@/components/modal-sheet';
 import { Pill } from '@/components/pill';
+import {
+  SettingsLeadingIcon,
+  SettingsRow,
+  SettingsRowDivider,
+  SettingsSection,
+} from '@/components/settings-section';
 import { useTheme } from '@/lib/hooks/use-theme';
 import {
   useCategoriesStore,
@@ -51,137 +55,7 @@ function formatUpdatedAt(value: string) {
   }).format(date);
 }
 
-type SettingsRowProps = {
-  label: string;
-  subtitle?: string;
-  leading?: ReactNode;
-  right?: ReactNode;
-  onPress?: () => void;
-  accessorySymbol?: string;
-  labelTone?: 'default' | 'accent';
-  style?: ComponentProps<typeof View>['style'];
-  labelStyle?: ComponentProps<typeof Text>['style'];
-};
-
-function SettingsRow({
-  label,
-  subtitle,
-  leading,
-  right,
-  onPress,
-  accessorySymbol,
-  labelTone = 'default',
-  style,
-  labelStyle,
-}: SettingsRowProps) {
-  const { colors } = useTheme();
-  const Container = onPress ? Pressable : View;
-  const labelColor = labelTone === 'accent' ? colors.warning : colors.text;
-
-  return (
-    <Container
-      accessibilityRole={onPress ? 'button' : undefined}
-      onPress={onPress}
-      style={onPress
-        ? ({ pressed }) => [
-            {
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              paddingVertical: 12,
-              gap: 12,
-            },
-            style,
-            pressed && { opacity: 0.7 },
-          ]
-        : [
-            {
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              paddingVertical: 12,
-              gap: 12,
-            },
-            style,
-          ]}
-    >
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 }}>
-        {leading}
-        <View style={{ flex: 1, gap: 2 }}>
-          <Text
-            style={[
-              {
-                color: labelColor,
-                fontSize: 16,
-                fontWeight: '500',
-              },
-              labelStyle,
-            ]}
-            selectable
-          >
-            {label}
-          </Text>
-          {subtitle
-            ? (
-                <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
-                  {subtitle}
-                </Text>
-              )
-            : null}
-        </View>
-      </View>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-        {right}
-        {accessorySymbol
-          ? (
-              <Image
-                source={`sf:${accessorySymbol}`}
-                style={{ width: 12, height: 12 }}
-                tintColor={colors.textMuted}
-              />
-            )
-          : null}
-      </View>
-    </Container>
-  );
-}
-
-type RowDividerProps = {
-  inset?: number;
-};
-
-function RowDivider({ inset = 0 }: RowDividerProps) {
-  const { colors } = useTheme();
-
-  return (
-    <View
-      style={{
-        height: 1,
-        backgroundColor: colors.surfaceBorder,
-        opacity: 0.6,
-        marginLeft: inset,
-      }}
-    />
-  );
-}
-
-type LeadingIconProps = {
-  symbol: string;
-};
-
-function LeadingIcon({ symbol }: LeadingIconProps) {
-  const { colors } = useTheme();
-
-  return (
-    <View style={{ width: 24, alignItems: 'center' }}>
-      <Image
-        source={`sf:${symbol}`}
-        style={{ width: 18, height: 18 }}
-        tintColor={colors.textMuted}
-      />
-    </View>
-  );
-}
+const ICON_DIVIDER_INSET = 36;
 
 function SubscriptionBadge() {
   const { colors, isDark } = useTheme();
@@ -280,7 +154,6 @@ export default function SettingsScreen() {
 
   const sectionLabelStyle = { fontSize: 11, letterSpacing: 1.2, color: colors.textMuted, fontWeight: '600' as const };
   const noteStyle = { fontSize: 12, color: colors.textMuted, lineHeight: 18 };
-  const iconDividerInset = 36;
 
   return (
     <ModalSheet
@@ -294,8 +167,8 @@ export default function SettingsScreen() {
         paddingBottom: bottom + 20,
       }}
     >
-      {/* Subscription card - mockup: app icon, Subscription Day, Account type, Free pill */}
-      <View style={{ marginBottom: 20 }}>
+      {/* Section 1: Account (rounded panel with light background) */}
+      <SettingsSection>
         <SettingsRow
           leading={<SubscriptionBadge />}
           label="Subscription Day"
@@ -304,15 +177,17 @@ export default function SettingsScreen() {
           right={<Pill tone="accent">Free</Pill>}
           accessorySymbol="chevron.right"
         />
-        <Text style={[noteStyle, { marginTop: 6, marginLeft: 58 }]} selectable>
-          Unlock all features with a lifetime license.
-        </Text>
-      </View>
+        <View style={{ paddingHorizontal: 14, paddingBottom: 10 }}>
+          <Text style={[noteStyle, { marginTop: 2 }]} selectable>
+            Unlock all features with a lifetime license.
+          </Text>
+        </View>
+      </SettingsSection>
 
-      {/* General: iCloud, Currency, Round to whole */}
-      <View style={{ marginBottom: 24 }}>
+      {/* Section 2: General (rounded panel) */}
+      <SettingsSection>
         <SettingsRow
-          leading={<LeadingIcon symbol="externaldrive" />}
+          leading={<SettingsLeadingIcon symbol="externaldrive" />}
           label="iCloud & Data"
           right={(
             <Text style={{ color: colors.textMuted, fontVariant: ['tabular-nums'] }} selectable>
@@ -322,9 +197,9 @@ export default function SettingsScreen() {
           accessorySymbol="chevron.right"
           onPress={() => update({ iCloudEnabled: !settings.iCloudEnabled })}
         />
-        <RowDivider />
+        <SettingsRowDivider />
         <SettingsRow
-          leading={<LeadingIcon symbol="dollarsign" />}
+          leading={<SettingsLeadingIcon symbol="dollarsign" />}
           label="Main Currency"
           onPress={() => router.push('/(app)/settings/currency')}
           right={(
@@ -343,7 +218,7 @@ export default function SettingsScreen() {
           )}
           accessorySymbol="chevron.right"
         />
-        <RowDivider />
+        <SettingsRowDivider />
         <SettingsRow
           label="Round to Whole Numbers"
           right={(
@@ -353,12 +228,12 @@ export default function SettingsScreen() {
             />
           )}
         />
-      </View>
+      </SettingsSection>
 
-      {/* Categories & Payment Methods - mockup: icon, count, arrow */}
-      <View style={{ marginBottom: 24 }}>
+      {/* Section 3: Categories & Payment Methods (rounded panel) */}
+      <SettingsSection>
         <SettingsRow
-          leading={<LeadingIcon symbol="square.grid.2x2" />}
+          leading={<SettingsLeadingIcon symbol="square.grid.2x2" />}
           label="Categories"
           onPress={() => router.push('/(app)/settings/categories')}
           right={(
@@ -368,9 +243,9 @@ export default function SettingsScreen() {
           )}
           accessorySymbol="chevron.right"
         />
-        <RowDivider inset={iconDividerInset} />
+        <SettingsRowDivider inset={ICON_DIVIDER_INSET} />
         <SettingsRow
-          leading={<LeadingIcon symbol="creditcard" />}
+          leading={<SettingsLeadingIcon symbol="creditcard" />}
           label="Payment Methods"
           onPress={() => router.push('/(app)/settings/payment-methods')}
           right={(
@@ -380,7 +255,7 @@ export default function SettingsScreen() {
           )}
           accessorySymbol="chevron.right"
         />
-      </View>
+      </SettingsSection>
 
       {/* NOTIFICATIONS. */}
       <View style={{ marginBottom: 24 }}>
@@ -423,7 +298,7 @@ export default function SettingsScreen() {
             </View>
           )}
         />
-        <RowDivider />
+        <SettingsRowDivider />
         <SettingsRow
           label="Second Reminder"
           onPress={() => router.push('/(app)/settings/notification-settings')}
@@ -440,7 +315,7 @@ export default function SettingsScreen() {
             </View>
           )}
         />
-        <RowDivider />
+        <SettingsRowDivider />
         <SettingsRow
           label="Test Notification"
           labelTone="accent"
@@ -466,7 +341,7 @@ export default function SettingsScreen() {
             />
           )}
         />
-        <RowDivider />
+        <SettingsRowDivider />
         <SettingsRow
           label="Haptic Feedback"
           right={(
@@ -478,18 +353,20 @@ export default function SettingsScreen() {
         />
       </View>
 
-      {/* Currency rates - optional block */}
-      <View style={{ marginBottom: 24 }}>
+      {/* Currency rates (rounded panel) */}
+      <View style={{ marginBottom: 8 }}>
         <Text style={[sectionLabelStyle, { marginBottom: 8 }]} selectable>
           CURRENCY RATES
         </Text>
+      </View>
+      <SettingsSection>
         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
             paddingVertical: 12,
-            paddingHorizontal: 0,
+            paddingHorizontal: 14,
           }}
         >
           <View style={{ flex: 1, gap: 4 }}>
@@ -521,44 +398,46 @@ export default function SettingsScreen() {
             </Text>
           </Pressable>
         </View>
-        <Text style={noteStyle} selectable>
-          Currency rates can be automatically updated via our server. These currency rates are
-          approximate and may differ from your local currency rates.
-        </Text>
-      </View>
+        <View style={{ paddingHorizontal: 14, paddingBottom: 10 }}>
+          <Text style={noteStyle} selectable>
+            Currency rates can be automatically updated via our server. These currency rates are
+            approximate and may differ from your local currency rates.
+          </Text>
+        </View>
+      </SettingsSection>
 
-      {/* More: Rate & Review, etc. */}
-      <View style={{ marginBottom: 24 }}>
+      {/* More: Rate & Review, etc. (rounded panel for consistency) */}
+      <SettingsSection>
         <SettingsRow
-          leading={<LeadingIcon symbol="star" />}
+          leading={<SettingsLeadingIcon symbol="star" />}
           label="Rate & Review"
           accessorySymbol="arrow.up.right"
         />
-        <RowDivider inset={iconDividerInset} />
+        <SettingsRowDivider inset={ICON_DIVIDER_INSET} />
         <SettingsRow
-          leading={<LeadingIcon symbol="list.bullet.rectangle" />}
+          leading={<SettingsLeadingIcon symbol="list.bullet.rectangle" />}
           label="Ideas & Roadmap"
           accessorySymbol="arrow.up.right"
         />
-        <RowDivider inset={iconDividerInset} />
+        <SettingsRowDivider inset={ICON_DIVIDER_INSET} />
         <SettingsRow
-          leading={<LeadingIcon symbol="envelope" />}
+          leading={<SettingsLeadingIcon symbol="envelope" />}
           label="Contact me"
           accessorySymbol="chevron.right"
         />
-        <RowDivider inset={iconDividerInset} />
+        <SettingsRowDivider inset={ICON_DIVIDER_INSET} />
         <SettingsRow
-          leading={<LeadingIcon symbol="globe" />}
+          leading={<SettingsLeadingIcon symbol="globe" />}
           label="Visit Website"
           accessorySymbol="arrow.up.right"
         />
-        <RowDivider inset={iconDividerInset} />
+        <SettingsRowDivider inset={ICON_DIVIDER_INSET} />
         <SettingsRow
-          leading={<LeadingIcon symbol="square.and.arrow.up" />}
+          leading={<SettingsLeadingIcon symbol="square.and.arrow.up" />}
           label="Share with a friend"
           accessorySymbol="chevron.right"
         />
-      </View>
+      </SettingsSection>
 
       <View style={{ alignItems: 'center', gap: 6, paddingTop: 8 }}>
         <Image

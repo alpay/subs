@@ -10,12 +10,16 @@ import currencyRates from '../../../assets/data/currency-rates.json';
 
 const now = () => new Date().toISOString();
 
+/** Display name for the default/fallback category; this category cannot be deleted. */
+export const OTHER_CATEGORY_NAME = 'Other';
+
 export const DEFAULT_CATEGORIES: Category[] = [
   { id: 'cat-utilities', name: 'Utilities', color: '#4F46E5', createdAt: now(), updatedAt: now() },
   { id: 'cat-entertainment', name: 'Entertainment', color: '#F97316', createdAt: now(), updatedAt: now() },
   { id: 'cat-productivity', name: 'Productivity', color: '#22C55E', createdAt: now(), updatedAt: now() },
   { id: 'cat-finance', name: 'Finance', color: '#0EA5E9', createdAt: now(), updatedAt: now() },
   { id: 'cat-health', name: 'Health', color: '#E11D48', createdAt: now(), updatedAt: now() },
+  { id: 'cat-other', name: OTHER_CATEGORY_NAME, color: '#8E8E93', createdAt: now(), updatedAt: now() },
 ];
 
 export const DEFAULT_LISTS: List[] = [
