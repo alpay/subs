@@ -102,11 +102,11 @@ export default function AddSubscriptionScreen() {
   }, [reset, settings.mainCurrency]);
 
   const handleAmountPress = useCallback(() => {
-    router.push('/(modals)/amount-picker');
+    router.push('/(app)/(modals)/amount-picker');
   }, [router]);
 
   const handleDatePress = useCallback(() => {
-    router.push('/(modals)/date-picker');
+    router.push('/(app)/(modals)/date-picker');
   }, [router]);
 
   const handleSave = useCallback(() => {

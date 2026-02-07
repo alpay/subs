@@ -112,7 +112,7 @@ export default function SearchScreen() {
             return (
               <Pressable
                 key={sub.id}
-                onPress={() => router.push({ pathname: '/(modals)/subscription-form', params: { id: sub.id } })}
+                onPress={() => router.push({ pathname: '/(app)/(modals)/subscription-form', params: { id: sub.id } })}
               >
                 <View
                   style={{
