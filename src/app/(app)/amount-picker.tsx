@@ -68,10 +68,15 @@ export default function AmountPickerScreen() {
     });
   }, [setAmount]);
 
+  const handleClose = useCallback(() => {
+    router.back();
+  }, [router]);
+
   return (
     <ModalSheet
       title="Amount"
       closeButtonTitle="Close"
+      onClose={handleClose}
       topRightActionBar={(
         <SelectPill
           value={currencyOption}
@@ -161,7 +166,7 @@ export default function AmountPickerScreen() {
         </View>
 
         <Pressable
-          onPress={() => router.back()}
+          onPress={handleClose}
           style={({ pressed }) => [
             {
               marginTop: 8,

@@ -64,8 +64,8 @@ export default function HomeScreen() {
       </Stack.Toolbar>
 
       <Stack.Toolbar placement="right">
-        <Stack.Toolbar.Button icon="chart.bar" onPress={() => router.push('/(app)/(modals)/analytics')} />
-        <Stack.Toolbar.Button icon="gearshape" onPress={() => router.push('/(app)/(modals)/settings')} />
+        <Stack.Toolbar.Button icon="chart.bar" onPress={() => router.push('/(app)/analytics')} />
+        <Stack.Toolbar.Button icon="gearshape" onPress={() => router.push('/(app)/settings')} />
       </Stack.Toolbar>
 
       <Stack.Toolbar placement="bottom">
@@ -83,7 +83,7 @@ export default function HomeScreen() {
         />
         <Stack.Toolbar.SearchBarSlot />
         <Stack.Toolbar.Spacer />
-        <Stack.Toolbar.Button icon="plus" onPress={() => router.push('/(app)/(modals)/add-subscription')} />
+        <Stack.Toolbar.Button icon="plus" onPress={() => router.push('/(app)/add-subscription')} />
       </Stack.Toolbar>
 
       {hasQuery
@@ -98,7 +98,7 @@ export default function HomeScreen() {
                 results={searchResults}
                 settings={settings}
                 onSelect={(subscriptionId) => {
-                  router.push({ pathname: '/(app)/(modals)/subscription-form', params: { id: subscriptionId } });
+                  router.push({ pathname: '/(app)/subscription-form', params: { id: subscriptionId } });
                 }}
               />
             </ScreenShell>
@@ -135,9 +135,9 @@ export default function HomeScreen() {
         settings={settings}
         rates={rates}
         onClose={handleSheetClose}
-        onAddPress={() => router.push('/(app)/(modals)/add-subscription')}
+        onAddPress={() => router.push('/(app)/add-subscription')}
         onSubscriptionPress={(subscriptionId) => {
-          router.push({ pathname: '/(app)/(modals)/subscription-form', params: { id: subscriptionId } });
+          router.push({ pathname: '/(app)/subscription-form', params: { id: subscriptionId } });
         }}
       />
     </>

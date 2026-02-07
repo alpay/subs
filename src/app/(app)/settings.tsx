@@ -330,7 +330,7 @@ export default function SettingsScreen() {
         <Card.Body style={cardBodyStyle}>
           <SettingsRow
             label="Main Currency"
-            onPress={() => router.push('/(app)/(modals)/currency')}
+            onPress={() => router.push('/(app)/currency')}
             right={(
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                 {currencyFlag
@@ -368,7 +368,7 @@ export default function SettingsScreen() {
           <SettingsRow
             leading={<LeadingIcon symbol="square.grid.2x2" />}
             label="Categories"
-            onPress={() => router.push('/(app)/(modals)/categories')}
+            onPress={() => router.push('/(app)/categories')}
             right={(
               <Text style={{ color: colors.textMuted, fontVariant: ['tabular-nums'] }} selectable>
                 {categories.length}
@@ -380,7 +380,7 @@ export default function SettingsScreen() {
           <SettingsRow
             leading={<LeadingIcon symbol="creditcard" />}
             label="Payment Methods"
-            onPress={() => router.push('/(app)/(modals)/payment-methods')}
+            onPress={() => router.push('/(app)/payment-methods')}
             right={(
               <Text style={{ color: colors.textMuted, fontVariant: ['tabular-nums'] }} selectable>
                 {methods.length}
@@ -399,7 +399,7 @@ export default function SettingsScreen() {
           <Card.Body style={cardBodyStyle}>
             <SettingsRow
               label="First Reminder"
-              onPress={() => router.push('/(app)/(modals)/notification-settings')}
+              onPress={() => router.push('/(app)/notification-settings')}
               right={(
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
@@ -436,7 +436,7 @@ export default function SettingsScreen() {
             <RowDivider />
             <SettingsRow
               label="Second Reminder"
-              onPress={() => router.push('/(app)/(modals)/notification-settings')}
+              onPress={() => router.push('/(app)/notification-settings')}
               right={(
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                   <Text style={{ color: colors.textMuted, fontVariant: ['tabular-nums'] }} selectable>

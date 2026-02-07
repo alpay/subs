@@ -1,7 +1,7 @@
 import { addDays, addMonths, format, isSameDay, isSameMonth, isToday, startOfMonth, startOfWeek } from 'date-fns';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { ModalSheet } from '@/components/modal-sheet';
@@ -32,10 +32,15 @@ export default function DatePickerScreen() {
 
   const days = useMemo(() => buildCalendarDays(visibleMonth), [visibleMonth]);
 
+  const handleClose = useCallback(() => {
+    router.back();
+  }, [router]);
+
   return (
     <ModalSheet
       title="Start Date"
       closeButtonTitle="Close"
+      onClose={handleClose}
       snapPoints={['88%']}
       lockSnapPoint
       bottomScrollSpacer={88}
@@ -167,7 +172,7 @@ export default function DatePickerScreen() {
       </View>
 
       <Pressable
-        onPress={() => router.back()}
+        onPress={handleClose}
         style={({ pressed }) => [
           {
             marginTop: 12,

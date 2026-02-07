@@ -397,7 +397,7 @@ export default function SubscriptionFormScreen() {
                 </TextField>
               )}
 
-          <Button variant="secondary" onPress={() => router.push('/(app)/(modals)/icon-picker')}>
+          <Button variant="secondary" onPress={() => router.push('/(app)/icon-picker')}>
             Open icon picker helper
           </Button>
 
