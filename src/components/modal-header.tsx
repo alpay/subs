@@ -11,6 +11,8 @@ type ModalHeaderProps = {
   topRightActionBar?: ReactNode;
   onClose?: () => void;
   closeVariant?: 'plain' | 'muted';
+  /** When true, only the close icon is shown (no text). Default true. */
+  closeIconOnly?: boolean;
   closeLabel?: string;
   closeButtonTitle?: string;
   closeSymbol?: string;
@@ -22,6 +24,7 @@ export function ModalHeader({
   topRightActionBar,
   onClose,
   closeVariant = 'plain',
+  closeIconOnly = true,
   closeLabel,
   closeButtonTitle,
   closeSymbol,
@@ -60,15 +63,17 @@ export function ModalHeader({
             ? (
                 <Pressable
                   accessibilityRole="button"
+                  accessibilityLabel={resolvedCloseLabel}
                   hitSlop={10}
                   onPress={onClose}
                   style={({ pressed }) => [
                     {
                       flexDirection: 'row',
                       alignItems: 'center',
+                      justifyContent: 'center',
                       gap: 6,
-                      paddingVertical: 6,
-                      paddingHorizontal: 4,
+                      paddingVertical: 8,
+                      paddingHorizontal: closeIconOnly ? 8 : 4,
                       borderRadius: 999,
                       borderCurve: 'continuous',
                       backgroundColor: isMuted ? colors.surfaceMuted : 'transparent',
@@ -81,11 +86,13 @@ export function ModalHeader({
                   <Image
                     source={`sf:${resolvedCloseSymbol}`}
                     style={{ width: 14, height: 14 }}
-                    tintColor={colors.accent}
+                    tintColor={colors.text}
                   />
-                  <Text style={{ color: colors.accent, fontWeight: '600', fontSize: 14 }} selectable>
-                    {resolvedCloseLabel}
-                  </Text>
+                  {!closeIconOnly && (
+                    <Text style={{ color: colors.accent, fontWeight: '600', fontSize: 14 }} selectable>
+                      {resolvedCloseLabel}
+                    </Text>
+                  )}
                 </Pressable>
               )
             : null}

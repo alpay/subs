@@ -40,6 +40,7 @@ type ModalSheetProps = {
   footer?: ReactNode;
   footerContainerStyle?: StyleProp<ViewStyle>;
   closeVariant?: 'plain' | 'muted';
+  closeIconOnly?: boolean;
   closeLabel?: string;
   closeButtonTitle?: string;
   closeSymbol?: string;
@@ -63,6 +64,7 @@ export function ModalSheet({
   footer,
   footerContainerStyle,
   closeVariant = 'plain',
+  closeIconOnly = true,
   closeLabel,
   closeButtonTitle,
   closeSymbol,
@@ -198,6 +200,7 @@ export function ModalSheet({
           right={resolvedRight}
           onClose={handleClose}
           closeVariant={closeVariant}
+          closeIconOnly={closeIconOnly}
           closeLabel={closeLabel}
           closeButtonTitle={closeButtonTitle}
           closeSymbol={closeSymbol}
