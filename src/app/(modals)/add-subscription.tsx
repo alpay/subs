@@ -1,11 +1,9 @@
-import type { DatePickerRef } from 'rn-awesome-date-picker';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { Button, Card, useToast } from 'heroui-native';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Pressable, Text, View } from 'react-native';
-import DatePicker from 'rn-awesome-date-picker';
 import { ModalSheet } from '@/components/modal-sheet';
 import { SelectPill } from '@/components/select-pill';
 import { SheetInput, SheetTextArea } from '@/components/sheet-input';
@@ -39,6 +37,13 @@ function formatDateLabel(date: Date) {
   });
 }
 
+function toIsoLocalDate(date: Date) {
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, '0');
+  const day = `${date.getDate()}`.padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 export default function AddSubscriptionScreen() {
   const router = useRouter();
   const { toast } = useToast();
@@ -48,12 +53,10 @@ export default function AddSubscriptionScreen() {
   const { lists } = useListsStore();
   const { rates } = useCurrencyRatesStore();
   const { add } = useSubscriptionsStore();
-  const { amount, currency, setCurrency, reset } = useAddSubscriptionDraftStore();
-  const datePickerRef = useRef<DatePickerRef>(null);
+  const { amount, currency, startDate, setCurrency, reset } = useAddSubscriptionDraftStore();
 
   const [name, setName] = useState('');
   const [schedule, setSchedule] = useState<(typeof SCHEDULE_OPTIONS)[number]['value']>('monthly');
-  const [startDate, setStartDate] = useState(() => new Date());
   const [notes, setNotes] = useState('');
   const [categoryId, setCategoryId] = useState(categories[0]?.id ?? '');
   const [listId, setListId] = useState(lists[0]?.id ?? '');
@@ -72,10 +75,6 @@ export default function AddSubscriptionScreen() {
     () => Object.keys(rates.rates).sort().map(code => ({ label: code, value: code })),
     [rates.rates],
   );
-  const currencyOption = useMemo(
-    () => currencyOptions.find(option => option.value === currency),
-    [currency, currencyOptions],
-  );
   const categoryOptions = useMemo(
     () => categories.map(category => ({ label: category.name, value: category.id, color: category.color })),
     [categories],
@@ -89,21 +88,9 @@ export default function AddSubscriptionScreen() {
     [notificationMode],
   );
   const selectedCategory = useMemo(
-    () => categories.find(category => category.id === categoryId),
+    () => categories.find(category => category.id === categoryId) ?? categories[0],
     [categories, categoryId],
   );
-  useEffect(() => {
-    if (!categoryId && categoryOptions.length > 0) {
-      setCategoryId(categoryOptions[0].value);
-    }
-  }, [categoryId, categoryOptions]);
-
-  useEffect(() => {
-    if (!listId && listOptions.length > 0) {
-      setListId(listOptions[0].value);
-    }
-  }, [listId, listOptions]);
-
   useEffect(() => {
     if (currencyOptions.length > 0 && !currencyOptions.some(option => option.value === currency)) {
       setCurrency(currencyOptions[0].value);
@@ -111,7 +98,7 @@ export default function AddSubscriptionScreen() {
   }, [currency, currencyOptions, setCurrency]);
 
   useEffect(() => {
-    reset({ amount: '0', currency: settings.mainCurrency || 'USD' });
+    reset({ amount: '0', currency: settings.mainCurrency || 'USD', startDate: new Date() });
   }, [reset, settings.mainCurrency]);
 
   const handleAmountPress = useCallback(() => {
@@ -119,8 +106,8 @@ export default function AddSubscriptionScreen() {
   }, [router]);
 
   const handleDatePress = useCallback(() => {
-    datePickerRef.current?.open();
-  }, []);
+    router.push('/(modals)/date-picker');
+  }, [router]);
 
   const handleSave = useCallback(() => {
     if (!isValid) {
@@ -128,7 +115,7 @@ export default function AddSubscriptionScreen() {
       return;
     }
 
-    const normalizedDate = startDate.toISOString().slice(0, 10);
+    const normalizedDate = toIsoLocalDate(startDate);
 
     add({
       name: name.trim(),
@@ -147,7 +134,7 @@ export default function AddSubscriptionScreen() {
       notes: notes.trim() ? notes.trim() : undefined,
     });
 
-    reset({ amount: '0', currency: settings.mainCurrency || 'USD' });
+    reset({ amount: '0', currency: settings.mainCurrency || 'USD', startDate: new Date() });
     router.back();
   }, [
     add,
@@ -185,263 +172,242 @@ export default function AddSubscriptionScreen() {
   };
 
   return (
-    <>
-      <ModalSheet
-        title="New Subscription"
-        footer={(
-          <Button
-            variant="primary"
-            size="lg"
-            isDisabled={!isValid}
-            onPress={handleSave}
-            style={{ width: '100%' }}
-          >
-            Add Subscription
-          </Button>
-        )}
-      >
-        <View style={{ alignItems: 'center', paddingVertical: 6 }}>
-          <View
-            style={{
-              width: 72,
-              height: 72,
-              borderRadius: 36,
-              borderCurve: 'continuous',
-              backgroundColor: colors.surfaceElevated,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderWidth: 1,
-              borderColor: colors.surfaceBorder,
-              boxShadow: isDark
-                ? '0 14px 24px rgba(0, 0, 0, 0.35)'
-                : '0 12px 20px rgba(15, 23, 42, 0.12)',
-            }}
-          >
-            <Image
-              source="sf:diamond.fill"
-              style={{ width: 28, height: 28 }}
-              tintColor={colors.text}
+    <ModalSheet
+      title="New Subscription"
+      footer={(
+        <Button
+          variant="primary"
+          size="lg"
+          isDisabled={!isValid}
+          onPress={handleSave}
+          style={{ width: '100%' }}
+        >
+          Add Subscription
+        </Button>
+      )}
+    >
+      <View style={{ alignItems: 'center', paddingVertical: 6 }}>
+        <View
+          style={{
+            width: 72,
+            height: 72,
+            borderRadius: 36,
+            borderCurve: 'continuous',
+            backgroundColor: colors.surfaceElevated,
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderWidth: 1,
+            borderColor: colors.surfaceBorder,
+            boxShadow: isDark
+              ? '0 14px 24px rgba(0, 0, 0, 0.35)'
+              : '0 12px 20px rgba(15, 23, 42, 0.12)',
+          }}
+        >
+          <Image
+            source="sf:diamond.fill"
+            style={{ width: 28, height: 28 }}
+            tintColor={colors.text}
+          />
+        </View>
+      </View>
+
+      <Card>
+        <Card.Body style={{ padding: 0, gap: 0 }}>
+          <View style={[rowStyle, rowDivider]}>
+            <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
+              Name
+            </Text>
+            <View style={{ flex: 1, alignItems: 'flex-end' }}>
+              <SheetInput
+                value={name}
+                onChangeText={setName}
+                placeholder="Cursor"
+                placeholderTextColor={colors.textMuted}
+                style={{
+                  backgroundColor: 'transparent',
+                  borderWidth: 0,
+                  paddingHorizontal: 0,
+                  paddingVertical: 0,
+                  textAlign: 'right',
+                  fontSize: 14,
+                  fontWeight: '500',
+                  color: colors.text,
+                  minHeight: 0,
+                }}
+              />
+            </View>
+          </View>
+
+          <View style={[rowStyle, rowDivider]}>
+            <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
+              Schedule
+            </Text>
+            <SelectPill
+              value={scheduleOption}
+              options={[...SCHEDULE_OPTIONS]}
+              onValueChange={option => setSchedule((option?.value as typeof schedule) ?? 'monthly')}
+              size="sm"
             />
           </View>
-        </View>
 
-        <Card>
-          <Card.Body style={{ padding: 0, gap: 0 }}>
-            <View style={[rowStyle, rowDivider]}>
-              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
-                Name
-              </Text>
-              <View style={{ flex: 1, alignItems: 'flex-end' }}>
-                <SheetInput
-                  value={name}
-                  onChangeText={setName}
-                  placeholder="Cursor"
-                  placeholderTextColor={colors.textMuted}
-                  style={{
-                    backgroundColor: 'transparent',
-                    borderWidth: 0,
-                    paddingHorizontal: 0,
-                    paddingVertical: 0,
-                    textAlign: 'right',
-                    fontSize: 14,
-                    fontWeight: '500',
-                    color: colors.text,
-                    minHeight: 0,
-                  }}
-                />
-              </View>
-            </View>
-
-            <View style={[rowStyle, rowDivider]}>
-              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
-                Schedule
-              </Text>
-              <SelectPill
-                value={scheduleOption}
-                options={[...SCHEDULE_OPTIONS]}
-                onValueChange={option => setSchedule((option?.value as typeof schedule) ?? 'monthly')}
-                size="sm"
-              />
-            </View>
-
-            <Pressable onPress={handleDatePress} style={rowStyle}>
-              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
-                Start Date
-              </Text>
-              <View
-                style={{
-                  paddingHorizontal: 10,
-                  paddingVertical: 5,
-                  borderRadius: 999,
-                  borderCurve: 'continuous',
-                  backgroundColor: colors.surfaceMuted,
-                  borderWidth: 1,
-                  borderColor: colors.surfaceBorder,
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: 12,
-                    color: colors.text,
-                    fontVariant: ['tabular-nums'],
-                  }}
-                  selectable
-                >
-                  {formatDateLabel(startDate)}
-                </Text>
-              </View>
-            </Pressable>
-          </Card.Body>
-        </Card>
-
-        <Card>
-          <Card.Body style={{ padding: 0, gap: 0 }}>
-            <Pressable
-              onPress={handleAmountPress}
-              hitSlop={8}
-              accessibilityRole="button"
-              style={rowStyle}
-            >
-              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
-                Amount
-              </Text>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                <Text
-                  style={{
-                    fontSize: 14,
-                    color: colors.textMuted,
-                    fontVariant: ['tabular-nums'],
-                  }}
-                  selectable
-                >
-                  $
-                  {formattedAmount}
-                  {' '}
-                  (
-                  {currency}
-                  )
-                </Text>
-              </View>
-            </Pressable>
-          </Card.Body>
-        </Card>
-
-        <Card>
-          <Card.Body style={{ padding: 0, gap: 0 }}>
-            <View style={[rowStyle, rowDivider]}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                <Image
-                  source="sf:tag"
-                  style={{ width: 16, height: 16 }}
-                  tintColor={colors.textMuted}
-                />
-                <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
-                  Category
-                </Text>
-              </View>
-              <SelectPill
-                value={categoryOptions.find(option => option.value === categoryId)}
-                options={categoryOptions}
-                onValueChange={option => setCategoryId(option?.value ?? '')}
-                size="sm"
-                leading={(
-                  <View
-                    style={{
-                      width: 8,
-                      height: 8,
-                      borderRadius: 4,
-                      backgroundColor: selectedCategory?.color ?? colors.accent,
-                    }}
-                  />
-                )}
-              />
-            </View>
-
-            <View style={[rowStyle, rowDivider]}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                <Image
-                  source="sf:list.bullet"
-                  style={{ width: 16, height: 16 }}
-                  tintColor={colors.textMuted}
-                />
-                <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
-                  List
-                </Text>
-              </View>
-              <SelectPill
-                value={listOptions.find(option => option.value === listId)}
-                options={listOptions}
-                onValueChange={option => setListId(option?.value ?? '')}
-                size="sm"
-              />
-            </View>
-
-            <View style={rowStyle}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                <Image
-                  source="sf:bell"
-                  style={{ width: 16, height: 16 }}
-                  tintColor={colors.textMuted}
-                />
-                <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
-                  Notifications
-                </Text>
-              </View>
-              <SelectPill
-                value={notificationOption}
-                options={[...NOTIFICATION_OPTIONS]}
-                onValueChange={option => setNotificationMode((option?.value as typeof notificationMode) ?? 'default')}
-                size="sm"
-              />
-            </View>
-          </Card.Body>
-        </Card>
-
-        <Card>
-          <Card.Body style={{ padding: 16, gap: 10 }}>
+          <Pressable onPress={handleDatePress} style={rowStyle}>
             <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
-              Notes
+              Start Date
             </Text>
-            <SheetTextArea
-              value={notes}
-              onChangeText={setNotes}
-              placeholder="Add any notes"
-              placeholderTextColor={colors.textMuted}
-              numberOfLines={4}
+            <View
               style={{
+                paddingHorizontal: 10,
+                paddingVertical: 5,
+                borderRadius: 999,
+                borderCurve: 'continuous',
                 backgroundColor: colors.surfaceMuted,
                 borderWidth: 1,
                 borderColor: colors.surfaceBorder,
-                borderRadius: 18,
-                borderCurve: 'continuous',
-                padding: 12,
-                minHeight: 96,
-                textAlignVertical: 'top',
-                color: colors.text,
               }}
-            />
-          </Card.Body>
-        </Card>
-      </ModalSheet>
+            >
+              <Text
+                style={{
+                  fontSize: 12,
+                  color: colors.text,
+                  fontVariant: ['tabular-nums'],
+                }}
+                selectable
+              >
+                {formatDateLabel(startDate)}
+              </Text>
+            </View>
+          </Pressable>
+        </Card.Body>
+      </Card>
 
-      <DatePicker
-        ref={datePickerRef}
-        mode="single"
-        value={startDate}
-        onChange={date => setStartDate(date)}
-        showInput={false}
-        bottomSheetModalProps={{
-          backgroundStyle: { backgroundColor: colors.surface },
-          handleIndicatorStyle: { backgroundColor: colors.surfaceBorder, width: 40 },
-        }}
-        activeDateBackgroundColor={colors.text}
-        activeDateTextColor={colors.background}
-        dateTextColor={colors.text}
-        farDateTextColor={colors.textMuted}
-        rangeDateBackgroundColor={colors.surfaceMuted}
-        rangeDateTextColor={colors.text}
-        containerStyle={{ height: 0, width: 0, opacity: 0 }}
-      />
-    </>
+      <Card>
+        <Card.Body style={{ padding: 0, gap: 0 }}>
+          <Pressable
+            onPress={handleAmountPress}
+            hitSlop={8}
+            accessibilityRole="button"
+            style={rowStyle}
+          >
+            <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
+              Amount
+            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: colors.textMuted,
+                  fontVariant: ['tabular-nums'],
+                }}
+                selectable
+              >
+                $
+                {formattedAmount}
+                {' '}
+                (
+                {currency}
+                )
+              </Text>
+            </View>
+          </Pressable>
+        </Card.Body>
+      </Card>
+
+      <Card>
+        <Card.Body style={{ padding: 0, gap: 0 }}>
+          <View style={[rowStyle, rowDivider]}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <Image
+                source="sf:tag"
+                style={{ width: 16, height: 16 }}
+                tintColor={colors.textMuted}
+              />
+              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
+                Category
+              </Text>
+            </View>
+            <SelectPill
+              value={categoryOptions.find(option => option.value === categoryId) ?? categoryOptions[0]}
+              options={categoryOptions}
+              onValueChange={option => setCategoryId(option?.value ?? '')}
+              size="sm"
+              leading={(
+                <View
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: 4,
+                    backgroundColor: selectedCategory?.color ?? colors.accent,
+                  }}
+                />
+              )}
+            />
+          </View>
+
+          <View style={[rowStyle, rowDivider]}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <Image
+                source="sf:list.bullet"
+                style={{ width: 16, height: 16 }}
+                tintColor={colors.textMuted}
+              />
+              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
+                List
+              </Text>
+            </View>
+            <SelectPill
+              value={listOptions.find(option => option.value === listId) ?? listOptions[0]}
+              options={listOptions}
+              onValueChange={option => setListId(option?.value ?? '')}
+              size="sm"
+            />
+          </View>
+
+          <View style={rowStyle}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <Image
+                source="sf:bell"
+                style={{ width: 16, height: 16 }}
+                tintColor={colors.textMuted}
+              />
+              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
+                Notifications
+              </Text>
+            </View>
+            <SelectPill
+              value={notificationOption}
+              options={[...NOTIFICATION_OPTIONS]}
+              onValueChange={option => setNotificationMode((option?.value as typeof notificationMode) ?? 'default')}
+              size="sm"
+            />
+          </View>
+        </Card.Body>
+      </Card>
+
+      <Card>
+        <Card.Body style={{ padding: 16, gap: 10 }}>
+          <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
+            Notes
+          </Text>
+          <SheetTextArea
+            value={notes}
+            onChangeText={setNotes}
+            placeholder="Add any notes"
+            placeholderTextColor={colors.textMuted}
+            numberOfLines={4}
+            style={{
+              backgroundColor: colors.surfaceMuted,
+              borderWidth: 1,
+              borderColor: colors.surfaceBorder,
+              borderRadius: 18,
+              borderCurve: 'continuous',
+              padding: 12,
+              minHeight: 96,
+              textAlignVertical: 'top',
+              color: colors.text,
+            }}
+          />
+        </Card.Body>
+      </Card>
+    </ModalSheet>
   );
 }
