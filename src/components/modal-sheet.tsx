@@ -47,6 +47,8 @@ type ModalSheetProps = {
   isVisible?: boolean;
   onClose?: () => void;
   snapPoints?: (string | number)[];
+  /** When true, sheet height follows content height (no fixed snap points). */
+  enableDynamicSizing?: boolean;
   stackBehavior?: BottomSheetModalProps['stackBehavior'];
   bottomScrollSpacer?: number;
 };
@@ -68,6 +70,7 @@ export function ModalSheet({
   isVisible = true,
   onClose,
   snapPoints,
+  enableDynamicSizing = false,
   stackBehavior = 'push',
   bottomScrollSpacer,
 }: ModalSheetProps) {
@@ -77,7 +80,10 @@ export function ModalSheet({
   const sheetRef = useRef<ElementRef<typeof BottomSheetModal>>(null);
   const hasFooter = Boolean(footer);
 
-  const resolvedSnapPoints = useMemo(() => snapPoints ?? ['90%'], [snapPoints]);
+  const resolvedSnapPoints = useMemo(
+    () => (enableDynamicSizing ? undefined : (snapPoints ?? ['90%'])),
+    [enableDynamicSizing, snapPoints],
+  );
   const resolvedRight = topRightActionBar ?? right;
   const resolvedBottomSpacer = bottomScrollSpacer ?? (hasFooter ? 92 : 74);
   const containerComponent = process.env.EXPO_OS === 'web'
@@ -162,7 +168,7 @@ export function ModalSheet({
       stackBehavior={stackBehavior}
       enableDismissOnClose
       enablePanDownToClose
-      enableDynamicSizing={false}
+      enableDynamicSizing={enableDynamicSizing}
       enableOverDrag={!lockSnapPoint}
       enableContentPanningGesture={!lockSnapPoint}
       backdropComponent={renderBackdrop}
