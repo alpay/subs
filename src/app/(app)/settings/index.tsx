@@ -257,11 +257,13 @@ export default function SettingsScreen() {
         />
       </SettingsSection>
 
-      {/* NOTIFICATIONS. */}
-      <View style={{ marginBottom: 24 }}>
+      {/* Section 4: Notifications (rounded panel) */}
+      <View style={{ marginBottom: 8 }}>
         <Text style={[sectionLabelStyle, { marginBottom: 8 }]} selectable>
           NOTIFICATIONS.
         </Text>
+      </View>
+      <SettingsSection>
         <SettingsRow
           label="First Reminder"
           onPress={() => router.push('/(app)/settings/notification-settings')}
@@ -322,16 +324,20 @@ export default function SettingsScreen() {
           labelStyle={{ fontWeight: '600' }}
           onPress={handleTestNotification}
         />
-        <Text style={[noteStyle, { marginTop: 8 }]} selectable>
-          If Focus Modes are enabled, notifications might not appear.
-        </Text>
-      </View>
+        <View style={{ paddingHorizontal: 14, paddingBottom: 10 }}>
+          <Text style={noteStyle} selectable>
+            If Focus Modes are enabled, notifications might not appear.
+          </Text>
+        </View>
+      </SettingsSection>
 
-      {/* INTERFACE. */}
-      <View style={{ marginBottom: 24 }}>
+      {/* Section 5: Interface (rounded panel) */}
+      <View style={{ marginBottom: 8 }}>
         <Text style={[sectionLabelStyle, { marginBottom: 8 }]} selectable>
           INTERFACE.
         </Text>
+      </View>
+      <SettingsSection>
         <SettingsRow
           label="True Dark Colors"
           right={(
@@ -351,7 +357,7 @@ export default function SettingsScreen() {
             />
           )}
         />
-      </View>
+      </SettingsSection>
 
       {/* Currency rates (rounded panel) */}
       <View style={{ marginBottom: 8 }}>

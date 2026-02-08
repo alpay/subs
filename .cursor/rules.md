@@ -26,7 +26,7 @@
 - **İçerik (UI):** `@/components/date-picker-content` → `DatePickerContent`
 - **Kabuk:** `@/components/modal-sheet` → `ModalSheet` (`isVisible`, `onClose`, `topRightActionBar` vb.)
 
-### Örnek (add-subscription)
+### Örnek (new-subscription)
 
 ```tsx
 const [showAmountPicker, setShowAmountPicker] = useState(false);

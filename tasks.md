@@ -39,7 +39,7 @@ Goal: Remove all care-routine features and prepare routing/shells for the Subs a
    - Create `src/app/(app)/home.tsx` shell.
 
 4. [x] Add modal shells:
-   - Create empty modal screens for `analytics`, `settings`, `add-subscription`, `subscription-form`, `csv-import`, `categories`, `lists`, `currency`, `notification-settings`, `payment-methods`, `icon-picker`.
+   - Create empty modal screens for `analytics`, `settings`, `add-subscription, new-subscription`, `subscription-form`, `csv-import`, `categories`, `lists`, `currency`, `notification-settings`, `payment-methods`, `icon-picker`.
 
 5. [x] Remove old stores/logic not needed:
    - Remove `src/lib/stores/*` files tied to routines/treatments/diary.
