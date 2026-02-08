@@ -57,7 +57,7 @@ export default function AddSubscriptionScreen() {
 
   const handleServicePress = (service: PredefinedService) => {
     router.push({
-      pathname: '/(app)/new-subscription',
+      pathname: '/(app)/subscription-form',
       params: { name: service.name, iconKey: service.iconKey },
     });
   };

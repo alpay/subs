@@ -1,17 +1,21 @@
 import type { NotificationMode, ScheduleType, Subscription, SubscriptionStatus } from '@/lib/db/schema';
 
+import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Button, Card, Label, TextField, useToast } from 'heroui-native';
-import { useMemo, useState } from 'react';
-import { Text, View } from 'react-native';
+import { Button, Card, useToast } from 'heroui-native';
+import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import { Pressable, Text, View } from 'react-native';
+import { parseISO } from 'date-fns';
 
+import { AmountPickerContent, AmountPickerCurrencyPill } from '@/components/amount-picker-content';
+import { DatePickerContent } from '@/components/date-picker-content';
 import { ModalSheet } from '@/components/modal-sheet';
-import { Pill } from '@/components/pill';
-import { SelectField } from '@/components/select-field';
+import { SelectPill } from '@/components/select-pill';
 import { ServiceIcon } from '@/components/service-icon';
 import { SheetInput, SheetTextArea } from '@/components/sheet-input';
 import { useTheme } from '@/lib/hooks/use-theme';
 import {
+  useAddSubscriptionDraftStore,
   useCategoriesStore,
   useCurrencyRatesStore,
   useListsStore,
@@ -20,26 +24,6 @@ import {
   useSettingsStore,
   useSubscriptionsStore,
 } from '@/lib/stores';
-import { formatAmount } from '@/lib/utils/format';
-
-type FormState = {
-  name: string;
-  amount: string;
-  currency: string;
-  scheduleType: ScheduleType;
-  intervalCount: string;
-  intervalUnit: 'week' | 'month';
-  startDate: string;
-  categoryId: string;
-  listId: string;
-  paymentMethodId: string;
-  status: SubscriptionStatus;
-  notificationMode: NotificationMode;
-  iconType: 'builtIn' | 'image';
-  iconKey: string;
-  iconUri: string;
-  notes: string;
-};
 
 const SCHEDULE_OPTIONS = [
   { label: 'Monthly', value: 'monthly' },
@@ -65,6 +49,21 @@ const INTERVAL_UNIT_OPTIONS = [
   { label: 'Week', value: 'week' },
 ] as const;
 
+function formatDateLabel(date: Date) {
+  return date.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
+}
+
+function toIsoLocalDate(date: Date) {
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, '0');
+  const day = `${date.getDate()}`.padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 function todayIsoDate() {
   return new Date().toISOString().slice(0, 10);
 }
@@ -77,7 +76,10 @@ export default function SubscriptionFormScreen() {
   const router = useRouter();
   const { toast } = useToast();
   const { colors } = useTheme();
-  const params = useLocalSearchParams<{ id?: string; templateId?: string }>();
+  const params = useLocalSearchParams<{ id?: string; templateId?: string; name?: string; iconKey?: string }>();
+
+  const paramName = typeof params.name === 'string' ? params.name : params.name?.[0];
+  const paramIconKey = typeof params.iconKey === 'string' ? params.iconKey : params.iconKey?.[0];
 
   const { subscriptions, add, update } = useSubscriptionsStore();
   const { categories } = useCategoriesStore();
@@ -86,58 +88,56 @@ export default function SubscriptionFormScreen() {
   const { templates } = useServiceTemplatesStore();
   const { settings } = useSettingsStore();
   const { rates } = useCurrencyRatesStore();
+  const draftStore = useAddSubscriptionDraftStore();
 
   const existingSubscription = useMemo(
-    () => (params.id ? subscriptions.find(subscription => subscription.id === params.id) : undefined),
+    () => (params.id ? subscriptions.find(s => s.id === params.id) : undefined),
     [params.id, subscriptions],
   );
 
   const selectedTemplate = useMemo(
-    () => (params.templateId ? templates.find(template => template.id === params.templateId) : undefined),
+    () => (params.templateId ? templates.find(t => t.id === params.templateId) : undefined),
     [params.templateId, templates],
   );
 
-  const formSeed = useMemo<FormState>(() => {
+  const isEdit = Boolean(params.id && existingSubscription);
+
+  const formSeed = useMemo(() => {
     if (existingSubscription) {
       return {
         name: existingSubscription.name,
         amount: String(existingSubscription.amount),
         currency: existingSubscription.currency,
-        scheduleType: existingSubscription.scheduleType,
+        scheduleType: existingSubscription.scheduleType as ScheduleType,
         intervalCount: String(existingSubscription.intervalCount || 1),
-        intervalUnit: existingSubscription.intervalUnit ?? 'month',
+        intervalUnit: (existingSubscription.intervalUnit ?? 'month') as 'week' | 'month',
         startDate: existingSubscription.startDate,
         categoryId: existingSubscription.categoryId,
         listId: existingSubscription.listId,
         paymentMethodId: existingSubscription.paymentMethodId ?? '',
         status: existingSubscription.status,
         notificationMode: existingSubscription.notificationMode,
-        iconType: existingSubscription.iconType,
         iconKey: existingSubscription.iconKey ?? 'custom',
-        iconUri: existingSubscription.iconUri ?? '',
         notes: existingSubscription.notes ?? '',
       };
     }
-
     return {
-      name: selectedTemplate?.name ?? '',
+      name: selectedTemplate?.name ?? paramName ?? '',
       amount: '',
       currency: settings.mainCurrency,
-      scheduleType: selectedTemplate?.defaultScheduleType ?? 'monthly',
+      scheduleType: (selectedTemplate?.defaultScheduleType ?? 'monthly') as ScheduleType,
       intervalCount: '1',
-      intervalUnit: 'month',
+      intervalUnit: 'month' as const,
       startDate: todayIsoDate(),
       categoryId: selectedTemplate?.defaultCategoryId ?? categories[0]?.id ?? '',
       listId: lists[0]?.id ?? '',
       paymentMethodId: '',
-      status: 'active',
-      notificationMode: 'default',
-      iconType: 'builtIn',
-      iconKey: selectedTemplate?.iconKey ?? 'custom',
-      iconUri: '',
+      status: 'active' as SubscriptionStatus,
+      notificationMode: 'default' as NotificationMode,
+      iconKey: selectedTemplate?.iconKey ?? paramIconKey ?? 'custom',
       notes: '',
     };
-  }, [existingSubscription, selectedTemplate, settings.mainCurrency, categories, lists]);
+  }, [existingSubscription, selectedTemplate, paramName, paramIconKey, settings.mainCurrency, categories, lists]);
 
   const [name, setName] = useState(formSeed.name);
   const [amount, setAmount] = useState(formSeed.amount);
@@ -151,266 +151,458 @@ export default function SubscriptionFormScreen() {
   const [paymentMethodId, setPaymentMethodId] = useState(formSeed.paymentMethodId);
   const [status, setStatus] = useState<SubscriptionStatus>(formSeed.status);
   const [notificationMode, setNotificationMode] = useState<NotificationMode>(formSeed.notificationMode);
-  const [iconType, setIconType] = useState<'builtIn' | 'image'>(formSeed.iconType);
   const [iconKey, setIconKey] = useState(formSeed.iconKey);
-  const [iconUri, setIconUri] = useState(formSeed.iconUri);
   const [notes, setNotes] = useState(formSeed.notes);
+
+  const [showAmountPicker, setShowAmountPicker] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const currencyOptions = useMemo(
     () => Object.keys(rates.rates).sort().map(code => ({ label: code, value: code })),
     [rates.rates],
   );
-
   const categoryOptions = useMemo(
-    () => categories.map(category => ({ label: category.name, value: category.id })),
+    () => categories.map(c => ({ label: c.name, value: c.id, color: c.color })),
     [categories],
   );
-
   const listOptions = useMemo(
-    () => lists.map(list => ({ label: list.name, value: list.id })),
+    () => lists.map(l => ({ label: l.name, value: l.id })),
     [lists],
   );
-
   const paymentMethodOptions = useMemo(
-    () => [
-      { label: 'None', value: '' },
-      ...methods.map(method => ({ label: method.name, value: method.id })),
-    ],
+    () => [{ label: 'None', value: '' }, ...methods.map(m => ({ label: m.name, value: m.id }))],
     [methods],
   );
 
-  const amountValue = Number(amount);
+  const scheduleOption = useMemo(
+    () => SCHEDULE_OPTIONS.find(o => o.value === scheduleType),
+    [scheduleType],
+  );
+  const notificationOption = useMemo(
+    () => NOTIFICATION_OPTIONS.find(o => o.value === notificationMode),
+    [notificationMode],
+  );
+  const statusOption = useMemo(
+    () => STATUS_OPTIONS.find(o => o.value === status),
+    [status],
+  );
+  const selectedCategory = useMemo(
+    () => categories.find(c => c.id === categoryId) ?? categories[0],
+    [categories, categoryId],
+  );
+
+  useEffect(() => {
+    if (!isEdit) {
+      draftStore.reset({
+        amount: '0',
+        currency: settings.mainCurrency || 'USD',
+        startDate: new Date(),
+      });
+    }
+  }, []);
+
+  const draftAmount = isEdit ? amount : draftStore.amount;
+  const draftCurrency = isEdit ? currency : draftStore.currency;
+  const draftStartDate = isEdit ? parseISO(startDate) : draftStore.startDate;
+  const amountValue = Number(draftAmount);
+  const formattedAmount = Number.isFinite(amountValue) ? amountValue.toFixed(2) : '0.00';
   const isValid = name.trim().length > 0 && Number.isFinite(amountValue) && amountValue > 0;
 
-  const handleSave = () => {
+  const handleAmountPress = useCallback(() => {
+    if (isEdit) {
+      draftStore.reset({
+        amount: amount || '0',
+        currency,
+        startDate: parseISO(startDate),
+      });
+    }
+    setShowAmountPicker(true);
+  }, [isEdit, amount, currency, startDate, draftStore]);
+
+  const handleAmountDone = useCallback(() => {
+    if (isEdit) {
+      setAmount(draftStore.amount);
+      setCurrency(draftStore.currency);
+    }
+    setShowAmountPicker(false);
+  }, [isEdit, draftStore]);
+
+  const handleDatePress = useCallback(() => {
+    if (isEdit) {
+      draftStore.reset({
+        amount,
+        currency,
+        startDate: parseISO(startDate),
+      });
+    }
+    setShowDatePicker(true);
+  }, [isEdit, amount, currency, startDate, draftStore]);
+
+  const handleDateDone = useCallback(() => {
+    if (isEdit) {
+      setStartDate(toIsoLocalDate(draftStore.startDate));
+    }
+    setShowDatePicker(false);
+  }, [isEdit, draftStore]);
+
+  const handleSave = useCallback(() => {
     if (!isValid) {
       toast.show('Please fill name and amount before saving');
       return;
     }
 
-    const normalizedDate = isValidDateString(startDate) ? startDate : todayIsoDate();
-    const normalizedSchedule = scheduleType;
-    const normalizedIntervalCount = normalizedSchedule === 'custom'
-      ? Math.max(1, Number(intervalCount) || 1)
-      : 1;
+    const finalAmount = isEdit ? amountValue : Number(draftStore.amount);
+    const finalCurrency = isEdit ? currency : draftStore.currency;
+    const finalStartDate = isEdit ? (isValidDateString(startDate) ? startDate : todayIsoDate()) : toIsoLocalDate(draftStore.startDate);
+    const normalizedIntervalCount = scheduleType === 'custom' ? Math.max(1, Number(intervalCount) || 1) : 1;
 
     const payload: Omit<Subscription, 'id' | 'createdAt' | 'updatedAt' | 'nextPaymentDate'> = {
       name: name.trim(),
       status,
-      iconType,
+      iconType: 'builtIn',
       iconKey: iconKey.trim() || 'custom',
-      iconUri: iconType === 'image' && iconUri.trim() ? iconUri.trim() : undefined,
-      amount: amountValue,
-      currency,
-      scheduleType: normalizedSchedule,
+      amount: finalAmount,
+      currency: finalCurrency,
+      scheduleType,
       intervalCount: normalizedIntervalCount,
-      intervalUnit: normalizedSchedule === 'custom' ? intervalUnit : undefined,
-      billingAnchor: normalizedDate,
-      startDate: normalizedDate,
-      categoryId: categoryId || categoryOptions[0]?.value || '',
-      listId: listId || listOptions[0]?.value || '',
+      intervalUnit: scheduleType === 'custom' ? intervalUnit : undefined,
+      billingAnchor: finalStartDate,
+      startDate: finalStartDate,
+      categoryId: categoryId || (categoryOptions[0]?.value ?? ''),
+      listId: listId || (listOptions[0]?.value ?? ''),
       paymentMethodId: paymentMethodId || undefined,
       notificationMode,
-      notes: notes.trim() ? notes.trim() : undefined,
+      notes: notes.trim() || undefined,
     };
 
     if (existingSubscription) {
-      update({
-        ...existingSubscription,
-        ...payload,
-      });
+      update({ ...existingSubscription, ...payload });
       toast.show('Subscription updated');
-    }
-    else {
+    } else {
       add(payload);
       toast.show('Subscription created');
+      if (!isEdit) {
+        draftStore.reset({ amount: '0', currency: settings.mainCurrency || 'USD', startDate: new Date() });
+      }
     }
-
     router.back();
+  }, [
+    isValid,
+    isEdit,
+    amountValue,
+    draftStore,
+    startDate,
+    name,
+    status,
+    iconKey,
+    scheduleType,
+    intervalCount,
+    intervalUnit,
+    categoryId,
+    listId,
+    paymentMethodId,
+    notificationMode,
+    notes,
+    existingSubscription,
+    update,
+    add,
+    toast,
+    router,
+    categoryOptions,
+    listOptions,
+    settings.mainCurrency,
+  ]);
+
+  const rowStyle = {
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    justifyContent: 'space-between' as const,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    gap: 12,
+    width: '100%' as const,
   };
 
-  const amountDisplay = Number.isFinite(amountValue)
-    ? formatAmount(amountValue, currency, settings.roundWholeNumbers)
-    : `0 ${currency}`;
+  const rowDivider = {
+    borderBottomWidth: 1,
+    borderBottomColor: colors.surfaceBorder,
+  };
 
   return (
-    <ModalSheet title={existingSubscription ? 'Edit Subscription' : 'New Subscription'}>
-      <Card>
-        <Card.Body style={{ alignItems: 'center', gap: 12 }}>
-          <ServiceIcon iconKey={iconKey} size={72} />
-          <View style={{ alignItems: 'center', gap: 6 }}>
-            <Text style={{ fontSize: 18, fontWeight: '600', color: colors.text }} selectable>
-              {name.trim() || 'Subscription'}
-            </Text>
-            <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
-              {scheduleType.toUpperCase()}
-            </Text>
-          </View>
-          <Pill tone={status === 'active' ? 'success' : 'neutral'}>{status}</Pill>
-          <Text
-            style={{ fontSize: 22, fontWeight: '600', color: colors.text, fontVariant: ['tabular-nums'] }}
-            selectable
+    <Fragment>
+      <ModalSheet
+        title={isEdit ? 'Edit Subscription' : 'New Subscription'}
+        footer={(
+          <Button
+            variant="primary"
+            size="lg"
+            isDisabled={!isValid}
+            onPress={handleSave}
+            style={{ width: '100%' }}
           >
-            {amountDisplay}
-          </Text>
-        </Card.Body>
-      </Card>
+            {isEdit ? 'Save changes' : 'Add Subscription'}
+          </Button>
+        )}
+      >
+        <View style={{ alignItems: 'center', paddingVertical: 6 }}>
+          <ServiceIcon iconKey={iconKey} size={72} />
+        </View>
 
-      <Card>
-        <Card.Body style={{ gap: 12 }}>
-          <TextField>
-            <Label>Name</Label>
-            <SheetInput value={name} onChangeText={setName} placeholder="Subscription name" />
-          </TextField>
+        <Card>
+          <Card.Body style={{ padding: 0, gap: 0 }}>
+            <View style={[rowStyle, rowDivider]}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
+                Name
+              </Text>
+              <View style={{ flex: 1, alignItems: 'flex-end' }}>
+                <SheetInput
+                  value={name}
+                  onChangeText={setName}
+                  placeholder="Cursor"
+                  placeholderTextColor={colors.textMuted}
+                  style={{
+                    backgroundColor: 'transparent',
+                    borderWidth: 0,
+                    paddingHorizontal: 0,
+                    paddingVertical: 0,
+                    textAlign: 'right',
+                    fontSize: 14,
+                    fontWeight: '500',
+                    color: colors.text,
+                    minHeight: 0,
+                  }}
+                />
+              </View>
+            </View>
 
-          <TextField>
-            <Label>Amount</Label>
-            <SheetInput
-              value={amount}
-              onChangeText={setAmount}
-              placeholder="0.00"
-              keyboardType="decimal-pad"
-              style={{ textAlign: 'center', fontSize: 20 }}
-            />
-          </TextField>
+            <View style={[rowStyle, rowDivider]}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
+                Schedule
+              </Text>
+              <SelectPill
+                value={scheduleOption}
+                options={[...SCHEDULE_OPTIONS]}
+                onValueChange={o => setScheduleType((o?.value as ScheduleType) ?? 'monthly')}
+                size="sm"
+              />
+            </View>
 
-          <SelectField
-            label="Currency"
-            value={currency}
-            options={currencyOptions}
-            placeholder="Select currency"
-            onChange={setCurrency}
-          />
-
-          <SelectField
-            label="Schedule"
-            value={scheduleType}
-            options={[...SCHEDULE_OPTIONS]}
-            placeholder="Select schedule"
-            onChange={value => setScheduleType((value as ScheduleType | undefined) ?? 'monthly')}
-          />
-
-          {scheduleType === 'custom' && (
-            <View style={{ flexDirection: 'row', gap: 10 }}>
-              <View style={{ flex: 1 }}>
-                <TextField>
-                  <Label>Interval count</Label>
+            {scheduleType === 'custom' && (
+              <View style={[rowStyle, rowDivider]}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
+                  Interval
+                </Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                   <SheetInput
                     value={intervalCount}
                     onChangeText={setIntervalCount}
                     keyboardType="number-pad"
+                    style={{
+                      width: 48,
+                      textAlign: 'center',
+                      fontSize: 14,
+                      paddingVertical: 6,
+                      paddingHorizontal: 8,
+                      backgroundColor: colors.surfaceMuted,
+                      borderRadius: 999,
+                      borderWidth: 1,
+                      borderColor: colors.surfaceBorder,
+                    }}
                   />
-                </TextField>
+                  <SelectPill
+                    value={INTERVAL_UNIT_OPTIONS.find(o => o.value === intervalUnit)}
+                    options={[...INTERVAL_UNIT_OPTIONS]}
+                    onValueChange={o => setIntervalUnit((o?.value as 'week' | 'month') ?? 'month')}
+                    size="sm"
+                  />
+                </View>
               </View>
-              <View style={{ flex: 1 }}>
-                <SelectField
-                  label="Interval unit"
-                  value={intervalUnit}
-                  options={[...INTERVAL_UNIT_OPTIONS]}
-                  placeholder="Select unit"
-                  onChange={value => setIntervalUnit((value as 'week' | 'month' | undefined) ?? 'month')}
+            )}
+
+            <Pressable onPress={handleDatePress} style={rowStyle}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
+                Start Date
+              </Text>
+              <View
+                style={{
+                  paddingHorizontal: 10,
+                  paddingVertical: 5,
+                  borderRadius: 999,
+                  borderCurve: 'continuous',
+                  backgroundColor: colors.surfaceMuted,
+                  borderWidth: 1,
+                  borderColor: colors.surfaceBorder,
+                }}
+              >
+                <Text
+                  style={{ fontSize: 12, color: colors.text, fontVariant: ['tabular-nums'] }}
+                  selectable
+                >
+                  {formatDateLabel(draftStartDate)}
+                </Text>
+              </View>
+            </Pressable>
+          </Card.Body>
+        </Card>
+
+        <Card>
+          <Card.Body style={{ padding: 0, gap: 0 }}>
+            <Pressable onPress={handleAmountPress} hitSlop={8} accessibilityRole="button" style={rowStyle}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
+                Amount
+              </Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                <Text
+                  style={{ fontSize: 14, color: colors.textMuted, fontVariant: ['tabular-nums'] }}
+                  selectable
+                >
+                  $
+                  {formattedAmount}
+                  {' '}
+                  (
+                  {draftCurrency}
+                  )
+                </Text>
+              </View>
+            </Pressable>
+          </Card.Body>
+        </Card>
+
+        <Card>
+          <Card.Body style={{ padding: 0, gap: 0 }}>
+            <View style={[rowStyle, rowDivider]}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <Image source="sf:tag" style={{ width: 16, height: 16 }} tintColor={colors.textMuted} />
+                <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
+                  Category
+                </Text>
+              </View>
+              <SelectPill
+                value={categoryOptions.find(o => o.value === categoryId) ?? categoryOptions[0]}
+                options={categoryOptions}
+                onValueChange={o => setCategoryId(o?.value ?? '')}
+                size="sm"
+                leading={(
+                  <View
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: 4,
+                      backgroundColor: selectedCategory?.color ?? colors.accent,
+                    }}
+                  />
+                )}
+              />
+            </View>
+
+            <View style={[rowStyle, rowDivider]}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <Image source="sf:list.bullet" style={{ width: 16, height: 16 }} tintColor={colors.textMuted} />
+                <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
+                  List
+                </Text>
+              </View>
+              <SelectPill
+                value={listOptions.find(o => o.value === listId) ?? listOptions[0]}
+                options={listOptions}
+                onValueChange={o => setListId(o?.value ?? '')}
+                size="sm"
+              />
+            </View>
+
+            {isEdit && (
+              <View style={[rowStyle, rowDivider]}>
+                <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
+                  Status
+                </Text>
+                <SelectPill
+                  value={statusOption}
+                  options={[...STATUS_OPTIONS]}
+                  onValueChange={o => setStatus((o?.value as SubscriptionStatus) ?? 'active')}
+                  size="sm"
                 />
               </View>
+            )}
+
+            <View style={[rowStyle, rowDivider]}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
+                Payment method
+              </Text>
+              <SelectPill
+                value={paymentMethodOptions.find(o => o.value === paymentMethodId) ?? paymentMethodOptions[0]}
+                options={paymentMethodOptions}
+                onValueChange={o => setPaymentMethodId(o?.value ?? '')}
+                size="sm"
+              />
             </View>
-          )}
 
-          <TextField>
-            <Label>Start date</Label>
-            <SheetInput value={startDate} onChangeText={setStartDate} placeholder="YYYY-MM-DD" />
-          </TextField>
-        </Card.Body>
-      </Card>
+            <View style={rowStyle}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <Image source="sf:bell" style={{ width: 16, height: 16 }} tintColor={colors.textMuted} />
+                <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
+                  Notifications
+                </Text>
+              </View>
+              <SelectPill
+                value={notificationOption}
+                options={[...NOTIFICATION_OPTIONS]}
+                onValueChange={o => setNotificationMode((o?.value as NotificationMode) ?? 'default')}
+                size="sm"
+              />
+            </View>
+          </Card.Body>
+        </Card>
 
-      <Card>
-        <Card.Body style={{ gap: 12 }}>
-          <SelectField
-            label="Category"
-            value={categoryId}
-            options={categoryOptions}
-            placeholder="Select category"
-            onChange={setCategoryId}
-          />
+        <Card>
+          <Card.Body style={{ padding: 16, gap: 10 }}>
+            <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
+              Notes
+            </Text>
+            <SheetTextArea
+              value={notes}
+              onChangeText={setNotes}
+              placeholder="Add any notes"
+              placeholderTextColor={colors.textMuted}
+              numberOfLines={4}
+              style={{
+                backgroundColor: colors.surfaceMuted,
+                borderWidth: 1,
+                borderColor: colors.surfaceBorder,
+                borderRadius: 18,
+                borderCurve: 'continuous',
+                padding: 12,
+                minHeight: 96,
+                textAlignVertical: 'top',
+                color: colors.text,
+              }}
+            />
+          </Card.Body>
+        </Card>
+      </ModalSheet>
 
-          <SelectField
-            label="List"
-            value={listId}
-            options={listOptions}
-            placeholder="Select list"
-            onChange={setListId}
-          />
+      <ModalSheet
+        title=""
+        closeButtonTitle="Close"
+        isVisible={showAmountPicker}
+        onClose={() => setShowAmountPicker(false)}
+        topRightActionBar={<AmountPickerCurrencyPill />}
+        enableDynamicSizing
+        bottomScrollSpacer={24}
+      >
+        <AmountPickerContent onDone={handleAmountDone} />
+      </ModalSheet>
 
-          <SelectField
-            label="Payment method"
-            value={paymentMethodId}
-            options={paymentMethodOptions}
-            placeholder="Select payment method"
-            onChange={setPaymentMethodId}
-          />
-
-          <SelectField
-            label="Status"
-            value={status}
-            options={[...STATUS_OPTIONS]}
-            placeholder="Select status"
-            onChange={value => setStatus((value as SubscriptionStatus | undefined) ?? 'active')}
-          />
-
-          <SelectField
-            label="Notifications"
-            value={notificationMode}
-            options={[...NOTIFICATION_OPTIONS]}
-            placeholder="Select notification mode"
-            onChange={value => setNotificationMode((value as NotificationMode | undefined) ?? 'default')}
-          />
-        </Card.Body>
-      </Card>
-
-      <Card>
-        <Card.Body style={{ gap: 12 }}>
-          <SelectField
-            label="Icon type"
-            value={iconType}
-            options={[
-              { label: 'Built-in', value: 'builtIn' },
-              { label: 'Image URI', value: 'image' },
-            ]}
-            placeholder="Select icon type"
-            onChange={value => setIconType((value as 'builtIn' | 'image' | undefined) ?? 'builtIn')}
-          />
-
-          {iconType === 'builtIn'
-            ? (
-                <TextField>
-                  <Label>Icon key</Label>
-                  <SheetInput value={iconKey} onChangeText={setIconKey} placeholder="custom" />
-                </TextField>
-              )
-            : (
-                <TextField>
-                  <Label>Image URI</Label>
-                  <SheetInput
-                    value={iconUri}
-                    onChangeText={setIconUri}
-                    placeholder="https://..."
-                    autoCapitalize="none"
-                  />
-                </TextField>
-              )}
-
-          <Button variant="secondary" onPress={() => router.push('/(app)/icon-picker')}>
-            Open icon picker helper
-          </Button>
-
-          <TextField>
-            <Label>Notes</Label>
-            <SheetTextArea value={notes} onChangeText={setNotes} placeholder="Optional notes" numberOfLines={4} />
-          </TextField>
-        </Card.Body>
-      </Card>
-
-      <Button variant="primary" onPress={handleSave}>
-        {existingSubscription ? 'Save changes' : 'Create subscription'}
-      </Button>
-    </ModalSheet>
+      <ModalSheet
+        title="Start Date"
+        closeButtonTitle="Close"
+        isVisible={showDatePicker}
+        onClose={() => setShowDatePicker(false)}
+        enableDynamicSizing
+        bottomScrollSpacer={24}
+        scrollViewProps={{ bounces: false }}
+      >
+        <DatePickerContent onDone={handleDateDone} />
+      </ModalSheet>
+    </Fragment>
   );
 }
