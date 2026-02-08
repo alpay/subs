@@ -5,13 +5,14 @@ import { addMonths, addWeeks, addYears, endOfMonth, getDate, getDaysInMonth, isA
 /**
  * Add months and clamp to last day of target month when the source day
  * doesn't exist (e.g. Jan 30 → Feb 28, Jan 31 → Feb 28/29).
+ * Returns start-of-day so it matches comparisons in getPaymentDatesInRange.
  */
 function addMonthsClamped(date: Date, months: number): Date {
   const result = addMonths(date, months);
   const sourceDay = getDate(date);
   const targetDaysInMonth = getDaysInMonth(result);
   if (sourceDay > targetDaysInMonth) {
-    return endOfMonth(result);
+    return startOfDay(endOfMonth(result));
   }
   return result;
 }
@@ -24,7 +25,7 @@ function addYearsClamped(date: Date, years: number): Date {
   const sourceDay = getDate(date);
   const targetDaysInMonth = getDaysInMonth(result);
   if (sourceDay > targetDaysInMonth) {
-    return endOfMonth(result);
+    return startOfDay(endOfMonth(result));
   }
   return result;
 }

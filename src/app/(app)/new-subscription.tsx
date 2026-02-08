@@ -107,7 +107,7 @@ export default function NewSubscriptionScreen() {
 
   useEffect(() => {
     reset({ amount: '0', currency: settings.mainCurrency || 'USD', startDate: new Date() });
-  }, [reset, settings.mainCurrency]);
+  }, []);
 
   const handleAmountPress = useCallback(() => {
     setShowAmountPicker(true);
