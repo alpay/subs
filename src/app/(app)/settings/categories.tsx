@@ -1,164 +1,39 @@
+import type { ReactNode } from 'react';
+import type { StyleProp, ViewStyle } from 'react-native';
 import type { Category } from '@/lib/db/schema';
 
-import type { ReactNode } from 'react';
-
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import { Button, Input } from 'heroui-native';
 import { useCallback, useRef, useState } from 'react';
 import {
   Alert,
-  Animated as RNAnimated,
-  Modal,
   Pressable,
+  Animated as RNAnimated,
   Text,
-  TextInput,
   View,
 } from 'react-native';
 import { RectButton, Swipeable } from 'react-native-gesture-handler';
 
+import { AppDialog } from '@/components/app-dialog';
 import { ModalSheet } from '@/components/modal-sheet';
-import { SelectColorSheet } from '@/components/select-color-sheet';
+import { SelectColorContent } from '@/components/select-color-sheet';
 import { SheetInput } from '@/components/sheet-input';
-import { useTheme } from '@/lib/hooks/use-theme';
 import { OTHER_CATEGORY_NAME } from '@/lib/data/seed-defaults';
+import { useTheme } from '@/lib/hooks/use-theme';
 import { useCategoriesStore } from '@/lib/stores';
 
 const DEFAULT_NEW_COLOR = '#EF4444';
 const DELETE_BUTTON_WIDTH = 80;
 
-function RenameCategoryModal({
-  category,
-  value,
-  onChangeText,
-  onSave,
-  onCancel,
-}: {
-  category: Category | null;
-  value: string;
-  onChangeText: (text: string) => void;
-  onSave: (name: string) => void;
-  onCancel: () => void;
-}) {
-  const { colors, isDark } = useTheme();
-
-  if (!category) {
-    return null;
-  }
-
-  const handleSave = () => {
-    const trimmed = value.trim();
-    if (trimmed) {
-      onSave(trimmed);
-    }
-  };
-
-  return (
-    <Modal visible transparent animationType="fade">
-      <Pressable
-        style={{
-          flex: 1,
-          backgroundColor: 'rgba(0,0,0,0.4)',
-          justifyContent: 'center',
-          alignItems: 'center',
-          padding: 24,
-        }}
-        onPress={onCancel}
-      >
-        <Pressable
-          style={{
-            width: '100%',
-            maxWidth: 320,
-            backgroundColor: colors.surface,
-            borderRadius: 16,
-            borderCurve: 'continuous',
-            borderWidth: 1,
-            borderColor: colors.surfaceBorder,
-            padding: 20,
-            gap: 16,
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 8 },
-            shadowOpacity: isDark ? 0.5 : 0.15,
-            shadowRadius: 24,
-            elevation: 8,
-          }}
-          onPress={e => e.stopPropagation()}
-        >
-          <Text
-            style={{
-              fontSize: 18,
-              fontWeight: '600',
-              color: colors.text,
-              marginBottom: 4,
-            }}
-            selectable
-          >
-            Rename Category
-          </Text>
-          <TextInput
-            value={value}
-            onChangeText={onChangeText}
-            placeholder="Category name"
-            placeholderTextColor={colors.textMuted}
-            style={{
-              backgroundColor: colors.surfaceMuted,
-              borderWidth: 1,
-              borderColor: colors.surfaceBorder,
-              borderRadius: 10,
-              paddingHorizontal: 14,
-              paddingVertical: 12,
-              fontSize: 16,
-              color: colors.text,
-            }}
-            autoFocus
-            autoCapitalize="words"
-          />
-          <View style={{ flexDirection: 'row', gap: 12, justifyContent: 'flex-end' }}>
-            <Pressable
-              onPress={onCancel}
-              style={({ pressed }) => [
-                {
-                  paddingVertical: 10,
-                  paddingHorizontal: 18,
-                  borderRadius: 10,
-                  backgroundColor: colors.surfaceMuted,
-                },
-                pressed && { opacity: 0.8 },
-              ]}
-            >
-              <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }} selectable>
-                Cancel
-              </Text>
-            </Pressable>
-            <Pressable
-              onPress={handleSave}
-              style={({ pressed }) => [
-                {
-                  paddingVertical: 10,
-                  paddingHorizontal: 18,
-                  borderRadius: 10,
-                  backgroundColor: colors.accent,
-                },
-                pressed && { opacity: 0.8 },
-              ]}
-            >
-              <Text style={{ fontSize: 16, fontWeight: '600', color: colors.iconOnColor }} selectable>
-                Save
-              </Text>
-            </Pressable>
-          </View>
-        </Pressable>
-      </Pressable>
-    </Modal>
-  );
-}
-
 function CategoryRow({
   category,
+  isLast,
   onRename,
   onColorPress,
   onDelete,
   canDelete,
 }: {
   category: Category;
+  isLast: boolean;
   onRename: () => void;
   onColorPress: () => void;
   onDelete: () => void;
@@ -166,30 +41,42 @@ function CategoryRow({
 }) {
   const { colors } = useTheme();
   const swipeableRef = useRef<Swipeable>(null);
+  const ignoreNextRenameRef = useRef(false);
+
+  const handleRowPress = useCallback(() => {
+    if (ignoreNextRenameRef.current) {
+      ignoreNextRenameRef.current = false;
+      return;
+    }
+    onRename();
+  }, [onRename]);
 
   const renderRightActions = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (progress: any, _dragX: any, swipeable: Swipeable): ReactNode => {
+    (
+      progress: { interpolate: (config: { inputRange: number[]; outputRange: number[] }) => unknown },
+      _dragX: unknown,
+      swipeable: Swipeable,
+    ): ReactNode => {
       const trans = progress.interpolate({
         inputRange: [0, 1],
         outputRange: [DELETE_BUTTON_WIDTH, 0],
       });
       const handleDelete = () => {
+        ignoreNextRenameRef.current = true;
         swipeable.close();
         onDelete();
       };
+      const animatedStyle: StyleProp<ViewStyle> = [
+        {
+          width: DELETE_BUTTON_WIDTH,
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: colors.danger,
+        },
+        { transform: [{ translateX: trans as number }] },
+      ];
       return (
-        <RNAnimated.View
-          style={[
-            {
-              width: DELETE_BUTTON_WIDTH,
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: colors.danger,
-            },
-            { transform: [{ translateX: trans }] },
-          ]}
-        >
+        <RNAnimated.View style={animatedStyle}>
           <RectButton
             onPress={handleDelete}
             style={{
@@ -209,86 +96,64 @@ function CategoryRow({
     [colors.danger, colors.iconOnColor, onDelete],
   );
 
+  const rowContentStyle = {
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    justifyContent: 'space-between' as const,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: 'transparent' as const,
+    borderBottomWidth: isLast ? 0 : 1,
+    borderBottomColor: colors.surfaceBorder,
+  };
+
   if (!canDelete) {
     return (
-      <View style={{ marginBottom: 8 }}>
-        <Pressable
-          onPress={onRename}
-          style={({ pressed }) => [pressed && { opacity: 0.85 }]}
-        >
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              paddingHorizontal: 16,
-              paddingVertical: 14,
-              backgroundColor: colors.card,
-              borderRadius: 12,
-              borderCurve: 'continuous',
-              borderWidth: 1,
-              borderColor: colors.surfaceBorder,
-            }}
-          >
+      <Pressable onPress={onRename} style={({ pressed }) => [pressed && { opacity: 0.85 }]}>
+        <View style={rowContentStyle}>
             <Text style={{ fontSize: 16, fontWeight: '500', color: colors.text, flex: 1 }} selectable numberOfLines={1}>
               {category.name}
             </Text>
-            <Pressable onPress={onColorPress} style={({ pressed }) => [pressed && { opacity: 0.85 }]}>
-              <View
-                style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: 10,
-                  backgroundColor: category.color,
-                }}
-              />
-            </Pressable>
-          </View>
-        </Pressable>
-      </View>
+          <Pressable onPress={onColorPress} style={({ pressed }) => [pressed && { opacity: 0.85 }]}>
+            <View
+              style={{
+                width: 20,
+                height: 20,
+                borderRadius: 10,
+                backgroundColor: category.color,
+              }}
+            />
+          </Pressable>
+        </View>
+      </Pressable>
     );
   }
 
   return (
-    <View style={{ marginBottom: 8 }}>
-      <Swipeable
-        ref={swipeableRef}
-        friction={2}
-        rightThreshold={60}
-        renderRightActions={renderRightActions}
-      >
-        <Pressable onPress={onRename} style={({ pressed }) => [pressed && { opacity: 0.85 }]}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              paddingHorizontal: 16,
-              paddingVertical: 14,
-              backgroundColor: colors.card,
-              borderRadius: 12,
-              borderCurve: 'continuous',
-              borderWidth: 1,
-              borderColor: colors.surfaceBorder,
-            }}
-          >
-            <Text style={{ fontSize: 16, fontWeight: '500', color: colors.text, flex: 1 }} selectable numberOfLines={1}>
-              {category.name}
-            </Text>
-            <Pressable onPress={onColorPress} style={({ pressed }) => [pressed && { opacity: 0.85 }]}>
-              <View
-                style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: 10,
-                  backgroundColor: category.color,
-                }}
-              />
-            </Pressable>
-          </View>
-        </Pressable>
-      </Swipeable>
-    </View>
+    <Swipeable
+      ref={swipeableRef}
+      friction={2}
+      rightThreshold={60}
+      renderRightActions={renderRightActions}
+    >
+      <Pressable onPress={handleRowPress} style={({ pressed }) => [pressed && { opacity: 0.85 }]}>
+        <View style={rowContentStyle}>
+          <Text style={{ fontSize: 16, fontWeight: '500', color: colors.text, flex: 1 }} selectable numberOfLines={1}>
+            {category.name}
+          </Text>
+          <Pressable onPress={onColorPress} style={({ pressed }) => [pressed && { opacity: 0.85 }]}>
+            <View
+              style={{
+                width: 20,
+                height: 20,
+                borderRadius: 10,
+                backgroundColor: category.color,
+              }}
+            />
+          </Pressable>
+        </View>
+      </Pressable>
+    </Swipeable>
   );
 }
 
@@ -301,7 +166,6 @@ export default function CategoriesScreen() {
   const [renameCategory, setRenameCategory] = useState<Category | null>(null);
   const [renameValue, setRenameValue] = useState('');
   const [colorSheetTarget, setColorSheetTarget] = useState<'new' | string | null>(null);
-  const colorSheetRef = useRef<BottomSheetModal>(null);
 
   const selectedColorForSheet =
     colorSheetTarget === 'new'
@@ -370,11 +234,21 @@ export default function CategoriesScreen() {
     <>
       <ModalSheet title="Categories" closeVariant="muted">
         <View style={{ gap: 16 }}>
-          <View style={{ gap: 8 }}>
-            {categories.map(category => (
+          <View
+            style={{
+              backgroundColor: colors.surfaceMuted,
+              borderRadius: 12,
+              borderCurve: 'continuous',
+              borderWidth: 1,
+              borderColor: colors.surfaceBorder,
+              overflow: 'hidden',
+            }}
+          >
+            {categories.map((category, index) => (
               <CategoryRow
                 key={category.id}
                 category={category}
+                isLast={index === categories.length - 1}
                 onRename={() => openRename(category)}
                 onColorPress={() => setColorSheetTarget(category.id)}
                 onDelete={() => handleDelete(category)}
@@ -426,7 +300,18 @@ export default function CategoriesScreen() {
               placeholder="New Category"
               value={newName}
               onChangeText={setNewName}
-              style={{ flex: 1, fontSize: 16 }}
+              placeholderTextColor={colors.textMuted}
+              style={{
+                flex: 1,
+                backgroundColor: 'transparent',
+                borderWidth: 0,
+                paddingHorizontal: 0,
+                paddingVertical: 0,
+                minHeight: 0,
+                fontSize: 16,
+                fontWeight: '500',
+                color: colors.text,
+              }}
             />
             <Pressable
               onPress={handleAdd}
@@ -440,23 +325,47 @@ export default function CategoriesScreen() {
         </View>
       </ModalSheet>
 
-      {renameCategory && (
-        <RenameCategoryModal
-          category={renameCategory}
+      <AppDialog
+        isOpen={!!renameCategory}
+        onOpenChange={(open) => !open && handleRenameCancel()}
+        title="Rename Category"
+      >
+        <Input
           value={renameValue}
           onChangeText={setRenameValue}
-          onSave={handleRenameSave}
-          onCancel={handleRenameCancel}
+          placeholder="Category name"
+          autoFocus
+          autoCapitalize="words"
         />
-      )}
+        <View style={{ flexDirection: 'row', gap: 12, justifyContent: 'flex-end' }}>
+          <Button variant="secondary" onPress={handleRenameCancel}>
+            Cancel
+          </Button>
+          <Button
+            variant="primary"
+            onPress={() => {
+              const trimmed = renameValue.trim();
+              if (trimmed) handleRenameSave(trimmed);
+            }}
+          >
+            Save
+          </Button>
+        </View>
+      </AppDialog>
 
-      <SelectColorSheet
-        sheetRef={colorSheetRef}
-        selectedColor={selectedColorForSheet}
-        onSelect={handleColorSelect}
-        onClose={() => setColorSheetTarget(null)}
+      <ModalSheet
+        title="Select Color"
+        closeButtonTitle="Close"
         isVisible={colorSheetTarget !== null}
-      />
+        onClose={() => setColorSheetTarget(null)}
+        enableDynamicSizing
+        bottomScrollSpacer={24}
+      >
+        <SelectColorContent
+          selectedColor={selectedColorForSheet}
+          onSelect={handleColorSelect}
+        />
+      </ModalSheet>
     </>
   );
 }
