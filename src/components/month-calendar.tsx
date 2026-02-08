@@ -1,11 +1,13 @@
 import type { StyleProp, ViewStyle } from 'react-native';
 import type { Subscription } from '@/lib/db/schema';
 
-import { addMonths, format, getDay, getDaysInMonth, isSameMonth, isToday, startOfMonth } from 'date-fns';
+import { addMonths, format, getDay, getDaysInMonth, isToday, startOfMonth } from 'date-fns';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import { useTheme } from '@/lib/hooks/use-theme';
+
+import { getPaymentDatesForMonth } from '@/lib/utils/subscription-dates';
 
 import { getServiceColor, ServiceIcon } from './service-icon';
 
@@ -94,14 +96,13 @@ function MonthGrid({
     const map = new Map<string, Subscription[]>();
 
     subscriptions.forEach((subscription) => {
-      const nextDate = new Date(subscription.nextPaymentDate);
-      if (!isSameMonth(nextDate, date)) {
-        return;
-      }
-      const key = format(nextDate, 'yyyy-MM-dd');
-      const existing = map.get(key) ?? [];
-      existing.push(subscription);
-      map.set(key, existing);
+      const paymentDates = getPaymentDatesForMonth(subscription, date);
+      paymentDates.forEach((paymentDate) => {
+        const key = format(paymentDate, 'yyyy-MM-dd');
+        const existing = map.get(key) ?? [];
+        existing.push(subscription);
+        map.set(key, existing);
+      });
     });
 
     return map;
@@ -163,10 +164,11 @@ function MonthGrid({
             );
           }
 
-          const key = format(cell.date, 'yyyy-MM-dd');
+          const dayDate = cell.date;
+          const key = format(dayDate, 'yyyy-MM-dd');
           const items = paymentMap.get(key) ?? [];
-          const highlight = isToday(cell.date);
-          const dayLabel = cell.date.getDate();
+          const highlight = isToday(dayDate);
+          const dayLabel = dayDate.getDate();
           const serviceColor = items.length > 0 ? getServiceColor(items[0].iconKey) : null;
           const cellBackground = serviceColor
             ? withAlpha(serviceColor, isDark ? 0.36 : 0.2)
@@ -182,7 +184,7 @@ function MonthGrid({
             <Pressable
               key={key}
               accessibilityRole="button"
-              onPress={() => handleDayPress(cell.date)}
+              onPress={() => handleDayPress(dayDate)}
               style={({ pressed }) => [
                 styles.cellBase,
                 cellShape,

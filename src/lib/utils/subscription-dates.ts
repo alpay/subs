@@ -1,6 +1,33 @@
 import type { Subscription } from '@/lib/db/schema';
 
-import { addMonths, addWeeks, addYears, endOfMonth, isAfter, isBefore, isEqual, parseISO, startOfDay, startOfMonth } from 'date-fns';
+import { addMonths, addWeeks, addYears, endOfMonth, getDate, getDaysInMonth, isAfter, isBefore, isEqual, parseISO, startOfDay, startOfMonth } from 'date-fns';
+
+/**
+ * Add months and clamp to last day of target month when the source day
+ * doesn't exist (e.g. Jan 30 → Feb 28, Jan 31 → Feb 28/29).
+ */
+function addMonthsClamped(date: Date, months: number): Date {
+  const result = addMonths(date, months);
+  const sourceDay = getDate(date);
+  const targetDaysInMonth = getDaysInMonth(result);
+  if (sourceDay > targetDaysInMonth) {
+    return endOfMonth(result);
+  }
+  return result;
+}
+
+/**
+ * Add years with same last-day-of-month semantics as addMonthsClamped.
+ */
+function addYearsClamped(date: Date, years: number): Date {
+  const result = addYears(date, years);
+  const sourceDay = getDate(date);
+  const targetDaysInMonth = getDaysInMonth(result);
+  if (sourceDay > targetDaysInMonth) {
+    return endOfMonth(result);
+  }
+  return result;
+}
 
 function addInterval(date: Date, subscription: Subscription) {
   const interval = subscription.intervalCount || 1;
@@ -8,14 +35,14 @@ function addInterval(date: Date, subscription: Subscription) {
     case 'weekly':
       return addWeeks(date, interval);
     case 'yearly':
-      return addYears(date, interval);
+      return addYearsClamped(date, interval);
     case 'custom':
       return subscription.intervalUnit === 'week'
         ? addWeeks(date, interval)
-        : addMonths(date, interval);
+        : addMonthsClamped(date, interval);
     case 'monthly':
     default:
-      return addMonths(date, interval);
+      return addMonthsClamped(date, interval);
   }
 }
 

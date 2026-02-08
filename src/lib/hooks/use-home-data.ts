@@ -1,7 +1,8 @@
-import { isSameDay } from 'date-fns';
+import { isSameDay, startOfMonth } from 'date-fns';
 import { useCallback, useMemo, useState } from 'react';
 
 import { useCurrencyRatesStore, useListsStore, useSettingsStore, useSubscriptionsStore } from '@/lib/stores';
+import { getPaymentDatesForMonth } from '@/lib/utils/subscription-dates';
 import { calculateAverageMonthly, calculateMonthlyTotal } from '@/lib/utils/totals';
 
 const ALL_LISTS = 'all';
@@ -51,7 +52,10 @@ export function useHomeData({ monthDate }: UseHomeDataOptions = {}) {
     if (!selectedDay) {
       return [];
     }
-    return filteredSubscriptions.filter(sub => isSameDay(new Date(sub.nextPaymentDate), selectedDay));
+    const monthStart = startOfMonth(selectedDay);
+    return filteredSubscriptions.filter(sub =>
+      getPaymentDatesForMonth(sub, monthStart).some(d => isSameDay(d, selectedDay)),
+    );
   }, [filteredSubscriptions, selectedDay]);
 
   const searchResults = useMemo(() => {
