@@ -107,3 +107,17 @@ export function isSubscriptionActive(subscription: Subscription, date = new Date
   }
   return isAfter(startOfDay(parseISO(subscription.startDate)), startOfDay(date));
 }
+
+/**
+ * Number of payments from startDate up to and including the given date.
+ * Used for "total spent" (count * amount in subscription currency).
+ */
+export function countPaymentsUpTo(subscription: Subscription, toDate = new Date()) {
+  const start = startOfDay(parseISO(subscription.startDate));
+  const end = startOfDay(toDate);
+  if (isBefore(end, start)) {
+    return 0;
+  }
+  const dates = getPaymentDatesInRange(subscription, start, end);
+  return dates.length;
+}

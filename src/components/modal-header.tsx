@@ -51,7 +51,6 @@ export function ModalHeader({
       style={{
         backgroundColor: colors.surface,
         paddingHorizontal: 20,
-        paddingTop: 8,
         paddingBottom: 12,
         borderBottomWidth: 1,
         borderBottomColor: colors.surfaceBorder,
