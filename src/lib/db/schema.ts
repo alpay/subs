@@ -72,6 +72,7 @@ export type PaymentMethod = {
 
 export type Settings = {
   mainCurrency: CurrencyCode;
+  favoriteCurrencies: CurrencyCode[];
   roundWholeNumbers: boolean;
   trueDarkColors: boolean;
   hapticsEnabled: boolean;

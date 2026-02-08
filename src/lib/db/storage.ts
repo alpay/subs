@@ -107,7 +107,8 @@ export function savePaymentMethods(methods: PaymentMethod[]): void {
 }
 
 export function getSettings(): Settings {
-  return getItem<Settings>(KEYS.SETTINGS) ?? DEFAULT_SETTINGS;
+  const stored = getItem<Settings>(KEYS.SETTINGS);
+  return stored ? { ...DEFAULT_SETTINGS, ...stored } : DEFAULT_SETTINGS;
 }
 
 export function saveSettings(settings: Settings): void {
