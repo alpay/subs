@@ -38,11 +38,12 @@ export default function AddSubscriptionScreen() {
 
   const filteredServices = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    if (!q) return PREDEFINED_SERVICES;
+    if (!q)
+      return PREDEFINED_SERVICES;
     return PREDEFINED_SERVICES.filter(
       s =>
-        s.name.toLowerCase().includes(q) ||
-        s.iconKey.toLowerCase().replace(/_/g, ' ').includes(q),
+        s.name.toLowerCase().includes(q)
+        || s.iconKey.toLowerCase().replace(/_/g, ' ').includes(q),
     );
   }, [searchQuery]);
 
@@ -64,18 +65,16 @@ export default function AddSubscriptionScreen() {
   return (
     <ModalSheet title="Add Subscription">
       {/* Search bar – matches mockup: rounded bar, magnifying glass, "Search services" */}
-      <View style={{ marginTop: -4, marginBottom: 8 }}>
-        <SearchBar
-          placeholder="Search services"
-          onSearch={handleSearch}
-          onClear={handleSearchClear}
-          enableWidthAnimation={false}
-          centerWhenUnfocused={false}
-          tint={colors.accent}
-          style={{ paddingVertical: 0 }}
-          inputStyle={{ color: colors.text }}
-        />
-      </View>
+      <SearchBar
+        placeholder="Search services"
+        onSearch={handleSearch}
+        onClear={handleSearchClear}
+        enableWidthAnimation={false}
+        centerWhenUnfocused={false}
+        tint={colors.accent}
+        style={{ paddingVertical: 0 }}
+        inputStyle={{ color: colors.text }}
+      />
 
       {/* Import options – horizontal row of light grey rounded cards */}
       <ScrollView

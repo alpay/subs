@@ -4,7 +4,7 @@ import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
 import { Switch, useToast } from 'heroui-native';
 import { useMemo } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Alert, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ModalSheet } from '@/components/modal-sheet';
@@ -19,9 +19,13 @@ import { useTheme } from '@/lib/hooks/use-theme';
 import {
   useCategoriesStore,
   useCurrencyRatesStore,
+  useListsStore,
   usePaymentMethodsStore,
+  useServiceTemplatesStore,
   useSettingsStore,
+  useSubscriptionsStore,
 } from '@/lib/stores';
+import { storage } from '@/lib/storage';
 
 const CURRENCY_FLAGS: Record<string, string> = {
   USD: '\u{1F1FA}\u{1F1F8}',
@@ -122,6 +126,32 @@ export default function SettingsScreen() {
     ? formatReminderLabel(settings.notificationDefaults.second.daysBefore)
     : 'Never';
 
+  const handleResetApp = () => {
+    Alert.alert(
+      'Reset App',
+      'This will clear all data and return to the home screen. Continue?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Reset',
+          style: 'destructive',
+          onPress: async () => {
+            storage.clearAll();
+            await Notifications.cancelAllScheduledNotificationsAsync();
+            useSettingsStore.getState().load();
+            useCategoriesStore.getState().load();
+            useSubscriptionsStore.getState().load();
+            usePaymentMethodsStore.getState().load();
+            useListsStore.getState().load();
+            useCurrencyRatesStore.getState().load();
+            useServiceTemplatesStore.getState().load();
+            router.replace('/(app)');
+          },
+        },
+      ],
+    );
+  };
+
   const handleTestNotification = async () => {
     try {
       const current = await Notifications.getPermissionsAsync();
@@ -167,6 +197,33 @@ export default function SettingsScreen() {
         paddingBottom: bottom + 20,
       }}
     >
+      {/* Developer */}
+      <View style={{ marginBottom: 8 }}>
+        <Text style={[sectionLabelStyle, { marginBottom: 8 }]} selectable>
+          DEVELOPER
+        </Text>
+      </View>
+      <SettingsSection>
+        <SettingsRow
+          leading={<SettingsLeadingIcon symbol="trash" />}
+          label="Reset App"
+          subtitle="Clear all data and return to home"
+          labelTone="accent"
+          onPress={handleResetApp}
+        />
+        <SettingsRowDivider inset={ICON_DIVIDER_INSET} />
+        <SettingsRow
+          leading={<SettingsLeadingIcon symbol="crown" />}
+          label="Premium"
+          right={(
+            <Switch
+              isSelected={settings.premium}
+              onSelectedChange={isSelected => update({ premium: isSelected })}
+            />
+          )}
+        />
+      </SettingsSection>
+
       {/* Section 1: Account (rounded panel with light background) */}
       <SettingsSection>
         <SettingsRow

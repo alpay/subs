@@ -76,6 +76,7 @@ export type Settings = {
   trueDarkColors: boolean;
   hapticsEnabled: boolean;
   iCloudEnabled: boolean; // UI only for v1
+  premium: boolean;
   notificationDefaults: {
     first: ReminderConfig;
     second: ReminderConfig | null;

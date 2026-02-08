@@ -50,6 +50,7 @@ export const DEFAULT_SETTINGS: Settings = {
   trueDarkColors: false,
   hapticsEnabled: true,
   iCloudEnabled: false,
+  premium: false,
   notificationDefaults: {
     first: { daysBefore: 1, time: '09:00' },
     second: null,
