@@ -7,7 +7,7 @@ import { ModalSheet } from '@/components/modal-sheet';
 
 const DISMISS_TO_PARAM = 'dismissTo';
 
-/** Route screen – used when opening from subscription-form etc. Add-subscription uses inline gorhom modal instead. */
+/** Route screen – used when opening from subscription add/edit etc. Add-subscription uses inline gorhom modal instead. */
 export default function AmountPickerScreen() {
   const router = useRouter();
   const { [DISMISS_TO_PARAM]: dismissTo } = useLocalSearchParams<{ [DISMISS_TO_PARAM]?: string }>();

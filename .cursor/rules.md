@@ -70,5 +70,5 @@ return (
 
 ### Route’taki amount-picker / date-picker ekranları
 
-- Başka yerden **route ile** açılıyorsa (örn. subscription-form) `/(app)/amount-picker` ve `/(app)/date-picker` route’ları kalabilir; orada `dismissTo` param ile `router.dismissTo(dismissTo)` kullan.
+- Başka yerden **route ile** açılıyorsa (örn. subscription add/edit) `/(app)/amount-picker` ve `/(app)/date-picker` route’ları kalabilir; orada `dismissTo` param ile `router.dismissTo(dismissTo)` kullan.
 - Yeni ekranlarda mümkünse **aynı ekranda ModalSheet + state** pattern’ini tercih et; böylece router’a bağlı kapanma sorunu olmaz.

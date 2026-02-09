@@ -53,7 +53,7 @@ export default function ServicesScreen() {
 
   const handleServicePress = (service: PredefinedService) => {
     router.push({
-      pathname: '/(app)/subscription-form',
+      pathname: '/(app)/subscription/add',
       params: { name: service.name, iconKey: service.iconKey },
     });
   };
@@ -62,7 +62,7 @@ export default function ServicesScreen() {
     if (!displayQuery)
       return;
     router.push({
-      pathname: '/(app)/subscription-form',
+      pathname: '/(app)/subscription/add',
       params: { name: displayQuery, iconKey: 'custom' },
     });
   };

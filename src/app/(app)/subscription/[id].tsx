@@ -119,7 +119,7 @@ export default function SubscriptionDetailScreen() {
   const detailsBg = isDark ? 'rgba(28, 28, 30, 0.92)' : 'rgba(255, 255, 255, 0.95)';
 
   const handleEdit = () => {
-    router.push({ pathname: '/(app)/subscription-form', params: { id: subscription.id } });
+    router.push({ pathname: '/(app)/subscription/edit/[id]', params: { id: subscription.id } });
   };
 
   return (

@@ -19,11 +19,24 @@ export default function AppLayout() {
       <Stack.Screen name="date-picker" options={transparentModalOptions} />
       <Stack.Screen name="icon-picker" options={transparentModalOptions} />
       <Stack.Screen name="settings" options={transparentModalOptions} />
-      <Stack.Screen name="subscription-form" options={transparentModalOptions} />
       <Stack.Screen
         name="subscription/[id]"
         options={{
           title: '',
+          headerShown: true,
+          headerShadowVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="subscription/add"
+        options={{
+          headerShown: true,
+          headerShadowVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="subscription/edit/[id]"
+        options={{
           headerShown: true,
           headerShadowVisible: false,
         }}
