@@ -2,12 +2,12 @@ import type { Subscription } from '@/lib/db/schema';
 
 import { parseISO } from 'date-fns';
 import { Image } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo } from 'react';
 
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { RadialGlow } from '@/components/radial-glow';
 import { getServiceColor, ServiceIcon } from '@/components/service-icon';
 import { useTheme } from '@/lib/hooks/use-theme';
 import {
@@ -18,15 +18,6 @@ import {
 } from '@/lib/stores';
 import { formatAmount, formatNextPayment } from '@/lib/utils/format';
 import { countPaymentsUpTo } from '@/lib/utils/subscription-dates';
-
-/** Darken hex color (e.g. for card base or gradient end). */
-function darkenHex(hex: string, factor: number): string {
-  const n = hex.replace('#', '');
-  const r = Math.max(0, Math.floor(Number.parseInt(n.slice(0, 2), 16) * (1 - factor)));
-  const g = Math.max(0, Math.floor(Number.parseInt(n.slice(2, 4), 16) * (1 - factor)));
-  const b = Math.max(0, Math.floor(Number.parseInt(n.slice(4, 6), 16) * (1 - factor)));
-  return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
-}
 
 const NOTIFICATION_LABELS: Record<Subscription['notificationMode'], string> = {
   default: 'Default',
@@ -114,7 +105,6 @@ export default function SubscriptionDetailScreen() {
   }
 
   const logoColor = getServiceColor(subscription.iconKey);
-  const darkCardColor = darkenHex(logoColor, 0.45);
   const scheduleLabel = subscription.scheduleType.charAt(0).toUpperCase() + subscription.scheduleType.slice(1);
   const detailsBg = isDark ? 'rgba(28, 28, 30, 0.92)' : 'rgba(255, 255, 255, 0.95)';
 
@@ -129,7 +119,7 @@ export default function SubscriptionDetailScreen() {
           title: '',
           headerShown: true,
           headerShadowVisible: false,
-          headerStyle: { backgroundColor: colors.background },
+          headerStyle: { backgroundColor: 'transparent' },
           headerTintColor: colors.text,
         }}
       />
@@ -139,75 +129,28 @@ export default function SubscriptionDetailScreen() {
           Edit
         </Stack.Toolbar.Button>
       </Stack.Toolbar>
-      <ScrollView
-        style={{ flex: 1, backgroundColor: colors.background }}
-        contentContainerStyle={{
-          paddingTop: 12,
-          paddingBottom: insets.bottom + 32,
-        }}
-        contentInsetAdjustmentBehavior="automatic"
-      >
-        {/* Main subscription card */}
-        <View
-          style={{
-            marginHorizontal: 20,
-            marginBottom: 16,
-            borderRadius: 24,
-            borderCurve: 'continuous',
-            overflow: 'hidden',
-            minHeight: 220,
+      <View style={{ flex: 1, backgroundColor: colors.background }}>
+        {/* Smooth radial glow centered behind logo (like sun rays) */}
+        <RadialGlow color={logoColor} centerY="25%" maxOpacity={0.75} />
+        <ScrollView
+          style={{ flex: 1, backgroundColor: 'transparent' }}
+          contentContainerStyle={{
+            paddingTop: 12,
+            paddingBottom: insets.bottom + 32,
           }}
+          contentInsetAdjustmentBehavior="automatic"
         >
+          {/* Subscription hero: logo only; glow is the whole screen (header + scroll) */}
           <View
             style={{
-              ...StyleSheet.absoluteFillObject,
-              backgroundColor: darkCardColor,
+              marginHorizontal: 20,
+              marginBottom: 16,
+              minHeight: 200,
+              paddingTop: 28,
+              paddingBottom: 28,
+              paddingHorizontal: 20,
             }}
-          />
-          <LinearGradient
-            colors={[logoColor, logoColor, darkCardColor]}
-            locations={[0, 0.5, 1]}
-            start={{ x: 0.5, y: 0 }}
-            end={{ x: 0.5, y: 1 }}
-            style={StyleSheet.absoluteFillObject}
-          />
-          <View style={{ paddingHorizontal: 20, paddingTop: 18, paddingBottom: 28 }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginBottom: 16,
-              }}
-            >
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                <View
-                  style={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: 4,
-                    backgroundColor: 'rgba(255,255,255,0.9)',
-                  }}
-                />
-                <View
-                  style={{
-                    paddingHorizontal: 12,
-                    paddingVertical: 6,
-                    borderRadius: 999,
-                    backgroundColor: 'rgba(255,255,255,0.25)',
-                  }}
-                >
-                  <Text style={{ fontSize: 12, fontWeight: '600', color: '#FFFFFF' }} selectable>
-                    {subscription.status.charAt(0).toUpperCase() + subscription.status.slice(1)}
-                  </Text>
-                </View>
-                <Image
-                  source="sf:chevron.down"
-                  style={{ width: 12, height: 12 }}
-                  tintColor="rgba(255,255,255,0.8)"
-                />
-              </View>
-            </View>
-
+          >
             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
               <View style={{ marginBottom: 12 }}>
                 <ServiceIcon
@@ -224,7 +167,7 @@ export default function SubscriptionDetailScreen() {
                 style={{
                   fontSize: 24,
                   fontWeight: '700',
-                  color: '#FFFFFF',
+                  color: colors.text,
                 }}
                 selectable
               >
@@ -233,7 +176,7 @@ export default function SubscriptionDetailScreen() {
               <Text
                 style={{
                   fontSize: 14,
-                  color: 'rgba(255,255,255,0.8)',
+                  color: colors.textMuted,
                   marginTop: 4,
                 }}
                 selectable
@@ -242,95 +185,95 @@ export default function SubscriptionDetailScreen() {
               </Text>
             </View>
           </View>
-        </View>
 
-        {/* Details section */}
-        <View
-          style={{
-            marginHorizontal: 20,
-            marginBottom: 12,
-            borderRadius: 20,
-            borderCurve: 'continuous',
-            overflow: 'hidden',
-            backgroundColor: detailsBg,
-            borderWidth: 1,
-            borderColor: colors.surfaceBorder,
-          }}
-        >
-          <DetailRow
-            label="Amount"
-            value={formatAmount(subscription.amount, subscription.currency, settings.roundWholeNumbers)}
-            showArrow
-          />
-          <View style={{ height: 1, marginLeft: 18, marginRight: 18, backgroundColor: colors.surfaceBorder, opacity: 0.7 }} />
-          <DetailRow label="Next payment" value={nextPaymentLabel} />
-          <View style={{ height: 1, marginLeft: 18, marginRight: 18, backgroundColor: colors.surfaceBorder, opacity: 0.7 }} />
-          <DetailRow
-            label="Total spent"
-            value={formatAmount(totalSpent, subscription.currency, settings.roundWholeNumbers)}
-          />
-          <View style={{ height: 1, marginLeft: 18, marginRight: 18, backgroundColor: colors.surfaceBorder, opacity: 0.7 }} />
-          <DetailRow label="Notifications" value={NOTIFICATION_LABELS[subscription.notificationMode]} />
-        </View>
-
-        {/* Category row */}
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginHorizontal: 20,
-            marginBottom: 12,
-            paddingVertical: 14,
-            paddingHorizontal: 18,
-            borderRadius: 16,
-            borderCurve: 'continuous',
-            backgroundColor: colors.surface,
-            borderWidth: 1,
-            borderColor: colors.surfaceBorder,
-          }}
-        >
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-            <Image source="sf:tag" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
-            <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
-              Category
-            </Text>
+          {/* Details section */}
+          <View
+            style={{
+              marginHorizontal: 20,
+              marginBottom: 12,
+              borderRadius: 20,
+              borderCurve: 'continuous',
+              overflow: 'hidden',
+              backgroundColor: detailsBg,
+              borderWidth: 1,
+              borderColor: colors.surfaceBorder,
+            }}
+          >
+            <DetailRow
+              label="Amount"
+              value={formatAmount(subscription.amount, subscription.currency, settings.roundWholeNumbers)}
+              showArrow
+            />
+            <View style={{ height: 1, marginLeft: 18, marginRight: 18, backgroundColor: colors.surfaceBorder, opacity: 0.7 }} />
+            <DetailRow label="Next payment" value={nextPaymentLabel} />
+            <View style={{ height: 1, marginLeft: 18, marginRight: 18, backgroundColor: colors.surfaceBorder, opacity: 0.7 }} />
+            <DetailRow
+              label="Total spent"
+              value={formatAmount(totalSpent, subscription.currency, settings.roundWholeNumbers)}
+            />
+            <View style={{ height: 1, marginLeft: 18, marginRight: 18, backgroundColor: colors.surfaceBorder, opacity: 0.7 }} />
+            <DetailRow label="Notifications" value={NOTIFICATION_LABELS[subscription.notificationMode]} />
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: colors.surfaceMuted }} />
+
+          {/* Category row */}
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginHorizontal: 20,
+              marginBottom: 12,
+              paddingVertical: 14,
+              paddingHorizontal: 18,
+              borderRadius: 16,
+              borderCurve: 'continuous',
+              backgroundColor: colors.surface,
+              borderWidth: 1,
+              borderColor: colors.surfaceBorder,
+            }}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <Image source="sf:tag" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
+              <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+                Category
+              </Text>
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: colors.surfaceMuted }} />
+              <Text style={{ fontSize: 15, color: colors.text }} selectable>
+                {categoryName}
+              </Text>
+            </View>
+          </View>
+
+          {/* List row */}
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginHorizontal: 20,
+              paddingVertical: 14,
+              paddingHorizontal: 18,
+              borderRadius: 16,
+              borderCurve: 'continuous',
+              backgroundColor: colors.surface,
+              borderWidth: 1,
+              borderColor: colors.surfaceBorder,
+            }}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+              <Image source="sf:list.bullet" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
+              <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+                List
+              </Text>
+            </View>
             <Text style={{ fontSize: 15, color: colors.text }} selectable>
-              {categoryName}
+              {listName}
             </Text>
           </View>
-        </View>
-
-        {/* List row */}
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginHorizontal: 20,
-            paddingVertical: 14,
-            paddingHorizontal: 18,
-            borderRadius: 16,
-            borderCurve: 'continuous',
-            backgroundColor: colors.surface,
-            borderWidth: 1,
-            borderColor: colors.surfaceBorder,
-          }}
-        >
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-            <Image source="sf:list.bullet" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
-            <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
-              List
-            </Text>
-          </View>
-          <Text style={{ fontSize: 15, color: colors.text }} selectable>
-            {listName}
-          </Text>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
     </>
   );
 }
