@@ -99,12 +99,13 @@ export default function SubscriptionDetailScreen() {
     return formatNextPayment(parseISO(subscription.nextPaymentDate));
   }, [subscription]);
 
+  const logoColor = useSubscriptionGlowColor(subscription);
+
   if (!subscription) {
     router.back();
     return null;
   }
 
-  const logoColor = useSubscriptionGlowColor(subscription);
   const scheduleLabel = subscription.scheduleType.charAt(0).toUpperCase() + subscription.scheduleType.slice(1);
 
   const handleEdit = () => {
@@ -156,11 +157,6 @@ export default function SubscriptionDetailScreen() {
                   iconKey={subscription.iconKey}
                   iconUri={subscription.iconType === 'image' ? subscription.iconUri : undefined}
                   size={88}
-                  style={{
-                    borderWidth: 0,
-                    borderColor: 'transparent',
-                    boxShadow: 'none',
-                  }}
                 />
               </View>
               <Text
