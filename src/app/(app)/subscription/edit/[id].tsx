@@ -8,6 +8,8 @@ import { ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { SubscriptionFormContent } from '@/components/subscription-form-content';
+import { RadialGlow } from '@/components/radial-glow';
+import { getServiceColor } from '@/components/service-icon';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useSubscriptionsStore } from '@/lib/stores';
 
@@ -62,6 +64,8 @@ export default function EditSubscriptionScreen() {
     return null;
   }
 
+  const logoColor = getServiceColor(subscription.iconKey ?? 'custom');
+
   return (
     <>
       <Stack.Screen
@@ -69,7 +73,7 @@ export default function EditSubscriptionScreen() {
           title: 'Edit Subscription',
           headerShown: true,
           headerShadowVisible: false,
-          headerStyle: { backgroundColor: colors.background },
+          headerStyle: { backgroundColor: 'transparent' },
           headerTintColor: colors.text,
         }}
       />
@@ -82,36 +86,39 @@ export default function EditSubscriptionScreen() {
           Save
         </Stack.Toolbar.Button>
       </Stack.Toolbar>
-      <ScrollView
-        style={{ flex: 1, backgroundColor: colors.background }}
-        contentContainerStyle={{
-          paddingHorizontal: 20,
-          paddingTop: 12,
-          paddingBottom: insets.bottom + 32,
-        }}
-        contentInsetAdjustmentBehavior="automatic"
-      >
-        <SubscriptionFormContent
-          isEdit={true}
-          initialState={initialState}
-          onSave={handleSave}
-          submitRef={saveRef}
-          onValidationChange={setIsFormValid}
-          renderFooter={({ isValid, onSave }) => (
-            <View style={{ paddingTop: 16, paddingBottom: 8 }}>
-              <Button
-                variant="primary"
-                size="lg"
-                isDisabled={!isValid}
-                onPress={onSave}
-                style={{ width: '100%' }}
-              >
-                Save
-              </Button>
-            </View>
-          )}
-        />
-      </ScrollView>
+      <View style={{ flex: 1, backgroundColor: colors.background }}>
+        <RadialGlow color={logoColor} centerY="25%" maxOpacity={0.75} />
+        <ScrollView
+          style={{ flex: 1, backgroundColor: 'transparent' }}
+          contentContainerStyle={{
+            paddingHorizontal: 20,
+            paddingTop: 12,
+            paddingBottom: insets.bottom + 32,
+          }}
+          contentInsetAdjustmentBehavior="automatic"
+        >
+          <SubscriptionFormContent
+            isEdit={true}
+            initialState={initialState}
+            onSave={handleSave}
+            submitRef={saveRef}
+            onValidationChange={setIsFormValid}
+            renderFooter={({ isValid, onSave }) => (
+              <View style={{ paddingTop: 16, paddingBottom: 8 }}>
+                <Button
+                  variant="primary"
+                  size="lg"
+                  isDisabled={!isValid}
+                  onPress={onSave}
+                  style={{ width: '100%' }}
+                >
+                  Save
+                </Button>
+              </View>
+            )}
+          />
+        </ScrollView>
+      </View>
     </>
   );
 }

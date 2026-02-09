@@ -3,7 +3,7 @@ import type { MutableRefObject } from 'react';
 import type { NotificationMode, ScheduleType, Subscription, SubscriptionStatus } from '@/lib/db/schema';
 import { parseISO } from 'date-fns';
 import { Image } from 'expo-image';
-import { Button, Card, Input, TextArea } from 'heroui-native';
+import { Button, Input, TextArea } from 'heroui-native';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
@@ -12,6 +12,7 @@ import { DatePickerContent } from '@/components/date-picker-content';
 import { ModalSheet } from '@/components/modal-sheet';
 import { SelectPill } from '@/components/select-pill';
 import { ServiceIcon } from '@/components/service-icon';
+import { GlassCard } from '@/components/ui/glass-card';
 import { useTheme } from '@/lib/hooks/use-theme';
 import {
   useAddSubscriptionDraftStore,
@@ -303,15 +304,18 @@ export function SubscriptionFormContent({
     flexDirection: 'row' as const,
     alignItems: 'center' as const,
     justifyContent: 'space-between' as const,
-    paddingHorizontal: 16,
     paddingVertical: 14,
+    paddingHorizontal: 18,
     gap: 12,
     width: '100%' as const,
   };
 
   const rowDivider = {
-    borderBottomWidth: 1,
-    borderBottomColor: colors.surfaceBorder,
+    height: 1,
+    marginLeft: 18,
+    marginRight: 18,
+    backgroundColor: colors.surfaceBorder,
+    opacity: 0.7,
   };
 
   const inputStyle = {
@@ -332,38 +336,38 @@ export function SubscriptionFormContent({
         <ServiceIcon iconKey={iconKey} size={72} />
       </View>
 
-      <Card>
-        <Card.Body style={{ padding: 0, gap: 0 }}>
-          <View style={[rowStyle, rowDivider]}>
-            <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
-              Name
-            </Text>
-            <View style={{ flex: 1, alignItems: 'flex-end' }}>
-              <Input
-                value={name}
-                onChangeText={setName}
-                placeholder="Cursor"
-                placeholderTextColor={colors.textMuted}
-                style={inputStyle}
-              />
-            </View>
-          </View>
-
-          <View style={[rowStyle, rowDivider]}>
-            <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
-              Schedule
-            </Text>
-            <SelectPill
-              value={scheduleOption}
-              options={[...SCHEDULE_OPTIONS]}
-              onValueChange={o => setScheduleType((o?.value as ScheduleType) ?? 'monthly')}
-              size="sm"
+      <GlassCard style={{ marginBottom: 12 }}>
+        <View style={rowStyle}>
+          <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+            Name
+          </Text>
+          <View style={{ flex: 1, alignItems: 'flex-end' }}>
+            <Input
+              value={name}
+              onChangeText={setName}
+              placeholder="Cursor"
+              placeholderTextColor={colors.textMuted}
+              style={inputStyle}
             />
           </View>
-
-          {scheduleType === 'custom' && (
-            <View style={[rowStyle, rowDivider]}>
-              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
+        </View>
+        <View style={rowDivider} />
+        <View style={rowStyle}>
+          <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+            Schedule
+          </Text>
+          <SelectPill
+            value={scheduleOption}
+            options={[...SCHEDULE_OPTIONS]}
+            onValueChange={o => setScheduleType((o?.value as ScheduleType) ?? 'monthly')}
+            size="sm"
+          />
+        </View>
+        {scheduleType === 'custom' && (
+          <>
+            <View style={rowDivider} />
+            <View style={rowStyle}>
+              <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
                 Interval
               </Text>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
@@ -391,112 +395,110 @@ export function SubscriptionFormContent({
                 />
               </View>
             </View>
-          )}
-
-          <Pressable onPress={handleDatePress} style={rowStyle}>
-            <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
-              Start Date
-            </Text>
-            <View
-              style={{
-                paddingHorizontal: 10,
-                paddingVertical: 5,
-                borderRadius: 999,
-                borderCurve: 'continuous',
-                backgroundColor: colors.surfaceMuted,
-                borderWidth: 1,
-                borderColor: colors.surfaceBorder,
-              }}
-            >
-              <Text
-                style={{ fontSize: 12, color: colors.text, fontVariant: ['tabular-nums'] }}
-                selectable
-              >
-                {formatDateLabel(draftStartDate)}
-              </Text>
-            </View>
-          </Pressable>
-        </Card.Body>
-      </Card>
-
-      <Card>
-        <Card.Body style={{ padding: 0, gap: 0 }}>
-          <Pressable
-            onPress={handleAmountPress}
-            hitSlop={8}
-            accessibilityRole="button"
-            style={rowStyle}
+          </>
+        )}
+        <View style={rowDivider} />
+        <Pressable onPress={handleDatePress} style={rowStyle}>
+          <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+            Start Date
+          </Text>
+          <View
+            style={{
+              paddingHorizontal: 10,
+              paddingVertical: 5,
+              borderRadius: 999,
+              borderCurve: 'continuous',
+              backgroundColor: colors.surfaceMuted,
+              borderWidth: 1,
+              borderColor: colors.surfaceBorder,
+            }}
           >
-            <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
-              Amount
+            <Text
+              style={{ fontSize: 12, color: colors.text, fontVariant: ['tabular-nums'] }}
+              selectable
+            >
+              {formatDateLabel(draftStartDate)}
             </Text>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-              <Text
-                style={{ fontSize: 14, color: colors.textMuted, fontVariant: ['tabular-nums'] }}
-                selectable
-              >
-                $
-                {' '}
-                {formattedAmount}
-                {' '}
-                (
-                {draftCurrency}
-                )
-              </Text>
-            </View>
-          </Pressable>
-        </Card.Body>
-      </Card>
-
-      <Card>
-        <Card.Body style={{ padding: 0, gap: 0 }}>
-          <View style={[rowStyle, rowDivider]}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-              <Image source="sf:tag" style={{ width: 16, height: 16 }} tintColor={colors.textMuted} />
-              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
-                Category
-              </Text>
-            </View>
-            <SelectPill
-              value={categoryOptions.find(o => o.value === categoryId) ?? categoryOptions[0]}
-              options={categoryOptions}
-              onValueChange={o => setCategoryId(o?.value ?? '')}
-              size="sm"
-              leading={(
-                <View
-                  style={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: 4,
-                    backgroundColor: selectedCategory?.color ?? colors.accent,
-                  }}
-                />
-              )}
-            />
           </View>
+        </Pressable>
+      </GlassCard>
 
-          <View style={[rowStyle, rowDivider]}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-              <Image
-                source="sf:list.bullet"
-                style={{ width: 16, height: 16 }}
-                tintColor={colors.textMuted}
+      <GlassCard style={{ marginBottom: 12 }}>
+        <Pressable
+          onPress={handleAmountPress}
+          hitSlop={8}
+          accessibilityRole="button"
+          style={rowStyle}
+        >
+          <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+            Amount
+          </Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            <Text
+              style={{ fontSize: 15, color: colors.textMuted, fontVariant: ['tabular-nums'] }}
+              selectable
+            >
+              $
+              {' '}
+              {formattedAmount}
+              {' '}
+              (
+              {draftCurrency}
+              )
+            </Text>
+          </View>
+        </Pressable>
+      </GlassCard>
+
+      <GlassCard style={{ marginBottom: 12 }}>
+        <View style={rowStyle}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            <Image source="sf:tag" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
+            <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+              Category
+            </Text>
+          </View>
+          <SelectPill
+            value={categoryOptions.find(o => o.value === categoryId) ?? categoryOptions[0]}
+            options={categoryOptions}
+            onValueChange={o => setCategoryId(o?.value ?? '')}
+            size="sm"
+            leading={(
+              <View
+                style={{
+                  width: 10,
+                  height: 10,
+                  borderRadius: 5,
+                  backgroundColor: selectedCategory?.color ?? colors.accent,
+                }}
               />
-              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
-                List
-              </Text>
-            </View>
-            <SelectPill
-              value={listOptions.find(o => o.value === listId) ?? listOptions[0]}
-              options={listOptions}
-              onValueChange={o => setListId(o?.value ?? '')}
-              size="sm"
+            )}
+          />
+        </View>
+        <View style={rowDivider} />
+        <View style={rowStyle}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            <Image
+              source="sf:list.bullet"
+              style={{ width: 18, height: 18 }}
+              tintColor={colors.textMuted}
             />
+            <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+              List
+            </Text>
           </View>
-
-          {isEdit && (
-            <View style={[rowStyle, rowDivider]}>
-              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
+          <SelectPill
+            value={listOptions.find(o => o.value === listId) ?? listOptions[0]}
+            options={listOptions}
+            onValueChange={o => setListId(o?.value ?? '')}
+            size="sm"
+          />
+        </View>
+        {isEdit && (
+          <>
+            <View style={rowDivider} />
+            <View style={rowStyle}>
+              <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
                 Status
               </Text>
               <SelectPill
@@ -506,42 +508,42 @@ export function SubscriptionFormContent({
                 size="sm"
               />
             </View>
-          )}
-
-          <View style={[rowStyle, rowDivider]}>
-            <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
-              Payment method
+          </>
+        )}
+        <View style={rowDivider} />
+        <View style={rowStyle}>
+          <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+            Payment method
+          </Text>
+          <SelectPill
+            value={
+              paymentMethodOptions.find(o => o.value === paymentMethodId) ?? paymentMethodOptions[0]
+            }
+            options={paymentMethodOptions}
+            onValueChange={o => setPaymentMethodId(o?.value ?? '')}
+            size="sm"
+          />
+        </View>
+        <View style={rowDivider} />
+        <View style={rowStyle}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            <Image source="sf:bell" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
+            <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+              Notifications
             </Text>
-            <SelectPill
-              value={
-                paymentMethodOptions.find(o => o.value === paymentMethodId) ?? paymentMethodOptions[0]
-              }
-              options={paymentMethodOptions}
-              onValueChange={o => setPaymentMethodId(o?.value ?? '')}
-              size="sm"
-            />
           </View>
+          <SelectPill
+            value={notificationOption}
+            options={[...NOTIFICATION_OPTIONS]}
+            onValueChange={o => setNotificationMode((o?.value as NotificationMode) ?? 'default')}
+            size="sm"
+          />
+        </View>
+      </GlassCard>
 
-          <View style={rowStyle}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-              <Image source="sf:bell" style={{ width: 16, height: 16 }} tintColor={colors.textMuted} />
-              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
-                Notifications
-              </Text>
-            </View>
-            <SelectPill
-              value={notificationOption}
-              options={[...NOTIFICATION_OPTIONS]}
-              onValueChange={o => setNotificationMode((o?.value as NotificationMode) ?? 'default')}
-              size="sm"
-            />
-          </View>
-        </Card.Body>
-      </Card>
-
-      <Card>
-        <Card.Body style={{ padding: 16, gap: 10 }}>
-          <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text }} selectable>
+      <GlassCard style={{ marginBottom: 12 }}>
+        <View style={{ paddingVertical: 14, paddingHorizontal: 18, gap: 10 }}>
+          <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
             Notes
           </Text>
           <TextArea
@@ -562,8 +564,8 @@ export function SubscriptionFormContent({
               color: colors.text,
             }}
           />
-        </Card.Body>
-      </Card>
+        </View>
+      </GlassCard>
 
       {renderFooter({ isValid, onSave: handleSave })}
 

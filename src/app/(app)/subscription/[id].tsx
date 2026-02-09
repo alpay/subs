@@ -1,14 +1,14 @@
 import type { Subscription } from '@/lib/db/schema';
 
 import { parseISO } from 'date-fns';
-import { BlurView } from 'expo-blur';
 import { Image } from 'expo-image';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo } from 'react';
-import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RadialGlow } from '@/components/radial-glow';
 import { getServiceColor, ServiceIcon } from '@/components/service-icon';
+import { GlassCard } from '@/components/ui/glass-card';
 import { useTheme } from '@/lib/hooks/use-theme';
 import {
   useCategoriesStore,
@@ -24,60 +24,6 @@ const NOTIFICATION_LABELS: Record<Subscription['notificationMode'], string> = {
   custom: 'Custom',
   none: 'None',
 };
-
-const CARD_RADIUS = 16;
-
-function GlassCard({
-  children,
-  style,
-  isDark,
-  colors,
-}: {
-  children: React.ReactNode;
-  style?: object;
-  isDark: boolean;
-  colors: { surface: string; surfaceBorder: string };
-}) {
-  const blurTint = isDark ? 'dark' : 'light';
-  return (
-    <View
-      style={[
-        styles.glassCard,
-        style,
-        {
-          borderWidth: 1,
-          borderColor: colors.surfaceBorder,
-        },
-      ]}
-    >
-      {Platform.OS === 'android' ? (
-        <View
-          style={[StyleSheet.absoluteFill, { backgroundColor: colors.surface, borderRadius: CARD_RADIUS }]}
-        />
-      ) : (
-        <>
-          <BlurView
-            intensity={52}
-            tint={blurTint}
-            style={[StyleSheet.absoluteFill, { borderRadius: CARD_RADIUS }]}
-          />
-          <View
-            style={[
-              StyleSheet.absoluteFill,
-              styles.glassOverlay,
-              {
-                backgroundColor: isDark ? 'rgba(0,0,0,0.25)' : 'rgba(255,255,255,0.4)',
-                borderRadius: CARD_RADIUS,
-              },
-            ]}
-            pointerEvents="none"
-          />
-        </>
-      )}
-      <View style={styles.glassCardContent}>{children}</View>
-    </View>
-  );
-}
 
 function DetailRow({
   label,
@@ -118,7 +64,7 @@ export default function SubscriptionDetailScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ id: string }>();
   const insets = useSafeAreaInsets();
-  const { colors, isDark } = useTheme();
+  const { colors } = useTheme();
 
   const { subscriptions } = useSubscriptionsStore();
   const { categories } = useCategoriesStore();
@@ -240,11 +186,7 @@ export default function SubscriptionDetailScreen() {
           </View>
 
           {/* Details section – same glass card as Category/List */}
-          <GlassCard
-            isDark={isDark}
-            colors={colors}
-            style={{ marginHorizontal: 20, marginBottom: 12 }}
-          >
+          <GlassCard style={{ marginHorizontal: 20, marginBottom: 12 }}>
             <DetailRow
               label="Amount"
               value={formatAmount(subscription.amount, subscription.currency, settings.roundWholeNumbers)}
@@ -262,11 +204,7 @@ export default function SubscriptionDetailScreen() {
           </GlassCard>
 
           {/* Category row */}
-          <GlassCard
-            isDark={isDark}
-            colors={colors}
-            style={{ marginHorizontal: 20, marginBottom: 12 }}
-          >
+          <GlassCard style={{ marginHorizontal: 20, marginBottom: 12 }}>
             <View style={styles.rowInner}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                 <Image source="sf:tag" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
@@ -284,11 +222,7 @@ export default function SubscriptionDetailScreen() {
           </GlassCard>
 
           {/* List row */}
-          <GlassCard
-            isDark={isDark}
-            colors={colors}
-            style={{ marginHorizontal: 20 }}
-          >
+          <GlassCard style={{ marginHorizontal: 20 }}>
             <View style={styles.rowInner}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                 <Image source="sf:list.bullet" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
@@ -308,14 +242,6 @@ export default function SubscriptionDetailScreen() {
 }
 
 const styles = StyleSheet.create({
-  glassCard: {
-    borderRadius: CARD_RADIUS,
-    overflow: 'hidden',
-  },
-  glassCardContent: {},
-  glassOverlay: {
-    borderRadius: CARD_RADIUS,
-  },
   rowInner: {
     flexDirection: 'row',
     alignItems: 'center',
