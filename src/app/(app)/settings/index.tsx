@@ -2,13 +2,14 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
-import { Switch, useToast } from 'heroui-native';
+import { Switch } from 'heroui-native';
 import { useMemo } from 'react';
 import { Alert, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ModalSheet } from '@/components/modal-sheet';
 import { Pill } from '@/components/pill';
+import { SettingsNotificationSection } from '@/components/settings-notification-section';
 import {
   SettingsLeadingIcon,
   SettingsRow,
@@ -16,6 +17,7 @@ import {
   SettingsSection,
 } from '@/components/settings-section';
 import { useTheme } from '@/lib/hooks/use-theme';
+import { storage } from '@/lib/storage';
 import {
   useCategoriesStore,
   useCurrencyRatesStore,
@@ -25,7 +27,6 @@ import {
   useSettingsStore,
   useSubscriptionsStore,
 } from '@/lib/stores';
-import { storage } from '@/lib/storage';
 
 const CURRENCY_FLAGS: Record<string, string> = {
   USD: '\u{1F1FA}\u{1F1F8}',
@@ -36,13 +37,6 @@ const CURRENCY_FLAGS: Record<string, string> = {
   CAD: '\u{1F1E8}\u{1F1E6}',
   CHF: '\u{1F1E8}\u{1F1ED}',
 };
-
-function formatReminderLabel(days: number) {
-  if (days === 0) {
-    return 'Same Day';
-  }
-  return `${days} Day${days === 1 ? '' : 's'}`;
-}
 
 function formatUpdatedAt(value: string) {
   const date = new Date(value);
@@ -106,7 +100,6 @@ function SubscriptionBadge() {
 
 export default function SettingsScreen() {
   const router = useRouter();
-  const { toast } = useToast();
   const { colors } = useTheme();
   const { bottom } = useSafeAreaInsets();
 
@@ -121,10 +114,6 @@ export default function SettingsScreen() {
   }, [settings.mainCurrency]);
 
   const updatedAtLabel = useMemo(() => formatUpdatedAt(rates.updatedAt), [rates.updatedAt]);
-  const firstReminderLabel = formatReminderLabel(settings.notificationDefaults.first.daysBefore);
-  const secondReminderLabel = settings.notificationDefaults.second
-    ? formatReminderLabel(settings.notificationDefaults.second.daysBefore)
-    : 'Never';
 
   const handleResetApp = () => {
     Alert.alert(
@@ -150,36 +139,6 @@ export default function SettingsScreen() {
         },
       ],
     );
-  };
-
-  const handleTestNotification = async () => {
-    try {
-      const current = await Notifications.getPermissionsAsync();
-      let status = current.status;
-      if (status !== 'granted') {
-        const request = await Notifications.requestPermissionsAsync();
-        status = request.status;
-      }
-      if (status !== 'granted') {
-        toast.show('Enable notifications in Settings to test alerts.');
-        return;
-      }
-
-      await Notifications.scheduleNotificationAsync({
-        content: {
-          title: 'Test Notification',
-          body: 'Notifications are enabled.',
-        },
-        trigger: {
-          type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-          seconds: 1,
-        },
-      });
-      toast.show('Test notification scheduled');
-    }
-    catch {
-      toast.show('Unable to schedule a test notification');
-    }
   };
 
   const sectionLabelStyle = { fontSize: 11, letterSpacing: 1.2, color: colors.textMuted, fontWeight: '600' as const };
@@ -320,73 +279,7 @@ export default function SettingsScreen() {
           NOTIFICATIONS.
         </Text>
       </View>
-      <SettingsSection>
-        <SettingsRow
-          label="First Reminder"
-          onPress={() => router.push('/(app)/settings/notification-settings')}
-          right={(
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                <Text style={{ color: colors.textMuted, fontVariant: ['tabular-nums'] }} selectable>
-                  {firstReminderLabel}
-                </Text>
-                <Image
-                  source="sf:chevron.up.chevron.down"
-                  style={{ width: 10, height: 10 }}
-                  tintColor={colors.textMuted}
-                />
-              </View>
-              <View
-                style={{
-                  paddingHorizontal: 10,
-                  paddingVertical: 6,
-                  borderRadius: 12,
-                  borderCurve: 'continuous',
-                  backgroundColor: colors.surfaceElevated,
-                  borderWidth: 1,
-                  borderColor: colors.surfaceBorder,
-                }}
-              >
-                <Text
-                  style={{ color: colors.text, fontSize: 12, fontVariant: ['tabular-nums'] }}
-                  selectable
-                >
-                  {settings.notificationDefaults.first.time}
-                </Text>
-              </View>
-            </View>
-          )}
-        />
-        <SettingsRowDivider />
-        <SettingsRow
-          label="Second Reminder"
-          onPress={() => router.push('/(app)/settings/notification-settings')}
-          right={(
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-              <Text style={{ color: colors.textMuted, fontVariant: ['tabular-nums'] }} selectable>
-                {secondReminderLabel}
-              </Text>
-              <Image
-                source="sf:chevron.up.chevron.down"
-                style={{ width: 10, height: 10 }}
-                tintColor={colors.textMuted}
-              />
-            </View>
-          )}
-        />
-        <SettingsRowDivider />
-        <SettingsRow
-          label="Test Notification"
-          labelTone="accent"
-          labelStyle={{ fontWeight: '600' }}
-          onPress={handleTestNotification}
-        />
-        <View style={{ paddingHorizontal: 14, paddingBottom: 10 }}>
-          <Text style={noteStyle} selectable>
-            If Focus Modes are enabled, notifications might not appear.
-          </Text>
-        </View>
-      </SettingsSection>
+      <SettingsNotificationSection />
 
       {/* Section 5: Interface (rounded panel) */}
       <View style={{ marginBottom: 8 }}>

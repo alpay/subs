@@ -15,7 +15,6 @@ export default function SettingsLayout() {
       <Stack.Screen name="lists" options={transparentModalOptions} />
       <Stack.Screen name="currency" options={transparentModalOptions} />
       <Stack.Screen name="payment-methods" options={transparentModalOptions} />
-      <Stack.Screen name="notification-settings" options={transparentModalOptions} />
     </Stack>
   );
 }

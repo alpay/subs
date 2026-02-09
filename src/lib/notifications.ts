@@ -22,14 +22,19 @@ function isReminderConfig(reminder: ReminderConfig | null | undefined): reminder
   return Boolean(reminder);
 }
 
+function isValidReminder(reminder: ReminderConfig | null | undefined): reminder is ReminderConfig {
+  return Boolean(reminder && reminder.daysBefore >= 0);
+}
+
 function getReminders(subscription: Subscription, settings: Settings) {
   if (subscription.notificationMode === 'none') {
     return [];
   }
   if (subscription.notificationMode === 'custom') {
-    return [subscription.customReminder1, subscription.customReminder2].filter(isReminderConfig);
+    return [subscription.customReminder1, subscription.customReminder2].filter(isValidReminder);
   }
-  return [settings.notificationDefaults.first, settings.notificationDefaults.second].filter(isReminderConfig);
+  const { first, second } = settings.notificationDefaults;
+  return [first, second].filter(isValidReminder);
 }
 
 export async function scheduleSubscriptionNotifications(subscription: Subscription, settings: Settings) {
