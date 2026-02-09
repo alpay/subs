@@ -1,4 +1,4 @@
-import type { PredefinedService } from '@/features/subscriptions/predefined-services';
+import type { PredefinedService } from '@/lib/data/predefined-services';
 import { Image } from 'expo-image';
 import { Stack, useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ServiceIcon } from '@/components/service-icon';
-import { PREDEFINED_SERVICES } from '@/features/subscriptions/predefined-services';
+import { PREDEFINED_SERVICES } from '@/lib/data/predefined-services';
 import { useTheme } from '@/lib/hooks/use-theme';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
