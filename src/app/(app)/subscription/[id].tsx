@@ -1,13 +1,14 @@
 import type { Subscription } from '@/lib/db/schema';
 
+import { parseISO } from 'date-fns';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ServiceIcon, getServiceColor } from '@/components/service-icon';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { getServiceColor, ServiceIcon } from '@/components/service-icon';
 import { useTheme } from '@/lib/hooks/use-theme';
 import {
   useCategoriesStore,
@@ -15,17 +16,15 @@ import {
   useSettingsStore,
   useSubscriptionsStore,
 } from '@/lib/stores';
-import { countPaymentsUpTo } from '@/lib/utils/subscription-dates';
 import { formatAmount, formatNextPayment } from '@/lib/utils/format';
-import { parseISO } from 'date-fns';
-import { Stack } from 'expo-router';
+import { countPaymentsUpTo } from '@/lib/utils/subscription-dates';
 
 /** Darken hex color (e.g. for card base or gradient end). */
 function darkenHex(hex: string, factor: number): string {
   const n = hex.replace('#', '');
-  const r = Math.max(0, Math.floor(parseInt(n.slice(0, 2), 16) * (1 - factor)));
-  const g = Math.max(0, Math.floor(parseInt(n.slice(2, 4), 16) * (1 - factor)));
-  const b = Math.max(0, Math.floor(parseInt(n.slice(4, 6), 16) * (1 - factor)));
+  const r = Math.max(0, Math.floor(Number.parseInt(n.slice(0, 2), 16) * (1 - factor)));
+  const g = Math.max(0, Math.floor(Number.parseInt(n.slice(2, 4), 16) * (1 - factor)));
+  const b = Math.max(0, Math.floor(Number.parseInt(n.slice(4, 6), 16) * (1 - factor)));
   return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
 }
 
@@ -97,13 +96,15 @@ export default function SubscriptionDetailScreen() {
   );
 
   const totalSpent = useMemo(() => {
-    if (!subscription) return 0;
+    if (!subscription)
+      return 0;
     const count = countPaymentsUpTo(subscription);
     return count * subscription.amount;
   }, [subscription]);
 
   const nextPaymentLabel = useMemo(() => {
-    if (!subscription?.nextPaymentDate) return '—';
+    if (!subscription?.nextPaymentDate)
+      return '—';
     return formatNextPayment(parseISO(subscription.nextPaymentDate));
   }, [subscription?.nextPaymentDate]);
 
@@ -132,6 +133,12 @@ export default function SubscriptionDetailScreen() {
           headerTintColor: colors.text,
         }}
       />
+      <Stack.Screen.BackButton displayMode="minimal" />
+      <Stack.Toolbar placement="right">
+        <Stack.Toolbar.Button onPress={handleEdit}>
+          Edit
+        </Stack.Toolbar.Button>
+      </Stack.Toolbar>
       <ScrollView
         style={{ flex: 1, backgroundColor: colors.background }}
         contentContainerStyle={{
@@ -169,7 +176,6 @@ export default function SubscriptionDetailScreen() {
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
-                justifyContent: 'space-between',
                 marginBottom: 16,
               }}
             >
@@ -200,22 +206,6 @@ export default function SubscriptionDetailScreen() {
                   tintColor="rgba(255,255,255,0.8)"
                 />
               </View>
-              <Pressable
-                onPress={handleEdit}
-                style={({ pressed }) => [
-                  {
-                    paddingHorizontal: 12,
-                    paddingVertical: 6,
-                    borderRadius: 999,
-                    backgroundColor: 'rgba(255,255,255,0.25)',
-                  },
-                  pressed ? { opacity: 0.85 } : null,
-                ]}
-              >
-                <Text style={{ fontSize: 12, fontWeight: '600', color: '#FFFFFF' }} selectable>
-                  Edit
-                </Text>
-              </Pressable>
             </View>
 
             <View style={{ alignItems: 'center', justifyContent: 'center' }}>

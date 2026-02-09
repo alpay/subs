@@ -9,7 +9,7 @@ const transparentModalOptions = {
 
 export default function AppLayout() {
   return (
-    <Stack screenOptions={{ headerShown: true, headerShadowVisible: false }}>
+    <Stack screenOptions={{ headerTransparent: true }}>
       <Stack.Screen name="home" />
       <Stack.Screen name="search" />
       <Stack.Screen name="add-subscription" options={transparentModalOptions} />
