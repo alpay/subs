@@ -186,7 +186,7 @@ export function DaySubscriptionsSheet({
             <Image source="sf:plus" style={{ width: 16, height: 16 }} tintColor={colors.text} />
           </View>
           <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }} selectable>
-            Add Subscription
+            Services
           </Text>
         </Pressable>
       </View>

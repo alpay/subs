@@ -12,7 +12,7 @@ export default function AppLayout() {
     <Stack screenOptions={{ headerTransparent: true }}>
       <Stack.Screen name="home" />
       <Stack.Screen name="search" />
-      <Stack.Screen name="add-subscription" options={transparentModalOptions} />
+      <Stack.Screen name="services" />
       <Stack.Screen name="amount-picker" options={transparentModalOptions} />
       <Stack.Screen name="analytics" options={transparentModalOptions} />
       <Stack.Screen name="csv-import" options={transparentModalOptions} />

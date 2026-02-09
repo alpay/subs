@@ -1,5 +1,5 @@
 /**
- * Static predefined services for the Add Subscription picker.
+ * Static predefined services for the Services screen.
  * iconKey must match keys in ServiceIcon ICON_MAP.
  */
 export const PREDEFINED_SERVICES = [

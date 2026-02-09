@@ -83,7 +83,7 @@ export default function HomeScreen() {
         />
         <Stack.Toolbar.SearchBarSlot />
         <Stack.Toolbar.Spacer />
-        <Stack.Toolbar.Button icon="plus" onPress={() => router.push('/(app)/add-subscription')} />
+        <Stack.Toolbar.Button icon="plus" onPress={() => router.push('/(app)/services')} />
       </Stack.Toolbar>
 
       {hasQuery
@@ -132,7 +132,10 @@ export default function HomeScreen() {
         settings={settings}
         rates={rates}
         onClose={handleSheetClose}
-        onAddPress={() => router.push('/(app)/add-subscription')}
+        onAddPress={() => {
+          handleSheetClose();
+          router.push('/(app)/services');
+        }}
         onSubscriptionPress={(subscriptionId) => {
           handleSheetClose();
           router.push(`/subscription/${subscriptionId}`);
