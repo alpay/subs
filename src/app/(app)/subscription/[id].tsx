@@ -7,9 +7,9 @@ import { useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RadialGlow } from '@/components/radial-glow';
-import { getServiceColor, ServiceIcon } from '@/components/service-icon';
+import { ServiceIcon } from '@/components/service-icon';
 import { GlassCard } from '@/components/ui/glass-card';
-import { useTheme } from '@/lib/hooks/use-theme';
+import { useSubscriptionGlowColor, useTheme } from '@/lib/hooks';
 import {
   useCategoriesStore,
   useListsStore,
@@ -104,7 +104,7 @@ export default function SubscriptionDetailScreen() {
     return null;
   }
 
-  const logoColor = getServiceColor(subscription.iconKey);
+  const logoColor = useSubscriptionGlowColor(subscription);
   const scheduleLabel = subscription.scheduleType.charAt(0).toUpperCase() + subscription.scheduleType.slice(1);
 
   const handleEdit = () => {
@@ -154,6 +154,7 @@ export default function SubscriptionDetailScreen() {
               <View style={{ marginBottom: 12 }}>
                 <ServiceIcon
                   iconKey={subscription.iconKey}
+                  iconUri={subscription.iconType === 'image' ? subscription.iconUri : undefined}
                   size={88}
                   style={{
                     borderWidth: 0,
@@ -230,11 +231,11 @@ export default function SubscriptionDetailScreen() {
                   List
                 </Text>
               </View>
-            <Text style={{ fontSize: 15, color: colors.text }} selectable>
-              {listName}
-            </Text>
-          </View>
-        </GlassCard>
+              <Text style={{ fontSize: 15, color: colors.text }} selectable>
+                {listName}
+              </Text>
+            </View>
+          </GlassCard>
         </ScrollView>
       </View>
     </>

@@ -146,7 +146,7 @@ const MonthGrid = memo(({
               <Text style={[styles.dayLabel, { color: textColor }]}>{dayDate.getDate()}</Text>
               {items.length > 0 && (
                 <View style={styles.cellIcons}>
-                  <ServiceIcon iconKey={items[0].iconKey} size={iconSize} style={styles.iconNoShadow} />
+                  <ServiceIcon iconKey={items[0].iconKey} iconUri={items[0].iconType === 'image' ? items[0].iconUri : undefined} size={iconSize} style={styles.iconNoShadow} />
                   {items.length > 1 && (
                     <View style={[styles.badge, { width: badgeSize, height: badgeSize, borderRadius: badgeSize / 2, marginLeft: -Math.round(badgeSize * 0.3), backgroundColor: serviceColor ?? colors.surface, borderColor: withAlpha('#FFF', isDark ? 0.3 : 0.55) }]}>
                       <Text style={[styles.badgeText, { fontSize: Math.max(10, Math.round(badgeSize * 0.42)), color: colors.iconOnColor }]}>

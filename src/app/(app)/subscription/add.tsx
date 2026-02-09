@@ -29,10 +29,11 @@ export default function AddSubscriptionScreen() {
   const { toast } = useToast();
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
-  const params = useLocalSearchParams<{ templateId?: string; name?: string; iconKey?: string }>();
+  const params = useLocalSearchParams<{ templateId?: string; name?: string; iconKey?: string; iconUri?: string }>();
 
   const paramName = typeof params.name === 'string' ? params.name : params.name?.[0];
   const paramIconKey = typeof params.iconKey === 'string' ? params.iconKey : params.iconKey?.[0];
+  const paramIconUri = typeof params.iconUri === 'string' ? params.iconUri : params.iconUri?.[0];
 
   const { add } = useSubscriptionsStore();
   const { categories } = useCategoriesStore();
@@ -60,12 +61,14 @@ export default function AddSubscriptionScreen() {
       status: 'active',
       notificationMode: 'default' as NotificationMode,
       iconKey: selectedTemplate?.iconKey ?? paramIconKey ?? 'custom',
+      iconUri: paramIconUri,
       notes: '',
     }),
     [
       selectedTemplate,
       paramName,
       paramIconKey,
+      paramIconUri,
       settings.mainCurrency,
       categories,
       lists,

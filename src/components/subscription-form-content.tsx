@@ -84,6 +84,8 @@ export type SubscriptionFormInitialState = {
   status: SubscriptionStatus;
   notificationMode: NotificationMode;
   iconKey: string;
+  /** Logo image URL (e.g. from Brandfetch); when set, iconType is saved as 'image'. */
+  iconUri?: string;
   notes: string;
 };
 
@@ -132,6 +134,7 @@ export function SubscriptionFormContent({
   const [status, setStatus] = useState<SubscriptionStatus>(initialState.status);
   const [notificationMode, setNotificationMode] = useState<NotificationMode>(initialState.notificationMode);
   const [iconKey, setIconKey] = useState(initialState.iconKey);
+  const [iconUri, setIconUri] = useState(initialState.iconUri ?? '');
   const [notes, setNotes] = useState(initialState.notes);
 
   const [showAmountPicker, setShowAmountPicker] = useState(false);
@@ -237,11 +240,13 @@ export function SubscriptionFormContent({
     const normalizedIntervalCount
       = scheduleType === 'custom' ? Math.max(1, Number(intervalCount) || 1) : 1;
 
+    const useImageIcon = Boolean(iconUri?.trim());
     const payload: SubscriptionFormPayload = {
       name: name.trim(),
       status,
-      iconType: 'builtIn',
-      iconKey: iconKey.trim() || 'custom',
+      iconType: useImageIcon ? 'image' : 'builtIn',
+      iconKey: useImageIcon ? undefined : (iconKey.trim() || 'custom'),
+      iconUri: useImageIcon ? iconUri.trim() : undefined,
       amount: finalAmount,
       currency: finalCurrency,
       scheduleType,
@@ -273,6 +278,7 @@ export function SubscriptionFormContent({
     name,
     status,
     iconKey,
+    iconUri,
     scheduleType,
     intervalCount,
     intervalUnit,
@@ -333,7 +339,7 @@ export function SubscriptionFormContent({
   return (
     <Fragment>
       <View style={{ alignItems: 'center', paddingVertical: 6 }}>
-        <ServiceIcon iconKey={iconKey} size={72} />
+        <ServiceIcon iconKey={iconKey} iconUri={iconUri || undefined} size={72} />
       </View>
 
       <GlassCard style={{ marginBottom: 12 }}>

@@ -1,9 +1,11 @@
 import type { PredefinedService } from '@/lib/data/predefined-services';
+import { useQuery } from '@tanstack/react-query';
 import { Image } from 'expo-image';
 import { Stack, useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
+  ActivityIndicator,
   Dimensions,
   Pressable,
   ScrollView,
@@ -12,6 +14,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ServiceIcon } from '@/components/service-icon';
+import { getLogoUrl, searchBrands } from '@/lib/api/brandfetch';
 import { PREDEFINED_SERVICES } from '@/lib/data/predefined-services';
 import { useTheme } from '@/lib/hooks/use-theme';
 
@@ -31,11 +34,26 @@ const IMPORT_OPTIONS = [
 
 const IMPORT_CARD_SIZE = 88;
 
+const DEBOUNCE_MS = 400;
+
 export default function ServicesScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { colors, isDark } = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
+
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedQuery(searchQuery.trim()), DEBOUNCE_MS);
+    return () => clearTimeout(t);
+  }, [searchQuery]);
+
+  const { data: brandResults = [], isFetching: isBrandSearching } = useQuery({
+    queryKey: ['brandfetch', debouncedQuery],
+    queryFn: () => searchBrands(debouncedQuery),
+    enabled: debouncedQuery.length >= 2,
+    staleTime: 60_000,
+  });
 
   const filteredServices = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -64,6 +82,14 @@ export default function ServicesScreen() {
     router.push({
       pathname: '/(app)/subscription/add',
       params: { name: displayQuery, iconKey: 'custom' },
+    });
+  };
+
+  const handleBrandSelect = (name: string, domain: string) => {
+    const logoUrl = getLogoUrl(domain);
+    router.push({
+      pathname: '/(app)/subscription/add',
+      params: { name, iconKey: 'custom', iconUri: logoUrl },
     });
   };
 
@@ -175,105 +201,149 @@ export default function ServicesScreen() {
           </View>
         )}
 
-        {/* Section label – only when no query; when query we show results from top */}
-        {!hasQuery && (
-          <View style={{ marginBottom: 12 }}>
-            <Text
-              style={{
-                fontSize: 12,
-                fontWeight: '600',
-                color: colors.textMuted,
-                letterSpacing: 0.8,
-              }}
-            >
-              POPULAR SERVICES
-            </Text>
-          </View>
-        )}
-
-        {/* Results grid – when query: first card is "Add [query] +", then matching services. No negative margin so left/right padding stay equal. */}
-        <View
-          style={{
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            gap: GRID_GAP,
-          }}
-        >
-          {/* First result: Add custom with user's query + */}
-          {hasQuery && (
-            <Pressable
-              onPress={handleAddCustomPress}
-              style={({ pressed }) => cardStyle(pressed)}
-            >
-              <View
-                style={{
-                  width: 48,
-                  height: 48,
-                  borderRadius: 24,
-                  backgroundColor: isDark ? 'rgba(118, 118, 128, 0.24)' : 'rgba(118, 118, 128, 0.12)',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  borderWidth: 1,
-                  borderColor: colors.surfaceBorder,
-                  borderStyle: 'dashed',
-                }}
-              >
-                <SymbolView
-                  name="plus"
-                  size={24}
-                  tintColor={colors.textMuted}
-                />
-              </View>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+        {/* When searching: only "Add custom" at top + search results. No popular services. */}
+        {hasQuery && (
+          <>
+            {/* Search results: "Add [query] +" as first option, then Brandfetch results */}
+            {debouncedQuery.length >= 2 && (
+              <View style={{ marginBottom: 16 }}>
                 <Text
-                  numberOfLines={1}
                   style={{
-                    fontSize: 13,
-                    fontWeight: '500',
-                    color: colors.text,
-                    textAlign: 'center',
-                    maxWidth: CARD_WIDTH - 24,
+                    fontSize: 12,
+                    fontWeight: '600',
+                    color: colors.textMuted,
+                    letterSpacing: 0.8,
+                    marginBottom: 10,
                   }}
                 >
-                  {displayQuery}
+                  SEARCH RESULTS
                 </Text>
-                <SymbolView name="plus" size={12} tintColor={colors.textMuted} />
+                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: GRID_GAP }}>
+                  {/* First option: Add custom with user's query + */}
+                  <Pressable
+                    onPress={handleAddCustomPress}
+                    style={({ pressed }) => cardStyle(pressed)}
+                  >
+                    <View
+                      style={{
+                        width: 48,
+                        height: 48,
+                        borderRadius: 24,
+                        backgroundColor: isDark ? 'rgba(118, 118, 128, 0.24)' : 'rgba(118, 118, 128, 0.12)',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderWidth: 1,
+                        borderColor: colors.surfaceBorder,
+                        borderStyle: 'dashed',
+                      }}
+                    >
+                      <SymbolView
+                        name="plus"
+                        size={24}
+                        tintColor={colors.textMuted}
+                      />
+                    </View>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                      <Text
+                        numberOfLines={1}
+                        style={{
+                          fontSize: 13,
+                          fontWeight: '500',
+                          color: colors.text,
+                          textAlign: 'center',
+                          maxWidth: CARD_WIDTH - 24,
+                        }}
+                      >
+                        {displayQuery}
+                      </Text>
+                      <SymbolView name="plus" size={12} tintColor={colors.textMuted} />
+                    </View>
+                  </Pressable>
+                  {isBrandSearching && brandResults.length === 0 && (
+                    <View style={[cardStyle(false), { justifyContent: 'center', minHeight: 100 }]}>
+                      <ActivityIndicator size="small" color={colors.textMuted} />
+                    </View>
+                  )}
+                  {brandResults.map(brand => (
+                    <Pressable
+                      key={brand.brandId}
+                      onPress={() => handleBrandSelect(brand.name ?? brand.domain, brand.domain)}
+                      style={({ pressed }) => cardStyle(pressed)}
+                    >
+                      <ServiceIcon
+                        iconKey="custom"
+                        iconUri={getLogoUrl(brand.domain)}
+                        size={48}
+                      />
+                      <Text
+                        numberOfLines={1}
+                        style={{
+                          fontSize: 13,
+                          fontWeight: '500',
+                          color: colors.text,
+                          textAlign: 'center',
+                          maxWidth: CARD_WIDTH - 16,
+                        }}
+                      >
+                        {brand.name ?? brand.domain}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
               </View>
-            </Pressable>
-          )}
+            )}
 
-          {filteredServices.map(service => (
-            <Pressable
-              key={service.id}
-              onPress={() => handleServicePress(service)}
-              style={({ pressed }) => cardStyle(pressed)}
-            >
-              <ServiceIcon iconKey={service.iconKey} size={48} />
+            {debouncedQuery.length >= 2 && !isBrandSearching && brandResults.length === 0 && (
+              <Text style={{ fontSize: 14, color: colors.textMuted }}>
+                No brands found. Tap the card above to add
+                {' '}
+                {displayQuery}
+                {' '}
+                as a custom service.
+              </Text>
+            )}
+          </>
+        )}
+
+        {/* When not searching: Popular services grid */}
+        {!hasQuery && (
+          <>
+            <View style={{ marginBottom: 12 }}>
               <Text
-                numberOfLines={1}
                 style={{
-                  fontSize: 13,
-                  fontWeight: '500',
-                  color: colors.text,
-                  textAlign: 'center',
-                  maxWidth: CARD_WIDTH - 16,
+                  fontSize: 12,
+                  fontWeight: '600',
+                  color: colors.textMuted,
+                  letterSpacing: 0.8,
                 }}
               >
-                {service.name}
+                POPULAR SERVICES
               </Text>
-            </Pressable>
-          ))}
-        </View>
-
-        {hasQuery && filteredServices.length === 0 && (
-          <View style={{ paddingVertical: 32, alignItems: 'center' }}>
-            <Text style={{ fontSize: 14, color: colors.textMuted }}>
-              No other services match. Tap the card above to add
-              {' '}
-              {displayQuery}
-              .
-            </Text>
-          </View>
+            </View>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: GRID_GAP }}>
+              {filteredServices.map(service => (
+                <Pressable
+                  key={service.id}
+                  onPress={() => handleServicePress(service)}
+                  style={({ pressed }) => cardStyle(pressed)}
+                >
+                  <ServiceIcon iconKey={service.iconKey} size={48} />
+                  <Text
+                    numberOfLines={1}
+                    style={{
+                      fontSize: 13,
+                      fontWeight: '500',
+                      color: colors.text,
+                      textAlign: 'center',
+                      maxWidth: CARD_WIDTH - 16,
+                    }}
+                  >
+                    {service.name}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+          </>
         )}
       </ScrollView>
     </>

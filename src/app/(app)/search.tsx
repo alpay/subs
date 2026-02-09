@@ -124,7 +124,7 @@ export default function SearchScreen() {
                       }}
                     >
                       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 }}>
-                        <ServiceIcon iconKey={sub.iconKey} size={44} />
+                        <ServiceIcon iconKey={sub.iconKey} iconUri={sub.iconType === 'image' ? sub.iconUri : undefined} size={44} />
                         <View style={{ gap: 4, flex: 1 }}>
                           <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }} selectable>
                             {sub.name}

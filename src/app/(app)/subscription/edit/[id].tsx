@@ -7,10 +7,9 @@ import { useMemo, useRef, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { SubscriptionFormContent } from '@/components/subscription-form-content';
 import { RadialGlow } from '@/components/radial-glow';
-import { getServiceColor } from '@/components/service-icon';
-import { useTheme } from '@/lib/hooks/use-theme';
+import { SubscriptionFormContent } from '@/components/subscription-form-content';
+import { useSubscriptionGlowColor, useTheme } from '@/lib/hooks';
 import { useSubscriptionsStore } from '@/lib/stores';
 
 export default function EditSubscriptionScreen() {
@@ -44,12 +43,14 @@ export default function EditSubscriptionScreen() {
       status: subscription.status,
       notificationMode: subscription.notificationMode,
       iconKey: subscription.iconKey ?? 'custom',
+      iconUri: subscription.iconUri,
       notes: subscription.notes ?? '',
     };
   }, [subscription]);
 
   const saveRef = useRef<(() => void) | null>(null);
   const [isFormValid, setIsFormValid] = useState(false);
+  const logoColor = useSubscriptionGlowColor(subscription);
 
   const handleSave = (payload: SubscriptionFormPayload) => {
     if (!subscription)
@@ -63,8 +64,6 @@ export default function EditSubscriptionScreen() {
     router.back();
     return null;
   }
-
-  const logoColor = getServiceColor(subscription.iconKey ?? 'custom');
 
   return (
     <>

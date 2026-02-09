@@ -72,14 +72,17 @@ export function getServiceColor(iconKey?: string) {
 
 type ServiceIconProps = {
   iconKey?: string;
+  /** When set, shows this image URL (e.g. Brandfetch logo) instead of built-in icon. */
+  iconUri?: string | null;
   size?: number;
   style?: StyleProp<ViewStyle>;
 };
 
-export function ServiceIcon({ iconKey = 'custom', size = 48, style }: ServiceIconProps) {
+export function ServiceIcon({ iconKey = 'custom', iconUri, size = 48, style }: ServiceIconProps) {
   const { colors, isDark } = useTheme();
   const config = ICON_MAP[iconKey] ?? ICON_MAP.custom;
   const iconSize = Math.round(size * 0.52);
+  const useImage = Boolean(iconUri?.trim());
 
   return (
     <View
@@ -89,11 +92,12 @@ export function ServiceIcon({ iconKey = 'custom', size = 48, style }: ServiceIco
           height: size,
           borderRadius: size / 2,
           borderCurve: 'continuous',
-          backgroundColor: config.color,
+          backgroundColor: useImage ? (isDark ? 'rgba(58, 58, 60, 0.8)' : 'rgba(255,255,255,0.9)') : config.color,
           alignItems: 'center',
           justifyContent: 'center',
           borderWidth: 1,
           borderColor: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.08)',
+          overflow: 'hidden',
           boxShadow: isDark
             ? '0 10px 20px rgba(0, 0, 0, 0.35)'
             : '0 10px 16px rgba(15, 23, 42, 0.18)',
@@ -101,11 +105,21 @@ export function ServiceIcon({ iconKey = 'custom', size = 48, style }: ServiceIco
         style,
       ]}
     >
-      <Image
-        source={`sf:${config.symbol}`}
-        style={{ width: iconSize, height: iconSize }}
-        tintColor={colors.iconOnColor}
-      />
+      {useImage
+        ? (
+            <Image
+              source={{ uri: iconUri! }}
+              style={{ width: size, height: size }}
+              contentFit="cover"
+            />
+          )
+        : (
+            <Image
+              source={`sf:${config.symbol}`}
+              style={{ width: iconSize, height: iconSize }}
+              tintColor={colors.iconOnColor}
+            />
+          )}
     </View>
   );
 }
