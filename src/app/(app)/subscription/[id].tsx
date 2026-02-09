@@ -1,11 +1,11 @@
 import type { Subscription } from '@/lib/db/schema';
 
 import { parseISO } from 'date-fns';
+import { BlurView } from 'expo-blur';
 import { Image } from 'expo-image';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo } from 'react';
-
-import { ScrollView, Text, View } from 'react-native';
+import { Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RadialGlow } from '@/components/radial-glow';
 import { getServiceColor, ServiceIcon } from '@/components/service-icon';
@@ -24,6 +24,60 @@ const NOTIFICATION_LABELS: Record<Subscription['notificationMode'], string> = {
   custom: 'Custom',
   none: 'None',
 };
+
+const CARD_RADIUS = 16;
+
+function GlassCard({
+  children,
+  style,
+  isDark,
+  colors,
+}: {
+  children: React.ReactNode;
+  style?: object;
+  isDark: boolean;
+  colors: { surface: string; surfaceBorder: string };
+}) {
+  const blurTint = isDark ? 'dark' : 'light';
+  return (
+    <View
+      style={[
+        styles.glassCard,
+        style,
+        {
+          borderWidth: 1,
+          borderColor: colors.surfaceBorder,
+        },
+      ]}
+    >
+      {Platform.OS === 'android' ? (
+        <View
+          style={[StyleSheet.absoluteFill, { backgroundColor: colors.surface, borderRadius: CARD_RADIUS }]}
+        />
+      ) : (
+        <>
+          <BlurView
+            intensity={52}
+            tint={blurTint}
+            style={[StyleSheet.absoluteFill, { borderRadius: CARD_RADIUS }]}
+          />
+          <View
+            style={[
+              StyleSheet.absoluteFill,
+              styles.glassOverlay,
+              {
+                backgroundColor: isDark ? 'rgba(0,0,0,0.25)' : 'rgba(255,255,255,0.4)',
+                borderRadius: CARD_RADIUS,
+              },
+            ]}
+            pointerEvents="none"
+          />
+        </>
+      )}
+      <View style={styles.glassCardContent}>{children}</View>
+    </View>
+  );
+}
 
 function DetailRow({
   label,
@@ -97,7 +151,7 @@ export default function SubscriptionDetailScreen() {
     if (!subscription?.nextPaymentDate)
       return '—';
     return formatNextPayment(parseISO(subscription.nextPaymentDate));
-  }, [subscription?.nextPaymentDate]);
+  }, [subscription]);
 
   if (!subscription) {
     router.back();
@@ -106,7 +160,6 @@ export default function SubscriptionDetailScreen() {
 
   const logoColor = getServiceColor(subscription.iconKey);
   const scheduleLabel = subscription.scheduleType.charAt(0).toUpperCase() + subscription.scheduleType.slice(1);
-  const detailsBg = isDark ? 'rgba(28, 28, 30, 0.92)' : 'rgba(255, 255, 255, 0.95)';
 
   const handleEdit = () => {
     router.push({ pathname: '/(app)/subscription/edit/[id]', params: { id: subscription.id } });
@@ -186,18 +239,11 @@ export default function SubscriptionDetailScreen() {
             </View>
           </View>
 
-          {/* Details section */}
-          <View
-            style={{
-              marginHorizontal: 20,
-              marginBottom: 12,
-              borderRadius: 20,
-              borderCurve: 'continuous',
-              overflow: 'hidden',
-              backgroundColor: detailsBg,
-              borderWidth: 1,
-              borderColor: colors.surfaceBorder,
-            }}
+          {/* Details section – same glass card as Category/List */}
+          <GlassCard
+            isDark={isDark}
+            colors={colors}
+            style={{ marginHorizontal: 20, marginBottom: 12 }}
           >
             <DetailRow
               label="Amount"
@@ -213,67 +259,68 @@ export default function SubscriptionDetailScreen() {
             />
             <View style={{ height: 1, marginLeft: 18, marginRight: 18, backgroundColor: colors.surfaceBorder, opacity: 0.7 }} />
             <DetailRow label="Notifications" value={NOTIFICATION_LABELS[subscription.notificationMode]} />
-          </View>
+          </GlassCard>
 
           {/* Category row */}
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginHorizontal: 20,
-              marginBottom: 12,
-              paddingVertical: 14,
-              paddingHorizontal: 18,
-              borderRadius: 16,
-              borderCurve: 'continuous',
-              backgroundColor: colors.surface,
-              borderWidth: 1,
-              borderColor: colors.surfaceBorder,
-            }}
+          <GlassCard
+            isDark={isDark}
+            colors={colors}
+            style={{ marginHorizontal: 20, marginBottom: 12 }}
           >
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-              <Image source="sf:tag" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
-              <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
-                Category
-              </Text>
+            <View style={styles.rowInner}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <Image source="sf:tag" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
+                <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+                  Category
+                </Text>
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: colors.surfaceMuted }} />
+                <Text style={{ fontSize: 15, color: colors.text }} selectable>
+                  {categoryName}
+                </Text>
+              </View>
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-              <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: colors.surfaceMuted }} />
-              <Text style={{ fontSize: 15, color: colors.text }} selectable>
-                {categoryName}
-              </Text>
-            </View>
-          </View>
+          </GlassCard>
 
           {/* List row */}
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              marginHorizontal: 20,
-              paddingVertical: 14,
-              paddingHorizontal: 18,
-              borderRadius: 16,
-              borderCurve: 'continuous',
-              backgroundColor: colors.surface,
-              borderWidth: 1,
-              borderColor: colors.surfaceBorder,
-            }}
+          <GlassCard
+            isDark={isDark}
+            colors={colors}
+            style={{ marginHorizontal: 20 }}
           >
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-              <Image source="sf:list.bullet" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
-              <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
-                List
-              </Text>
-            </View>
+            <View style={styles.rowInner}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <Image source="sf:list.bullet" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
+                <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+                  List
+                </Text>
+              </View>
             <Text style={{ fontSize: 15, color: colors.text }} selectable>
               {listName}
             </Text>
           </View>
+        </GlassCard>
         </ScrollView>
       </View>
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  glassCard: {
+    borderRadius: CARD_RADIUS,
+    overflow: 'hidden',
+  },
+  glassCardContent: {},
+  glassOverlay: {
+    borderRadius: CARD_RADIUS,
+  },
+  rowInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 14,
+    paddingHorizontal: 18,
+  },
+});
