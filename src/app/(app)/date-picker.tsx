@@ -15,14 +15,15 @@ export default function DatePickerScreen() {
   const handleClose = useCallback(() => {
     if (dismissTo) {
       router.dismissTo(dismissTo as Parameters<typeof router.dismissTo>[0]);
-    } else {
+    }
+    else {
       router.back();
     }
   }, [router, dismissTo]);
 
   return (
     <ModalSheet
-      title="Start Date"
+      title=""
       closeButtonTitle="Close"
       onClose={handleClose}
       snapPoints={['88%']}

@@ -338,7 +338,7 @@ export function SubscriptionFormContent({
 
   return (
     <Fragment>
-      <View style={{ alignItems: 'center', paddingVertical: 6 }}>
+      <View style={{ alignItems: 'center', paddingTop: 6, paddingBottom: 24 }}>
         <ServiceIcon iconKey={iconKey} iconUri={iconUri || undefined} size={72} />
       </View>
 
@@ -588,7 +588,7 @@ export function SubscriptionFormContent({
       </ModalSheet>
 
       <ModalSheet
-        title="Start Date"
+        title=""
         closeButtonTitle="Close"
         isVisible={showDatePicker}
         onClose={() => setShowDatePicker(false)}

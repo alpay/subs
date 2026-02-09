@@ -86,15 +86,17 @@ export default function EditSubscriptionScreen() {
         </Stack.Toolbar.Button>
       </Stack.Toolbar>
       <View style={{ flex: 1, backgroundColor: colors.background }}>
-        <RadialGlow color={logoColor} centerY="25%" maxOpacity={0.75} />
+        <RadialGlow color={logoColor} centerY="15%" maxOpacity={0.75} />
         <ScrollView
           style={{ flex: 1, backgroundColor: 'transparent' }}
           contentContainerStyle={{
             paddingHorizontal: 20,
             paddingTop: 12,
-            paddingBottom: insets.bottom + 32,
+            paddingBottom: 340 + insets.bottom,
           }}
           contentInsetAdjustmentBehavior="automatic"
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={true}
         >
           <SubscriptionFormContent
             isEdit={true}
@@ -102,21 +104,29 @@ export default function EditSubscriptionScreen() {
             onSave={handleSave}
             submitRef={saveRef}
             onValidationChange={setIsFormValid}
-            renderFooter={({ isValid, onSave }) => (
-              <View style={{ paddingTop: 16, paddingBottom: 8 }}>
-                <Button
-                  variant="primary"
-                  size="lg"
-                  isDisabled={!isValid}
-                  onPress={onSave}
-                  style={{ width: '100%' }}
-                >
-                  Save
-                </Button>
-              </View>
-            )}
+            renderFooter={() => null}
           />
         </ScrollView>
+        <View
+          style={{
+            paddingHorizontal: 20,
+            paddingTop: 16,
+            paddingBottom: insets.bottom + 16,
+            backgroundColor: colors.background,
+            borderTopWidth: 1,
+            borderTopColor: colors.surfaceBorder,
+          }}
+        >
+          <Button
+            variant="primary"
+            size="lg"
+            isDisabled={!isFormValid}
+            onPress={() => saveRef.current?.()}
+            style={{ width: '100%' }}
+          >
+            Save
+          </Button>
+        </View>
       </View>
     </>
   );
