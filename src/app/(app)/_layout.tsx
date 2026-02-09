@@ -20,7 +20,14 @@ export default function AppLayout() {
       <Stack.Screen name="icon-picker" options={transparentModalOptions} />
       <Stack.Screen name="settings" options={transparentModalOptions} />
       <Stack.Screen name="subscription-form" options={transparentModalOptions} />
-      <Stack.Screen name="view-subscription" options={transparentModalOptions} />
+      <Stack.Screen
+        name="subscription/[id]"
+        options={{
+          title: '',
+          headerShown: true,
+          headerShadowVisible: false,
+        }}
+      />
     </Stack>
   );
 }

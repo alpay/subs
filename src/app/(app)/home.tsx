@@ -97,9 +97,6 @@ export default function HomeScreen() {
               <HomeSearchResults
                 results={searchResults}
                 settings={settings}
-                onSelect={(subscriptionId) => {
-                  router.push({ pathname: '/(app)/view-subscription', params: { id: subscriptionId } });
-                }}
               />
             </ScreenShell>
           )
@@ -137,7 +134,8 @@ export default function HomeScreen() {
         onClose={handleSheetClose}
         onAddPress={() => router.push('/(app)/add-subscription')}
         onSubscriptionPress={(subscriptionId) => {
-          router.push({ pathname: '/(app)/view-subscription', params: { id: subscriptionId } });
+          handleSheetClose();
+          router.push(`/subscription/${subscriptionId}`);
         }}
       />
     </>

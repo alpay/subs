@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { Stack, useRouter } from 'expo-router';
+import { Link, Stack, useRouter } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, Text, TextInput, View } from 'react-native';
 
@@ -110,55 +110,56 @@ export default function SearchScreen() {
             const isLast = index === results.length - 1;
 
             return (
-              <Pressable
-                key={sub.id}
-                onPress={() => router.push({ pathname: '/(app)/view-subscription', params: { id: sub.id } })}
-              >
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    paddingHorizontal: 16,
-                    paddingVertical: 12,
-                    gap: 12,
-                  }}
-                >
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 }}>
-                    <ServiceIcon iconKey={sub.iconKey} size={44} />
-                    <View style={{ gap: 4, flex: 1 }}>
-                      <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }} selectable>
-                        {sub.name}
-                      </Text>
-                      <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
-                        {sub.scheduleType}
-                        {' '}
-                        ·
-                        {formatAmount(sub.amount, sub.currency, settings.roundWholeNumbers)}
-                      </Text>
+              <Link key={sub.id} href={`/subscription/${sub.id}`} asChild>
+                <Link.Trigger withAppleZoom>
+                  <Pressable>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        paddingHorizontal: 16,
+                        paddingVertical: 12,
+                        gap: 12,
+                      }}
+                    >
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 }}>
+                        <ServiceIcon iconKey={sub.iconKey} size={44} />
+                        <View style={{ gap: 4, flex: 1 }}>
+                          <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }} selectable>
+                            {sub.name}
+                          </Text>
+                          <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
+                            {sub.scheduleType}
+                            {' '}
+                            ·
+                            {formatAmount(sub.amount, sub.currency, settings.roundWholeNumbers)}
+                          </Text>
+                        </View>
+                      </View>
+                      <View style={{ alignItems: 'flex-end', gap: 6 }}>
+                        <Pill tone={isActive ? 'success' : 'neutral'}>{sub.status}</Pill>
+                        <Image
+                          source="sf:chevron.right"
+                          style={{ width: 12, height: 12 }}
+                          tintColor={colors.textMuted}
+                        />
+                      </View>
                     </View>
-                  </View>
-                  <View style={{ alignItems: 'flex-end', gap: 6 }}>
-                    <Pill tone={isActive ? 'success' : 'neutral'}>{sub.status}</Pill>
-                    <Image
-                      source="sf:chevron.right"
-                      style={{ width: 12, height: 12 }}
-                      tintColor={colors.textMuted}
-                    />
-                  </View>
-                </View>
-                {!isLast && (
-                  <View
-                    style={{
-                      height: 1,
-                      marginLeft: 16,
-                      marginRight: 16,
-                      backgroundColor: colors.surfaceBorder,
-                      opacity: 0.7,
-                    }}
-                  />
-                )}
-              </Pressable>
+                    {!isLast && (
+                      <View
+                        style={{
+                          height: 1,
+                          marginLeft: 16,
+                          marginRight: 16,
+                          backgroundColor: colors.surfaceBorder,
+                          opacity: 0.7,
+                        }}
+                      />
+                    )}
+                  </Pressable>
+                </Link.Trigger>
+              </Link>
             );
           })}
         </View>
