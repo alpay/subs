@@ -8,8 +8,6 @@ import { Input, TextArea } from 'heroui-native';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
-import { DatePickerContent } from '@/components/date-picker-content';
-import { ModalSheet } from '@/components/modal-sheet';
 import { SelectPill } from '@/components/select-pill';
 import { ServiceIcon } from '@/components/service-icon';
 import { GlassCard } from '@/components/ui/glass-card';
@@ -135,8 +133,6 @@ export function SubscriptionFormContent({
   const [iconUri, setIconUri] = useState(initialState.iconUri ?? '');
   const [notes, setNotes] = useState(initialState.notes);
 
-  const [showDatePicker, setShowDatePicker] = useState(false);
-
   const currencyOptions = useMemo(
     () => Object.keys(rates.rates).sort().map(code => ({ label: code, value: code })),
     [rates.rates],
@@ -197,15 +193,8 @@ export function SubscriptionFormContent({
     if (isEdit && isValidDateString(startDate)) {
       draftStore.setStartDate(parseISO(startDate));
     }
-    setShowDatePicker(true);
-  }, [isEdit, startDate, draftStore]);
-
-  const handleDateDone = useCallback(() => {
-    if (isEdit) {
-      setStartDate(toIsoLocalDate(draftStore.startDate));
-    }
-    setShowDatePicker(false);
-  }, [isEdit, draftStore]);
+    router.push('/(app)/date-picker');
+  }, [isEdit, startDate, draftStore, router]);
 
   const handleSave = useCallback(() => {
     if (!isValid)
@@ -213,9 +202,7 @@ export function SubscriptionFormContent({
 
     const finalAmount = Number(draftStore.amount);
     const finalCurrency = draftStore.currency;
-    const finalStartDate = isEdit
-      ? (isValidDateString(startDate) ? startDate : todayIsoDate())
-      : toIsoLocalDate(draftStore.startDate);
+    const finalStartDate = toIsoLocalDate(draftStore.startDate);
     const normalizedIntervalCount
       = scheduleType === 'custom' ? Math.max(1, Number(intervalCount) || 1) : 1;
 
@@ -552,17 +539,6 @@ export function SubscriptionFormContent({
         </View>
       </GlassCard>
 
-      <ModalSheet
-        title=""
-        closeButtonTitle="Close"
-        isVisible={showDatePicker}
-        onClose={() => setShowDatePicker(false)}
-        enableDynamicSizing
-        bottomScrollSpacer={24}
-        scrollViewProps={{ bounces: false }}
-      >
-        <DatePickerContent onDone={handleDateDone} />
-      </ModalSheet>
     </Fragment>
   );
 }

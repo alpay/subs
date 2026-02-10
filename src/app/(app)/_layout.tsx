@@ -52,7 +52,13 @@ export default function AppLayout() {
 
       <Stack.Screen name="analytics" options={transparentModalOptions} />
       <Stack.Screen name="csv-import" options={transparentModalOptions} />
-      <Stack.Screen name="date-picker" options={transparentModalOptions} />
+      <Stack.Screen
+        name="date-picker"
+        options={{
+          ...sheetBaseOptions,
+          sheetAllowedDetents: 'fitToContents' as const,
+        }}
+      />
       <Stack.Screen name="icon-picker" options={transparentModalOptions} />
       <Stack.Screen name="settings" options={transparentModalOptions} />
 
