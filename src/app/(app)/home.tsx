@@ -1,11 +1,9 @@
-import { Feather } from '@expo/vector-icons';
-import { startOfMonth } from 'date-fns';
+import { format, startOfMonth } from 'date-fns';
 import { Stack, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { View } from 'react-native';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { DaySubscriptionsSheet } from '@/components/day-subscriptions-sheet';
 import { HomeSearchResults } from '@/components/home/home-search-results';
 import { HomeSummary } from '@/components/home/home-summary';
 import { MonthCalendar } from '@/components/month-calendar';
@@ -22,17 +20,12 @@ export default function HomeScreen() {
   const {
     averageMonthly,
     filteredSubscriptions,
-    handleDayPress,
-    handleSheetClose,
     hasQuery,
     listOptions,
     monthlyTotal,
-    rates,
     searchResults,
-    selectedDay,
     selectedListId,
     selectedListLabel,
-    selectedSubscriptions,
     setQuery,
     setSelectedListId,
     settings,
@@ -112,9 +105,6 @@ export default function HomeScreen() {
                 gap: 48,
               }}
             >
-              <Pressable className="rounded-full bg-white/5 p-3" onPress={() => router.push('/(app)/native-sheet')}>
-                <Feather name="x" size={20} color="white" />
-              </Pressable>
               <HomeSummary
                 monthlyTotal={monthlyTotal}
                 averageMonthly={averageMonthly}
@@ -124,21 +114,17 @@ export default function HomeScreen() {
               <MonthCalendar
                 date={visibleMonth}
                 subscriptions={filteredSubscriptions}
-                onDayPress={handleDayPress}
+                onDayPress={(day) => {
+                  const dateParam = format(day, 'yyyy-MM-dd');
+                  router.push({
+                    pathname: '/(app)/subscription/day-view/[date]',
+                    params: { date: dateParam },
+                  });
+                }}
                 onMonthChange={setVisibleMonth}
               />
             </View>
           )}
-
-      <DaySubscriptionsSheet
-        date={selectedDay}
-        subscriptions={selectedSubscriptions}
-        settings={settings}
-        rates={rates}
-        onClose={handleSheetClose}
-        onAddPress={() => handleSheetClose()}
-        onSubscriptionPress={() => handleSheetClose()}
-      />
     </>
   );
 }
