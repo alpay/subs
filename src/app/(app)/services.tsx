@@ -144,7 +144,7 @@ export default function ServicesScreen() {
           style={{ flex: 1, backgroundColor: colors.background }}
           contentContainerStyle={{
             paddingHorizontal: CONTENT_PADDING,
-            paddingTop: 24,
+            paddingTop: insets.top,
             paddingBottom: insets.bottom + 32,
           }}
           contentInsetAdjustmentBehavior="automatic"
