@@ -98,13 +98,20 @@ export default function AddSubscriptionScreen() {
         }}
       />
       <Stack.Screen.BackButton displayMode="minimal" />
-      <Stack.Toolbar placement="right">
-        <Stack.Toolbar.Button
-          onPress={() => saveRef.current?.()}
-          disabled={!isFormValid}
-        >
-          Create
-        </Stack.Toolbar.Button>
+      <Stack.Toolbar placement="bottom">
+        <Stack.Toolbar.Spacer />
+        <Stack.Toolbar.View>
+          <Button
+            variant="outline"
+            size="lg"
+            isDisabled={!isFormValid}
+            onPress={() => saveRef.current?.()}
+            style={{ minWidth: 200 }}
+          >
+            Create
+          </Button>
+        </Stack.Toolbar.View>
+        <Stack.Toolbar.Spacer />
       </Stack.Toolbar>
       <View style={{ flex: 1, backgroundColor: colors.background }}>
         <RadialGlow
@@ -117,7 +124,7 @@ export default function AddSubscriptionScreen() {
           contentContainerStyle={{
             paddingHorizontal: 20,
             paddingTop: 12,
-            paddingBottom: insets.bottom + 32,
+            paddingBottom: insets.bottom + 120,
           }}
           contentInsetAdjustmentBehavior="automatic"
         >
@@ -127,19 +134,6 @@ export default function AddSubscriptionScreen() {
             onSave={handleSave}
             submitRef={saveRef}
             onValidationChange={setIsFormValid}
-            renderFooter={({ isValid, onSave }) => (
-              <View style={{ paddingTop: 16, paddingBottom: 8 }}>
-                <Button
-                  variant="primary"
-                  size="lg"
-                  isDisabled={!isValid}
-                  onPress={onSave}
-                  style={{ width: '100%' }}
-                >
-                  Create
-                </Button>
-              </View>
-            )}
           />
         </ScrollView>
       </View>

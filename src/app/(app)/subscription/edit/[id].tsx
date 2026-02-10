@@ -1,10 +1,13 @@
-import type { SubscriptionFormInitialState, SubscriptionFormPayload } from '@/components/subscription-form-content';
+import type {
+  SubscriptionFormInitialState,
+  SubscriptionFormPayload,
+} from '@/components/subscription-form-content';
 
 import type { ScheduleType } from '@/lib/db/schema';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { Button, useToast } from 'heroui-native';
 import { useMemo, useRef, useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { Alert, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { RadialGlow } from '@/components/radial-glow';
@@ -19,7 +22,7 @@ export default function EditSubscriptionScreen() {
   const { colors } = useTheme();
   const params = useLocalSearchParams<{ id: string }>();
 
-  const { subscriptions, update } = useSubscriptionsStore();
+  const { subscriptions, update, remove } = useSubscriptionsStore();
 
   const subscription = useMemo(
     () => subscriptions.find(s => s.id === params.id),
@@ -60,6 +63,28 @@ export default function EditSubscriptionScreen() {
     router.back();
   };
 
+  const handleDelete = () => {
+    if (!subscription)
+      return;
+
+    Alert.alert(
+      'Delete Subscription',
+      `Are you sure you want to delete "${subscription.name}"?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => {
+            remove(subscription.id);
+            toast.show('Subscription deleted');
+            router.back();
+          },
+        },
+      ],
+    );
+  };
+
   if (!subscription || !initialState) {
     router.back();
     return null;
@@ -77,13 +102,24 @@ export default function EditSubscriptionScreen() {
         }}
       />
       <Stack.Screen.BackButton displayMode="minimal" />
-      <Stack.Toolbar placement="right">
+      <Stack.Toolbar placement="bottom">
+        <Stack.Toolbar.Spacer />
+        <Stack.Toolbar.View>
+          <Button
+            variant="outline"
+            size="lg"
+            isDisabled={!isFormValid}
+            onPress={() => saveRef.current?.()}
+            style={{ minWidth: 200 }}
+          >
+            Save
+          </Button>
+        </Stack.Toolbar.View>
+        <Stack.Toolbar.Spacer />
         <Stack.Toolbar.Button
-          onPress={() => saveRef.current?.()}
-          disabled={!isFormValid}
-        >
-          Save
-        </Stack.Toolbar.Button>
+          onPress={handleDelete}
+          icon="trash"
+        />
       </Stack.Toolbar>
       <View style={{ flex: 1, backgroundColor: colors.background }}>
         <RadialGlow color={logoColor} centerY="15%" maxOpacity={0.75} />
@@ -92,7 +128,7 @@ export default function EditSubscriptionScreen() {
           contentContainerStyle={{
             paddingHorizontal: 20,
             paddingTop: 12,
-            paddingBottom: 340 + insets.bottom,
+            paddingBottom: insets.bottom + 120,
           }}
           contentInsetAdjustmentBehavior="automatic"
           keyboardShouldPersistTaps="handled"
@@ -104,29 +140,8 @@ export default function EditSubscriptionScreen() {
             onSave={handleSave}
             submitRef={saveRef}
             onValidationChange={setIsFormValid}
-            renderFooter={() => null}
           />
         </ScrollView>
-        <View
-          style={{
-            paddingHorizontal: 20,
-            paddingTop: 16,
-            paddingBottom: insets.bottom + 16,
-            backgroundColor: colors.background,
-            borderTopWidth: 1,
-            borderTopColor: colors.surfaceBorder,
-          }}
-        >
-          <Button
-            variant="primary"
-            size="lg"
-            isDisabled={!isFormValid}
-            onPress={() => saveRef.current?.()}
-            style={{ width: '100%' }}
-          >
-            Save
-          </Button>
-        </View>
       </View>
     </>
   );

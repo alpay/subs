@@ -3,7 +3,7 @@ import type { MutableRefObject } from 'react';
 import type { NotificationMode, ScheduleType, Subscription, SubscriptionStatus } from '@/lib/db/schema';
 import { parseISO } from 'date-fns';
 import { Image } from 'expo-image';
-import { Button, Input, TextArea } from 'heroui-native';
+import { Input, TextArea } from 'heroui-native';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
@@ -14,7 +14,6 @@ import { SelectPill } from '@/components/select-pill';
 import { ServiceIcon } from '@/components/service-icon';
 import { GlassCard } from '@/components/ui/glass-card';
 import { useTheme } from '@/lib/hooks/use-theme';
-import { getCurrencySymbol } from '@/lib/utils/format';
 import {
   useAddSubscriptionDraftStore,
   useCategoriesStore,
@@ -23,6 +22,7 @@ import {
   usePaymentMethodsStore,
   useSettingsStore,
 } from '@/lib/stores';
+import { getCurrencySymbol } from '@/lib/utils/format';
 
 const SCHEDULE_OPTIONS = [
   { label: 'Monthly', value: 'monthly' },
@@ -99,7 +99,6 @@ type SubscriptionFormContentProps = {
   isEdit: boolean;
   initialState: SubscriptionFormInitialState;
   onSave: (payload: SubscriptionFormPayload) => void;
-  renderFooter: (props: { isValid: boolean; onSave: () => void }) => React.ReactNode;
   /** Optional ref to call submit from parent (e.g. toolbar). */
   submitRef?: MutableRefObject<(() => void) | null>;
   /** Called when validation state changes (e.g. to disable/enable toolbar button). */
@@ -110,7 +109,6 @@ export function SubscriptionFormContent({
   isEdit,
   initialState,
   onSave,
-  renderFooter,
   submitRef,
   onValidationChange,
 }: SubscriptionFormContentProps) {
@@ -573,8 +571,6 @@ export function SubscriptionFormContent({
           />
         </View>
       </GlassCard>
-
-      {renderFooter({ isValid, onSave: handleSave })}
 
       <ModalSheet
         title=""
