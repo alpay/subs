@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
@@ -52,18 +53,20 @@ function Providers({ children }: { children: ReactNode }) {
   const { colors, isDark } = useTheme();
 
   return (
-    <GestureHandlerRootView style={[styles.container, { backgroundColor: colors.background }]}>
-      <KeyboardProvider>
-        <HeroUINativeProvider>
-          <APIProvider>
-            <BottomSheetModalProvider>
-              <StatusBar style={isDark ? 'light' : 'dark'} />
-              {children}
-            </BottomSheetModalProvider>
-          </APIProvider>
-        </HeroUINativeProvider>
-      </KeyboardProvider>
-    </GestureHandlerRootView>
+    <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
+      <GestureHandlerRootView style={[styles.container, { backgroundColor: colors.background }]}>
+        <KeyboardProvider>
+          <HeroUINativeProvider>
+            <APIProvider>
+              <BottomSheetModalProvider>
+                <StatusBar style={isDark ? 'light' : 'dark'} />
+                {children}
+              </BottomSheetModalProvider>
+            </APIProvider>
+          </HeroUINativeProvider>
+        </KeyboardProvider>
+      </GestureHandlerRootView>
+    </ThemeProvider>
   );
 }
 

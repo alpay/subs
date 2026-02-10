@@ -2,6 +2,7 @@ import type { CurrencyRates, Settings, Subscription } from '@/lib/db/schema';
 
 import { format } from 'date-fns';
 import { Image } from 'expo-image';
+import { Link } from 'expo-router';
 import { useCallback, useMemo } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
@@ -20,7 +21,7 @@ type DaySubscriptionsSheetProps = {
   rates: CurrencyRates;
   onClose: () => void;
   onAddPress: () => void;
-  onSubscriptionPress: (subscriptionId: string) => void;
+  onSubscriptionPress: () => void;
 };
 
 export function DaySubscriptionsSheet({
@@ -51,13 +52,6 @@ export function DaySubscriptionsSheet({
     onAddPress();
   }, [onAddPress]);
 
-  const handleSubscriptionPress = useCallback(
-    (subscriptionId: string) => {
-      onSubscriptionPress(subscriptionId);
-    },
-    [onSubscriptionPress],
-  );
-
   if (!date) {
     return null;
   }
@@ -77,79 +71,99 @@ export function DaySubscriptionsSheet({
     >
       {subscriptions.map(sub => (
         <GlassCard key={sub.id}>
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => handleSubscriptionPress(sub.id)}
-            style={({ pressed }) => [
-              {
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingHorizontal: 16,
-                paddingVertical: 12,
-                gap: 12,
-              },
-              pressed ? { opacity: 0.85 } : null,
-            ]}
+          <Link
+            href={{ pathname: '/subscription/[id]', params: { id: sub.id } }}
+            asChild
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingHorizontal: 16,
+              paddingVertical: 12,
+              gap: 12,
+            }}
           >
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 }}>
-              <ServiceIcon iconKey={sub.iconKey} iconUri={sub.iconType === 'image' ? sub.iconUri : undefined} size={42} />
-              <View style={{ gap: 4, flex: 1 }}>
-                <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }} selectable>
-                  {sub.name}
-                </Text>
-                <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
-                  {sub.scheduleType.charAt(0).toUpperCase() + sub.scheduleType.slice(1)}
-                  {' '}
-                  ·
-                  {' '}
-                  {formatAmount(sub.amount, sub.currency, settings.roundWholeNumbers)}
-                </Text>
+            <Pressable
+              accessibilityRole="button"
+              onPress={onSubscriptionPress}
+              style={({ pressed }) => [
+                pressed ? { opacity: 0.85 } : null,
+              ]}
+            >
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 }}>
+                <Link.AppleZoom>
+                  <ServiceIcon
+                    iconKey={sub.iconKey}
+                    iconUri={sub.iconType === 'image' ? sub.iconUri : undefined}
+                    size={42}
+                  />
+                </Link.AppleZoom>
+                <View style={{ gap: 4, flex: 1 }}>
+                  <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }} selectable>
+                    {sub.name}
+                  </Text>
+                  <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
+                    {sub.scheduleType.charAt(0).toUpperCase() + sub.scheduleType.slice(1)}
+                    {' '}
+                    ·
+                    {' '}
+                    {formatAmount(sub.amount, sub.currency, settings.roundWholeNumbers)}
+                  </Text>
+                </View>
               </View>
-            </View>
-            <Image
-              source="sf:chevron.right"
-              style={{ width: 14, height: 14 }}
-              tintColor={colors.textMuted}
-            />
-          </Pressable>
+              <Image
+                source="sf:chevron.right"
+                style={{ width: 14, height: 14 }}
+                tintColor={colors.textMuted}
+              />
+            </Pressable>
+          </Link>
         </GlassCard>
       ))}
 
       <GlassCard>
-        <Pressable
-          accessibilityRole="button"
-          onPress={handleAddPress}
-          style={({ pressed }) => [
-            {
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 12,
-              paddingHorizontal: 16,
-              paddingVertical: 12,
-            },
-            pressed ? { opacity: 0.85 } : null,
-          ]}
+        <Link
+          href="/(app)/services"
+          asChild
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            paddingHorizontal: 16,
+            paddingVertical: 12,
+            gap: 12,
+          }}
         >
-          <View
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: 18,
-              borderCurve: 'continuous',
-              backgroundColor: colors.surfaceMuted,
-              borderWidth: 1,
-              borderColor: colors.surfaceBorder,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
+          <Pressable
+            accessibilityRole="button"
+            onPress={handleAddPress}
+            style={({ pressed }) => [
+              pressed ? { opacity: 0.85 } : null,
+            ]}
           >
-            <Image source="sf:plus" style={{ width: 16, height: 16 }} tintColor={colors.text} />
-          </View>
-          <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }} selectable>
-            Add new subscription
-          </Text>
-        </Pressable>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+              <Link.AppleZoom>
+                <View
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 18,
+                    borderCurve: 'continuous',
+                    backgroundColor: colors.surfaceMuted,
+                    borderWidth: 1,
+                    borderColor: colors.surfaceBorder,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Image source="sf:plus" style={{ width: 16, height: 16 }} tintColor={colors.text} />
+                </View>
+              </Link.AppleZoom>
+              <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }} selectable>
+                Add new subscription
+              </Text>
+            </View>
+          </Pressable>
+        </Link>
       </GlassCard>
 
       <GlassCard style={{ marginTop: 12 }}>

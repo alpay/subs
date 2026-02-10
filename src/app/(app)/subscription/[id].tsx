@@ -2,7 +2,7 @@ import type { Subscription } from '@/lib/db/schema';
 
 import { parseISO } from 'date-fns';
 import { Image } from 'expo-image';
-import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import { Link, Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -153,11 +153,13 @@ export default function SubscriptionDetailScreen() {
           >
             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
               <View style={{ marginBottom: 12 }}>
-                <ServiceIcon
-                  iconKey={subscription.iconKey}
-                  iconUri={subscription.iconType === 'image' ? subscription.iconUri : undefined}
-                  size={88}
-                />
+                <Link.AppleZoomTarget>
+                  <ServiceIcon
+                    iconKey={subscription.iconKey}
+                    iconUri={subscription.iconType === 'image' ? subscription.iconUri : undefined}
+                    size={88}
+                  />
+                </Link.AppleZoomTarget>
               </View>
               <Text
                 style={{

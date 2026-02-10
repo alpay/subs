@@ -132,14 +132,8 @@ export default function HomeScreen() {
         settings={settings}
         rates={rates}
         onClose={handleSheetClose}
-        onAddPress={() => {
-          handleSheetClose();
-          router.push('/(app)/services');
-        }}
-        onSubscriptionPress={(subscriptionId) => {
-          handleSheetClose();
-          router.push(`/subscription/${subscriptionId}`);
-        }}
+        onAddPress={() => handleSheetClose()}
+        onSubscriptionPress={() => handleSheetClose()}
       />
     </>
   );

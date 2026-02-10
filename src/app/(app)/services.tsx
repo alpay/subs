@@ -1,7 +1,7 @@
 import type { PredefinedService } from '@/lib/data/predefined-services';
 import { useQuery } from '@tanstack/react-query';
 import { Image } from 'expo-image';
-import { Stack, useRouter } from 'expo-router';
+import { Link, Stack, useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useEffect, useMemo, useState } from 'react';
 import {
@@ -117,10 +117,11 @@ export default function ServicesScreen() {
       <Stack.Screen
         options={{
           title: 'Services',
-          headerShown: true,
+          // headerShown: true,
           headerShadowVisible: false,
           headerStyle: { backgroundColor: colors.background },
           headerTintColor: colors.text,
+          headerTitleStyle: { color: colors.text },
         }}
       />
       <Stack.Screen.BackButton displayMode="minimal" />
@@ -138,214 +139,216 @@ export default function ServicesScreen() {
         <Stack.Toolbar.SearchBarSlot />
       </Stack.Toolbar>
 
-      <ScrollView
-        style={{ flex: 1, backgroundColor: colors.background }}
-        contentContainerStyle={{
-          paddingHorizontal: CONTENT_PADDING,
-          paddingTop: 24,
-          paddingBottom: insets.bottom + 32,
-        }}
-        contentInsetAdjustmentBehavior="automatic"
-      >
-        {/* Import options – only when no search query. Wrapper extends to edges; scroll content has padding so first/last items aren't cropped. */}
-        {!hasQuery && (
-          <View style={{ marginHorizontal: -CONTENT_PADDING }}>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{
-                paddingHorizontal: CONTENT_PADDING,
-                paddingBottom: 20,
-                gap: GRID_GAP,
-              }}
-            >
-              {IMPORT_OPTIONS.map(opt => (
-                <Pressable
-                  key={opt.id}
-                  style={({ pressed }) => [
-                    {
-                      width: IMPORT_CARD_SIZE,
-                      minWidth: IMPORT_CARD_SIZE,
-                      height: IMPORT_CARD_SIZE,
-                      borderRadius: 12,
-                      backgroundColor: isDark ? 'rgba(118, 118, 128, 0.24)' : 'rgba(118, 118, 128, 0.12)',
-                      borderWidth: 0,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      paddingVertical: 10,
-                      paddingHorizontal: 6,
-                      gap: 6,
-                    },
-                    pressed && { opacity: 0.7 },
-                  ]}
-                >
-                  <Image
-                    source={`sf:${opt.symbol}`}
-                    style={{ width: 28, height: 28 }}
-                    tintColor={colors.text}
-                  />
+      <Link.AppleZoomTarget>
+        <ScrollView
+          style={{ flex: 1, backgroundColor: colors.background }}
+          contentContainerStyle={{
+            paddingHorizontal: CONTENT_PADDING,
+            paddingTop: 24,
+            paddingBottom: insets.bottom + 32,
+          }}
+          contentInsetAdjustmentBehavior="automatic"
+        >
+          {/* Import options – only when no search query. Wrapper extends to edges; scroll content has padding so first/last items aren't cropped. */}
+          {!hasQuery && (
+            <View style={{ marginHorizontal: -CONTENT_PADDING }}>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={{
+                  paddingHorizontal: CONTENT_PADDING,
+                  paddingBottom: 20,
+                  gap: GRID_GAP,
+                }}
+              >
+                {IMPORT_OPTIONS.map(opt => (
+                  <Pressable
+                    key={opt.id}
+                    style={({ pressed }) => [
+                      {
+                        width: IMPORT_CARD_SIZE,
+                        minWidth: IMPORT_CARD_SIZE,
+                        height: IMPORT_CARD_SIZE,
+                        borderRadius: 12,
+                        backgroundColor: isDark ? 'rgba(118, 118, 128, 0.24)' : 'rgba(118, 118, 128, 0.12)',
+                        borderWidth: 0,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        paddingVertical: 10,
+                        paddingHorizontal: 6,
+                        gap: 6,
+                      },
+                      pressed && { opacity: 0.7 },
+                    ]}
+                  >
+                    <Image
+                      source={`sf:${opt.symbol}`}
+                      style={{ width: 28, height: 28 }}
+                      tintColor={colors.text}
+                    />
+                    <Text
+                      numberOfLines={2}
+                      style={{
+                        fontSize: 11,
+                        fontWeight: '500',
+                        color: colors.text,
+                        textAlign: 'center',
+                      }}
+                    >
+                      {opt.label}
+                    </Text>
+                  </Pressable>
+                ))}
+              </ScrollView>
+            </View>
+          )}
+
+          {/* When searching: only "Add custom" at top + search results. No popular services. */}
+          {hasQuery && (
+            <>
+              {/* Search results: "Add [query] +" as first option, then Brandfetch results */}
+              {debouncedQuery.length >= 2 && (
+                <View style={{ marginBottom: 16 }}>
                   <Text
-                    numberOfLines={2}
                     style={{
-                      fontSize: 11,
-                      fontWeight: '500',
-                      color: colors.text,
-                      textAlign: 'center',
+                      fontSize: 12,
+                      fontWeight: '600',
+                      color: colors.textMuted,
+                      letterSpacing: 0.8,
+                      marginBottom: 10,
                     }}
                   >
-                    {opt.label}
+                    SEARCH RESULTS
                   </Text>
-                </Pressable>
-              ))}
-            </ScrollView>
-          </View>
-        )}
+                  <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: GRID_GAP }}>
+                    {/* First option: Add custom with user's query + */}
+                    <Pressable
+                      onPress={handleAddCustomPress}
+                      style={({ pressed }) => cardStyle(pressed)}
+                    >
+                      <View
+                        style={{
+                          width: 48,
+                          height: 48,
+                          borderRadius: 24,
+                          backgroundColor: isDark ? 'rgba(118, 118, 128, 0.24)' : 'rgba(118, 118, 128, 0.12)',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          borderWidth: 1,
+                          borderColor: colors.surfaceBorder,
+                          borderStyle: 'dashed',
+                        }}
+                      >
+                        <SymbolView
+                          name="plus"
+                          size={24}
+                          tintColor={colors.textMuted}
+                        />
+                      </View>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                        <Text
+                          numberOfLines={1}
+                          style={{
+                            fontSize: 13,
+                            fontWeight: '500',
+                            color: colors.text,
+                            textAlign: 'center',
+                            maxWidth: CARD_WIDTH - 24,
+                          }}
+                        >
+                          {displayQuery}
+                        </Text>
+                        <SymbolView name="plus" size={12} tintColor={colors.textMuted} />
+                      </View>
+                    </Pressable>
+                    {isBrandSearching && brandResults.length === 0 && (
+                      <View style={[cardStyle(false), { justifyContent: 'center', minHeight: 100 }]}>
+                        <ActivityIndicator size="small" color={colors.textMuted} />
+                      </View>
+                    )}
+                    {brandResults.map(brand => (
+                      <Pressable
+                        key={brand.brandId}
+                        onPress={() => handleBrandSelect(brand.name ?? brand.domain, brand.domain)}
+                        style={({ pressed }) => cardStyle(pressed)}
+                      >
+                        <ServiceIcon
+                          iconKey="custom"
+                          iconUri={getLogoUrl(brand.domain)}
+                          size={48}
+                        />
+                        <Text
+                          numberOfLines={1}
+                          style={{
+                            fontSize: 13,
+                            fontWeight: '500',
+                            color: colors.text,
+                            textAlign: 'center',
+                            maxWidth: CARD_WIDTH - 16,
+                          }}
+                        >
+                          {brand.name ?? brand.domain}
+                        </Text>
+                      </Pressable>
+                    ))}
+                  </View>
+                </View>
+              )}
 
-        {/* When searching: only "Add custom" at top + search results. No popular services. */}
-        {hasQuery && (
-          <>
-            {/* Search results: "Add [query] +" as first option, then Brandfetch results */}
-            {debouncedQuery.length >= 2 && (
-              <View style={{ marginBottom: 16 }}>
+              {debouncedQuery.length >= 2 && !isBrandSearching && brandResults.length === 0 && (
+                <Text style={{ fontSize: 14, color: colors.textMuted }}>
+                  No brands found. Tap the card above to add
+                  {' '}
+                  {displayQuery}
+                  {' '}
+                  as a custom service.
+                </Text>
+              )}
+            </>
+          )}
+
+          {/* When not searching: Popular services grid */}
+          {!hasQuery && (
+            <>
+              <View style={{ marginBottom: 12 }}>
                 <Text
                   style={{
                     fontSize: 12,
                     fontWeight: '600',
                     color: colors.textMuted,
                     letterSpacing: 0.8,
-                    marginBottom: 10,
                   }}
                 >
-                  SEARCH RESULTS
+                  POPULAR SERVICES
                 </Text>
-                <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: GRID_GAP }}>
-                  {/* First option: Add custom with user's query + */}
+              </View>
+              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: GRID_GAP }}>
+                {filteredServices.map(service => (
                   <Pressable
-                    onPress={handleAddCustomPress}
+                    key={service.id}
+                    onPress={() => handleServicePress(service)}
                     style={({ pressed }) => cardStyle(pressed)}
                   >
-                    <View
+                    <ServiceIcon iconKey={service.iconKey} size={48} />
+                    <Text
+                      numberOfLines={1}
                       style={{
-                        width: 48,
-                        height: 48,
-                        borderRadius: 24,
-                        backgroundColor: isDark ? 'rgba(118, 118, 128, 0.24)' : 'rgba(118, 118, 128, 0.12)',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderWidth: 1,
-                        borderColor: colors.surfaceBorder,
-                        borderStyle: 'dashed',
+                        fontSize: 13,
+                        fontWeight: '500',
+                        color: colors.text,
+                        textAlign: 'center',
+                        maxWidth: CARD_WIDTH - 16,
                       }}
                     >
-                      <SymbolView
-                        name="plus"
-                        size={24}
-                        tintColor={colors.textMuted}
-                      />
-                    </View>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                      <Text
-                        numberOfLines={1}
-                        style={{
-                          fontSize: 13,
-                          fontWeight: '500',
-                          color: colors.text,
-                          textAlign: 'center',
-                          maxWidth: CARD_WIDTH - 24,
-                        }}
-                      >
-                        {displayQuery}
-                      </Text>
-                      <SymbolView name="plus" size={12} tintColor={colors.textMuted} />
-                    </View>
+                      {service.name}
+                    </Text>
                   </Pressable>
-                  {isBrandSearching && brandResults.length === 0 && (
-                    <View style={[cardStyle(false), { justifyContent: 'center', minHeight: 100 }]}>
-                      <ActivityIndicator size="small" color={colors.textMuted} />
-                    </View>
-                  )}
-                  {brandResults.map(brand => (
-                    <Pressable
-                      key={brand.brandId}
-                      onPress={() => handleBrandSelect(brand.name ?? brand.domain, brand.domain)}
-                      style={({ pressed }) => cardStyle(pressed)}
-                    >
-                      <ServiceIcon
-                        iconKey="custom"
-                        iconUri={getLogoUrl(brand.domain)}
-                        size={48}
-                      />
-                      <Text
-                        numberOfLines={1}
-                        style={{
-                          fontSize: 13,
-                          fontWeight: '500',
-                          color: colors.text,
-                          textAlign: 'center',
-                          maxWidth: CARD_WIDTH - 16,
-                        }}
-                      >
-                        {brand.name ?? brand.domain}
-                      </Text>
-                    </Pressable>
-                  ))}
-                </View>
+                ))}
               </View>
-            )}
-
-            {debouncedQuery.length >= 2 && !isBrandSearching && brandResults.length === 0 && (
-              <Text style={{ fontSize: 14, color: colors.textMuted }}>
-                No brands found. Tap the card above to add
-                {' '}
-                {displayQuery}
-                {' '}
-                as a custom service.
-              </Text>
-            )}
-          </>
-        )}
-
-        {/* When not searching: Popular services grid */}
-        {!hasQuery && (
-          <>
-            <View style={{ marginBottom: 12 }}>
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: '600',
-                  color: colors.textMuted,
-                  letterSpacing: 0.8,
-                }}
-              >
-                POPULAR SERVICES
-              </Text>
-            </View>
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: GRID_GAP }}>
-              {filteredServices.map(service => (
-                <Pressable
-                  key={service.id}
-                  onPress={() => handleServicePress(service)}
-                  style={({ pressed }) => cardStyle(pressed)}
-                >
-                  <ServiceIcon iconKey={service.iconKey} size={48} />
-                  <Text
-                    numberOfLines={1}
-                    style={{
-                      fontSize: 13,
-                      fontWeight: '500',
-                      color: colors.text,
-                      textAlign: 'center',
-                      maxWidth: CARD_WIDTH - 16,
-                    }}
-                  >
-                    {service.name}
-                  </Text>
-                </Pressable>
-              ))}
-            </View>
-          </>
-        )}
-      </ScrollView>
+            </>
+          )}
+        </ScrollView>
+      </Link.AppleZoomTarget>
     </>
   );
 }
