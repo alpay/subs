@@ -1,4 +1,5 @@
 import { Stack } from 'expo-router';
+import { Platform } from 'react-native';
 
 const transparentModalOptions = {
   headerShown: false,
@@ -22,6 +23,21 @@ export default function AppLayout() {
       <Stack.Screen name="subscription/[id]" />
       <Stack.Screen name="subscription/add" />
       <Stack.Screen name="subscription/edit/[id]" />
+      <Stack.Screen
+        name="native-sheet"
+        options={{
+          presentation: Platform.OS === 'ios' ? 'formSheet' : 'modal',
+          sheetGrabberVisible: true,
+          sheetAllowedDetents: [0.4],
+          sheetCornerRadius: 24,
+          headerShown: false,
+          contentStyle: { backgroundColor: 'transparent' },
+
+          // Control the backdrop dimming (0 = no dim, 1 = full dim)
+          // Or use 'transparent' for no overlay at all:
+          // sheetBackdropColor: 'transparent',
+        }}
+      />
     </Stack>
   );
 }

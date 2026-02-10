@@ -1,9 +1,10 @@
+import { Feather } from '@expo/vector-icons';
 import { startOfMonth } from 'date-fns';
 import { Stack, useRouter } from 'expo-router';
 import { useState } from 'react';
-import { View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Pressable, View } from 'react-native';
 
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DaySubscriptionsSheet } from '@/components/day-subscriptions-sheet';
 import { HomeSearchResults } from '@/components/home/home-search-results';
 import { HomeSummary } from '@/components/home/home-summary';
@@ -111,6 +112,9 @@ export default function HomeScreen() {
                 gap: 48,
               }}
             >
+              <Pressable className="rounded-full bg-white/5 p-3" onPress={() => router.push('/(app)/native-sheet')}>
+                <Feather name="x" size={20} color="white" />
+              </Pressable>
               <HomeSummary
                 monthlyTotal={monthlyTotal}
                 averageMonthly={averageMonthly}
