@@ -34,6 +34,15 @@ function PaymentMethodRow({
 }) {
   const { colors } = useTheme();
   const swipeableRef = useRef<Swipeable>(null);
+  const ignoreNextRenameRef = useRef(false);
+
+  const handleRowPress = useCallback(() => {
+    if (ignoreNextRenameRef.current) {
+      ignoreNextRenameRef.current = false;
+      return;
+    }
+    onRename();
+  }, [onRename]);
 
   const rowContentStyle = {
     flexDirection: 'row' as const,
@@ -57,6 +66,7 @@ function PaymentMethodRow({
         outputRange: [DELETE_BUTTON_WIDTH, 0],
       });
       const handleDelete = () => {
+        ignoreNextRenameRef.current = true;
         swipeable.close();
         onDelete();
       };
@@ -95,9 +105,12 @@ function PaymentMethodRow({
       ref={swipeableRef}
       friction={2}
       rightThreshold={60}
+      onSwipeableWillOpen={() => {
+        ignoreNextRenameRef.current = true;
+      }}
       renderRightActions={renderRightActions}
     >
-      <Pressable onPress={onRename} style={({ pressed }) => [pressed && { opacity: 0.85 }]}>
+      <Pressable onPress={handleRowPress} style={({ pressed }) => [pressed && { opacity: 0.85 }]}>
         <View style={rowContentStyle}>
           <Text style={{ fontSize: 16, fontWeight: '500', color: colors.text, flex: 1 }} selectable numberOfLines={1}>
             {method.name}

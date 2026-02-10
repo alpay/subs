@@ -135,6 +135,9 @@ function CategoryRow({
       ref={swipeableRef}
       friction={2}
       rightThreshold={60}
+      onSwipeableWillOpen={() => {
+        ignoreNextRenameRef.current = true;
+      }}
       renderRightActions={renderRightActions}
     >
       <Pressable onPress={handleRowPress} style={({ pressed }) => [pressed && { opacity: 0.85 }]}>
