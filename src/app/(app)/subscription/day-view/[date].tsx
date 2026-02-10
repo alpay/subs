@@ -1,11 +1,10 @@
-import { Feather } from '@expo/vector-icons';
 import { format, isSameDay, isValid, parseISO, startOfMonth } from 'date-fns';
 import { Image } from 'expo-image';
-import { Link, router, useLocalSearchParams } from 'expo-router';
+import { Link, useLocalSearchParams } from 'expo-router';
 import { useMemo } from 'react';
 import { Pressable, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { NativeSheet } from '@/components/native-sheet';
 import { ServiceIcon } from '@/components/service-icon';
 import { GlassCard } from '@/components/ui/glass-card';
 import { useTheme } from '@/lib/hooks/use-theme';
@@ -19,7 +18,6 @@ type Params = {
 };
 
 export default function SubscriptionDayViewScreen() {
-  const insets = useSafeAreaInsets();
   const params = useLocalSearchParams<Params>();
 
   const { subscriptions } = useSubscriptionsStore();
@@ -68,34 +66,8 @@ export default function SubscriptionDayViewScreen() {
   );
 
   return (
-    <>
-      <View className="relative flex-1 bg-black/10 px-4" style={{ paddingBottom: insets.bottom }}>
-        <View className="absolute top-0 right-0 flex w-full flex-row items-center justify-end p-4">
-          <Pressable className="rounded-full bg-white/5 p-3" onPress={() => router.back()}>
-            <Feather name="x" size={20} color="white" />
-          </Pressable>
-        </View>
-
-        <View
-          style={{
-            paddingTop: 24,
-            paddingBottom: 24,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <View>
-            <Text style={{ fontSize: 16, fontWeight: '600', color: 'white', textAlign: 'center' }}>
-              Subscriptions
-            </Text>
-            <Text style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', marginTop: 2, textAlign: 'center' }}>
-              {headerDate}
-            </Text>
-          </View>
-        </View>
-
-        <View style={{ gap: 8 }}>
+    <NativeSheet title="Subscriptions" subtitle={headerDate} showCloseIcon>
+      <View style={{ gap: 8 }}>
           {daySubscriptions.map(sub => (
             <GlassCard key={sub.id}>
               <Link
@@ -219,8 +191,7 @@ export default function SubscriptionDayViewScreen() {
               </Text>
             </View>
           </GlassCard>
-        </View>
       </View>
-    </>
+    </NativeSheet>
   );
 }
