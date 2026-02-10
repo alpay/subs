@@ -1,36 +1,29 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
-
+import { useRouter } from 'expo-router';
 import { useCallback } from 'react';
+import { View } from 'react-native';
 
 import { AmountPickerContent, AmountPickerCurrencyPill } from '@/components/amount-picker-content';
-import { ModalSheet } from '@/components/modal-sheet';
-
-const DISMISS_TO_PARAM = 'dismissTo';
+import { NativeSheet } from '@/components/native-sheet';
 
 /** Route screen – used when opening from subscription add/edit etc. Add-subscription uses inline gorhom modal instead. */
 export default function AmountPickerScreen() {
   const router = useRouter();
-  const { [DISMISS_TO_PARAM]: dismissTo } = useLocalSearchParams<{ [DISMISS_TO_PARAM]?: string }>();
 
   const handleClose = useCallback(() => {
-    if (dismissTo) {
-      router.dismissTo(dismissTo as Parameters<typeof router.dismissTo>[0]);
-    } else {
-      router.back();
-    }
-  }, [router, dismissTo]);
+    router.back();
+  }, [router]);
 
   return (
-    <ModalSheet
-      title="Amount"
-      closeButtonTitle="Close"
+    <NativeSheet
+      // title="Amount"
+      topLeft={(
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+          <AmountPickerCurrencyPill />
+        </View>
+      )}
       onClose={handleClose}
-      topRightActionBar={<AmountPickerCurrencyPill />}
-      snapPoints={['88%']}
-      lockSnapPoint
-      bottomScrollSpacer={88}
     >
       <AmountPickerContent onDone={handleClose} />
-    </ModalSheet>
+    </NativeSheet>
   );
 }

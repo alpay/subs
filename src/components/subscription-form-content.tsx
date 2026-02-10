@@ -3,11 +3,11 @@ import type { MutableRefObject } from 'react';
 import type { NotificationMode, ScheduleType, Subscription, SubscriptionStatus } from '@/lib/db/schema';
 import { parseISO } from 'date-fns';
 import { Image } from 'expo-image';
+import { useRouter } from 'expo-router';
 import { Input, TextArea } from 'heroui-native';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
-import { AmountPickerContent, AmountPickerCurrencyPill } from '@/components/amount-picker-content';
 import { DatePickerContent } from '@/components/date-picker-content';
 import { ModalSheet } from '@/components/modal-sheet';
 import { SelectPill } from '@/components/select-pill';
@@ -112,6 +112,7 @@ export function SubscriptionFormContent({
   submitRef,
   onValidationChange,
 }: SubscriptionFormContentProps) {
+  const router = useRouter();
   const { colors } = useTheme();
   const { categories } = useCategoriesStore();
   const { lists } = useListsStore();
@@ -121,8 +122,6 @@ export function SubscriptionFormContent({
   const draftStore = useAddSubscriptionDraftStore();
 
   const [name, setName] = useState(initialState.name);
-  const [amount, setAmount] = useState(initialState.amount);
-  const [currency, setCurrency] = useState(initialState.currency);
   const [scheduleType, setScheduleType] = useState<ScheduleType>(initialState.scheduleType);
   const [intervalCount, setIntervalCount] = useState(initialState.intervalCount);
   const [intervalUnit, setIntervalUnit] = useState<'week' | 'month'>(initialState.intervalUnit);
@@ -136,7 +135,6 @@ export function SubscriptionFormContent({
   const [iconUri, setIconUri] = useState(initialState.iconUri ?? '');
   const [notes, setNotes] = useState(initialState.notes);
 
-  const [showAmountPicker, setShowAmountPicker] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const currencyOptions = useMemo(
@@ -174,51 +172,33 @@ export function SubscriptionFormContent({
   );
 
   useEffect(() => {
-    if (!isEdit) {
-      draftStore.reset({
-        amount: '0',
-        currency: settings.mainCurrency || 'USD',
-        startDate: new Date(),
-      });
-    }
+    // Seed draft store for both create and edit flows so amount picker route works consistently.
+    draftStore.reset({
+      amount: initialState.amount || '0',
+      currency: initialState.currency || settings.mainCurrency || 'USD',
+      startDate: isValidDateString(initialState.startDate)
+        ? new Date(initialState.startDate)
+        : new Date(),
+    });
   }, []);
 
-  const draftAmount = isEdit ? amount : draftStore.amount;
-  const draftCurrency = isEdit ? currency : draftStore.currency;
-  const draftStartDate = isEdit ? parseISO(startDate) : draftStore.startDate;
+  const draftAmount = draftStore.amount;
+  const draftCurrency = draftStore.currency;
+  const draftStartDate = draftStore.startDate;
   const amountValue = Number(draftAmount);
   const formattedAmount = Number.isFinite(amountValue) ? amountValue.toFixed(2) : '0.00';
   const isValid = name.trim().length > 0 && Number.isFinite(amountValue) && amountValue > 0;
 
   const handleAmountPress = useCallback(() => {
-    if (isEdit) {
-      draftStore.reset({
-        amount: amount || '0',
-        currency,
-        startDate: parseISO(startDate),
-      });
-    }
-    setShowAmountPicker(true);
-  }, [isEdit, amount, currency, startDate, draftStore]);
-
-  const handleAmountDone = useCallback(() => {
-    if (isEdit) {
-      setAmount(draftStore.amount);
-      setCurrency(draftStore.currency);
-    }
-    setShowAmountPicker(false);
-  }, [isEdit, draftStore]);
+    router.push('/(app)/amount-picker');
+  }, [router]);
 
   const handleDatePress = useCallback(() => {
-    if (isEdit) {
-      draftStore.reset({
-        amount,
-        currency,
-        startDate: parseISO(startDate),
-      });
+    if (isEdit && isValidDateString(startDate)) {
+      draftStore.setStartDate(parseISO(startDate));
     }
     setShowDatePicker(true);
-  }, [isEdit, amount, currency, startDate, draftStore]);
+  }, [isEdit, startDate, draftStore]);
 
   const handleDateDone = useCallback(() => {
     if (isEdit) {
@@ -231,8 +211,8 @@ export function SubscriptionFormContent({
     if (!isValid)
       return;
 
-    const finalAmount = isEdit ? amountValue : Number(draftStore.amount);
-    const finalCurrency = isEdit ? currency : draftStore.currency;
+    const finalAmount = Number(draftStore.amount);
+    const finalCurrency = draftStore.currency;
     const finalStartDate = isEdit
       ? (isValidDateString(startDate) ? startDate : todayIsoDate())
       : toIsoLocalDate(draftStore.startDate);
@@ -571,18 +551,6 @@ export function SubscriptionFormContent({
           />
         </View>
       </GlassCard>
-
-      <ModalSheet
-        title=""
-        closeButtonTitle="Close"
-        isVisible={showAmountPicker}
-        onClose={() => setShowAmountPicker(false)}
-        topRightActionBar={<AmountPickerCurrencyPill />}
-        enableDynamicSizing
-        bottomScrollSpacer={24}
-      >
-        <AmountPickerContent onDone={handleAmountDone} />
-      </ModalSheet>
 
       <ModalSheet
         title=""
