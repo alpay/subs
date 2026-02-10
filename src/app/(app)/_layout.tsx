@@ -60,7 +60,13 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen name="icon-picker" options={transparentModalOptions} />
-      <Stack.Screen name="settings" options={transparentModalOptions} />
+      <Stack.Screen
+        name="settings"
+        options={{
+          ...sheetBaseOptions,
+          sheetAllowedDetents: [0.95] as const,
+        }}
+      />
 
     </Stack>
   );

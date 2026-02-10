@@ -4,10 +4,10 @@ import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
 import { Switch, useToast } from 'heroui-native';
 import { useCallback, useMemo } from 'react';
-import { ActivityIndicator, Alert, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { ModalSheet } from '@/components/modal-sheet';
+import { NativeSheet } from '@/components/native-sheet';
 import { Pill } from '@/components/pill';
 import { SettingsNotificationSection } from '@/components/settings-notification-section';
 import {
@@ -113,7 +113,8 @@ export default function SettingsScreen() {
     try {
       await fetchAndUpdateRates();
       toast.show('Currency rates updated');
-    } catch {
+    }
+    catch {
       toast.show('Failed to update rates. Check your connection.');
     }
   }, [fetchAndUpdateRates, toast]);
@@ -158,276 +159,275 @@ export default function SettingsScreen() {
   const noteStyle = { fontSize: 12, color: colors.textMuted, lineHeight: 18 };
 
   return (
-    <ModalSheet
-      title="Settings"
-      closeVariant="muted"
-      contentContainerStyle={{
-        gap: 0,
-        padding: 0,
-        paddingTop: 4,
-        paddingHorizontal: 20,
-        paddingBottom: bottom + 20,
-      }}
-    >
-      {/* Developer */}
-      <View style={{ marginBottom: 8 }}>
-        <Text style={[sectionLabelStyle, { marginBottom: 8 }]} selectable>
-          DEVELOPER
-        </Text>
-      </View>
-      <SettingsSection>
-        <SettingsRow
-          leading={<SettingsLeadingIcon symbol="trash" />}
-          label="Reset App"
-          subtitle="Clear all data and return to home"
-          labelTone="accent"
-          onPress={handleResetApp}
-        />
-        <SettingsRowDivider inset={ICON_DIVIDER_INSET} />
-        <SettingsRow
-          leading={<SettingsLeadingIcon symbol="crown" />}
-          label="Premium"
-          right={(
-            <Switch
-              isSelected={settings.premium}
-              onSelectedChange={isSelected => update({ premium: isSelected })}
-            />
-          )}
-        />
-      </SettingsSection>
-
-      {/* Section 1: Account (rounded panel with light background) */}
-      <SettingsSection>
-        <SettingsRow
-          leading={<SubscriptionBadge />}
-          label="Subscription Day"
-          subtitle="Account type"
-          labelStyle={{ fontSize: 17, fontWeight: '600' }}
-          right={<Pill tone="accent">Free</Pill>}
-          accessorySymbol="chevron.right"
-        />
-        <View style={{ paddingHorizontal: 14, paddingBottom: 10 }}>
-          <Text style={[noteStyle, { marginTop: 2 }]} selectable>
-            Unlock all features with a lifetime license.
+    <NativeSheet title="Settings">
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerStyle={{
+          paddingHorizontal: 8,
+          paddingBottom: bottom + 20,
+        }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Developer */}
+        <View style={{ marginBottom: 8 }}>
+          <Text style={[sectionLabelStyle, { marginBottom: 8 }]} selectable>
+            DEVELOPER
           </Text>
         </View>
-      </SettingsSection>
+        <SettingsSection>
+          <SettingsRow
+            leading={<SettingsLeadingIcon symbol="trash" />}
+            label="Reset App"
+            subtitle="Clear all data and return to home"
+            labelTone="accent"
+            onPress={handleResetApp}
+          />
+          <SettingsRowDivider inset={ICON_DIVIDER_INSET} />
+          <SettingsRow
+            leading={<SettingsLeadingIcon symbol="crown" />}
+            label="Premium"
+            right={(
+              <Switch
+                isSelected={settings.premium}
+                onSelectedChange={isSelected => update({ premium: isSelected })}
+              />
+            )}
+          />
+        </SettingsSection>
 
-      {/* Section 2: General (rounded panel) */}
-      <SettingsSection>
-        <SettingsRow
-          leading={<SettingsLeadingIcon symbol="externaldrive" />}
-          label="iCloud & Data"
-          right={(
-            <Text style={{ color: colors.textMuted, fontVariant: ['tabular-nums'] }} selectable>
-              {settings.iCloudEnabled ? 'On' : 'Off'}
-            </Text>
-          )}
-          accessorySymbol="chevron.right"
-          onPress={() => update({ iCloudEnabled: !settings.iCloudEnabled })}
-        />
-        <SettingsRowDivider />
-        <SettingsRow
-          leading={<SettingsLeadingIcon symbol="dollarsign" />}
-          label="Main Currency"
-          onPress={() => router.push('/(app)/settings/currency')}
-          right={(
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-              {currencyFlag
-                ? (
-                    <Text style={{ fontSize: 16 }} selectable>
-                      {currencyFlag}
-                    </Text>
-                  )
-                : null}
-              <Text style={{ color: colors.text, fontVariant: ['tabular-nums'] }} selectable>
-                {settings.mainCurrency}
-              </Text>
-            </View>
-          )}
-          accessorySymbol="chevron.right"
-        />
-        <SettingsRowDivider />
-        <SettingsRow
-          label="Round to Whole Numbers"
-          right={(
-            <Switch
-              isSelected={settings.roundWholeNumbers}
-              onSelectedChange={isSelected => update({ roundWholeNumbers: isSelected })}
-            />
-          )}
-        />
-      </SettingsSection>
-
-      {/* Section 3: Categories & Payment Methods (rounded panel) */}
-      <SettingsSection>
-        <SettingsRow
-          leading={<SettingsLeadingIcon symbol="square.grid.2x2" />}
-          label="Categories"
-          onPress={() => router.push('/(app)/settings/categories')}
-          right={(
-            <Text style={{ color: colors.textMuted, fontVariant: ['tabular-nums'] }} selectable>
-              {categories.length}
-            </Text>
-          )}
-          accessorySymbol="chevron.right"
-        />
-        <SettingsRowDivider inset={ICON_DIVIDER_INSET} />
-        <SettingsRow
-          leading={<SettingsLeadingIcon symbol="creditcard" />}
-          label="Payment Methods"
-          onPress={() => router.push('/(app)/settings/payment-methods')}
-          right={(
-            <Text style={{ color: colors.textMuted, fontVariant: ['tabular-nums'] }} selectable>
-              {methods.length}
-            </Text>
-          )}
-          accessorySymbol="chevron.right"
-        />
-      </SettingsSection>
-
-      {/* Section 4: Notifications (rounded panel) */}
-      <View style={{ marginBottom: 8 }}>
-        <Text style={[sectionLabelStyle, { marginBottom: 8 }]} selectable>
-          NOTIFICATIONS.
-        </Text>
-      </View>
-      <SettingsNotificationSection />
-
-      {/* Section 5: Interface (rounded panel) */}
-      <View style={{ marginBottom: 8 }}>
-        <Text style={[sectionLabelStyle, { marginBottom: 8 }]} selectable>
-          INTERFACE.
-        </Text>
-      </View>
-      <SettingsSection>
-        <SettingsRow
-          label="True Dark Colors"
-          right={(
-            <Switch
-              isSelected={settings.trueDarkColors}
-              onSelectedChange={isSelected => update({ trueDarkColors: isSelected })}
-            />
-          )}
-        />
-        <SettingsRowDivider />
-        <SettingsRow
-          label="Haptic Feedback"
-          right={(
-            <Switch
-              isSelected={settings.hapticsEnabled}
-              onSelectedChange={isSelected => update({ hapticsEnabled: isSelected })}
-            />
-          )}
-        />
-      </SettingsSection>
-
-      {/* Currency rates (rounded panel) */}
-      <View style={{ marginBottom: 8 }}>
-        <Text style={[sectionLabelStyle, { marginBottom: 8 }]} selectable>
-          CURRENCY RATES
-        </Text>
-      </View>
-      <SettingsSection>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingVertical: 12,
-            paddingHorizontal: 14,
-          }}
-        >
-          <View style={{ flex: 1, gap: 4 }}>
-            <Text style={{ color: colors.text, fontSize: 14 }} selectable>
-              Last updated
-            </Text>
-            <Text style={{ color: colors.textMuted, fontSize: 12 }} selectable>
-              {lastUpdatedLabel}
+        {/* Section 1: Account (rounded panel with light background) */}
+        <SettingsSection>
+          <SettingsRow
+            leading={<SubscriptionBadge />}
+            label="Subscription Day"
+            subtitle="Account type"
+            labelStyle={{ fontSize: 17, fontWeight: '600' }}
+            right={<Pill tone="accent">Free</Pill>}
+            accessorySymbol="chevron.right"
+          />
+          <View style={{ paddingHorizontal: 14, paddingBottom: 10 }}>
+            <Text style={[noteStyle, { marginTop: 2 }]} selectable>
+              Unlock all features with a lifetime license.
             </Text>
           </View>
-          <Pressable
-            accessibilityRole="button"
-            onPress={handleUpdateRates}
-            disabled={isUpdating}
-            style={({ pressed }) => [
-              {
-                paddingHorizontal: 16,
-                paddingVertical: 8,
-                borderRadius: 16,
-                borderCurve: 'continuous',
-                backgroundColor: colors.surfaceElevated,
-                borderWidth: 1,
-                borderColor: colors.surfaceBorder,
-              },
-              (pressed || isUpdating) && { opacity: 0.7 },
-            ]}
-          >
-            {isUpdating
-              ? (
-                  <ActivityIndicator size="small" color={colors.text} />
-                )
-              : (
-                  <Text style={{ color: colors.text, fontWeight: '600', fontSize: 13 }} selectable>
-                    Update Now
-                  </Text>
-                )}
-          </Pressable>
-        </View>
-        <View style={{ paddingHorizontal: 14, paddingBottom: 10 }}>
-          <Text style={noteStyle} selectable>
-            Rates are fetched from a public API (ExchangeRate-API). Tap Update Now to refresh.
-            Values are approximate and may differ from your local rates.
+        </SettingsSection>
+
+        {/* Section 2: General (rounded panel) */}
+        <SettingsSection>
+          <SettingsRow
+            leading={<SettingsLeadingIcon symbol="externaldrive" />}
+            label="iCloud & Data"
+            right={(
+              <Text style={{ color: colors.textMuted, fontVariant: ['tabular-nums'] }} selectable>
+                {settings.iCloudEnabled ? 'On' : 'Off'}
+              </Text>
+            )}
+            accessorySymbol="chevron.right"
+            onPress={() => update({ iCloudEnabled: !settings.iCloudEnabled })}
+          />
+          <SettingsRowDivider />
+          <SettingsRow
+            leading={<SettingsLeadingIcon symbol="dollarsign" />}
+            label="Main Currency"
+            onPress={() => router.push('/(app)/settings/currency')}
+            right={(
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                {currencyFlag
+                  ? (
+                      <Text style={{ fontSize: 16 }} selectable>
+                        {currencyFlag}
+                      </Text>
+                    )
+                  : null}
+                <Text style={{ color: colors.text, fontVariant: ['tabular-nums'] }} selectable>
+                  {settings.mainCurrency}
+                </Text>
+              </View>
+            )}
+            accessorySymbol="chevron.right"
+          />
+          <SettingsRowDivider />
+          <SettingsRow
+            label="Round to Whole Numbers"
+            right={(
+              <Switch
+                isSelected={settings.roundWholeNumbers}
+                onSelectedChange={isSelected => update({ roundWholeNumbers: isSelected })}
+              />
+            )}
+          />
+        </SettingsSection>
+
+        {/* Section 3: Categories & Payment Methods (rounded panel) */}
+        <SettingsSection>
+          <SettingsRow
+            leading={<SettingsLeadingIcon symbol="square.grid.2x2" />}
+            label="Categories"
+            onPress={() => router.push('/(app)/settings/categories')}
+            right={(
+              <Text style={{ color: colors.textMuted, fontVariant: ['tabular-nums'] }} selectable>
+                {categories.length}
+              </Text>
+            )}
+            accessorySymbol="chevron.right"
+          />
+          <SettingsRowDivider inset={ICON_DIVIDER_INSET} />
+          <SettingsRow
+            leading={<SettingsLeadingIcon symbol="creditcard" />}
+            label="Payment Methods"
+            onPress={() => router.push('/(app)/settings/payment-methods')}
+            right={(
+              <Text style={{ color: colors.textMuted, fontVariant: ['tabular-nums'] }} selectable>
+                {methods.length}
+              </Text>
+            )}
+            accessorySymbol="chevron.right"
+          />
+        </SettingsSection>
+
+        {/* Section 4: Notifications (rounded panel) */}
+        <View style={{ marginBottom: 8 }}>
+          <Text style={[sectionLabelStyle, { marginBottom: 8 }]} selectable>
+            NOTIFICATIONS.
           </Text>
         </View>
-      </SettingsSection>
+        <SettingsNotificationSection />
 
-      {/* More: Rate & Review, etc. (rounded panel for consistency) */}
-      <SettingsSection>
-        <SettingsRow
-          leading={<SettingsLeadingIcon symbol="star" />}
-          label="Rate & Review"
-          accessorySymbol="arrow.up.right"
-        />
-        <SettingsRowDivider inset={ICON_DIVIDER_INSET} />
-        <SettingsRow
-          leading={<SettingsLeadingIcon symbol="list.bullet.rectangle" />}
-          label="Ideas & Roadmap"
-          accessorySymbol="arrow.up.right"
-        />
-        <SettingsRowDivider inset={ICON_DIVIDER_INSET} />
-        <SettingsRow
-          leading={<SettingsLeadingIcon symbol="envelope" />}
-          label="Contact me"
-          accessorySymbol="chevron.right"
-        />
-        <SettingsRowDivider inset={ICON_DIVIDER_INSET} />
-        <SettingsRow
-          leading={<SettingsLeadingIcon symbol="globe" />}
-          label="Visit Website"
-          accessorySymbol="arrow.up.right"
-        />
-        <SettingsRowDivider inset={ICON_DIVIDER_INSET} />
-        <SettingsRow
-          leading={<SettingsLeadingIcon symbol="square.and.arrow.up" />}
-          label="Share with a friend"
-          accessorySymbol="chevron.right"
-        />
-      </SettingsSection>
+        {/* Section 5: Interface (rounded panel) */}
+        <View style={{ marginBottom: 8 }}>
+          <Text style={[sectionLabelStyle, { marginBottom: 8 }]} selectable>
+            INTERFACE.
+          </Text>
+        </View>
+        <SettingsSection>
+          <SettingsRow
+            label="True Dark Colors"
+            right={(
+              <Switch
+                isSelected={settings.trueDarkColors}
+                onSelectedChange={isSelected => update({ trueDarkColors: isSelected })}
+              />
+            )}
+          />
+          <SettingsRowDivider />
+          <SettingsRow
+            label="Haptic Feedback"
+            right={(
+              <Switch
+                isSelected={settings.hapticsEnabled}
+                onSelectedChange={isSelected => update({ hapticsEnabled: isSelected })}
+              />
+            )}
+          />
+        </SettingsSection>
 
-      <View style={{ alignItems: 'center', gap: 6, paddingTop: 8 }}>
-        <Image
-          source="sf:heart.fill"
-          style={{ width: 18, height: 18 }}
-          tintColor="#FF4D4F"
-        />
-        <Text style={{ color: colors.textMuted, fontSize: 12, textAlign: 'center' }} selectable>
-          Made with love for details at Appps™ © 2026
-        </Text>
-        <Text style={{ color: colors.textMuted, fontSize: 12 }} selectable>
-          Version: 1.0
-        </Text>
-      </View>
-    </ModalSheet>
+        {/* Currency rates (rounded panel) */}
+        <View style={{ marginBottom: 8 }}>
+          <Text style={[sectionLabelStyle, { marginBottom: 8 }]} selectable>
+            CURRENCY RATES
+          </Text>
+        </View>
+        <SettingsSection>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              paddingVertical: 12,
+              paddingHorizontal: 14,
+            }}
+          >
+            <View style={{ flex: 1, gap: 4 }}>
+              <Text style={{ color: colors.text, fontSize: 14 }} selectable>
+                Last updated
+              </Text>
+              <Text style={{ color: colors.textMuted, fontSize: 12 }} selectable>
+                {lastUpdatedLabel}
+              </Text>
+            </View>
+            <Pressable
+              accessibilityRole="button"
+              onPress={handleUpdateRates}
+              disabled={isUpdating}
+              style={({ pressed }) => [
+                {
+                  paddingHorizontal: 16,
+                  paddingVertical: 8,
+                  borderRadius: 16,
+                  borderCurve: 'continuous',
+                  backgroundColor: colors.surfaceElevated,
+                  borderWidth: 1,
+                  borderColor: colors.surfaceBorder,
+                },
+                (pressed || isUpdating) && { opacity: 0.7 },
+              ]}
+            >
+              {isUpdating
+                ? (
+                    <ActivityIndicator size="small" color={colors.text} />
+                  )
+                : (
+                    <Text style={{ color: colors.text, fontWeight: '600', fontSize: 13 }} selectable>
+                      Update Now
+                    </Text>
+                  )}
+            </Pressable>
+          </View>
+          <View style={{ paddingHorizontal: 14, paddingBottom: 10 }}>
+            <Text style={noteStyle} selectable>
+              Rates are fetched from a public API (ExchangeRate-API). Tap Update Now to refresh.
+              Values are approximate and may differ from your local rates.
+            </Text>
+          </View>
+        </SettingsSection>
+
+        {/* More: Rate & Review, etc. (rounded panel for consistency) */}
+        <SettingsSection>
+          <SettingsRow
+            leading={<SettingsLeadingIcon symbol="star" />}
+            label="Rate & Review"
+            accessorySymbol="arrow.up.right"
+          />
+          <SettingsRowDivider inset={ICON_DIVIDER_INSET} />
+          <SettingsRow
+            leading={<SettingsLeadingIcon symbol="list.bullet.rectangle" />}
+            label="Ideas & Roadmap"
+            accessorySymbol="arrow.up.right"
+          />
+          <SettingsRowDivider inset={ICON_DIVIDER_INSET} />
+          <SettingsRow
+            leading={<SettingsLeadingIcon symbol="envelope" />}
+            label="Contact me"
+            accessorySymbol="chevron.right"
+          />
+          <SettingsRowDivider inset={ICON_DIVIDER_INSET} />
+          <SettingsRow
+            leading={<SettingsLeadingIcon symbol="globe" />}
+            label="Visit Website"
+            accessorySymbol="arrow.up.right"
+          />
+          <SettingsRowDivider inset={ICON_DIVIDER_INSET} />
+          <SettingsRow
+            leading={<SettingsLeadingIcon symbol="square.and.arrow.up" />}
+            label="Share with a friend"
+            accessorySymbol="chevron.right"
+          />
+        </SettingsSection>
+
+        <View style={{ alignItems: 'center', gap: 6, paddingTop: 8 }}>
+          <Image
+            source="sf:heart.fill"
+            style={{ width: 18, height: 18 }}
+            tintColor="#FF4D4F"
+          />
+          <Text style={{ color: colors.textMuted, fontSize: 12, textAlign: 'center' }} selectable>
+            Made with love for details at Appps™ © 2026
+          </Text>
+          <Text style={{ color: colors.textMuted, fontSize: 12 }} selectable>
+            Version: 1.0
+          </Text>
+        </View>
+      </ScrollView>
+    </NativeSheet>
   );
 }
