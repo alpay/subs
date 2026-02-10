@@ -2,7 +2,7 @@ import { Card, Button, Label, TextField, useToast } from 'heroui-native';
 import { useState } from 'react';
 import { Text, View } from 'react-native';
 
-import { ModalSheet } from '@/components/modal-sheet';
+import { NativeSheet } from '@/components/native-sheet';
 import { SheetInput } from '@/components/sheet-input';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useListsStore } from '@/lib/stores';
@@ -24,7 +24,7 @@ export default function ListsScreen() {
   };
 
   return (
-    <ModalSheet title="Lists">
+    <NativeSheet title="Lists">
       <Card>
         <Card.Body style={{ gap: 12 }}>
           <TextField>
@@ -54,6 +54,6 @@ export default function ListsScreen() {
           ))}
         </Card.Body>
       </Card>
-    </ModalSheet>
+    </NativeSheet>
   );
 }

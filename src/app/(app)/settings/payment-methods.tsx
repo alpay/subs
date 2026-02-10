@@ -14,7 +14,7 @@ import {
 import { RectButton, Swipeable } from 'react-native-gesture-handler';
 
 import { AppDialog } from '@/components/app-dialog';
-import { ModalSheet } from '@/components/modal-sheet';
+import { NativeSheet } from '@/components/native-sheet';
 import { SheetInput } from '@/components/sheet-input';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { usePaymentMethodsStore } from '@/lib/stores';
@@ -162,7 +162,7 @@ export default function PaymentMethodsScreen() {
 
   return (
     <>
-      <ModalSheet title="Payment Methods" closeVariant="muted">
+      <NativeSheet title="Payment Methods">
         <View style={{ gap: 16 }}>
           <View
             style={{
@@ -245,7 +245,7 @@ export default function PaymentMethodsScreen() {
             We care about your security, so please do not store full card numbers or account details.
           </Text>
         </View>
-      </ModalSheet>
+      </NativeSheet>
 
       <AppDialog
         isOpen={!!renameMethod}

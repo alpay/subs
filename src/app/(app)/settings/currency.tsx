@@ -1,10 +1,10 @@
 import { useRouter } from 'expo-router';
 import { useToast } from 'heroui-native';
 import { useCallback, useMemo, useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Pressable, Text, View, ScrollView } from 'react-native';
 import { SymbolView } from 'expo-symbols';
 
-import { ModalSheet } from '@/components/modal-sheet';
+import { NativeSheet } from '@/components/native-sheet';
 import { SearchBar } from '@/components/SearchBar';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { CURRENCIES, type CurrencyEntry } from '@/lib/data/currencies';
@@ -70,10 +70,10 @@ export default function CurrencyScreen() {
   );
 
   return (
-    <ModalSheet
+    <NativeSheet
       title="Select Currency"
-      closeButtonTitle="Close"
-      right={
+      showCloseIcon={false}
+      topRight={(
         <Pressable
           onPress={handleSave}
           hitSlop={10}
@@ -89,50 +89,54 @@ export default function CurrencyScreen() {
             Done
           </Text>
         </Pressable>
-      }
-      contentContainerStyle={{ paddingHorizontal: 20, gap: 0 }}
+      )}
     >
-      <View style={{ marginBottom: 8 }}>
-        <SearchBar
-          placeholder="Search"
-          onSearch={setSearchQuery}
-          onClear={() => setSearchQuery('')}
-          enableWidthAnimation={false}
-        />
-      </View>
-      {sections.map(section => (
-        <View
-          key={section.title}
-          style={{
-            marginBottom: 8,
-            paddingTop: section.title === 'ALL CURRENCIES' ? 16 : 0,
-          }}
-        >
-          <Text
+      <ScrollView
+        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24 }}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={{ marginBottom: 8 }}>
+          <SearchBar
+            placeholder="Search"
+            onSearch={setSearchQuery}
+            onClear={() => setSearchQuery('')}
+            enableWidthAnimation={false}
+          />
+        </View>
+        {sections.map(section => (
+          <View
+            key={section.title}
             style={{
-              fontSize: 13,
-              fontWeight: '600',
-              color: colors.textMuted,
-              letterSpacing: 0.5,
               marginBottom: 8,
+              paddingTop: section.title === 'ALL CURRENCIES' ? 16 : 0,
             }}
           >
-            {section.title}
-          </Text>
-          {section.data.map(entry => (
-            <CurrencyRow
-              key={entry.code}
-              entry={entry}
-              isDefault={mainCurrency === entry.code}
-              isFavorite={favoriteCurrencies.includes(entry.code)}
-              onSelect={() => setDefault(entry.code)}
-              onToggleFavorite={() => toggleFavorite(entry.code)}
-              colors={colors}
-            />
-          ))}
-        </View>
-      ))}
-    </ModalSheet>
+            <Text
+              style={{
+                fontSize: 13,
+                fontWeight: '600',
+                color: colors.textMuted,
+                letterSpacing: 0.5,
+                marginBottom: 8,
+              }}
+            >
+              {section.title}
+            </Text>
+            {section.data.map(entry => (
+              <CurrencyRow
+                key={entry.code}
+                entry={entry}
+                isDefault={mainCurrency === entry.code}
+                isFavorite={favoriteCurrencies.includes(entry.code)}
+                onSelect={() => setDefault(entry.code)}
+                onToggleFavorite={() => toggleFavorite(entry.code)}
+                colors={colors}
+              />
+            ))}
+          </View>
+        ))}
+      </ScrollView>
+    </NativeSheet>
   );
 }
 

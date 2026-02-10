@@ -15,6 +15,7 @@ import { RectButton, Swipeable } from 'react-native-gesture-handler';
 
 import { AppDialog } from '@/components/app-dialog';
 import { ModalSheet } from '@/components/modal-sheet';
+import { NativeSheet } from '@/components/native-sheet';
 import { SelectColorContent } from '@/components/select-color-sheet';
 import { SheetInput } from '@/components/sheet-input';
 import { OTHER_CATEGORY_NAME } from '@/lib/data/seed-defaults';
@@ -232,7 +233,7 @@ export default function CategoriesScreen() {
 
   return (
     <>
-      <ModalSheet title="Categories" closeVariant="muted">
+      <NativeSheet title="Categories">
         <View style={{ gap: 16 }}>
           <View
             style={{
@@ -323,7 +324,7 @@ export default function CategoriesScreen() {
             </Pressable>
           </View>
         </View>
-      </ModalSheet>
+      </NativeSheet>
 
       <AppDialog
         isOpen={!!renameCategory}

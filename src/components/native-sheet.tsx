@@ -48,6 +48,10 @@ export function NativeSheet({
   return (
     <View className="relative flex-1 bg-black/10 px-4" style={{ paddingBottom: insets.bottom }}>
       <View
+        // Mark header as non-collapsable so React Native Screens can
+        // correctly treat it as the fixed header when used with a ScrollView
+        // in a FormSheet presentation.
+        collapsable={false}
         style={{
           paddingTop: 16,
           paddingBottom: 24,
@@ -82,7 +86,13 @@ export function NativeSheet({
         </View>
       </View>
 
-      <View style={{ gap: 8 }}>
+      <View
+        // Mark header as non-collapsable so React Native Screens can
+        // correctly treat it as the fixed header when used with a ScrollView
+        // in a FormSheet presentation.
+        collapsable={false}
+        style={{ gap: 8 }}
+      >
         {children}
       </View>
     </View>
