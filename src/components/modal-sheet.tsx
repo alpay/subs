@@ -101,7 +101,9 @@ export function ModalSheet({
       onClose();
       return;
     }
-    router.back();
+    if (router.canGoBack()) {
+      router.back();
+    }
   }, [onClose, router]);
 
   useEffect(() => {

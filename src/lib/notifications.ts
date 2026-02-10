@@ -1,6 +1,9 @@
 import type { ReminderConfig, Settings, Subscription } from '@/lib/db/schema';
 import { parseISO, setHours, setMinutes, subDays } from 'date-fns';
 
+/** iOS rejects notification triggers in the past; skip those to avoid NSInternalInconsistencyException. */
+const MIN_FUTURE_MS = 1000;
+
 import * as Notifications from 'expo-notifications';
 import { storage } from '@/lib/storage';
 import { computeNextPaymentDate } from '@/lib/utils/subscription-dates';
@@ -49,21 +52,29 @@ export async function scheduleSubscriptionNotifications(subscription: Subscripti
 
   const ids: string[] = [];
 
+  const now = Date.now();
   for (const reminder of reminders) {
     const [hour, minute] = reminder.time.split(':').map(Number);
     const triggerDate = setMinutes(setHours(subDays(nextPayment, reminder.daysBefore), hour), minute);
-    const id = await Notifications.scheduleNotificationAsync({
-      content: {
-        title: subscription.name,
-        body: 'Payment due soon',
-        data: { subscriptionId: subscription.id },
-      },
-      trigger: {
-        type: Notifications.SchedulableTriggerInputTypes.DATE,
-        date: triggerDate,
-      },
-    });
-    ids.push(id);
+    if (triggerDate.getTime() - now < MIN_FUTURE_MS) {
+      continue;
+    }
+    try {
+      const id = await Notifications.scheduleNotificationAsync({
+        content: {
+          title: subscription.name,
+          body: 'Payment due soon',
+          data: { subscriptionId: subscription.id },
+        },
+        trigger: {
+          type: Notifications.SchedulableTriggerInputTypes.DATE,
+          date: triggerDate,
+        },
+      });
+      ids.push(id);
+    } catch {
+      // iOS can throw (e.g. UNNotificationTrigger) for invalid or past triggers; skip this reminder
+    }
   }
 
   const map = getNotificationMap();

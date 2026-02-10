@@ -124,7 +124,7 @@ export function SettingsNotificationSection() {
         },
         trigger: {
           type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-          seconds: 1,
+          seconds: 2,
         },
       });
       toast.show('Test notification scheduled');
