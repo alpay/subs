@@ -73,6 +73,7 @@ export default function CurrencyScreen() {
     <NativeSheet
       title="Select Currency"
       showCloseIcon={false}
+      showBackIcon
       topRight={(
         <Pressable
           onPress={handleSave}

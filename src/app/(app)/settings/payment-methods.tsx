@@ -1,6 +1,6 @@
-import type { PaymentMethod } from '@/lib/db/schema';
 import type { ReactNode } from 'react';
 import type { StyleProp, ViewStyle } from 'react-native';
+import type { PaymentMethod } from '@/lib/db/schema';
 
 import { Button, Input, useToast } from 'heroui-native';
 import { useCallback, useRef, useState } from 'react';
@@ -162,7 +162,11 @@ export default function PaymentMethodsScreen() {
 
   return (
     <>
-      <NativeSheet title="Payment Methods">
+      <NativeSheet
+        title="Payment Methods"
+        showCloseIcon={false}
+        showBackIcon
+      >
         <View style={{ gap: 16 }}>
           <View
             style={{

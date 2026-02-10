@@ -24,7 +24,11 @@ export default function ListsScreen() {
   };
 
   return (
-    <NativeSheet title="Lists">
+    <NativeSheet
+      title="Lists"
+      showCloseIcon={false}
+      showBackIcon
+    >
       <Card>
         <Card.Body style={{ gap: 12 }}>
           <TextField>

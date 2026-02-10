@@ -10,6 +10,7 @@ type NativeSheetProps = {
   subtitle?: string;
   children: ReactNode;
   showCloseIcon?: boolean;
+  showBackIcon?: boolean;
   topLeft?: ReactNode;
   topRight?: ReactNode;
   onClose?: () => void;
@@ -20,6 +21,7 @@ export function NativeSheet({
   subtitle,
   children,
   showCloseIcon = true,
+  showBackIcon = false,
   topLeft,
   topRight,
   onClose,
@@ -37,9 +39,27 @@ export function NativeSheet({
     }
   };
 
+  const resolvedLeft = topLeft ?? (showBackIcon
+    ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Back"
+          onPress={handleClose}
+          className="rounded-full bg-white/5 p-3"
+        >
+          <Feather name="chevron-left" size={20} color="white" />
+        </Pressable>
+      )
+    : null);
+
   const resolvedRight = topRight ?? (showCloseIcon
     ? (
-        <Pressable className="rounded-full bg-white/5 p-3" onPress={handleClose}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Close"
+          className="rounded-full bg-white/5 p-3"
+          onPress={handleClose}
+        >
           <Feather name="x" size={20} color="white" />
         </Pressable>
       )
@@ -61,7 +81,7 @@ export function NativeSheet({
         }}
       >
         <View style={{ minWidth: 48 }}>
-          {topLeft}
+          {resolvedLeft}
         </View>
         <View style={{ flex: 1, alignItems: 'center' }}>
           {title && (

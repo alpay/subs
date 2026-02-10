@@ -233,7 +233,11 @@ export default function CategoriesScreen() {
 
   return (
     <>
-      <NativeSheet title="Categories">
+      <NativeSheet
+        title="Categories"
+        showCloseIcon={false}
+        showBackIcon
+      >
         <View style={{ gap: 16 }}>
           <View
             style={{

@@ -105,6 +105,7 @@ export default function SettingsScreen() {
 
   const { settings, update } = useSettingsStore();
   const { categories } = useCategoriesStore();
+  const { lists } = useListsStore();
   const { methods } = usePaymentMethodsStore();
   const { toast } = useToast();
   const { rates, isUpdating, fetchAndUpdateRates } = useCurrencyRatesStore();
@@ -260,6 +261,18 @@ export default function SettingsScreen() {
 
         {/* Section 3: Categories & Payment Methods (rounded panel) */}
         <SettingsSection>
+          <SettingsRow
+            leading={<SettingsLeadingIcon symbol="list.bullet" />}
+            label="Lists"
+            onPress={() => router.push('/(app)/settings/lists')}
+            right={(
+              <Text style={{ color: colors.textMuted, fontVariant: ['tabular-nums'] }} selectable>
+                {lists.length}
+              </Text>
+            )}
+            accessorySymbol="chevron.right"
+          />
+          <SettingsRowDivider inset={ICON_DIVIDER_INSET} />
           <SettingsRow
             leading={<SettingsLeadingIcon symbol="square.grid.2x2" />}
             label="Categories"
