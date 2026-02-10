@@ -117,7 +117,6 @@ export default function ServicesScreen() {
       <Stack.Screen
         options={{
           title: 'Services',
-          // headerShown: true,
           headerShadowVisible: false,
           headerStyle: { backgroundColor: colors.background },
           headerTintColor: colors.text,
