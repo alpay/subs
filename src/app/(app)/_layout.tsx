@@ -28,6 +28,20 @@ export default function AppLayout() {
       <Stack.Screen name="home" />
       <Stack.Screen name="search" />
       <Stack.Screen name="services" />
+      <Stack.Screen
+        name="analytics"
+        options={{
+          ...sheetBaseOptions,
+          sheetAllowedDetents: [0.95] as const,
+        }}
+      />
+      <Stack.Screen
+        name="settings"
+        options={{
+          ...sheetBaseOptions,
+          sheetAllowedDetents: [0.95] as const,
+        }}
+      />
 
       {/* Subscription Screens */}
       <Stack.Screen name="subscription/[id]" />
@@ -43,6 +57,13 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
+        name="date-picker"
+        options={{
+          ...sheetBaseOptions,
+          sheetAllowedDetents: 'fitToContents' as const,
+        }}
+      />
+      <Stack.Screen
         name="subscription/day-view/[date]"
         options={{
           ...sheetBaseOptions,
@@ -50,23 +71,9 @@ export default function AppLayout() {
         }}
       />
 
-      <Stack.Screen name="analytics" options={transparentModalOptions} />
       <Stack.Screen name="csv-import" options={transparentModalOptions} />
-      <Stack.Screen
-        name="date-picker"
-        options={{
-          ...sheetBaseOptions,
-          sheetAllowedDetents: 'fitToContents' as const,
-        }}
-      />
+
       <Stack.Screen name="icon-picker" options={transparentModalOptions} />
-      <Stack.Screen
-        name="settings"
-        options={{
-          ...sheetBaseOptions,
-          sheetAllowedDetents: [0.95] as const,
-        }}
-      />
 
     </Stack>
   );
