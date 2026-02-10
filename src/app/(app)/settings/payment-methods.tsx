@@ -170,34 +170,6 @@ export default function PaymentMethodsScreen() {
         <View style={{ gap: 16 }}>
           <View
             style={{
-              backgroundColor: colors.surfaceMuted,
-              borderRadius: 12,
-              borderCurve: 'continuous',
-              borderWidth: 1,
-              borderColor: colors.surfaceBorder,
-              overflow: 'hidden',
-            }}
-          >
-            {methods.length === 0 && (
-              <View style={{ paddingVertical: 16, paddingHorizontal: 16 }}>
-                <Text style={{ fontSize: 15, color: colors.textMuted }} selectable>
-                  No payment methods yet.
-                </Text>
-              </View>
-            )}
-            {methods.map((method, index) => (
-              <PaymentMethodRow
-                key={method.id}
-                method={method}
-                isLast={index === methods.length - 1}
-                onRename={() => openRename(method)}
-                onDelete={() => handleDelete(method)}
-              />
-            ))}
-          </View>
-
-          <View
-            style={{
               flexDirection: 'row',
               alignItems: 'center',
               gap: 12,
@@ -235,6 +207,34 @@ export default function PaymentMethodsScreen() {
                 Add
               </Text>
             </Pressable>
+          </View>
+
+          <View
+            style={{
+              backgroundColor: colors.surfaceMuted,
+              borderRadius: 12,
+              borderCurve: 'continuous',
+              borderWidth: 1,
+              borderColor: colors.surfaceBorder,
+              overflow: 'hidden',
+            }}
+          >
+            {methods.length === 0 && (
+              <View style={{ paddingVertical: 16, paddingHorizontal: 16 }}>
+                <Text style={{ fontSize: 15, color: colors.textMuted }} selectable>
+                  No payment methods yet.
+                </Text>
+              </View>
+            )}
+            {methods.map((method, index) => (
+              <PaymentMethodRow
+                key={method.id}
+                method={method}
+                isLast={index === methods.length - 1}
+                onRename={() => openRename(method)}
+                onDelete={() => handleDelete(method)}
+              />
+            ))}
           </View>
 
           <Text

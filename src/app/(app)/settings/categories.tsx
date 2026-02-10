@@ -241,42 +241,6 @@ export default function CategoriesScreen() {
         <View style={{ gap: 16 }}>
           <View
             style={{
-              backgroundColor: colors.surfaceMuted,
-              borderRadius: 12,
-              borderCurve: 'continuous',
-              borderWidth: 1,
-              borderColor: colors.surfaceBorder,
-              overflow: 'hidden',
-            }}
-          >
-            {categories.map((category, index) => (
-              <CategoryRow
-                key={category.id}
-                category={category}
-                isLast={index === categories.length - 1}
-                onRename={() => openRename(category)}
-                onColorPress={() => setColorSheetTarget(category.id)}
-                onDelete={() => handleDelete(category)}
-                canDelete={category.name !== OTHER_CATEGORY_NAME}
-              />
-            ))}
-          </View>
-
-          <Text
-            style={{
-              fontSize: 13,
-              color: colors.textMuted,
-              lineHeight: 18,
-              paddingHorizontal: 4,
-            }}
-            selectable
-          >
-            The &apos;Other&apos; category cannot be deleted as it automatically serves as a default for subscriptions
-            without a specific category.
-          </Text>
-
-          <View
-            style={{
               flexDirection: 'row',
               alignItems: 'center',
               gap: 12,
@@ -327,6 +291,42 @@ export default function CategoriesScreen() {
               </Text>
             </Pressable>
           </View>
+
+          <View
+            style={{
+              backgroundColor: colors.surfaceMuted,
+              borderRadius: 12,
+              borderCurve: 'continuous',
+              borderWidth: 1,
+              borderColor: colors.surfaceBorder,
+              overflow: 'hidden',
+            }}
+          >
+            {categories.map((category, index) => (
+              <CategoryRow
+                key={category.id}
+                category={category}
+                isLast={index === categories.length - 1}
+                onRename={() => openRename(category)}
+                onColorPress={() => setColorSheetTarget(category.id)}
+                onDelete={() => handleDelete(category)}
+                canDelete={category.name !== OTHER_CATEGORY_NAME}
+              />
+            ))}
+          </View>
+
+          <Text
+            style={{
+              fontSize: 13,
+              color: colors.textMuted,
+              lineHeight: 18,
+              paddingHorizontal: 4,
+            }}
+            selectable
+          >
+            The &apos;Other&apos; category cannot be deleted as it automatically serves as a default for subscriptions
+            without a specific category.
+          </Text>
         </View>
       </NativeSheet>
 

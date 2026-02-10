@@ -1,21 +1,23 @@
+import type { CurrencyEntry } from '@/lib/data/currencies';
 import { useRouter } from 'expo-router';
+import { SymbolView } from 'expo-symbols';
 import { useToast } from 'heroui-native';
 import { useCallback, useMemo, useState } from 'react';
-import { Pressable, Text, View, ScrollView } from 'react-native';
-import { SymbolView } from 'expo-symbols';
 
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { NativeSheet } from '@/components/native-sheet';
 import { SearchBar } from '@/components/SearchBar';
+import { CURRENCIES } from '@/lib/data/currencies';
 import { useTheme } from '@/lib/hooks/use-theme';
-import { CURRENCIES, type CurrencyEntry } from '@/lib/data/currencies';
 import { useSettingsStore } from '@/lib/stores';
 
 function matchesSearch(entry: CurrencyEntry, query: string): boolean {
   const q = query.trim().toLowerCase();
-  if (!q) return true;
+  if (!q)
+    return true;
   return (
-    entry.code.toLowerCase().includes(q) ||
-    entry.name.toLowerCase().includes(q)
+    entry.code.toLowerCase().includes(q)
+    || entry.name.toLowerCase().includes(q)
   );
 }
 
@@ -61,7 +63,8 @@ export default function CurrencyScreen() {
       const set = new Set(favoriteCurrencies);
       if (set.has(code)) {
         set.delete(code);
-      } else {
+      }
+      else {
         set.add(code);
       }
       update({ favoriteCurrencies: Array.from(set) });
@@ -93,7 +96,7 @@ export default function CurrencyScreen() {
       )}
     >
       <ScrollView
-        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24 }}
+        contentContainerStyle={{ paddingHorizontal: 8, paddingBottom: 24 }}
         showsVerticalScrollIndicator={false}
       >
         <View style={{ marginBottom: 8 }}>
@@ -174,7 +177,7 @@ function CurrencyRow({
       ]}
     >
       <Pressable
-        onPress={e => {
+        onPress={(e) => {
           e.stopPropagation();
           onToggleFavorite();
         }}
@@ -196,7 +199,11 @@ function CurrencyRow({
           }}
           numberOfLines={1}
         >
-          {entry.name} ({entry.code})
+          {entry.name}
+          {' '}
+          (
+          {entry.code}
+          )
         </Text>
       </View>
       {isDefault && (
