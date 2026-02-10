@@ -1,4 +1,6 @@
+import type { AppStateStatus } from 'react-native';
 import { useEffect } from 'react';
+import { AppState } from 'react-native';
 
 import {
   useCategoriesStore,
@@ -9,6 +11,10 @@ import {
   useSettingsStore,
   useSubscriptionsStore,
 } from '@/lib/stores';
+
+function pullCurrencyRates() {
+  useCurrencyRatesStore.getState().fetchAndUpdateRates().catch(() => {});
+}
 
 export function useBootstrap() {
   useEffect(() => {
@@ -41,5 +47,18 @@ export function useBootstrap() {
     if (!templates.isLoaded) {
       templates.load();
     }
+
+    // Pull latest rates once on cold start.
+    pullCurrencyRates();
+  }, []);
+
+  // Pull latest rates when user comes back from another app (background → active).
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (nextState: AppStateStatus) => {
+      if (nextState === 'active') {
+        pullCurrencyRates();
+      }
+    });
+    return () => subscription.remove();
   }, []);
 }

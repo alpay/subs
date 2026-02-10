@@ -115,10 +115,12 @@ export function saveSettings(settings: Settings): void {
   setItem(KEYS.SETTINGS, settings);
 }
 
+/** Returns stored rates when available, else bundled default (offline / first launch). */
 export function getCurrencyRates(): CurrencyRates {
   return getItem<CurrencyRates>(KEYS.CURRENCY_RATES) ?? DEFAULT_CURRENCY_RATES;
 }
 
+/** Persists rates so they are used on next launch; always call after a successful fetch. */
 export function saveCurrencyRates(rates: CurrencyRates): void {
   setItem(KEYS.CURRENCY_RATES, rates);
 }

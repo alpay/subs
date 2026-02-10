@@ -1,7 +1,14 @@
 import { differenceInDays, format } from 'date-fns';
 
+import { getCurrencySymbol } from '@/lib/data/currencies';
+
+export { getCurrencySymbol } from '@/lib/data/currencies';
+
+/** Formats amount with currency symbol (e.g. "₺24.00" or "$50"). */
 export function formatAmount(value: number, currency: string, roundWholeNumbers: boolean) {
-  return `${value.toFixed(roundWholeNumbers ? 0 : 2)} ${currency}`;
+  const symbol = getCurrencySymbol(currency);
+  const amount = value.toFixed(roundWholeNumbers ? 0 : 2);
+  return `${symbol}${amount}`;
 }
 
 export function formatMonthYear(date: Date) {

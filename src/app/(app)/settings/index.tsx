@@ -2,9 +2,9 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
-import { Switch } from 'heroui-native';
-import { useMemo } from 'react';
-import { Alert, Pressable, Text, View } from 'react-native';
+import { Switch, useToast } from 'heroui-native';
+import { useCallback, useMemo } from 'react';
+import { ActivityIndicator, Alert, Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ModalSheet } from '@/components/modal-sheet';
@@ -38,15 +38,15 @@ const CURRENCY_FLAGS: Record<string, string> = {
   CHF: '\u{1F1E8}\u{1F1ED}',
 };
 
-function formatUpdatedAt(value: string) {
+function formatLastUpdated(value: string) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) {
-    return 'Unknown';
+    return 'Never';
   }
-
   return new Intl.DateTimeFormat(undefined, {
-    month: 'short',
     day: 'numeric',
+    month: 'short',
+    year: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
     hour12: false,
@@ -106,14 +106,27 @@ export default function SettingsScreen() {
   const { settings, update } = useSettingsStore();
   const { categories } = useCategoriesStore();
   const { methods } = usePaymentMethodsStore();
-  const { rates, refreshFromBundle } = useCurrencyRatesStore();
+  const { toast } = useToast();
+  const { rates, isUpdating, fetchAndUpdateRates } = useCurrencyRatesStore();
+
+  const handleUpdateRates = useCallback(async () => {
+    try {
+      await fetchAndUpdateRates();
+      toast.show('Currency rates updated');
+    } catch {
+      toast.show('Failed to update rates. Check your connection.');
+    }
+  }, [fetchAndUpdateRates, toast]);
 
   const currencyFlag = useMemo(() => {
     const key = settings.mainCurrency?.toUpperCase();
     return key ? CURRENCY_FLAGS[key] : '';
   }, [settings.mainCurrency]);
 
-  const updatedAtLabel = useMemo(() => formatUpdatedAt(rates.updatedAt), [rates.updatedAt]);
+  const lastUpdatedLabel = useMemo(
+    () => formatLastUpdated(rates.updatedAt),
+    [rates.updatedAt],
+  );
 
   const handleResetApp = () => {
     Alert.alert(
@@ -327,15 +340,16 @@ export default function SettingsScreen() {
         >
           <View style={{ flex: 1, gap: 4 }}>
             <Text style={{ color: colors.text, fontSize: 14 }} selectable>
-              Last update:
+              Last updated
             </Text>
             <Text style={{ color: colors.textMuted, fontSize: 12 }} selectable>
-              {updatedAtLabel}
+              {lastUpdatedLabel}
             </Text>
           </View>
           <Pressable
             accessibilityRole="button"
-            onPress={refreshFromBundle}
+            onPress={handleUpdateRates}
+            disabled={isUpdating}
             style={({ pressed }) => [
               {
                 paddingHorizontal: 16,
@@ -346,18 +360,24 @@ export default function SettingsScreen() {
                 borderWidth: 1,
                 borderColor: colors.surfaceBorder,
               },
-              pressed && { opacity: 0.7 },
+              (pressed || isUpdating) && { opacity: 0.7 },
             ]}
           >
-            <Text style={{ color: colors.text, fontWeight: '600', fontSize: 13 }} selectable>
-              Update Now
-            </Text>
+            {isUpdating
+              ? (
+                  <ActivityIndicator size="small" color={colors.text} />
+                )
+              : (
+                  <Text style={{ color: colors.text, fontWeight: '600', fontSize: 13 }} selectable>
+                    Update Now
+                  </Text>
+                )}
           </Pressable>
         </View>
         <View style={{ paddingHorizontal: 14, paddingBottom: 10 }}>
           <Text style={noteStyle} selectable>
-            Currency rates can be automatically updated via our server. These currency rates are
-            approximate and may differ from your local currency rates.
+            Rates are fetched from a public API (ExchangeRate-API). Tap Update Now to refresh.
+            Values are approximate and may differ from your local rates.
           </Text>
         </View>
       </SettingsSection>

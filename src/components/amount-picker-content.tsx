@@ -3,8 +3,9 @@ import { useCallback, useEffect, useMemo } from 'react';
 import { Pressable, Text, View } from 'react-native';
 
 import { SelectPill } from '@/components/select-pill';
+import { getCurrencySymbol } from '@/lib/data/currencies';
 import { useTheme } from '@/lib/hooks/use-theme';
-import { useAddSubscriptionDraftStore, useCurrencyRatesStore } from '@/lib/stores';
+import { useAddSubscriptionDraftStore, useCurrencyRatesStore, useSettingsStore } from '@/lib/stores';
 
 const AMOUNT_KEYS = [
   ['1', '2', '3'],
@@ -22,14 +23,18 @@ type AmountPickerContentProps = {
 export function AmountPickerContent({ onDone }: AmountPickerContentProps) {
   const { colors, isDark } = useTheme();
   const { rates } = useCurrencyRatesStore();
+  const { settings } = useSettingsStore();
   const { amount, currency, setAmount, setCurrency } = useAddSubscriptionDraftStore();
 
   const sheetAmount = amount.trim().length > 0 ? amount : '0';
 
-  const currencyOptions = useMemo(
-    () => Object.keys(rates.rates).sort().map(code => ({ label: code, value: code })),
-    [rates.rates],
-  );
+  const currencyOptions = useMemo(() => {
+    const favorites = settings.favoriteCurrencies ?? [];
+    const inRates = new Set(Object.keys(rates.rates));
+    const codes = favorites.filter(code => inRates.has(code)).sort();
+    const list = codes.length === 0 ? Object.keys(rates.rates).sort() : codes;
+    return list.map(code => ({ label: `${code} (${getCurrencySymbol(code)})`, value: code }));
+  }, [rates.rates, settings.favoriteCurrencies]);
 
   useEffect(() => {
     if (currencyOptions.length > 0 && !currencyOptions.some(option => option.value === currency)) {
@@ -85,7 +90,7 @@ export function AmountPickerContent({ onDone }: AmountPickerContentProps) {
             }}
             selectable
           >
-            $
+            {getCurrencySymbol(currency)}
             {sheetAmount}
           </Text>
         </View>
@@ -170,14 +175,18 @@ export function AmountPickerContent({ onDone }: AmountPickerContentProps) {
   );
 }
 
-/** For use inside ModalSheet - pass as topRightActionBar when using this content */
+/** For use inside ModalSheet - pass as topRightActionBar when using this content. Shows only favorite currencies. */
 export function AmountPickerCurrencyPill() {
   const { rates } = useCurrencyRatesStore();
+  const { settings } = useSettingsStore();
   const { currency, setCurrency } = useAddSubscriptionDraftStore();
-  const currencyOptions = useMemo(
-    () => Object.keys(rates.rates).sort().map(code => ({ label: code, value: code })),
-    [rates.rates],
-  );
+  const currencyOptions = useMemo(() => {
+    const favorites = settings.favoriteCurrencies ?? [];
+    const inRates = new Set(Object.keys(rates.rates));
+    const codes = favorites.filter(code => inRates.has(code)).sort();
+    const list = codes.length === 0 ? Object.keys(rates.rates).sort() : codes;
+    return list.map(code => ({ label: `${code} (${getCurrencySymbol(code)})`, value: code }));
+  }, [rates.rates, settings.favoriteCurrencies]);
   const currencyOption = useMemo(
     () => currencyOptions.find(option => option.value === currency),
     [currency, currencyOptions],

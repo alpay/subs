@@ -14,6 +14,7 @@ import { SelectPill } from '@/components/select-pill';
 import { ServiceIcon } from '@/components/service-icon';
 import { GlassCard } from '@/components/ui/glass-card';
 import { useTheme } from '@/lib/hooks/use-theme';
+import { getCurrencySymbol } from '@/lib/utils/format';
 import {
   useAddSubscriptionDraftStore,
   useCategoriesStore,
@@ -444,7 +445,7 @@ export function SubscriptionFormContent({
               style={{ fontSize: 15, color: colors.textMuted, fontVariant: ['tabular-nums'] }}
               selectable
             >
-              $
+              {getCurrencySymbol(draftCurrency)}
               {' '}
               {formattedAmount}
               {' '}
