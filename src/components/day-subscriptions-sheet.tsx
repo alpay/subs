@@ -11,6 +11,7 @@ import { formatAmount } from '@/lib/utils/format';
 
 import { ModalSheet } from './modal-sheet';
 import { ServiceIcon } from './service-icon';
+import { GlassCard } from './ui/glass-card';
 
 type DaySubscriptionsSheetProps = {
   date: Date | null;
@@ -31,7 +32,7 @@ export function DaySubscriptionsSheet({
   onAddPress,
   onSubscriptionPress,
 }: DaySubscriptionsSheetProps) {
-  const { colors, isDark } = useTheme();
+  const { colors } = useTheme();
 
   const total = useMemo(() => {
     const sum = subscriptions.reduce((acc, sub) => {
@@ -65,97 +66,57 @@ export function DaySubscriptionsSheet({
 
   return (
     <ModalSheet
-      title="Subscriptions"
+      title={headerDate}
       closeButtonTitle="Close"
-      topRightActionBar={(
-        <Text style={{ fontSize: 12, color: colors.textMuted, fontVariant: ['tabular-nums'] }} selectable>
-          {headerDate}
-        </Text>
-      )}
       onClose={onClose}
       isVisible={Boolean(date)}
       snapPoints={['90%']}
       enableDynamicSizing
       bottomScrollSpacer={24}
+      contentContainerStyle={{ gap: 8 }}
     >
-      <View
-        style={{
-          borderRadius: 26,
-          borderCurve: 'continuous',
-          backgroundColor: colors.surface,
-          borderWidth: 1,
-          borderColor: colors.surfaceBorder,
-          overflow: 'hidden',
-          boxShadow: isDark
-            ? '0 20px 30px rgba(0, 0, 0, 0.35)'
-            : '0 18px 28px rgba(15, 23, 42, 0.12)',
-        }}
-      >
-        {subscriptions.map((sub, index) => (
-          <View key={sub.id}>
-            <Pressable
-              accessibilityRole="button"
-              onPress={() => handleSubscriptionPress(sub.id)}
-              style={({ pressed }) => [
-                {
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  paddingHorizontal: 16,
-                  paddingVertical: 12,
-                  gap: 12,
-                },
-                pressed ? { opacity: 0.85 } : null,
-              ]}
-            >
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 }}>
-                <ServiceIcon iconKey={sub.iconKey} iconUri={sub.iconType === 'image' ? sub.iconUri : undefined} size={42} />
-                <View style={{ gap: 4, flex: 1 }}>
-                  <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }} selectable>
-                    {sub.name}
-                  </Text>
-                  <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
-                    {sub.scheduleType.charAt(0).toUpperCase() + sub.scheduleType.slice(1)}
-                    {' '}
-                    ·
-                    {' '}
-                    {formatAmount(sub.amount, sub.currency, settings.roundWholeNumbers)}
-                  </Text>
-                </View>
+      {subscriptions.map(sub => (
+        <GlassCard key={sub.id}>
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => handleSubscriptionPress(sub.id)}
+            style={({ pressed }) => [
+              {
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                paddingHorizontal: 16,
+                paddingVertical: 12,
+                gap: 12,
+              },
+              pressed ? { opacity: 0.85 } : null,
+            ]}
+          >
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 }}>
+              <ServiceIcon iconKey={sub.iconKey} iconUri={sub.iconType === 'image' ? sub.iconUri : undefined} size={42} />
+              <View style={{ gap: 4, flex: 1 }}>
+                <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }} selectable>
+                  {sub.name}
+                </Text>
+                <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
+                  {sub.scheduleType.charAt(0).toUpperCase() + sub.scheduleType.slice(1)}
+                  {' '}
+                  ·
+                  {' '}
+                  {formatAmount(sub.amount, sub.currency, settings.roundWholeNumbers)}
+                </Text>
               </View>
-              <Image
-                source="sf:chevron.right"
-                style={{ width: 14, height: 14 }}
-                tintColor={colors.textMuted}
-              />
-            </Pressable>
+            </View>
+            <Image
+              source="sf:chevron.right"
+              style={{ width: 14, height: 14 }}
+              tintColor={colors.textMuted}
+            />
+          </Pressable>
+        </GlassCard>
+      ))}
 
-            {index !== subscriptions.length - 1 && (
-              <View
-                style={{
-                  height: 1,
-                  marginLeft: 16,
-                  marginRight: 16,
-                  backgroundColor: colors.surfaceBorder,
-                  opacity: 0.7,
-                }}
-              />
-            )}
-          </View>
-        ))}
-
-        {subscriptions.length > 0 && (
-          <View
-            style={{
-              height: 1,
-              marginLeft: 16,
-              marginRight: 16,
-              backgroundColor: colors.surfaceBorder,
-              opacity: 0.7,
-            }}
-          />
-        )}
-
+      <GlassCard>
         <Pressable
           accessibilityRole="button"
           onPress={handleAddPress}
@@ -186,23 +147,12 @@ export function DaySubscriptionsSheet({
             <Image source="sf:plus" style={{ width: 16, height: 16 }} tintColor={colors.text} />
           </View>
           <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }} selectable>
-            Services
+            Add new subscription
           </Text>
         </Pressable>
-      </View>
+      </GlassCard>
 
-      <View
-        style={{
-          borderRadius: 26,
-          borderCurve: 'continuous',
-          backgroundColor: colors.surface,
-          borderWidth: 1,
-          borderColor: colors.surfaceBorder,
-          boxShadow: isDark
-            ? '0 20px 30px rgba(0, 0, 0, 0.35)'
-            : '0 18px 28px rgba(15, 23, 42, 0.12)',
-        }}
-      >
+      <GlassCard style={{ marginTop: 12 }}>
         <View
           style={{
             flexDirection: 'row',
@@ -227,7 +177,7 @@ export function DaySubscriptionsSheet({
             {formatAmount(total, settings.mainCurrency, settings.roundWholeNumbers)}
           </Text>
         </View>
-      </View>
+      </GlassCard>
     </ModalSheet>
   );
 }
