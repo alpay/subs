@@ -70,11 +70,6 @@ export default function AppLayout() {
           sheetAllowedDetents: 'fitToContents' as const,
         }}
       />
-
-      <Stack.Screen name="csv-import" options={transparentModalOptions} />
-
-      <Stack.Screen name="icon-picker" options={transparentModalOptions} />
-
     </Stack>
   );
 }
