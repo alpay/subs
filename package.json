@@ -43,6 +43,7 @@
     "@expo/metro-runtime": "^55.0.4",
     "@expo/vector-icons": "^15.0.3",
     "@gorhom/bottom-sheet": "^5.2.8",
+    "@mgcrea/react-native-swiftui": "^0.15.2",
     "@quidone/react-native-wheel-picker": "^1.6.1",
     "@quidone/react-native-wheel-picker-feedback": "^2.0.0",
     "@react-native-community/slider": "5.1.1",
