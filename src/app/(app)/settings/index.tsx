@@ -107,7 +107,6 @@ export default function SettingsScreen() {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{
-          paddingHorizontal: 8,
           paddingBottom: bottom + 20,
         }}
         showsVerticalScrollIndicator={false}
@@ -168,7 +167,7 @@ export default function SettingsScreen() {
             value={settings.iCloudEnabled ? 'On' : 'Off'}
             valueColor={colors.textMuted}
             buttonColor={colors.text}
-            onPress={() => update({ iCloudEnabled: !settings.iCloudEnabled })}
+            onPress={() => router.push('/(app)/settings/icloud-data')}
           />
           <SettingsRow
             icon="system:dollarsign"

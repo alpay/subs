@@ -15,6 +15,7 @@ export default function SettingsLayout() {
       <Stack.Screen name="lists" />
       <Stack.Screen name="currency" />
       <Stack.Screen name="payment-methods" />
+      <Stack.Screen name="icloud-data" />
     </Stack>
   );
 }

@@ -86,6 +86,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
       },
     ],
     'expo-image',
+    [
+      '@oleg_svetlichnyi/expo-icloud-storage',
+      {
+        containerIdentifier: `iCloud.${Env.EXPO_PUBLIC_BUNDLE_ID}`,
+        containerName: Env.EXPO_PUBLIC_NAME,
+      },
+    ],
   ],
   extra: {
     eas: {

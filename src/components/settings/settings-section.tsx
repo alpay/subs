@@ -1,5 +1,5 @@
-import { SwiftUI } from '@mgcrea/react-native-swiftui';
 import type { ReactNode } from 'react';
+import { SwiftUI } from '@mgcrea/react-native-swiftui';
 import { View } from 'react-native';
 
 const DEFAULT_MIN_HEIGHT = 150;
@@ -18,7 +18,7 @@ export function SettingsSection({
   children,
 }: SettingsSectionProps) {
   return (
-    <View style={{ marginBottom: 20 }}>
+    <View style={{ marginBottom: 16 }}>
       <SwiftUI style={{ flex: 1, minHeight }}>
         <SwiftUI.Form scrollDisabled contentMargins={{ leading: 1, trailing: 1 }}>
           <SwiftUI.Section header={header} footer={footer}>
