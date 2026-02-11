@@ -15,7 +15,6 @@ import { useTheme } from '@/lib/hooks/use-theme';
 import {
   useAddSubscriptionDraftStore,
   useCategoriesStore,
-  useCurrencyRatesStore,
   useListsStore,
   usePaymentMethodsStore,
   useSettingsStore,
@@ -59,10 +58,6 @@ function toIsoLocalDate(date: Date) {
   const month = `${date.getMonth() + 1}`.padStart(2, '0');
   const day = `${date.getDate()}`.padStart(2, '0');
   return `${year}-${month}-${day}`;
-}
-
-function todayIsoDate() {
-  return new Date().toISOString().slice(0, 10);
 }
 
 function isValidDateString(value: string) {
@@ -116,27 +111,21 @@ export function SubscriptionFormContent({
   const { lists } = useListsStore();
   const { methods } = usePaymentMethodsStore();
   const { settings } = useSettingsStore();
-  const { rates } = useCurrencyRatesStore();
   const draftStore = useAddSubscriptionDraftStore();
 
   const [name, setName] = useState(initialState.name);
   const [scheduleType, setScheduleType] = useState<ScheduleType>(initialState.scheduleType);
   const [intervalCount, setIntervalCount] = useState(initialState.intervalCount);
   const [intervalUnit, setIntervalUnit] = useState<'week' | 'month'>(initialState.intervalUnit);
-  const [startDate, setStartDate] = useState(initialState.startDate);
   const [categoryId, setCategoryId] = useState(initialState.categoryId);
   const [listId, setListId] = useState(initialState.listId);
   const [paymentMethodId, setPaymentMethodId] = useState(initialState.paymentMethodId);
   const [status, setStatus] = useState<SubscriptionStatus>(initialState.status);
   const [notificationMode, setNotificationMode] = useState<NotificationMode>(initialState.notificationMode);
-  const [iconKey, setIconKey] = useState(initialState.iconKey);
-  const [iconUri, setIconUri] = useState(initialState.iconUri ?? '');
   const [notes, setNotes] = useState(initialState.notes);
 
-  const currencyOptions = useMemo(
-    () => Object.keys(rates.rates).sort().map(code => ({ label: code, value: code })),
-    [rates.rates],
-  );
+  const { iconKey, iconUri } = initialState;
+
   const categoryOptions = useMemo(
     () => categories.map(c => ({ label: c.name, value: c.id, color: c.color })),
     [categories],
@@ -169,14 +158,14 @@ export function SubscriptionFormContent({
 
   useEffect(() => {
     // Seed draft store for both create and edit flows so amount picker route works consistently.
-    draftStore.reset({
+    useAddSubscriptionDraftStore.getState().reset({
       amount: initialState.amount || '0',
       currency: initialState.currency || settings.mainCurrency || 'USD',
       startDate: isValidDateString(initialState.startDate)
         ? new Date(initialState.startDate)
         : new Date(),
     });
-  }, []);
+  }, [initialState.amount, initialState.currency, initialState.startDate, settings.mainCurrency]);
 
   const draftAmount = draftStore.amount;
   const draftCurrency = draftStore.currency;
@@ -190,11 +179,11 @@ export function SubscriptionFormContent({
   }, [router]);
 
   const handleDatePress = useCallback(() => {
-    if (isEdit && isValidDateString(startDate)) {
-      draftStore.setStartDate(parseISO(startDate));
+    if (isEdit && isValidDateString(initialState.startDate)) {
+      draftStore.setStartDate(parseISO(initialState.startDate));
     }
     router.push('/(app)/date-picker');
-  }, [isEdit, startDate, draftStore, router]);
+  }, [isEdit, initialState.startDate, draftStore, router]);
 
   const handleSave = useCallback(() => {
     if (!isValid)
@@ -212,7 +201,7 @@ export function SubscriptionFormContent({
       status,
       iconType: useImageIcon ? 'image' : 'builtIn',
       iconKey: useImageIcon ? undefined : (iconKey.trim() || 'custom'),
-      iconUri: useImageIcon ? iconUri.trim() : undefined,
+      iconUri: useImageIcon ? (iconUri ?? '').trim() : undefined,
       amount: finalAmount,
       currency: finalCurrency,
       scheduleType,
@@ -238,9 +227,7 @@ export function SubscriptionFormContent({
   }, [
     isValid,
     isEdit,
-    amountValue,
     draftStore,
-    startDate,
     name,
     status,
     iconKey,
@@ -260,11 +247,13 @@ export function SubscriptionFormContent({
   ]);
 
   useEffect(() => {
-    if (submitRef)
-      submitRef.current = handleSave;
+    if (!submitRef)
+      return;
+    const ref = submitRef;
+    // eslint-disable-next-line react-compiler/react-compiler -- ref.current is the standard imperative handle pattern
+    ref.current = handleSave;
     return () => {
-      if (submitRef)
-        submitRef.current = null;
+      ref.current = null;
     };
   }, [handleSave, submitRef]);
 
@@ -305,7 +294,7 @@ export function SubscriptionFormContent({
   return (
     <Fragment>
       <View style={{ alignItems: 'center', paddingTop: 6, paddingBottom: 24 }}>
-        <ServiceIcon iconKey={iconKey} iconUri={iconUri || undefined} size={72} />
+        <ServiceIcon iconKey={iconKey} iconUri={iconUri ?? undefined} size={72} />
       </View>
 
       <GlassCard style={{ marginBottom: 12 }}>
