@@ -60,7 +60,7 @@ export default function SearchScreen() {
             <Image source="sf:magnifyingglass" style={{ width: 16, height: 16 }} tintColor={colors.textMuted} />
             <TextInput
               ref={inputRef}
-              placeholder="Search subscriptions"
+              placeholder="Search subs"
               placeholderTextColor={colors.textMuted}
               value={query}
               onChangeText={setQuery}

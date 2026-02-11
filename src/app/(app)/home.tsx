@@ -70,7 +70,7 @@ export default function HomeScreen() {
         />
         <Stack.Toolbar.Spacer />
         <Stack.SearchBar
-          placeholder="Search subscriptions"
+          placeholder="Search subs"
           onChangeText={(event) => {
             if (typeof event === 'string') {
               setQuery(event);
