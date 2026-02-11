@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { NativeSheet } from '@/components/native-sheet';
 import { Pill } from '@/components/pill';
@@ -73,14 +73,12 @@ export default function AnalyticsScreen() {
 
   return (
     <NativeSheet title="Analytics">
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{
+      <View
+        style={{
           gap: 16,
           paddingHorizontal: 16,
           paddingBottom: 24,
         }}
-        showsVerticalScrollIndicator={false}
       >
         <GlassCard>
           <View style={{ gap: 16, alignItems: 'center', paddingVertical: 20, paddingHorizontal: 16 }}>
@@ -217,7 +215,7 @@ export default function AnalyticsScreen() {
             ))}
           </View>
         </GlassCard>
-      </ScrollView>
+      </View>
     </NativeSheet>
   );
 }

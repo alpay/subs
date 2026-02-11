@@ -9,7 +9,7 @@ import 'tsx/cjs';
 import Env from './env';
 
 const EXPO_ACCOUNT_OWNER = 'mangoser';
-const EAS_PROJECT_ID = '';
+const EAS_PROJECT_ID = '457bc03e-a6f5-4c84-ae9e-14df4d911373';
 
 const appIconBadgeConfig: AppIconBadgeConfig = {
   enabled: Env.EXPO_PUBLIC_APP_ENV !== 'production',
@@ -47,9 +47,6 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     bundleIdentifier: Env.EXPO_PUBLIC_BUNDLE_ID,
     infoPlist: {
       ITSAppUsesNonExemptEncryption: false,
-      NSLocationWhenInUseUsageDescription: 'Allow $(PRODUCT_NAME) to access your location to show local UV index data.',
-      NSLocationAlwaysAndWhenInUseUsageDescription: 'Allow $(PRODUCT_NAME) to access your location to show local UV index data.',
-      NSLocationAlwaysUsageDescription: 'Allow $(PRODUCT_NAME) to access your location to show local UV index data.',
     },
   },
   experiments: {
@@ -80,21 +77,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-localization',
     'expo-router',
     ['app-icon-badge', appIconBadgeConfig],
-    ['react-native-edge-to-edge'],
-    [
-      'expo-camera',
-      {
-        cameraPermission: 'Allow $(PRODUCT_NAME) to access your camera to take skin photos.',
-        microphonePermission: 'Allow $(PRODUCT_NAME) to access your microphone for video logs.',
-      },
-    ],
-    [
-      'expo-media-library',
-      {
-        photosPermission: 'Allow $(PRODUCT_NAME) to save skin photos to your library.',
-        savePhotosPermission: 'Allow $(PRODUCT_NAME) to save skin photos.',
-      },
-    ],
+
     [
       'expo-notifications',
       {
@@ -102,20 +85,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         color: '#2E3C4B',
       },
     ],
-    [
-      'expo-image-picker',
-      {
-        photosPermission: 'Allow $(PRODUCT_NAME) to access your photos to add product images.',
-      },
-    ],
     'expo-image',
-    'expo-video',
-    [
-      'expo-location',
-      {
-        locationWhenInUsePermission: 'Allow $(PRODUCT_NAME) to access your location to show local UV index data.',
-      },
-    ],
   ],
   extra: {
     eas: {
