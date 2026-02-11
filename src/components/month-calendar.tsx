@@ -11,9 +11,9 @@ import { getServiceColor, ServiceIcon } from './service-icon';
 
 const WEEKDAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 const TOTAL_CELLS = 6 * 7;
-const SIDE_PADDING = 20;
+const SIDE_PADDING = 8;
 const GAP_BETWEEN_PAGES = 16;
-const CELL_GAP = 10;
+const CELL_GAP = 4;
 
 function withAlpha(hex: string, alpha: number) {
   const n = hex.replace('#', '');
@@ -146,13 +146,18 @@ const MonthGrid = memo(({
               <Text style={[styles.dayLabel, { color: textColor }]}>{dayDate.getDate()}</Text>
               {items.length > 0 && (
                 <View style={styles.cellIcons}>
-                  <ServiceIcon iconKey={items[0].iconKey} iconUri={items[0].iconType === 'image' ? items[0].iconUri : undefined} size={iconSize} style={styles.iconNoShadow} />
+                  {items.length === 1 && (
+                    <ServiceIcon iconKey={items[0].iconKey} iconUri={items[0].iconType === 'image' ? items[0].iconUri : undefined} size={iconSize} style={styles.iconNoShadow} />
+                  )}
                   {items.length > 1 && (
-                    <View style={[styles.badge, { width: badgeSize, height: badgeSize, borderRadius: badgeSize / 2, marginLeft: -Math.round(badgeSize * 0.3), backgroundColor: serviceColor ?? colors.surface, borderColor: withAlpha('#FFF', isDark ? 0.3 : 0.55) }]}>
-                      <Text style={[styles.badgeText, { fontSize: Math.max(10, Math.round(badgeSize * 0.42)), color: colors.iconOnColor }]}>
-                        {items.length}
-                      </Text>
-                    </View>
+                    <>
+                      <ServiceIcon iconKey={items[0].iconKey} iconUri={items[0].iconType === 'image' ? items[0].iconUri : undefined} size={iconSize * 0.8} style={styles.iconNoShadow} />
+                      <View style={[styles.badge, { width: badgeSize, height: badgeSize, borderRadius: badgeSize / 2, marginLeft: -Math.round(badgeSize * 0.5), backgroundColor: serviceColor ?? colors.surface, borderColor: withAlpha('#FFF', isDark ? 0.3 : 0.55) }]}>
+                        <Text style={[styles.badgeText, { fontSize: Math.max(10, Math.round(badgeSize * 0.42)), color: colors.iconOnColor }]}>
+                          {items.length}
+                        </Text>
+                      </View>
+                    </>
                   )}
                 </View>
               )}
@@ -279,8 +284,8 @@ const styles = StyleSheet.create({
   cells: { flexDirection: 'row', flexWrap: 'wrap' },
   cellBase: { borderCurve: 'continuous', alignItems: 'center', justifyContent: 'center' },
   cellPressed: { opacity: 0.88, transform: [{ scale: 0.98 }] },
-  dayLabel: { position: 'absolute', bottom: 8, right: 8, fontSize: 11, opacity: 0.85, fontVariant: ['tabular-nums'] },
-  cellIcons: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6 },
+  dayLabel: { position: 'absolute', bottom: 4, right: 4, fontSize: 10, opacity: 0.85, fontVariant: ['tabular-nums'] },
+  cellIcons: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginBottom: 8 },
   iconNoShadow: { boxShadow: 'none' },
   badge: { borderCurve: 'continuous', borderWidth: 1, alignItems: 'center', justifyContent: 'center' },
   badgeText: { fontWeight: '600', fontVariant: ['tabular-nums'] },
