@@ -16,6 +16,7 @@ export default function HomeScreen() {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const [visibleMonth, setVisibleMonth] = useState(() => startOfMonth(new Date()));
+  const [viewMode, setViewMode] = useState<'list' | 'month'>('list');
 
   const {
     averageMonthly,
@@ -63,6 +64,16 @@ export default function HomeScreen() {
       </Stack.Toolbar>
 
       <Stack.Toolbar placement="bottom">
+        <Stack.Toolbar.Menu>
+          <Stack.Toolbar.Icon sf={viewMode === 'list' ? 'list.bullet' : 'calendar'} />
+          <Stack.Toolbar.MenuAction isOn={viewMode === 'list'} onPress={() => setViewMode('list')}>
+            List
+          </Stack.Toolbar.MenuAction>
+          <Stack.Toolbar.MenuAction isOn={viewMode === 'month'} onPress={() => setViewMode('month')}>
+            Month
+          </Stack.Toolbar.MenuAction>
+        </Stack.Toolbar.Menu>
+        <Stack.Toolbar.Spacer />
         <Stack.SearchBar
           placeholder="Search subscriptions"
           onChangeText={(event) => {
@@ -80,7 +91,7 @@ export default function HomeScreen() {
         <Stack.Toolbar.Button icon="plus" onPress={() => router.push('/(app)/services')} />
       </Stack.Toolbar>
 
-      {hasQuery
+      {viewMode === 'list' || hasQuery
         ? (
             <ScreenShell
               contentContainerStyle={{
