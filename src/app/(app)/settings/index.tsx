@@ -8,6 +8,11 @@ import { Alert, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { NativeSheet } from '@/components/native-sheet';
+import {
+  SettingsRow,
+  SettingsSection,
+  SettingsToggleRow,
+} from '@/components/settings';
 import { SettingsNotificationSection } from '@/components/settings-notification-section';
 import { CURRENCIES } from '@/lib/data/currencies';
 import { useTheme } from '@/lib/hooks/use-theme';
@@ -107,289 +112,192 @@ export default function SettingsScreen() {
         }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Developer - SwiftUI Form (requires explicit height in ScrollView) */}
-        <View style={{ marginBottom: 20 }}>
-          <SwiftUI style={{ flex: 1, minHeight: 150 }}>
-            <SwiftUI.Form scrollDisabled contentMargins={{ leading: 1, trailing: 1 }}>
-              <SwiftUI.Section
-                header="Developer"
-              >
-                <SwiftUI.Button
-                  style={{ color: 'red' }}
-                  onPress={handleResetApp}
-                >
-                  <SwiftUI.HStack spacing={8}>
-                    <SwiftUI.Image name="system:trash" />
-                    <SwiftUI.Text text="Reset App" />
-                  </SwiftUI.HStack>
-                </SwiftUI.Button>
-                <SwiftUI.HStack spacing={8}>
-                  <SwiftUI.Image name="system:crown" />
-                  <SwiftUI.Text text="Premium" />
-                  <SwiftUI.Spacer />
-                  <SwiftUI.Toggle
-                    label=""
-                    isOn={settings.premium}
-                    onChange={value => update({ premium: value })}
-                  />
-                </SwiftUI.HStack>
-              </SwiftUI.Section>
-            </SwiftUI.Form>
-          </SwiftUI>
-        </View>
+        {/* Developer */}
+        <SettingsSection header="Developer" minHeight={150}>
+          <SettingsRow
+            icon="system:trash"
+            label="Reset App"
+            buttonColor="red"
+            trailingIcon={false}
+            onPress={handleResetApp}
+          />
+          <SettingsToggleRow
+            icon="system:crown"
+            label="Premium"
+            isOn={settings.premium}
+            onChange={value => update({ premium: value })}
+          />
+        </SettingsSection>
 
-        {/* Section 1: Account - SwiftUI Form */}
-        <View style={{ marginBottom: 20 }}>
-          <SwiftUI style={{ flex: 1, minHeight: 150 }}>
-            <SwiftUI.Form scrollDisabled contentMargins={{ leading: 1, trailing: 1 }}>
-              <SwiftUI.Section
-                header="Account"
-                footer="Unlock all features with a lifetime license."
-              >
-                <SwiftUI.Button buttonStyle="plain" onPress={() => {}}>
-                  <SwiftUI.HStack spacing={8}>
-                    <SwiftUI.Image name="system:sparkles" />
-                    <SwiftUI.VStack alignment="leading" spacing={2}>
-                      <SwiftUI.Text
-                        text="Subscription Day"
-                        style={{ fontSize: 17, fontWeight: '600' }}
-                      />
-                      <SwiftUI.Text
-                        text="Account type"
-                        style={{ color: colors.textMuted, fontSize: 12 }}
-                      />
-                    </SwiftUI.VStack>
-                    <SwiftUI.Spacer />
-                    <SwiftUI.Text
-                      text="Free"
-                      style={{ color: colors.accent, fontSize: 12, fontWeight: '600' }}
-                    />
-                    <SwiftUI.Image name="system:chevron.right" />
-                  </SwiftUI.HStack>
-                </SwiftUI.Button>
-              </SwiftUI.Section>
-            </SwiftUI.Form>
-          </SwiftUI>
-        </View>
+        {/* Account */}
+        <SettingsSection
+          header="Account"
+          footer="Unlock all features with a lifetime license."
+          minHeight={150}
+        >
+          <SettingsRow
+            icon="system:sparkles"
+            label={(
+              <SwiftUI.VStack alignment="leading" spacing={2}>
+                <SwiftUI.Text
+                  text="Subscription Day"
+                  style={{ fontSize: 17, fontWeight: '600' }}
+                />
+                <SwiftUI.Text
+                  text="Account type"
+                  style={{ color: colors.textMuted, fontSize: 12 }}
+                />
+              </SwiftUI.VStack>
+            )}
+            value={(
+              <SwiftUI.Text
+                text="Free"
+                style={{ color: colors.accent, fontSize: 12, fontWeight: '600' }}
+              />
+            )}
+            buttonColor={colors.text}
+            onPress={() => {}}
+          />
+        </SettingsSection>
 
-        {/* Section 2: General - SwiftUI Form */}
-        <View style={{ marginBottom: 20 }}>
-          <SwiftUI style={{ flex: 1, minHeight: 200 }}>
-            <SwiftUI.Form scrollDisabled contentMargins={{ leading: 1, trailing: 1 }}>
-              <SwiftUI.Section header="General">
-                <SwiftUI.Button
-                  buttonStyle="plain"
-                  onPress={() => update({ iCloudEnabled: !settings.iCloudEnabled })}
-                >
-                  <SwiftUI.HStack spacing={8}>
-                    <SwiftUI.Image name="system:externaldrive" />
-                    <SwiftUI.Text text="iCloud & Data" />
-                    <SwiftUI.Spacer />
-                    <SwiftUI.Text
-                      text={settings.iCloudEnabled ? 'On' : 'Off'}
-                      style={{ color: colors.textMuted }}
-                    />
-                    <SwiftUI.Image name="system:chevron.right" />
-                  </SwiftUI.HStack>
-                </SwiftUI.Button>
-                <SwiftUI.Button
-                  buttonStyle="plain"
-                  onPress={() => router.push('/(app)/settings/currency')}
-                >
-                  <SwiftUI.HStack spacing={8}>
-                    <SwiftUI.Image name="system:dollarsign" />
-                    <SwiftUI.Text text="Main Currency" />
-                    <SwiftUI.Spacer />
-                    <SwiftUI.HStack spacing={6}>
-                      {currencyFlag
-                        ? <SwiftUI.Text text={currencyFlag} />
-                        : null}
-                      <SwiftUI.Text text={settings.mainCurrency} />
-                    </SwiftUI.HStack>
-                    <SwiftUI.Image name="system:chevron.right" />
-                  </SwiftUI.HStack>
-                </SwiftUI.Button>
-                <SwiftUI.HStack spacing={8}>
-                  <SwiftUI.Image name="system:number" />
-                  <SwiftUI.Text text="Round to Whole Numbers" />
-                  <SwiftUI.Spacer />
-                  <SwiftUI.Toggle
-                    label=""
-                    isOn={settings.roundWholeNumbers}
-                    onChange={value => update({ roundWholeNumbers: value })}
-                  />
-                </SwiftUI.HStack>
-              </SwiftUI.Section>
-            </SwiftUI.Form>
-          </SwiftUI>
-        </View>
+        {/* General */}
+        <SettingsSection header="General" minHeight={200}>
+          <SettingsRow
+            icon="system:externaldrive"
+            label="iCloud & Data"
+            value={settings.iCloudEnabled ? 'On' : 'Off'}
+            valueColor={colors.textMuted}
+            buttonColor={colors.text}
+            onPress={() => update({ iCloudEnabled: !settings.iCloudEnabled })}
+          />
+          <SettingsRow
+            icon="system:dollarsign"
+            label="Main Currency"
+            value={(
+              <SwiftUI.HStack spacing={6}>
+                {currencyFlag ? <SwiftUI.Text text={currencyFlag} /> : null}
+                <SwiftUI.Text text={settings.mainCurrency} />
+              </SwiftUI.HStack>
+            )}
+            buttonColor={colors.text}
+            onPress={() => router.push('/(app)/settings/currency')}
+          />
+          <SettingsToggleRow
+            icon="system:number"
+            label="Round to Whole Numbers"
+            isOn={settings.roundWholeNumbers}
+            onChange={value => update({ roundWholeNumbers: value })}
+          />
+        </SettingsSection>
 
-        {/* Section 3: Lists, Categories & Payment Methods - SwiftUI Form */}
-        <View style={{ marginBottom: 20 }}>
-          <SwiftUI style={{ flex: 1, minHeight: 200 }}>
-            <SwiftUI.Form scrollDisabled contentMargins={{ leading: 1, trailing: 1 }}>
-              <SwiftUI.Section header="Data">
-                <SwiftUI.Button
-                  buttonStyle="plain"
-                  onPress={() => router.push('/(app)/settings/lists')}
-                >
-                  <SwiftUI.HStack spacing={8}>
-                    <SwiftUI.Image name="system:list.bullet" />
-                    <SwiftUI.Text text="Lists" />
-                    <SwiftUI.Spacer />
-                    <SwiftUI.Text
-                      text={String(lists.length)}
-                      style={{ color: colors.textMuted }}
-                    />
-                    <SwiftUI.Image name="system:chevron.right" />
-                  </SwiftUI.HStack>
-                </SwiftUI.Button>
-                <SwiftUI.Button
-                  buttonStyle="plain"
-                  onPress={() => router.push('/(app)/settings/categories')}
-                >
-                  <SwiftUI.HStack spacing={8}>
-                    <SwiftUI.Image name="system:square.grid.2x2" />
-                    <SwiftUI.Text text="Categories" />
-                    <SwiftUI.Spacer />
-                    <SwiftUI.Text
-                      text={String(categories.length)}
-                      style={{ color: colors.textMuted }}
-                    />
-                    <SwiftUI.Image name="system:chevron.right" />
-                  </SwiftUI.HStack>
-                </SwiftUI.Button>
-                <SwiftUI.Button
-                  buttonStyle="plain"
-                  onPress={() => router.push('/(app)/settings/payment-methods')}
-                >
-                  <SwiftUI.HStack spacing={8}>
-                    <SwiftUI.Image name="system:creditcard" />
-                    <SwiftUI.Text text="Payment Methods" />
-                    <SwiftUI.Spacer />
-                    <SwiftUI.Text
-                      text={String(methods.length)}
-                      style={{ color: colors.textMuted }}
-                    />
-                    <SwiftUI.Image name="system:chevron.right" />
-                  </SwiftUI.HStack>
-                </SwiftUI.Button>
-              </SwiftUI.Section>
-            </SwiftUI.Form>
-          </SwiftUI>
-        </View>
+        {/* Data */}
+        <SettingsSection header="Data" minHeight={200}>
+          <SettingsRow
+            icon="system:list.bullet"
+            label="Lists"
+            value={String(lists.length)}
+            valueColor={colors.textMuted}
+            buttonColor={colors.text}
+            onPress={() => router.push('/(app)/settings/lists')}
+          />
+          <SettingsRow
+            icon="system:square.grid.2x2"
+            label="Categories"
+            value={String(categories.length)}
+            valueColor={colors.textMuted}
+            buttonColor={colors.text}
+            onPress={() => router.push('/(app)/settings/categories')}
+          />
+          <SettingsRow
+            icon="system:creditcard"
+            label="Payment Methods"
+            value={String(methods.length)}
+            valueColor={colors.textMuted}
+            buttonColor={colors.text}
+            onPress={() => router.push('/(app)/settings/payment-methods')}
+          />
+        </SettingsSection>
 
         {/* Section 4: Notifications (rounded panel) */}
         <SettingsNotificationSection />
 
-        {/* Section 5: Interface - SwiftUI Form */}
-        <View style={{ marginBottom: 20 }}>
-          <SwiftUI style={{ flex: 1, minHeight: 150 }}>
-            <SwiftUI.Form scrollDisabled contentMargins={{ leading: 1, trailing: 1 }}>
-              <SwiftUI.Section header="Interface">
-                <SwiftUI.HStack spacing={8}>
-                  <SwiftUI.Image name="system:paintbrush.fill" />
-                  <SwiftUI.Text text="True Dark Colors" />
-                  <SwiftUI.Spacer />
-                  <SwiftUI.Toggle
-                    label=""
-                    isOn={settings.trueDarkColors}
-                    onChange={value => update({ trueDarkColors: value })}
-                  />
-                </SwiftUI.HStack>
-                <SwiftUI.HStack spacing={8}>
-                  <SwiftUI.Image name="system:hand.tap.fill" />
-                  <SwiftUI.Text text="Haptic Feedback" />
-                  <SwiftUI.Spacer />
-                  <SwiftUI.Toggle
-                    label=""
-                    isOn={settings.hapticsEnabled}
-                    onChange={value => update({ hapticsEnabled: value })}
-                  />
-                </SwiftUI.HStack>
-              </SwiftUI.Section>
-            </SwiftUI.Form>
-          </SwiftUI>
-        </View>
+        {/* Interface */}
+        <SettingsSection header="Interface" minHeight={150}>
+          <SettingsToggleRow
+            icon="system:paintbrush.fill"
+            label="True Dark Colors"
+            isOn={settings.trueDarkColors}
+            onChange={value => update({ trueDarkColors: value })}
+          />
+          <SettingsToggleRow
+            icon="system:hand.tap.fill"
+            label="Haptic Feedback"
+            isOn={settings.hapticsEnabled}
+            onChange={value => update({ hapticsEnabled: value })}
+          />
+        </SettingsSection>
 
-        {/* Currency rates - SwiftUI Form */}
-        <View style={{ marginBottom: 20 }}>
-          <SwiftUI style={{ flex: 1, minHeight: 180 }}>
-            <SwiftUI.Form scrollDisabled contentMargins={{ leading: 1, trailing: 1 }}>
-              <SwiftUI.Section
-                header="Currency Rates"
-                footer="Rates are fetched from a public API (ExchangeRate-API). Tap Update Now to refresh. Values are approximate and may differ from your local rates."
-              >
-                <SwiftUI.HStack spacing={8}>
-                  <SwiftUI.VStack alignment="leading" spacing={4}>
-                    <SwiftUI.Text text="Last updated" />
-                    <SwiftUI.Text
-                      text={lastUpdatedLabel}
-                      style={{ color: colors.textMuted, fontSize: 12 }}
-                    />
-                  </SwiftUI.VStack>
-                  <SwiftUI.Spacer />
-                  <SwiftUI.Button
-                    title={isUpdating ? 'Updating...' : 'Update Now'}
-                    buttonStyle="default"
-                    disabled={isUpdating}
-                    onPress={handleUpdateRates}
-                  />
-                </SwiftUI.HStack>
-              </SwiftUI.Section>
-            </SwiftUI.Form>
-          </SwiftUI>
-        </View>
+        {/* Currency rates */}
+        <SettingsSection
+          header="Currency Rates"
+          footer="Rates are fetched from a public API (ExchangeRate-API). Tap Update Now to refresh. Values are approximate and may differ from your local rates."
+          minHeight={180}
+        >
+          <SwiftUI.HStack spacing={8}>
+            <SwiftUI.VStack alignment="leading" spacing={4}>
+              <SwiftUI.Text text="Last updated" />
+              <SwiftUI.Text
+                text={lastUpdatedLabel}
+                style={{ color: colors.textMuted, fontSize: 12 }}
+              />
+            </SwiftUI.VStack>
+            <SwiftUI.Spacer />
+            <SwiftUI.Button
+              title={isUpdating ? 'Updating...' : 'Update Now'}
+              buttonStyle="default"
+              style={{ color: colors.text }}
+              disabled={isUpdating}
+              onPress={handleUpdateRates}
+            />
+          </SwiftUI.HStack>
+        </SettingsSection>
 
-        {/* More: Rate & Review, etc. - SwiftUI Form */}
-        <View style={{ marginBottom: 20 }}>
-          <SwiftUI style={{ flex: 1, minHeight: 300 }}>
-            <SwiftUI.Form scrollDisabled contentMargins={{ leading: 1, trailing: 1 }}>
-              <SwiftUI.Section header="More">
-                <SwiftUI.Button buttonStyle="plain" onPress={() => {}}>
-                  <SwiftUI.HStack spacing={8}>
-                    <SwiftUI.Image name="system:star" />
-                    <SwiftUI.Text text="Rate & Review" />
-                    <SwiftUI.Spacer />
-                    <SwiftUI.Image name="system:arrow.up.right" />
-                  </SwiftUI.HStack>
-                </SwiftUI.Button>
-                <SwiftUI.Button buttonStyle="plain" onPress={() => {}}>
-                  <SwiftUI.HStack spacing={8}>
-                    <SwiftUI.Image name="system:list.bullet.rectangle" />
-                    <SwiftUI.Text text="Ideas & Roadmap" />
-                    <SwiftUI.Spacer />
-                    <SwiftUI.Image name="system:arrow.up.right" />
-                  </SwiftUI.HStack>
-                </SwiftUI.Button>
-                <SwiftUI.Button buttonStyle="plain" onPress={() => {}}>
-                  <SwiftUI.HStack spacing={8}>
-                    <SwiftUI.Image name="system:envelope" />
-                    <SwiftUI.Text text="Contact me" />
-                    <SwiftUI.Spacer />
-                    <SwiftUI.Image name="system:chevron.right" />
-                  </SwiftUI.HStack>
-                </SwiftUI.Button>
-                <SwiftUI.Button buttonStyle="plain" onPress={() => {}}>
-                  <SwiftUI.HStack spacing={8}>
-                    <SwiftUI.Image name="system:globe" />
-                    <SwiftUI.Text text="Visit Website" />
-                    <SwiftUI.Spacer />
-                    <SwiftUI.Image name="system:arrow.up.right" />
-                  </SwiftUI.HStack>
-                </SwiftUI.Button>
-                <SwiftUI.Button buttonStyle="plain" onPress={() => {}}>
-                  <SwiftUI.HStack spacing={8}>
-                    <SwiftUI.Image name="system:square.and.arrow.up" />
-                    <SwiftUI.Text text="Share with a friend" />
-                    <SwiftUI.Spacer />
-                    <SwiftUI.Image name="system:chevron.right" />
-                  </SwiftUI.HStack>
-                </SwiftUI.Button>
-              </SwiftUI.Section>
-            </SwiftUI.Form>
-          </SwiftUI>
-        </View>
+        {/* More */}
+        <SettingsSection header="More" minHeight={300}>
+          <SettingsRow
+            icon="system:star"
+            label="Rate & Review"
+            trailingIcon="arrow"
+            buttonColor={colors.text}
+            onPress={() => {}}
+          />
+          <SettingsRow
+            icon="system:list.bullet.rectangle"
+            label="Ideas & Roadmap"
+            trailingIcon="arrow"
+            buttonColor={colors.text}
+            onPress={() => {}}
+          />
+          <SettingsRow
+            icon="system:envelope"
+            label="Contact me"
+            buttonColor={colors.text}
+            onPress={() => {}}
+          />
+          <SettingsRow
+            icon="system:globe"
+            label="Visit Website"
+            trailingIcon="arrow"
+            buttonColor={colors.text}
+            onPress={() => {}}
+          />
+          <SettingsRow
+            icon="system:square.and.arrow.up"
+            label="Share with a friend"
+            buttonColor={colors.text}
+            onPress={() => {}}
+          />
+        </SettingsSection>
 
         <View style={{ alignItems: 'center', gap: 6, paddingTop: 8 }}>
           <Image
