@@ -94,7 +94,6 @@ const MonthGrid = memo(({
       backgroundColor: withAlpha(colors.surfaceMuted, isDark ? 0.28 : 0.45),
       borderWidth: 1,
       borderColor: withAlpha(colors.surfaceBorder, isDark ? 0.22 : 0.35),
-      boxShadow: isDark ? '0 6px 12px rgba(0, 0, 0, 0.18)' : '0 6px 12px rgba(15, 23, 42, 0.07)',
     }),
     [colors.surfaceMuted, colors.surfaceBorder, isDark],
   );
@@ -138,7 +137,6 @@ const MonthGrid = memo(({
                   backgroundColor: bg,
                   borderWidth: isHighlight ? 1.5 : 1,
                   borderColor: isHighlight ? colors.text : border,
-                  boxShadow: isDark ? '0 12px 22px rgba(0, 0, 0, 0.32)' : '0 12px 22px rgba(15, 23, 42, 0.12)',
                 },
                 pressed && styles.cellPressed,
               ]}

@@ -76,7 +76,7 @@ export default function AnalyticsScreen() {
       <View
         style={{
           gap: 16,
-          paddingHorizontal: 16,
+          // paddingHorizontal: 16,
           paddingBottom: 24,
         }}
       >
