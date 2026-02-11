@@ -1,19 +1,9 @@
-import type { ReactNode } from 'react';
-import type { StyleProp, ViewStyle } from 'react-native';
 import type { Category } from '@/lib/db/schema';
 
-import { Button, Input } from 'heroui-native';
-import { useCallback, useRef, useState } from 'react';
-import {
-  Alert,
-  Pressable,
-  Animated as RNAnimated,
-  Text,
-  View,
-} from 'react-native';
-import { RectButton, Swipeable } from 'react-native-gesture-handler';
+import { Image } from 'expo-image';
+import { useCallback, useState } from 'react';
+import { Alert, Pressable, Text, View } from 'react-native';
 
-import { AppDialog } from '@/components/app-dialog';
 import { ModalSheet } from '@/components/modal-sheet';
 import { NativeSheet } from '@/components/native-sheet';
 import { SelectColorContent } from '@/components/select-color-sheet';
@@ -23,7 +13,8 @@ import { useTheme } from '@/lib/hooks/use-theme';
 import { useCategoriesStore } from '@/lib/stores';
 
 const DEFAULT_NEW_COLOR = '#EF4444';
-const DELETE_BUTTON_WIDTH = 80;
+const ICON_SIZE = 20;
+const HIT_SLOP = { top: 10, bottom: 10, left: 10, right: 10 };
 
 function CategoryRow({
   category,
@@ -32,6 +23,7 @@ function CategoryRow({
   onColorPress,
   onDelete,
   canDelete,
+  canRename,
 }: {
   category: Category;
   isLast: boolean;
@@ -39,125 +31,69 @@ function CategoryRow({
   onColorPress: () => void;
   onDelete: () => void;
   canDelete: boolean;
+  canRename: boolean;
 }) {
   const { colors } = useTheme();
-  const swipeableRef = useRef<Swipeable>(null);
-  const ignoreNextRenameRef = useRef(false);
-
-  const handleRowPress = useCallback(() => {
-    if (ignoreNextRenameRef.current) {
-      ignoreNextRenameRef.current = false;
-      return;
-    }
-    onRename();
-  }, [onRename]);
-
-  const renderRightActions = useCallback(
-    (
-      progress: { interpolate: (config: { inputRange: number[]; outputRange: number[] }) => unknown },
-      _dragX: unknown,
-      swipeable: Swipeable,
-    ): ReactNode => {
-      const trans = progress.interpolate({
-        inputRange: [0, 1],
-        outputRange: [DELETE_BUTTON_WIDTH, 0],
-      });
-      const handleDelete = () => {
-        ignoreNextRenameRef.current = true;
-        swipeable.close();
-        onDelete();
-      };
-      const animatedStyle: StyleProp<ViewStyle> = [
-        {
-          width: DELETE_BUTTON_WIDTH,
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: colors.danger,
-        },
-        { transform: [{ translateX: trans as number }] },
-      ];
-      return (
-        <RNAnimated.View style={animatedStyle}>
-          <RectButton
-            onPress={handleDelete}
-            style={{
-              flex: 1,
-              width: '100%',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Text style={{ color: colors.iconOnColor, fontWeight: '600', fontSize: 14 }} selectable>
-              Delete
-            </Text>
-          </RectButton>
-        </RNAnimated.View>
-      );
-    },
-    [colors.danger, colors.iconOnColor, onDelete],
-  );
-
-  const rowContentStyle = {
-    flexDirection: 'row' as const,
-    alignItems: 'center' as const,
-    justifyContent: 'space-between' as const,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: 'transparent' as const,
-    borderBottomWidth: isLast ? 0 : 1,
-    borderBottomColor: colors.surfaceBorder,
-  };
-
-  if (!canDelete) {
-    return (
-      <Pressable onPress={onRename} style={({ pressed }) => [pressed && { opacity: 0.85 }]}>
-        <View style={rowContentStyle}>
-            <Text style={{ fontSize: 16, fontWeight: '500', color: colors.text, flex: 1 }} selectable numberOfLines={1}>
-              {category.name}
-            </Text>
-          <Pressable onPress={onColorPress} style={({ pressed }) => [pressed && { opacity: 0.85 }]}>
-            <View
-              style={{
-                width: 20,
-                height: 20,
-                borderRadius: 10,
-                backgroundColor: category.color,
-              }}
-            />
-          </Pressable>
-        </View>
-      </Pressable>
-    );
-  }
 
   return (
-    <Swipeable
-      ref={swipeableRef}
-      friction={2}
-      rightThreshold={60}
-      onSwipeableWillOpen={() => {
-        ignoreNextRenameRef.current = true;
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 16,
+        paddingVertical: 12,
+        borderBottomWidth: isLast ? 0 : 1,
+        borderBottomColor: colors.surfaceBorder,
       }}
-      renderRightActions={renderRightActions}
     >
-      <Pressable onPress={handleRowPress} style={({ pressed }) => [pressed && { opacity: 0.85 }]}>
-        <View style={rowContentStyle}>
-          <Text style={{ fontSize: 16, fontWeight: '500', color: colors.text, flex: 1 }} selectable numberOfLines={1}>
-            {category.name}
-          </Text>
-          <Pressable onPress={onColorPress} style={({ pressed }) => [pressed && { opacity: 0.85 }]}>
-            <View
-              style={{
-                width: 20,
-                height: 20,
-                borderRadius: 10,
-                backgroundColor: category.color,
-              }}
-            />
-          </Pressable>
-        </View>
+      <Text
+        style={{ fontSize: 16, fontWeight: '500', color: colors.text, flex: 1 }}
+        selectable
+        numberOfLines={1}
+      >
+        {category.name}
+      </Text>
+      <Pressable
+        onPress={onColorPress}
+        hitSlop={HIT_SLOP}
+        style={({ pressed }) => [{ marginLeft: 12, opacity: pressed ? 0.6 : 1 }]}
+      >
+        <View
+          style={{
+            width: 20,
+            height: 20,
+            borderRadius: 10,
+            backgroundColor: category.color,
+          }}
+        />
       </Pressable>
-    </Swipeable>
+      {canRename && (
+        <Pressable
+          onPress={onRename}
+          hitSlop={HIT_SLOP}
+          style={({ pressed }) => [{ marginLeft: 16, opacity: pressed ? 0.6 : 1 }]}
+        >
+          <Image
+            source="sf:pencil"
+            style={{ width: ICON_SIZE, height: ICON_SIZE }}
+            tintColor={colors.textMuted}
+          />
+        </Pressable>
+      )}
+      {canDelete && (
+        <Pressable
+          onPress={onDelete}
+          hitSlop={HIT_SLOP}
+          style={({ pressed }) => [{ marginLeft: 16, opacity: pressed ? 0.6 : 1 }]}
+        >
+          <Image
+            source="sf:trash"
+            style={{ width: ICON_SIZE, height: ICON_SIZE }}
+            tintColor={colors.danger}
+          />
+        </Pressable>
+      )}
+    </View>
   );
 }
 
@@ -167,53 +103,57 @@ export default function CategoriesScreen() {
 
   const [newName, setNewName] = useState('');
   const [newColor, setNewColor] = useState(DEFAULT_NEW_COLOR);
-  const [renameCategory, setRenameCategory] = useState<Category | null>(null);
-  const [renameValue, setRenameValue] = useState('');
   const [colorSheetTarget, setColorSheetTarget] = useState<'new' | string | null>(null);
 
-  const selectedColorForSheet =
-    colorSheetTarget === 'new'
+  const selectedColorForSheet
+    = colorSheetTarget === 'new'
       ? newColor
       : colorSheetTarget
         ? categories.find(c => c.id === colorSheetTarget)?.color ?? DEFAULT_NEW_COLOR
-      : DEFAULT_NEW_COLOR;
+        : DEFAULT_NEW_COLOR;
 
   const handleAdd = useCallback(() => {
     const trimmed = newName.trim();
-    if (!trimmed) return;
+    if (!trimmed)
+      return;
     add(trimmed, newColor);
     setNewName('');
     setNewColor(DEFAULT_NEW_COLOR);
   }, [add, newName, newColor]);
 
-  const handleRenameSave = useCallback(
-    (name: string) => {
-      if (renameCategory) {
-        update({ ...renameCategory, name });
-        setRenameCategory(null);
-        setRenameValue('');
-      }
+  const openRename = useCallback(
+    (category: Category) => {
+      Alert.prompt(
+        'Rename Category',
+        undefined,
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Save',
+            onPress: (value: string | undefined) => {
+              const trimmed = value?.trim();
+              if (trimmed)
+                update({ ...category, name: trimmed });
+            },
+          },
+        ],
+        'plain-text',
+        category.name,
+        'default',
+      );
     },
-    [renameCategory, update],
+    [update],
   );
-
-  const handleRenameCancel = useCallback(() => {
-    setRenameCategory(null);
-    setRenameValue('');
-  }, []);
-
-  const openRename = useCallback((category: Category) => {
-    setRenameCategory(category);
-    setRenameValue(category.name);
-  }, []);
 
   const handleColorSelect = useCallback(
     (color: string) => {
       if (colorSheetTarget === 'new') {
         setNewColor(color);
-      } else if (colorSheetTarget) {
+      }
+      else if (colorSheetTarget) {
         const cat = categories.find(c => c.id === colorSheetTarget);
-        if (cat) update({ ...cat, color });
+        if (cat)
+          update({ ...cat, color });
       }
       setColorSheetTarget(null);
     },
@@ -236,11 +176,7 @@ export default function CategoriesScreen() {
 
   return (
     <>
-      <NativeSheet
-        title="Categories"
-        showCloseIcon={false}
-        showBackIcon
-      >
+      <NativeSheet title="Categories" showCloseIcon={false} showBackIcon>
         <View style={{ gap: 16 }}>
           <View
             style={{
@@ -314,6 +250,7 @@ export default function CategoriesScreen() {
                 onColorPress={() => setColorSheetTarget(category.id)}
                 onDelete={() => handleDelete(category)}
                 canDelete={category.name !== OTHER_CATEGORY_NAME}
+                canRename={category.name !== OTHER_CATEGORY_NAME}
               />
             ))}
           </View>
@@ -332,34 +269,6 @@ export default function CategoriesScreen() {
           </Text>
         </View>
       </NativeSheet>
-
-      <AppDialog
-        isOpen={!!renameCategory}
-        onOpenChange={(open) => !open && handleRenameCancel()}
-        title="Rename Category"
-      >
-        <Input
-          value={renameValue}
-          onChangeText={setRenameValue}
-          placeholder="Category name"
-          autoFocus
-          autoCapitalize="words"
-        />
-        <View style={{ flexDirection: 'row', gap: 12, justifyContent: 'flex-end' }}>
-          <Button variant="secondary" onPress={handleRenameCancel}>
-            Cancel
-          </Button>
-          <Button
-            variant="primary"
-            onPress={() => {
-              const trimmed = renameValue.trim();
-              if (trimmed) handleRenameSave(trimmed);
-            }}
-          >
-            Save
-          </Button>
-        </View>
-      </AppDialog>
 
       <ModalSheet
         title="Select Color"

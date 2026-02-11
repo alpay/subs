@@ -1,34 +1,57 @@
+import type { List } from '@/lib/db/schema';
+
+import { Image } from 'expo-image';
 import { useToast } from 'heroui-native';
 import { useCallback, useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { Alert, Pressable, Text, View } from 'react-native';
 
 import { NativeSheet } from '@/components/native-sheet';
 import { SheetInput } from '@/components/sheet-input';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useListsStore } from '@/lib/stores';
 
+const ICON_SIZE = 20;
+const HIT_SLOP = { top: 10, bottom: 10, left: 10, right: 10 };
+
 export default function ListsScreen() {
   const { toast } = useToast();
   const { colors } = useTheme();
-  const { lists, add, remove } = useListsStore();
+  const { lists, add, update } = useListsStore();
   const [name, setName] = useState('');
 
   const handleAdd = useCallback(() => {
     const trimmed = name.trim();
-    if (!trimmed) {
-      return;
-    }
+    if (!trimmed) return;
     add(trimmed);
     setName('');
     toast.show(`${trimmed} added`);
   }, [add, name, toast]);
 
+  const openRename = useCallback(
+    (list: List) => {
+      Alert.prompt(
+        'Rename List',
+        undefined,
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Save',
+            onPress: (value: string | undefined) => {
+              const trimmed = value?.trim();
+              if (trimmed) update({ ...list, name: trimmed });
+            },
+          },
+        ],
+        'plain-text',
+        list.name,
+        'default',
+      );
+    },
+    [update],
+  );
+
   return (
-    <NativeSheet
-      title="Lists"
-      showCloseIcon={false}
-      showBackIcon
-    >
+    <NativeSheet title="Lists" showCloseIcon={false} showBackIcon>
       <View style={{ gap: 16 }}>
         <View
           style={{
@@ -61,10 +84,7 @@ export default function ListsScreen() {
               color: colors.text,
             }}
           />
-          <Pressable
-            onPress={handleAdd}
-            style={({ pressed }) => [pressed && { opacity: 0.8 }]}
-          >
+          <Pressable onPress={handleAdd} style={({ pressed }) => [pressed && { opacity: 0.8 }]}>
             <Text style={{ fontSize: 16, fontWeight: '600', color: colors.accent }} selectable>
               Add
             </Text>
@@ -94,23 +114,29 @@ export default function ListsScreen() {
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
-                justifyContent: 'space-between',
                 paddingHorizontal: 16,
                 paddingVertical: 12,
                 borderBottomWidth: index === lists.length - 1 ? 0 : 1,
                 borderBottomColor: colors.surfaceBorder,
               }}
             >
-              <Text style={{ fontSize: 16, fontWeight: '500', color: colors.text, flex: 1 }} selectable numberOfLines={1}>
+              <Text
+                style={{ fontSize: 16, fontWeight: '500', color: colors.text, flex: 1 }}
+                selectable
+                numberOfLines={1}
+              >
                 {list.name}
               </Text>
               <Pressable
-                onPress={() => remove(list.id)}
-                style={({ pressed }) => [pressed && { opacity: 0.85 }]}
+                onPress={() => openRename(list)}
+                hitSlop={HIT_SLOP}
+                style={({ pressed }) => [{ marginLeft: 12, opacity: pressed ? 0.6 : 1 }]}
               >
-                <Text style={{ fontSize: 14, fontWeight: '600', color: colors.danger }} selectable>
-                  Remove
-                </Text>
+                <Image
+                  source="sf:pencil"
+                  style={{ width: ICON_SIZE, height: ICON_SIZE }}
+                  tintColor={colors.textMuted}
+                />
               </Pressable>
             </View>
           ))}
