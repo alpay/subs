@@ -32,7 +32,7 @@ export default function AppLayout() {
         name="analytics"
         options={{
           ...sheetBaseOptions,
-          sheetAllowedDetents: [0.95] as const,
+          sheetAllowedDetents: 'fitToContents' as const,
         }}
       />
       <Stack.Screen

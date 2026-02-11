@@ -117,17 +117,18 @@ export type YearToDateInput = {
 export function calculateYearToDateTotal({ subscriptions, settings, rates, date = new Date() }: YearToDateInput) {
   const start = startOfYear(date);
   const end = endOfYear(date);
-  return subscriptions
+  const total = subscriptions
     .filter(sub => sub.status === 'active')
     .reduce((sum, sub) => {
       const dueDates = getPaymentDatesInRange(sub, start, end);
-      const total = dueDates.length * sub.amount;
+      const totalPayments = dueDates.length * sub.amount;
       const converted = convertCurrency({
-        amount: total,
+        amount: totalPayments,
         from: sub.currency,
         to: settings.mainCurrency,
         rates,
       });
       return sum + converted;
     }, 0);
+  return roundCurrency(total, settings.roundWholeNumbers);
 }
