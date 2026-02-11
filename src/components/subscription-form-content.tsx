@@ -1,6 +1,7 @@
 import type { MutableRefObject } from 'react';
 
 import type { NotificationMode, ScheduleType, Subscription, SubscriptionStatus } from '@/lib/db/schema';
+import { SwiftUI } from '@mgcrea/react-native-swiftui';
 import { parseISO } from 'date-fns';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
@@ -142,18 +143,6 @@ export function SubscriptionFormContent({
   const scheduleOption = useMemo(
     () => SCHEDULE_OPTIONS.find(o => o.value === scheduleType),
     [scheduleType],
-  );
-  const notificationOption = useMemo(
-    () => NOTIFICATION_OPTIONS.find(o => o.value === notificationMode),
-    [notificationMode],
-  );
-  const statusOption = useMemo(
-    () => STATUS_OPTIONS.find(o => o.value === status),
-    [status],
-  );
-  const selectedCategory = useMemo(
-    () => categories.find(c => c.id === categoryId) ?? categories[0],
-    [categories, categoryId],
   );
 
   useEffect(() => {
@@ -391,9 +380,12 @@ export function SubscriptionFormContent({
           accessibilityRole="button"
           style={rowStyle}
         >
-          <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
-            Amount
-          </Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            <Image source="sf:dollarsign" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
+            <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+              Amount
+            </Text>
+          </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
             <Text
               style={{ fontSize: 15, color: colors.textMuted, fontVariant: ['tabular-nums'] }}
@@ -411,96 +403,74 @@ export function SubscriptionFormContent({
         </Pressable>
       </GlassCard>
 
-      <GlassCard style={{ marginBottom: 12 }}>
-        <View style={rowStyle}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-            <Image source="sf:tag" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
-            <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
-              Category
-            </Text>
-          </View>
-          <SelectPill
-            value={categoryOptions.find(o => o.value === categoryId) ?? categoryOptions[0]}
-            options={categoryOptions}
-            onValueChange={o => setCategoryId(o?.value ?? '')}
-            size="sm"
-            leading={(
-              <View
-                style={{
-                  width: 10,
-                  height: 10,
-                  borderRadius: 5,
-                  backgroundColor: selectedCategory?.color ?? colors.accent,
-                }}
+      <View style={{ marginBottom: 20 }}>
+        <SwiftUI style={{ flex: 1, minHeight: 300 }}>
+          <SwiftUI.Form scrollDisabled contentMargins={{ leading: 1, trailing: 1 }}>
+            <SwiftUI.HStack spacing={8}>
+              <SwiftUI.Image name="system:tag" />
+              <SwiftUI.Text text="Category" />
+              <SwiftUI.Spacer />
+              <SwiftUI.Picker
+                label=""
+                value={categoryOptions.some(o => o.value === categoryId) ? categoryId : (categoryOptions[0]?.value ?? '')}
+                options={categoryOptions.map(o => ({ value: o.value, label: o.label }))}
+                pickerStyle="menu"
+                onChange={v => setCategoryId(v)}
               />
+            </SwiftUI.HStack>
+            <SwiftUI.HStack spacing={8}>
+              <SwiftUI.Image name="system:list.bullet" />
+              <SwiftUI.Text text="List" />
+              <SwiftUI.Spacer />
+              <SwiftUI.Picker
+                label=""
+                value={listOptions.some(o => o.value === listId) ? listId : (listOptions[0]?.value ?? '')}
+                options={listOptions.map(o => ({ value: o.value, label: o.label }))}
+                pickerStyle="menu"
+                onChange={v => setListId(v)}
+              />
+            </SwiftUI.HStack>
+            {isEdit && (
+              <SwiftUI.HStack spacing={8}>
+                <SwiftUI.Image name="system:checkmark.circle" />
+                <SwiftUI.Text text="Status" />
+                <SwiftUI.Spacer />
+                <SwiftUI.Picker
+                  label=""
+                  value={status}
+                  options={STATUS_OPTIONS.map(o => ({ value: o.value, label: o.label }))}
+                  pickerStyle="menu"
+                  onChange={v => setStatus(v as SubscriptionStatus)}
+                />
+              </SwiftUI.HStack>
             )}
-          />
-        </View>
-        <View style={rowDivider} />
-        <View style={rowStyle}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-            <Image
-              source="sf:list.bullet"
-              style={{ width: 18, height: 18 }}
-              tintColor={colors.textMuted}
-            />
-            <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
-              List
-            </Text>
-          </View>
-          <SelectPill
-            value={listOptions.find(o => o.value === listId) ?? listOptions[0]}
-            options={listOptions}
-            onValueChange={o => setListId(o?.value ?? '')}
-            size="sm"
-          />
-        </View>
-        {isEdit && (
-          <>
-            <View style={rowDivider} />
-            <View style={rowStyle}>
-              <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
-                Status
-              </Text>
-              <SelectPill
-                value={statusOption}
-                options={[...STATUS_OPTIONS]}
-                onValueChange={o => setStatus((o?.value as SubscriptionStatus) ?? 'active')}
-                size="sm"
+            <SwiftUI.HStack spacing={8}>
+              <SwiftUI.Image name="system:creditcard" />
+              <SwiftUI.Text text="Payment method" />
+              <SwiftUI.Spacer />
+              <SwiftUI.Picker
+                label=""
+                value={paymentMethodId}
+                options={paymentMethodOptions.map(o => ({ value: o.value, label: o.label }))}
+                pickerStyle="menu"
+                onChange={v => setPaymentMethodId(v)}
               />
-            </View>
-          </>
-        )}
-        <View style={rowDivider} />
-        <View style={rowStyle}>
-          <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
-            Payment method
-          </Text>
-          <SelectPill
-            value={
-              paymentMethodOptions.find(o => o.value === paymentMethodId) ?? paymentMethodOptions[0]
-            }
-            options={paymentMethodOptions}
-            onValueChange={o => setPaymentMethodId(o?.value ?? '')}
-            size="sm"
-          />
-        </View>
-        <View style={rowDivider} />
-        <View style={rowStyle}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-            <Image source="sf:bell" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
-            <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
-              Notifications
-            </Text>
-          </View>
-          <SelectPill
-            value={notificationOption}
-            options={[...NOTIFICATION_OPTIONS]}
-            onValueChange={o => setNotificationMode((o?.value as NotificationMode) ?? 'default')}
-            size="sm"
-          />
-        </View>
-      </GlassCard>
+            </SwiftUI.HStack>
+            <SwiftUI.HStack spacing={8}>
+              <SwiftUI.Image name="system:bell" />
+              <SwiftUI.Text text="Notifications" />
+              <SwiftUI.Spacer />
+              <SwiftUI.Picker
+                label=""
+                value={notificationMode}
+                options={NOTIFICATION_OPTIONS.map(o => ({ value: o.value, label: o.label }))}
+                pickerStyle="menu"
+                onChange={v => setNotificationMode(v as NotificationMode)}
+              />
+            </SwiftUI.HStack>
+          </SwiftUI.Form>
+        </SwiftUI>
+      </View>
 
       <GlassCard style={{ marginBottom: 12 }}>
         <View style={{ paddingVertical: 14, paddingHorizontal: 18, gap: 10 }}>
