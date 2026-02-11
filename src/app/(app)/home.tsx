@@ -64,15 +64,10 @@ export default function HomeScreen() {
       </Stack.Toolbar>
 
       <Stack.Toolbar placement="bottom">
-        <Stack.Toolbar.Menu>
-          <Stack.Toolbar.Icon sf={viewMode === 'list' ? 'list.bullet' : 'calendar'} />
-          <Stack.Toolbar.MenuAction isOn={viewMode === 'list'} onPress={() => setViewMode('list')}>
-            List
-          </Stack.Toolbar.MenuAction>
-          <Stack.Toolbar.MenuAction isOn={viewMode === 'month'} onPress={() => setViewMode('month')}>
-            Month
-          </Stack.Toolbar.MenuAction>
-        </Stack.Toolbar.Menu>
+        <Stack.Toolbar.Button
+          icon={viewMode !== 'list' ? 'list.bullet' : 'calendar'}
+          onPress={() => setViewMode(prev => (prev === 'list' ? 'month' : 'list'))}
+        />
         <Stack.Toolbar.Spacer />
         <Stack.SearchBar
           placeholder="Search subscriptions"
