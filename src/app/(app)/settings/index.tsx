@@ -1,9 +1,11 @@
 import { SwiftUI } from '@mgcrea/react-native-swiftui';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
+import * as StoreReview from 'expo-store-review';
 import { useToast } from 'heroui-native';
 import { useCallback, useMemo } from 'react';
 import { Alert, ScrollView, Text, View } from 'react-native';
+
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { NativeSheet } from '@/components/native-sheet';
@@ -276,7 +278,13 @@ export default function SettingsScreen() {
             label="Rate & Review"
             trailingIcon="arrow"
             buttonColor={colors.text}
-            onPress={() => {}}
+            onPress={async () => {
+              Haptic.Light();
+              const canReview = await StoreReview.hasAction();
+              if (canReview) {
+                await StoreReview.requestReview();
+              }
+            }}
           />
           <SettingsRow
             icon="system:list.bullet.rectangle"

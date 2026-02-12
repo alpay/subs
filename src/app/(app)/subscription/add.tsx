@@ -5,9 +5,11 @@ import type {
 import type { NotificationMode, ScheduleType } from '@/lib/db/schema';
 
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
+import * as StoreReview from 'expo-store-review';
 import { Button, useToast } from 'heroui-native';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
+
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BackButtonWithHaptic } from '@/components/back-button-with-haptic';
@@ -17,6 +19,7 @@ import { SubscriptionFormContent } from '@/components/subscription-form-content'
 import { Haptic } from '@/lib/haptics';
 import { usePremiumGuard } from '@/lib/hooks/use-premium-guard';
 import { useTheme } from '@/lib/hooks/use-theme';
+import { getItem, setItem } from '@/lib/storage';
 import {
   useCategoriesStore,
   useListsStore,
@@ -90,15 +93,29 @@ export default function AddSubscriptionScreen() {
     }
   }, [canAdd, router]);
 
-  const handleSave = (payload: SubscriptionFormPayload) => {
+  const handleSave = async (payload: SubscriptionFormPayload) => {
     if (!canAdd) {
       showPaywall();
       return;
     }
+    const subscriptionCountBefore = useSubscriptionsStore.getState().subscriptions.length;
     add(payload);
     toast.show('Subscription created');
     Haptic.Light();
-    router.back();
+
+    // Ask for review once after first subscription
+    if (subscriptionCountBefore === 0) {
+      const alreadyAsked = getItem<boolean>('reviewAskedAfterFirstSubscription');
+      if (!alreadyAsked) {
+        const canReview = await StoreReview.hasAction();
+        if (canReview) {
+          await StoreReview.requestReview();
+          await setItem('reviewAskedAfterFirstSubscription', true);
+        }
+      }
+    }
+
+    router.replace('/(app)/home');
   };
 
   return (
