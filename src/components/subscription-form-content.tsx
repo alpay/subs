@@ -2,8 +2,7 @@ import type { MutableRefObject } from 'react';
 
 import type { NotificationMode, ScheduleType, Subscription, SubscriptionStatus } from '@/lib/db/schema';
 import { Button, Host, Menu } from '@expo/ui/swift-ui';
-import { buttonStyle, labelStyle } from '@expo/ui/swift-ui/modifiers';
-import { SwiftUI } from '@mgcrea/react-native-swiftui';
+import { buttonStyle, fixedSize, labelStyle } from '@expo/ui/swift-ui/modifiers';
 import { parseISO } from 'date-fns';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
@@ -11,7 +10,6 @@ import { Input, TextArea } from 'heroui-native';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Pressable, Text, View } from 'react-native';
-import { SelectPill } from '@/components/select-pill';
 import { ServiceIcon } from '@/components/service-icon';
 import { GlassCard } from '@/components/ui/glass-card';
 import { useTheme } from '@/lib/hooks/use-theme';
@@ -309,9 +307,10 @@ export function SubscriptionFormContent({
             Schedule
           </Text>
           <Host matchContents>
-            <Menu systemImage="calendar.badge.clock" label={scheduleLabel} modifiers={[labelStyle('titleAndIcon'), buttonStyle('glass')]}>
+            <Menu label={scheduleLabel} modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('automatic')]}>
               {SCHEDULE_OPTIONS.map(option => (
                 <Button
+                  systemImage={option.value === scheduleType ? 'checkmark' : undefined}
                   label={option.label}
                   key={option.value}
                   onPress={() => setScheduleType(option.value as ScheduleType)}
@@ -344,12 +343,21 @@ export function SubscriptionFormContent({
                     borderColor: colors.surfaceBorder,
                   }}
                 />
-                <SelectPill
-                  value={INTERVAL_UNIT_OPTIONS.find(o => o.value === intervalUnit)}
-                  options={[...INTERVAL_UNIT_OPTIONS]}
-                  onValueChange={o => setIntervalUnit((o?.value as 'week' | 'month') ?? 'month')}
-                  size="sm"
-                />
+                <Host matchContents>
+                  <Menu
+                    label={INTERVAL_UNIT_OPTIONS.find(o => o.value === intervalUnit)?.label ?? 'Month'}
+                    modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('automatic')]}
+                  >
+                    {INTERVAL_UNIT_OPTIONS.map(option => (
+                      <Button
+                        key={option.value}
+                        systemImage={option.value === intervalUnit ? 'checkmark' : undefined}
+                        label={option.label}
+                        onPress={() => setIntervalUnit(option.value as 'week' | 'month')}
+                      />
+                    ))}
+                  </Menu>
+                </Host>
               </View>
             </View>
           </>
@@ -410,74 +418,166 @@ export function SubscriptionFormContent({
         </Pressable>
       </GlassCard>
 
-      <View style={{ marginBottom: 20 }}>
-        <SwiftUI style={{ flex: 1, minHeight: 300 }}>
-          <SwiftUI.Form scrollDisabled contentMargins={{ leading: 1, trailing: 1 }}>
-            <SwiftUI.HStack spacing={8}>
-              <SwiftUI.Image name="system:tag" />
-              <SwiftUI.Text text="Category" />
-              <SwiftUI.Spacer />
-              <SwiftUI.Picker
-                label=""
-                value={categoryOptions.some(o => o.value === categoryId) ? categoryId : (categoryOptions[0]?.value ?? '')}
-                options={categoryOptions.map(o => ({ value: o.value, label: o.label }))}
-                pickerStyle="menu"
-                onChange={v => setCategoryId(v)}
-              />
-            </SwiftUI.HStack>
-            <SwiftUI.HStack spacing={8}>
-              <SwiftUI.Image name="system:list.bullet" />
-              <SwiftUI.Text text="List" />
-              <SwiftUI.Spacer />
-              <SwiftUI.Picker
-                label=""
-                value={listOptions.some(o => o.value === listId) ? listId : (listOptions[0]?.value ?? '')}
-                options={listOptions.map(o => ({ value: o.value, label: o.label }))}
-                pickerStyle="menu"
-                onChange={v => setListId(v)}
-              />
-            </SwiftUI.HStack>
-            {isEdit && (
-              <SwiftUI.HStack spacing={8}>
-                <SwiftUI.Image name="system:checkmark.circle" />
-                <SwiftUI.Text text="Status" />
-                <SwiftUI.Spacer />
-                <SwiftUI.Picker
-                  label=""
-                  value={status}
-                  options={STATUS_OPTIONS.map(o => ({ value: o.value, label: o.label }))}
-                  pickerStyle="menu"
-                  onChange={v => setStatus(v as SubscriptionStatus)}
+      <GlassCard style={{ marginBottom: 12 }}>
+        <View style={rowStyle}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            <Image source="sf:tag" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
+            <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+              Category
+            </Text>
+          </View>
+          <Host matchContents>
+            <Menu
+              label={
+                categoryOptions.find(o => o.value === categoryId)?.label
+                || categoryOptions[0]?.label
+                || 'Category'
+              }
+              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('automatic')]}
+            >
+              {categoryOptions.map(option => (
+                <Button
+                  key={option.value}
+                  systemImage={option.value === categoryId ? 'checkmark' : undefined}
+                  label={option.label}
+                  onPress={() => setCategoryId(option.value)}
                 />
-              </SwiftUI.HStack>
-            )}
-            <SwiftUI.HStack spacing={8}>
-              <SwiftUI.Image name="system:creditcard" />
-              <SwiftUI.Text text="Payment method" />
-              <SwiftUI.Spacer />
-              <SwiftUI.Picker
-                label=""
-                value={paymentMethodId}
-                options={paymentMethodOptions.map(o => ({ value: o.value, label: o.label }))}
-                pickerStyle="menu"
-                onChange={v => setPaymentMethodId(v)}
-              />
-            </SwiftUI.HStack>
-            <SwiftUI.HStack spacing={8}>
-              <SwiftUI.Image name="system:bell" />
-              <SwiftUI.Text text="Notifications" />
-              <SwiftUI.Spacer />
-              <SwiftUI.Picker
-                label=""
-                value={notificationMode}
-                options={NOTIFICATION_OPTIONS.map(o => ({ value: o.value, label: o.label }))}
-                pickerStyle="menu"
-                onChange={v => setNotificationMode(v as NotificationMode)}
-              />
-            </SwiftUI.HStack>
-          </SwiftUI.Form>
-        </SwiftUI>
-      </View>
+              ))}
+            </Menu>
+          </Host>
+        </View>
+
+        <View style={rowDivider} />
+
+        <View style={rowStyle}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            <Image source="sf:list.bullet" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
+            <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+              List
+            </Text>
+          </View>
+          <Host matchContents>
+            <Menu
+              label={
+                listOptions.find(o => o.value === listId)?.label
+                || listOptions[0]?.label
+                || 'List'
+              }
+              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('automatic')]}
+            >
+              {listOptions.map(option => (
+                <Button
+                  key={option.value}
+                  systemImage={option.value === listId ? 'checkmark' : undefined}
+                  label={option.label}
+                  onPress={() => setListId(option.value)}
+                />
+              ))}
+            </Menu>
+          </Host>
+        </View>
+
+        {isEdit && (
+          <>
+            <View style={rowDivider} />
+            <View style={rowStyle}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                <Image
+                  source="sf:checkmark.circle"
+                  style={{ width: 18, height: 18 }}
+                  tintColor={colors.textMuted}
+                />
+                <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+                  Status
+                </Text>
+              </View>
+              <Host matchContents>
+                <Menu
+                  label={
+                    STATUS_OPTIONS.find(o => o.value === status)?.label
+                    || STATUS_OPTIONS[0]?.label
+                    || 'Status'
+                  }
+                  modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('automatic')]}
+                >
+                  {STATUS_OPTIONS.map(option => (
+                    <Button
+                      key={option.value}
+                      systemImage={option.value === status ? 'checkmark' : undefined}
+                      label={option.label}
+                      onPress={() => setStatus(option.value as SubscriptionStatus)}
+                    />
+                  ))}
+                </Menu>
+              </Host>
+            </View>
+          </>
+        )}
+
+        <View style={rowDivider} />
+
+        <View style={rowStyle}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            <Image
+              source="sf:creditcard"
+              style={{ width: 18, height: 18 }}
+              tintColor={colors.textMuted}
+            />
+            <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+              Payment method
+            </Text>
+          </View>
+          <Host matchContents>
+            <Menu
+              label={
+                paymentMethodOptions.find(o => o.value === paymentMethodId)?.label
+                || paymentMethodOptions[0]?.label
+                || 'Payment method'
+              }
+              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('automatic')]}
+            >
+              {paymentMethodOptions.map(option => (
+                <Button
+                  key={option.value}
+                  systemImage={option.value === paymentMethodId ? 'checkmark' : undefined}
+                  label={option.label}
+                  onPress={() => setPaymentMethodId(option.value)}
+                />
+              ))}
+            </Menu>
+          </Host>
+        </View>
+
+        <View style={rowDivider} />
+
+        <View style={rowStyle}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            <Image source="sf:bell" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
+            <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+              Notifications
+            </Text>
+          </View>
+          <Host matchContents>
+            <Menu
+              label={
+                NOTIFICATION_OPTIONS.find(o => o.value === notificationMode)?.label
+                || NOTIFICATION_OPTIONS[0]?.label
+                || 'Notifications'
+              }
+              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('automatic')]}
+            >
+              {NOTIFICATION_OPTIONS.map(option => (
+                <Button
+                  key={option.value}
+                  systemImage={option.value === notificationMode ? 'checkmark' : undefined}
+                  label={option.label}
+                  onPress={() => setNotificationMode(option.value as NotificationMode)}
+                />
+              ))}
+            </Menu>
+          </Host>
+        </View>
+      </GlassCard>
 
       <GlassCard style={{ marginBottom: 12 }}>
         <View style={{ paddingVertical: 14, paddingHorizontal: 18, gap: 10 }}>
