@@ -39,7 +39,7 @@ export default function AppLayout() {
         name="settings"
         options={{
           ...sheetBaseOptions,
-          sheetAllowedDetents: [0.99] as const,
+          sheetAllowedDetents: [0.95] as const,
         }}
       />
       <Stack.Screen

@@ -69,7 +69,7 @@ export function NativeSheet({
     : null);
 
   return (
-    <View className="relative flex-1 px-4" style={{ paddingBottom: insets.bottom, backgroundColor: colors.background }}>
+    <View className="relative flex-1 px-4" style={{ paddingBottom: insets.bottom }}>
       <View
         // Mark header as non-collapsable so React Native Screens can
         // correctly treat it as the fixed header when used with a ScrollView
