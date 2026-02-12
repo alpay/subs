@@ -16,6 +16,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ServiceIcon } from '@/components/service-icon';
 import { getLogoUrl, searchBrands } from '@/lib/api/brandfetch';
 import { PREDEFINED_SERVICES } from '@/lib/data/predefined-services';
+import { usePremiumGuard } from '@/lib/hooks/use-premium-guard';
 import { useTheme } from '@/lib/hooks/use-theme';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -40,8 +41,14 @@ export default function ServicesScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { colors, isDark } = useTheme();
+  const { canAdd, countLabel, isPremium, showPaywall } = usePremiumGuard();
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
+
+  useEffect(() => {
+    if (!canAdd)
+      router.replace('/(app)/paywall');
+  }, [canAdd, router]);
 
   useEffect(() => {
     const t = setTimeout(() => setDebouncedQuery(searchQuery.trim()), DEBOUNCE_MS);
@@ -121,6 +128,21 @@ export default function ServicesScreen() {
           headerStyle: { backgroundColor: colors.background },
           headerTintColor: colors.text,
           headerTitleStyle: { color: colors.text },
+          headerRight: () => (isPremium
+            ? undefined
+            : (
+                <Pressable onPress={showPaywall}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontWeight: '600',
+                      color: colors.text,
+                    }}
+                  >
+                    {countLabel}
+                  </Text>
+                </Pressable>
+              )),
         }}
       />
       <Stack.Screen.BackButton displayMode="minimal" />

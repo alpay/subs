@@ -6,13 +6,14 @@ import type { NotificationMode, ScheduleType } from '@/lib/db/schema';
 
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { Button, useToast } from 'heroui-native';
-import { useMemo, useRef, useState } from 'react';
-import { ScrollView, View } from 'react-native';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { RadialGlow } from '@/components/radial-glow';
 import { getServiceColor } from '@/components/service-icon';
 import { SubscriptionFormContent } from '@/components/subscription-form-content';
+import { usePremiumGuard } from '@/lib/hooks/use-premium-guard';
 import { useTheme } from '@/lib/hooks/use-theme';
 import {
   useCategoriesStore,
@@ -31,6 +32,7 @@ export default function AddSubscriptionScreen() {
   const { toast } = useToast();
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
+  const { canAdd, countLabel, isPremium, showPaywall } = usePremiumGuard();
   const params = useLocalSearchParams<{ templateId?: string; name?: string; iconKey?: string; iconUri?: string }>();
 
   const paramName = typeof params.name === 'string' ? params.name : params.name?.[0];
@@ -80,7 +82,17 @@ export default function AddSubscriptionScreen() {
   const saveRef = useRef<(() => void) | null>(null);
   const [isFormValid, setIsFormValid] = useState(false);
 
+  useEffect(() => {
+    if (!canAdd) {
+      router.replace('/(app)/paywall');
+    }
+  }, [canAdd, router]);
+
   const handleSave = (payload: SubscriptionFormPayload) => {
+    if (!canAdd) {
+      showPaywall();
+      return;
+    }
     add(payload);
     toast.show('Subscription created');
     router.back();
@@ -90,11 +102,26 @@ export default function AddSubscriptionScreen() {
     <>
       <Stack.Screen
         options={{
-          title: 'Create Subscription',
+          title: 'New Subscription',
           headerShown: true,
           headerShadowVisible: false,
           headerStyle: { backgroundColor: 'transparent' },
           headerTintColor: colors.text,
+          headerRight: () => (isPremium
+            ? undefined
+            : (
+                <Pressable onPress={showPaywall}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontWeight: '600',
+                      color: colors.text,
+                    }}
+                  >
+                    {countLabel}
+                  </Text>
+                </Pressable>
+              )),
         }}
       />
       <Stack.Screen.BackButton displayMode="minimal" />

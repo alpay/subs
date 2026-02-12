@@ -9,11 +9,13 @@ import { HomeSummary } from '@/components/home/home-summary';
 import { MonthCalendar } from '@/components/month-calendar';
 import { ScreenShell } from '@/components/screen-shell';
 import { useHomeData } from '@/lib/hooks/use-home-data';
+import { usePremiumGuard } from '@/lib/hooks/use-premium-guard';
 import { useTheme } from '@/lib/hooks/use-theme';
 
 export default function HomeScreen() {
   const router = useRouter();
   const { colors } = useTheme();
+  const { navigateToServicesOrPaywall } = usePremiumGuard();
   const insets = useSafeAreaInsets();
   const [visibleMonth, setVisibleMonth] = useState(() => startOfMonth(new Date()));
   const [viewMode, setViewMode] = useState<'list' | 'month'>('list');
@@ -83,7 +85,7 @@ export default function HomeScreen() {
         />
         <Stack.Toolbar.SearchBarSlot />
         <Stack.Toolbar.Spacer />
-        <Stack.Toolbar.Button icon="plus" onPress={() => router.push('/(app)/services')} />
+        <Stack.Toolbar.Button icon="plus" onPress={navigateToServicesOrPaywall} />
       </Stack.Toolbar>
 
       {viewMode === 'list' || hasQuery

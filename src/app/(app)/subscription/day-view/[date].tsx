@@ -7,6 +7,7 @@ import { Pressable, Text, View } from 'react-native';
 import { NativeSheet } from '@/components/native-sheet';
 import { ServiceIcon } from '@/components/service-icon';
 import { GlassCard } from '@/components/ui/glass-card';
+import { usePremiumGuard } from '@/lib/hooks/use-premium-guard';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useCurrencyRatesStore, useSettingsStore, useSubscriptionsStore } from '@/lib/stores';
 import { convertCurrency, roundCurrency } from '@/lib/utils/currency';
@@ -21,6 +22,7 @@ export default function SubscriptionDayViewScreen() {
   const params = useLocalSearchParams<Params>();
 
   const { subscriptions } = useSubscriptionsStore();
+  const { navigateToServicesOrPaywall } = usePremiumGuard();
   const { settings } = useSettingsStore();
   const { rates } = useCurrencyRatesStore();
   const { colors } = useTheme();
@@ -121,48 +123,41 @@ export default function SubscriptionDayViewScreen() {
         ))}
 
         <GlassCard>
-          <Link
-            href="/(app)/services"
-            replace
-            asChild
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              paddingHorizontal: 16,
-              paddingVertical: 12,
-              gap: 12,
-            }}
+          <Pressable
+            accessibilityRole="button"
+            onPress={navigateToServicesOrPaywall}
+            style={({ pressed }) => [
+              {
+                flexDirection: 'row',
+                alignItems: 'center',
+                paddingHorizontal: 16,
+                paddingVertical: 12,
+                gap: 12,
+              },
+              pressed ? { opacity: 0.85 } : null,
+            ]}
           >
-            <Pressable
-              accessibilityRole="button"
-              style={({ pressed }) => [
-                pressed ? { opacity: 0.85 } : null,
-              ]}
-            >
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-                <Link.AppleZoom>
-                  <View
-                    style={{
-                      width: 36,
-                      height: 36,
-                      borderRadius: 18,
-                      borderCurve: 'continuous',
-                      backgroundColor: colors.surfaceMuted,
-                      borderWidth: 1,
-                      borderColor: colors.surfaceBorder,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <Image source="sf:plus" style={{ width: 16, height: 16 }} tintColor={colors.text} />
-                  </View>
-                </Link.AppleZoom>
-                <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }} selectable>
-                  Add new subscription
-                </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+              <View
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: 18,
+                  borderCurve: 'continuous',
+                  backgroundColor: colors.surfaceMuted,
+                  borderWidth: 1,
+                  borderColor: colors.surfaceBorder,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                <Image source="sf:plus" style={{ width: 16, height: 16 }} tintColor={colors.text} />
               </View>
-            </Pressable>
-          </Link>
+              <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }} selectable>
+                Add new subscription
+              </Text>
+            </View>
+          </Pressable>
         </GlassCard>
 
         <GlassCard style={{ marginTop: 12 }}>

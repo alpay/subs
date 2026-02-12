@@ -6,6 +6,8 @@ import { cancelSubscriptionNotifications, scheduleSubscriptionNotifications } fr
 import { createId } from '@/lib/utils/ids';
 import { computeNextPaymentDate } from '@/lib/utils/subscription-dates';
 
+const FREE_SUB_LIMIT = 5;
+
 export type SubscriptionInput = Omit<Subscription, 'id' | 'createdAt' | 'updatedAt' | 'nextPaymentDate'>;
 
 type SubscriptionsState = {
@@ -56,9 +58,14 @@ export const useSubscriptionsStore = create<SubscriptionsState>((set, get) => ({
     set({ subscriptions, isLoaded: true });
   },
   add: (input) => {
+    const current = get().subscriptions;
+    const settings = getSettings();
+    if (!settings.premium && current.length >= FREE_SUB_LIMIT) {
+      return null as unknown as Subscription;
+    }
     const subscription = normalizeSubscription(input);
     addSubscription(subscription);
-    set({ subscriptions: [...get().subscriptions, subscription] });
+    set({ subscriptions: [...current, subscription] });
     void scheduleSubscriptionNotifications(subscription, getSettings());
     return subscription;
   },
