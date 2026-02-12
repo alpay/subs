@@ -3,7 +3,7 @@ import type { Subscription } from '@/lib/db/schema';
 import { parseISO } from 'date-fns';
 import { Image } from 'expo-image';
 import { Link, Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BackButtonWithHaptic } from '@/components/back-button-with-haptic';
@@ -103,9 +103,14 @@ export default function SubscriptionDetailScreen() {
 
   const logoColor = useSubscriptionGlowColor(subscription);
 
+  useEffect(() => {
+    if (!subscription) {
+      Haptic.Light();
+      router.replace('/(app)/home');
+    }
+  }, [subscription, router]);
+
   if (!subscription) {
-    Haptic.Light();
-    router.back();
     return null;
   }
 

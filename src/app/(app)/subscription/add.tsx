@@ -115,7 +115,7 @@ export default function AddSubscriptionScreen() {
       }
     }
 
-    router.replace('/(app)/home');
+    router.dismissTo('/(app)/home');
   };
 
   return (

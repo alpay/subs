@@ -1,8 +1,8 @@
 import { format, isSameDay, isValid, parseISO, startOfMonth } from 'date-fns';
 import { Image } from 'expo-image';
-import { Link, useLocalSearchParams } from 'expo-router';
+import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import { InteractionManager, Pressable, Text, View } from 'react-native';
 
 import { NativeSheet } from '@/components/native-sheet';
 import { ServiceIcon } from '@/components/service-icon';
@@ -23,7 +23,17 @@ export default function SubscriptionDayViewScreen() {
   const params = useLocalSearchParams<Params>();
 
   const { subscriptions } = useSubscriptionsStore();
-  const { navigateToServicesOrPaywall } = usePremiumGuard();
+  const router = useRouter();
+  const { canAdd } = usePremiumGuard();
+
+  const handleAddSubscription = () => {
+    Haptic.Light();
+    router.dismiss();
+    // Push after sheet is dismissed so services/paywall opens on root stack as card, not sheet
+    InteractionManager.runAfterInteractions(() => {
+      router.push(canAdd ? '/(app)/services' : '/(app)/paywall');
+    });
+  };
   const { settings } = useSettingsStore();
   const { rates } = useCurrencyRatesStore();
   const { colors } = useTheme();
@@ -127,10 +137,7 @@ export default function SubscriptionDayViewScreen() {
         <GlassCard>
           <Pressable
             accessibilityRole="button"
-            onPress={() => {
-              Haptic.Light();
-              navigateToServicesOrPaywall();
-            }}
+            onPress={handleAddSubscription}
             style={({ pressed }) => [
               {
                 flexDirection: 'row',
