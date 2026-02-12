@@ -29,9 +29,10 @@ export default function SubscriptionDayViewScreen() {
   const handleAddSubscription = () => {
     Haptic.Light();
     router.dismiss();
-    // Push after sheet is dismissed so services/paywall opens on root stack as card, not sheet
+    const startDate = typeof params.date === 'string' ? params.date : format(selectedDay, 'yyyy-MM-dd');
     InteractionManager.runAfterInteractions(() => {
-      router.push(canAdd ? '/(app)/services' : '/(app)/paywall');
+      if (canAdd) router.push({ pathname: '/(app)/services', params: { startDate } });
+      else router.push('/(app)/paywall');
     });
   };
   const { settings } = useSettingsStore();

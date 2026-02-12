@@ -1,7 +1,7 @@
 import type { PredefinedService } from '@/lib/data/predefined-services';
 import { useQuery } from '@tanstack/react-query';
 import { Image } from 'expo-image';
-import { Link, Stack, useRouter } from 'expo-router';
+import { Link, Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useEffect, useMemo, useState } from 'react';
 import {
@@ -42,11 +42,14 @@ const DEBOUNCE_MS = 400;
 
 export default function ServicesScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams<{ startDate?: string }>();
   const insets = useSafeAreaInsets();
   const { colors, isDark } = useTheme();
   const { canAdd, countLabel, isPremium, showPaywall } = usePremiumGuard();
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
+
+  const startDate = typeof params.startDate === 'string' ? params.startDate : undefined;
 
   useEffect(() => {
     if (!canAdd)
@@ -83,7 +86,7 @@ export default function ServicesScreen() {
     Haptic.Light();
     router.push({
       pathname: '/(app)/subscription/add',
-      params: { name: service.name, iconKey: service.iconKey },
+      params: { name: service.name, iconKey: service.iconKey, ...(startDate && { startDate }) },
     });
   };
 
@@ -93,7 +96,7 @@ export default function ServicesScreen() {
     Haptic.Light();
     router.push({
       pathname: '/(app)/subscription/add',
-      params: { name: displayQuery, iconKey: 'custom' },
+      params: { name: displayQuery, iconKey: 'custom', ...(startDate && { startDate }) },
     });
   };
 
@@ -102,7 +105,7 @@ export default function ServicesScreen() {
     const logoUrl = getLogoUrl(domain);
     router.push({
       pathname: '/(app)/subscription/add',
-      params: { name, iconKey: 'custom', iconUri: logoUrl },
+      params: { name, iconKey: 'custom', iconUri: logoUrl, ...(startDate && { startDate }) },
     });
   };
 

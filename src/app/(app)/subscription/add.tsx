@@ -38,11 +38,21 @@ export default function AddSubscriptionScreen() {
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
   const { canAdd, countLabel, isPremium, showPaywall } = usePremiumGuard();
-  const params = useLocalSearchParams<{ templateId?: string; name?: string; iconKey?: string; iconUri?: string }>();
+  const params = useLocalSearchParams<{
+    templateId?: string;
+    name?: string;
+    iconKey?: string;
+    iconUri?: string;
+    startDate?: string;
+  }>();
 
   const paramName = typeof params.name === 'string' ? params.name : params.name?.[0];
   const paramIconKey = typeof params.iconKey === 'string' ? params.iconKey : params.iconKey?.[0];
   const paramIconUri = typeof params.iconUri === 'string' ? params.iconUri : params.iconUri?.[0];
+  const paramStartDate = typeof params.startDate === 'string' ? params.startDate : params.startDate?.[0];
+  const startDate = paramStartDate?.length === 10 && !Number.isNaN(Date.parse(paramStartDate))
+    ? paramStartDate
+    : todayIsoDate();
 
   const { add } = useSubscriptionsStore();
   const { categories } = useCategoriesStore();
@@ -63,7 +73,7 @@ export default function AddSubscriptionScreen() {
       scheduleType: (selectedTemplate?.defaultScheduleType ?? 'monthly') as ScheduleType,
       intervalCount: '1',
       intervalUnit: 'month',
-      startDate: todayIsoDate(),
+      startDate,
       categoryId: selectedTemplate?.defaultCategoryId ?? categories[0]?.id ?? '',
       listId: lists[0]?.id ?? '',
       paymentMethodId: '',
@@ -78,6 +88,7 @@ export default function AddSubscriptionScreen() {
       paramName,
       paramIconKey,
       paramIconUri,
+      startDate,
       settings.mainCurrency,
       categories,
       lists,
