@@ -130,7 +130,7 @@ export default function AddSubscriptionScreen() {
         <Stack.Toolbar.View>
           <Button
             variant="outline"
-            size="lg"
+            size="md"
             isDisabled={!isFormValid}
             onPress={() => saveRef.current?.()}
             style={{ minWidth: 200 }}

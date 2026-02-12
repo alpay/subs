@@ -95,7 +95,7 @@ export default function SettingsScreen() {
             useListsStore.getState().load();
             useCurrencyRatesStore.getState().load();
             useServiceTemplatesStore.getState().load();
-            router.replace('/(app)');
+            router.replace('/onboarding');
           },
         },
       ],
