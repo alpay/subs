@@ -1,12 +1,11 @@
 import type { PaymentMethod } from '@/lib/db/schema';
 
 import { Image } from 'expo-image';
-import { useToast } from 'heroui-native';
+import { Input, useToast } from 'heroui-native';
 import { useCallback, useState } from 'react';
 import { Alert, Pressable, Text, View } from 'react-native';
 
 import { NativeSheet } from '@/components/native-sheet';
-import { SheetInput } from '@/components/sheet-input';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { usePaymentMethodsStore } from '@/lib/stores';
 
@@ -141,7 +140,7 @@ export default function PaymentMethodsScreen() {
             borderColor: colors.surfaceBorder,
           }}
         >
-          <SheetInput
+          <Input
             placeholder="New Payment Method"
             value={newName}
             onChangeText={setNewName}

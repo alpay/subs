@@ -2,11 +2,11 @@ import type { Category } from '@/lib/db/schema';
 
 import { ColorPicker, Host } from '@expo/ui/swift-ui';
 import { Image } from 'expo-image';
+import { Input } from 'heroui-native';
 import { useCallback, useState } from 'react';
 
 import { Alert, Pressable, Text, View } from 'react-native';
 import { NativeSheet } from '@/components/native-sheet';
-import { SheetInput } from '@/components/sheet-input';
 import { OTHER_CATEGORY_NAME } from '@/lib/data/seed-defaults';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useCategoriesStore } from '@/lib/stores';
@@ -168,7 +168,7 @@ export default function CategoriesScreen() {
                 onValueChanged={setNewColor}
               />
             </Host>
-            <SheetInput
+            <Input
               placeholder="New Category"
               value={newName}
               onChangeText={setNewName}

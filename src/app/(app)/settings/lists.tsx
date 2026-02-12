@@ -1,12 +1,11 @@
 import type { List } from '@/lib/db/schema';
 
 import { Image } from 'expo-image';
-import { useToast } from 'heroui-native';
+import { Input, useToast } from 'heroui-native';
 import { useCallback, useState } from 'react';
 import { Alert, Pressable, Text, View } from 'react-native';
 
 import { NativeSheet } from '@/components/native-sheet';
-import { SheetInput } from '@/components/sheet-input';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useListsStore } from '@/lib/stores';
 
@@ -67,7 +66,7 @@ export default function ListsScreen() {
             borderColor: colors.surfaceBorder,
           }}
         >
-          <SheetInput
+          <Input
             placeholder="New List"
             value={name}
             onChangeText={setName}
