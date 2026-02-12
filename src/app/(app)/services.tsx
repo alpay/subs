@@ -17,6 +17,7 @@ import { BackButtonWithHaptic } from '@/components/back-button-with-haptic';
 import { ServiceIcon } from '@/components/service-icon';
 import { getLogoUrl, searchBrands } from '@/lib/api/brandfetch';
 import { PREDEFINED_SERVICES } from '@/lib/data/predefined-services';
+import { FEATURE_FLAGS } from '@/lib/feature-flags';
 import { Haptic } from '@/lib/haptics';
 import { usePremiumGuard } from '@/lib/hooks/use-premium-guard';
 import { useTheme } from '@/lib/hooks/use-theme';
@@ -183,8 +184,8 @@ export default function ServicesScreen() {
           }}
           contentInsetAdjustmentBehavior="automatic"
         >
-          {/* Import options – only when no search query. Wrapper extends to edges; scroll content has padding so first/last items aren't cropped. */}
-          {!hasQuery && (
+          {/* Import options – only when no search query. Hidden when FEATURE_FLAGS.hideImport is true. */}
+          {!hasQuery && !FEATURE_FLAGS.hideImport && (
             <View style={{ marginHorizontal: -CONTENT_PADDING }}>
               <ScrollView
                 horizontal
