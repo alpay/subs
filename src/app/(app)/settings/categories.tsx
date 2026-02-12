@@ -57,7 +57,7 @@ function CategoryRow({
         <ColorPicker
           selection={category.color}
           supportsOpacity={false}
-          onValueChanged={onColorChange}
+          onSelectionChange={onColorChange}
         />
       </Host>
       {canRename && (
@@ -181,7 +181,7 @@ export default function CategoriesScreen() {
               <ColorPicker
                 selection={newColor}
                 supportsOpacity={false}
-                onValueChanged={setNewColor}
+                onSelectionChange={setNewColor}
               />
             </Host>
             <Input
