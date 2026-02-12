@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -54,10 +53,8 @@ function Providers({ children }: { children: ReactNode }) {
         <KeyboardProvider>
           <HeroUINativeProvider>
             <APIProvider>
-              <BottomSheetModalProvider>
-                <StatusBar style={isDark ? 'light' : 'dark'} />
-                {children}
-              </BottomSheetModalProvider>
+              <StatusBar style={isDark ? 'light' : 'dark'} />
+              {children}
             </APIProvider>
           </HeroUINativeProvider>
         </KeyboardProvider>

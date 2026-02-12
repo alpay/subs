@@ -2,7 +2,6 @@
 import type { RenderOptions } from '@testing-library/react-native';
 
 import type { ReactElement, ReactNode } from 'react';
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { NavigationContainer } from '@react-navigation/native';
 import { render, userEvent } from '@testing-library/react-native';
 
@@ -10,9 +9,7 @@ import '@shopify/flash-list/jestSetup';
 
 function createAppWrapper() {
   return ({ children }: { children: ReactNode }) => (
-    <BottomSheetModalProvider>
-      <NavigationContainer>{children}</NavigationContainer>
-    </BottomSheetModalProvider>
+    <NavigationContainer>{children}</NavigationContainer>
   );
 }
 
