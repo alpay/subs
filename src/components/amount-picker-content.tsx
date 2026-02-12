@@ -1,8 +1,9 @@
+import { Button, Host, Menu } from '@expo/ui/swift-ui';
+import { buttonStyle, fixedSize, labelStyle } from '@expo/ui/swift-ui/modifiers';
 import { Image } from 'expo-image';
+
 import { useCallback, useEffect, useMemo } from 'react';
 import { Pressable, Text, View } from 'react-native';
-
-import { SelectPill } from '@/components/select-pill';
 import { getCurrencySymbol } from '@/lib/data/currencies';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useAddSubscriptionDraftStore, useCurrencyRatesStore, useSettingsStore } from '@/lib/stores';
@@ -186,12 +187,20 @@ export function AmountPickerCurrencyPill() {
     [currency, currencyOptions],
   );
   return (
-    <SelectPill
-      value={currencyOption}
-      options={currencyOptions}
-      onValueChange={option => setCurrency(option?.value ?? '')}
-      size="sm"
-      variant="muted"
-    />
+    <Host matchContents>
+      <Menu
+        label={currencyOption?.label ?? 'Currency'}
+        modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass')]}
+      >
+        {currencyOptions.map(option => (
+          <Button
+            key={option.value}
+            systemImage={option.value === currency ? 'checkmark' : undefined}
+            label={option.label}
+            onPress={() => setCurrency(option.value)}
+          />
+        ))}
+      </Menu>
+    </Host>
   );
 }
