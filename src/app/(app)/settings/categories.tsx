@@ -1,12 +1,11 @@
 import type { Category } from '@/lib/db/schema';
 
+import { ColorPicker, Host } from '@expo/ui/swift-ui';
 import { Image } from 'expo-image';
 import { useCallback, useState } from 'react';
-import { Alert, Pressable, Text, View } from 'react-native';
 
-import { ModalSheet } from '@/components/modal-sheet';
+import { Alert, Pressable, Text, View } from 'react-native';
 import { NativeSheet } from '@/components/native-sheet';
-import { SelectColorContent } from '@/components/select-color-sheet';
 import { SheetInput } from '@/components/sheet-input';
 import { OTHER_CATEGORY_NAME } from '@/lib/data/seed-defaults';
 import { useTheme } from '@/lib/hooks/use-theme';
@@ -20,7 +19,7 @@ function CategoryRow({
   category,
   isLast,
   onRename,
-  onColorPress,
+  onColorChange,
   onDelete,
   canDelete,
   canRename,
@@ -28,7 +27,7 @@ function CategoryRow({
   category: Category;
   isLast: boolean;
   onRename: () => void;
-  onColorPress: () => void;
+  onColorChange: (color: string) => void;
   onDelete: () => void;
   canDelete: boolean;
   canRename: boolean;
@@ -53,20 +52,13 @@ function CategoryRow({
       >
         {category.name}
       </Text>
-      <Pressable
-        onPress={onColorPress}
-        hitSlop={HIT_SLOP}
-        style={({ pressed }) => [{ marginLeft: 12, opacity: pressed ? 0.6 : 1 }]}
-      >
-        <View
-          style={{
-            width: 20,
-            height: 20,
-            borderRadius: 10,
-            backgroundColor: category.color,
-          }}
+      <Host matchContents style={{ marginLeft: 12 }}>
+        <ColorPicker
+          selection={category.color}
+          supportsOpacity={false}
+          onValueChanged={onColorChange}
         />
-      </Pressable>
+      </Host>
       {canRename && (
         <Pressable
           onPress={onRename}
@@ -103,14 +95,6 @@ export default function CategoriesScreen() {
 
   const [newName, setNewName] = useState('');
   const [newColor, setNewColor] = useState(DEFAULT_NEW_COLOR);
-  const [colorSheetTarget, setColorSheetTarget] = useState<'new' | string | null>(null);
-
-  const selectedColorForSheet
-    = colorSheetTarget === 'new'
-      ? newColor
-      : colorSheetTarget
-        ? categories.find(c => c.id === colorSheetTarget)?.color ?? DEFAULT_NEW_COLOR
-        : DEFAULT_NEW_COLOR;
 
   const handleAdd = useCallback(() => {
     const trimmed = newName.trim();
@@ -145,21 +129,6 @@ export default function CategoriesScreen() {
     [update],
   );
 
-  const handleColorSelect = useCallback(
-    (color: string) => {
-      if (colorSheetTarget === 'new') {
-        setNewColor(color);
-      }
-      else if (colorSheetTarget) {
-        const cat = categories.find(c => c.id === colorSheetTarget);
-        if (cat)
-          update({ ...cat, color });
-      }
-      setColorSheetTarget(null);
-    },
-    [colorSheetTarget, categories, update],
-  );
-
   const handleDelete = useCallback(
     (category: Category) => {
       Alert.alert(
@@ -192,18 +161,13 @@ export default function CategoriesScreen() {
               borderColor: colors.surfaceBorder,
             }}
           >
-            <Pressable
-              onPress={() => setColorSheetTarget('new')}
-              style={({ pressed }) => [
-                {
-                  width: 24,
-                  height: 24,
-                  borderRadius: 12,
-                  backgroundColor: newColor,
-                },
-                pressed && { opacity: 0.85 },
-              ]}
-            />
+            <Host matchContents>
+              <ColorPicker
+                selection={newColor}
+                supportsOpacity={false}
+                onValueChanged={setNewColor}
+              />
+            </Host>
             <SheetInput
               placeholder="New Category"
               value={newName}
@@ -247,7 +211,9 @@ export default function CategoriesScreen() {
                 category={category}
                 isLast={index === categories.length - 1}
                 onRename={() => openRename(category)}
-                onColorPress={() => setColorSheetTarget(category.id)}
+                onColorChange={(color: string) => {
+                  update({ ...category, color });
+                }}
                 onDelete={() => handleDelete(category)}
                 canDelete={category.name !== OTHER_CATEGORY_NAME}
                 canRename={category.name !== OTHER_CATEGORY_NAME}
@@ -269,20 +235,6 @@ export default function CategoriesScreen() {
           </Text>
         </View>
       </NativeSheet>
-
-      <ModalSheet
-        title="Select Color"
-        closeButtonTitle="Close"
-        isVisible={colorSheetTarget !== null}
-        onClose={() => setColorSheetTarget(null)}
-        enableDynamicSizing
-        bottomScrollSpacer={24}
-      >
-        <SelectColorContent
-          selectedColor={selectedColorForSheet}
-          onSelect={handleColorSelect}
-        />
-      </ModalSheet>
     </>
   );
 }

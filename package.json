@@ -41,6 +41,7 @@
   },
   "dependencies": {
     "@expo/metro-runtime": "^55.0.4",
+    "@expo/ui": "55.0.0-preview.5",
     "@expo/vector-icons": "^15.0.3",
     "@gorhom/bottom-sheet": "^5.2.8",
     "@mgcrea/react-native-swiftui": "^0.15.2",

@@ -1,14 +1,16 @@
 import type { MutableRefObject } from 'react';
 
 import type { NotificationMode, ScheduleType, Subscription, SubscriptionStatus } from '@/lib/db/schema';
+import { Button, Host, Menu } from '@expo/ui/swift-ui';
+import { buttonStyle, labelStyle } from '@expo/ui/swift-ui/modifiers';
 import { SwiftUI } from '@mgcrea/react-native-swiftui';
 import { parseISO } from 'date-fns';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { Input, TextArea } from 'heroui-native';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
 
+import { Pressable, Text, View } from 'react-native';
 import { SelectPill } from '@/components/select-pill';
 import { ServiceIcon } from '@/components/service-icon';
 import { GlassCard } from '@/components/ui/glass-card';
@@ -140,8 +142,8 @@ export function SubscriptionFormContent({
     [methods],
   );
 
-  const scheduleOption = useMemo(
-    () => SCHEDULE_OPTIONS.find(o => o.value === scheduleType),
+  const scheduleLabel = useMemo(
+    () => SCHEDULE_OPTIONS.find(o => o.value === scheduleType)?.label ?? 'Monthly',
     [scheduleType],
   );
 
@@ -306,12 +308,17 @@ export function SubscriptionFormContent({
           <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
             Schedule
           </Text>
-          <SelectPill
-            value={scheduleOption}
-            options={[...SCHEDULE_OPTIONS]}
-            onValueChange={o => setScheduleType((o?.value as ScheduleType) ?? 'monthly')}
-            size="sm"
-          />
+          <Host matchContents>
+            <Menu systemImage="calendar.badge.clock" label={scheduleLabel} modifiers={[labelStyle('titleAndIcon'), buttonStyle('glass')]}>
+              {SCHEDULE_OPTIONS.map(option => (
+                <Button
+                  label={option.label}
+                  key={option.value}
+                  onPress={() => setScheduleType(option.value as ScheduleType)}
+                />
+              ))}
+            </Menu>
+          </Host>
         </View>
         {scheduleType === 'custom' && (
           <>

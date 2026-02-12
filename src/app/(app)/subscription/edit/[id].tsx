@@ -102,12 +102,18 @@ export default function EditSubscriptionScreen() {
         }}
       />
       <Stack.Screen.BackButton displayMode="minimal" />
+      <Stack.Toolbar placement="right">
+        <Stack.Toolbar.Button
+          onPress={handleDelete}
+          icon="trash"
+        />
+      </Stack.Toolbar>
       <Stack.Toolbar placement="bottom">
         <Stack.Toolbar.Spacer />
         <Stack.Toolbar.View>
           <Button
             variant="outline"
-            size="lg"
+            size="md"
             isDisabled={!isFormValid}
             onPress={() => saveRef.current?.()}
             style={{ minWidth: 200 }}
@@ -116,10 +122,6 @@ export default function EditSubscriptionScreen() {
           </Button>
         </Stack.Toolbar.View>
         <Stack.Toolbar.Spacer />
-        <Stack.Toolbar.Button
-          onPress={handleDelete}
-          icon="trash"
-        />
       </Stack.Toolbar>
       <View style={{ flex: 1, backgroundColor: colors.background }}>
         <RadialGlow color={logoColor} centerY="15%" maxOpacity={0.75} />
