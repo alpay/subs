@@ -61,6 +61,8 @@ export default function ICloudDataScreen() {
   const [iCloudAvailable, setICloudAvailable] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
+  const [isBackingUp, setIsBackingUp] = useState(false);
+  const [isRestoring, setIsRestoring] = useState(false);
 
   const getCategoryName = useCallback(
     (id: string) => categories.find(c => c.id === id)?.name ?? 'Other',
@@ -196,6 +198,26 @@ export default function ICloudDataScreen() {
     );
   }, [router]);
 
+  const handleBackupToICloud = useCallback(async () => {
+    if (!iCloudAvailable) {
+      toast.show('iCloud is not available');
+      return;
+    }
+
+    setIsBackingUp(true);
+    try {
+      await uploadToICloud();
+      toast.show('Backup completed successfully');
+    }
+    catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      toast.show(`Failed to backup: ${errorMessage}`);
+    }
+    finally {
+      setIsBackingUp(false);
+    }
+  }, [iCloudAvailable, toast]);
+
   const handleRestoreFromICloud = useCallback(async () => {
     if (!iCloudAvailable) {
       toast.show('iCloud is not available');
@@ -210,6 +232,7 @@ export default function ICloudDataScreen() {
         {
           text: 'Restore',
           onPress: async () => {
+            setIsRestoring(true);
             try {
               await downloadFromICloud();
               loadSubscriptions();
@@ -219,8 +242,12 @@ export default function ICloudDataScreen() {
               useSettingsStore.getState().load();
               toast.show('Data restored from iCloud');
             }
-            catch {
-              toast.show('Failed to restore from iCloud');
+            catch (error) {
+              const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+              toast.show(`Failed to restore: ${errorMessage}`);
+            }
+            finally {
+              setIsRestoring(false);
             }
           },
         },
@@ -245,7 +272,7 @@ export default function ICloudDataScreen() {
               ? 'Syncing...'
               : 'Your subscription data will be securely synced across all your devices via iCloud Drive.'
           }
-          minHeight={150}
+          minHeight={settings.iCloudEnabled && iCloudAvailable ? 250 : 150}
         >
           <SwiftUI.HStack spacing={8}>
             <SwiftUI.Image
@@ -264,6 +291,26 @@ export default function ICloudDataScreen() {
               disabled={!iCloudAvailable}
             />
           </SwiftUI.HStack>
+
+          {settings.iCloudEnabled && iCloudAvailable && (
+            <>
+              <View style={{ height: 1, backgroundColor: colors.border, marginVertical: 8 }} />
+              <SettingsRow
+                icon="system:icloud.and.arrow.up"
+                label={isBackingUp ? 'Backing up...' : 'Backup'}
+                trailingIcon={false}
+                buttonColor={colors.text}
+                onPress={handleBackupToICloud}
+              />
+              <SettingsRow
+                icon="system:icloud.and.arrow.down"
+                label={isRestoring ? 'Restoring...' : 'Restore from iCloud'}
+                trailingIcon={false}
+                buttonColor={colors.text}
+                onPress={handleRestoreFromICloud}
+              />
+            </>
+          )}
         </SettingsSection>
 
         {/* Current Base */}
@@ -317,26 +364,6 @@ export default function ICloudDataScreen() {
             </SwiftUI.HStack>
           </SwiftUI.Button>
         </SettingsSection>
-
-        {/* Restore from iCloud - only show when iCloud available */}
-        {iCloudAvailable && settings.iCloudEnabled && (
-          <SettingsSection header="" minHeight={80}>
-            <SwiftUI.Button
-              buttonStyle="default"
-              style={{ color: colors.text }}
-              onPress={handleRestoreFromICloud}
-            >
-              <SwiftUI.HStack spacing={8}>
-                <SwiftUI.Image
-                  name="system:icloud.and.arrow.down"
-                  style={{ width: 22, height: 22 }}
-                />
-                <SwiftUI.Text text="Restore from iCloud" />
-                <SwiftUI.Spacer />
-              </SwiftUI.HStack>
-            </SwiftUI.Button>
-          </SettingsSection>
-        )}
 
         {/* Delete All Data */}
         <View style={{ marginBottom: 20 }}>

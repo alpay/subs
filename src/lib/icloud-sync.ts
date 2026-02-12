@@ -72,36 +72,64 @@ export async function downloadFromICloud(): Promise<void> {
 
   const remoteFilePath = `${ICLOUD_DIR}/${BACKUP_FILENAME}`;
 
-  if (!(await isExistAsync(remoteFilePath, false))) {
-    return; // No backup yet
+  // Check if the backup file exists in iCloud
+  const fileExists = await isExistAsync(remoteFilePath, false);
+  if (!fileExists) {
+    throw new Error('No backup found in iCloud. Please create a backup first.');
   }
 
+  // Construct the full path to the iCloud file
   const remotePath = `${defaultICloudContainerPath}/Documents/${ICLOUD_DIR}/${BACKUP_FILENAME}`;
   const localDir = FileSystem.cacheDirectory ?? FileSystem.documentDirectory;
   if (!localDir) {
     throw new Error('No local directory available');
   }
 
-  const localPath = await downloadFileAsync(remotePath, localDir);
-  const content = await FileSystem.readAsStringAsync(localPath, {
-    encoding: FileSystem.EncodingType.UTF8,
-  });
+  try {
+    // Download the file from iCloud
+    const localPath = await downloadFileAsync(remotePath, localDir);
+    
+    // Read the downloaded file
+    const content = await FileSystem.readAsStringAsync(localPath, {
+      encoding: FileSystem.EncodingType.UTF8,
+    });
 
-  const backup = JSON.parse(content);
+    // Parse the backup data
+    let backup;
+    try {
+      backup = JSON.parse(content);
+    }
+    catch (parseError) {
+      throw new Error('Invalid backup file format. The backup may be corrupted.');
+    }
 
-  if (backup.subscriptions) {
-    saveSubscriptions(backup.subscriptions);
+    // Validate backup structure
+    if (!backup || typeof backup !== 'object') {
+      throw new Error('Invalid backup file structure.');
+    }
+
+    // Restore data from backup
+    if (backup.subscriptions && Array.isArray(backup.subscriptions)) {
+      saveSubscriptions(backup.subscriptions);
+    }
+    if (backup.categories && Array.isArray(backup.categories)) {
+      saveCategories(backup.categories);
+    }
+    if (backup.lists && Array.isArray(backup.lists)) {
+      saveLists(backup.lists);
+    }
+    if (backup.paymentMethods && Array.isArray(backup.paymentMethods)) {
+      savePaymentMethods(backup.paymentMethods);
+    }
+    if (backup.settings && typeof backup.settings === 'object') {
+      saveSettings(backup.settings);
+    }
   }
-  if (backup.categories) {
-    saveCategories(backup.categories);
-  }
-  if (backup.lists) {
-    saveLists(backup.lists);
-  }
-  if (backup.paymentMethods) {
-    savePaymentMethods(backup.paymentMethods);
-  }
-  if (backup.settings) {
-    saveSettings(backup.settings);
+  catch (error) {
+    // Re-throw with more context if it's not already an Error
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error(`Failed to download from iCloud: ${String(error)}`);
   }
 }
