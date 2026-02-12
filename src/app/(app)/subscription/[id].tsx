@@ -42,7 +42,7 @@ function DetailRow({
       }}
     >
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-        <Text style={{ fontSize: 15, color: colors.textMuted }} selectable>
+        <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
           {label}
         </Text>
         {showArrow && (
@@ -53,7 +53,7 @@ function DetailRow({
           />
         )}
       </View>
-      <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+      <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }} selectable>
         {value}
       </Text>
     </View>

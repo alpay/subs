@@ -189,6 +189,7 @@ export function AmountPickerCurrencyPill() {
   return (
     <Host matchContents>
       <Menu
+        systemImage="chevron.up.chevron.down"
         label={currencyOption?.label ?? 'Currency'}
         modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass')]}
       >

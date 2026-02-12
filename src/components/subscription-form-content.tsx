@@ -36,7 +36,6 @@ const STATUS_OPTIONS = [
 
 const NOTIFICATION_OPTIONS = [
   { label: 'Default', value: 'default' },
-  { label: 'Custom', value: 'custom' },
   { label: 'None', value: 'none' },
 ] as const;
 
@@ -239,7 +238,7 @@ export function SubscriptionFormContent({
     alignItems: 'center' as const,
     justifyContent: 'space-between' as const,
     paddingVertical: 14,
-    paddingHorizontal: 18,
+    paddingHorizontal: 24,
     gap: 12,
     width: '100%' as const,
   };
@@ -258,7 +257,7 @@ export function SubscriptionFormContent({
     paddingHorizontal: 0,
     paddingVertical: 0,
     textAlign: 'right' as const,
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: '500' as const,
     color: colors.text,
     minHeight: 0,
@@ -272,7 +271,7 @@ export function SubscriptionFormContent({
 
       <GlassCard style={{ marginBottom: 12 }}>
         <View style={rowStyle}>
-          <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+          <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
             Name
           </Text>
           <View style={{ flex: 1, alignItems: 'flex-end' }}>
@@ -287,11 +286,11 @@ export function SubscriptionFormContent({
         </View>
         <View style={rowDivider} />
         <View style={rowStyle}>
-          <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+          <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
             Schedule
           </Text>
           <Host matchContents>
-            <Menu label={scheduleLabel} modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('automatic')]}>
+            <Menu label={scheduleLabel} systemImage="chevron.up.chevron.down" modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('plain')]}>
               {SCHEDULE_OPTIONS.map(option => (
                 <Button
                   systemImage={option.value === scheduleType ? 'checkmark' : undefined}
@@ -307,7 +306,7 @@ export function SubscriptionFormContent({
           <>
             <View style={rowDivider} />
             <View style={rowStyle}>
-              <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+              <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
                 Interval
               </Text>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
@@ -329,8 +328,9 @@ export function SubscriptionFormContent({
                 />
                 <Host matchContents>
                   <Menu
+                    systemImage="chevron.up.chevron.down"
                     label={INTERVAL_UNIT_OPTIONS.find(o => o.value === intervalUnit)?.label ?? 'Month'}
-                    modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('automatic')]}
+                    modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('plain')]}
                   >
                     {INTERVAL_UNIT_OPTIONS.map(option => (
                       <Button
@@ -348,15 +348,14 @@ export function SubscriptionFormContent({
         )}
         <View style={rowDivider} />
         <View style={rowStyle}>
-          <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+          <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
             Start Date
           </Text>
           <Host matchContents>
             <DatePicker
-              title="Start date"
               selection={draftStartDate}
               displayedComponents={['date']}
-              onDateChange={date => {
+              onDateChange={(date) => {
                 draftStore.setStartDate(date);
               }}
             />
@@ -372,23 +371,22 @@ export function SubscriptionFormContent({
           style={rowStyle}
         >
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-            <Image source="sf:dollarsign" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
-            <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+            <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
               Amount
             </Text>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
             <Text
-              style={{ fontSize: 15, color: colors.textMuted, fontVariant: ['tabular-nums'] }}
+              style={{ fontSize: 16, color: colors.text, fontVariant: ['tabular-nums'] }}
               selectable
             >
-              {getCurrencySymbol(draftCurrency)}
-              {' '}
-              {formattedAmount}
-              {' '}
-              (
-              {draftCurrency}
-              )
+              {`${getCurrencySymbol(draftCurrency)}${formattedAmount}`}
+            </Text>
+            <Text
+              style={{ fontSize: 16, color: colors.textMuted, fontVariant: ['tabular-nums'] }}
+              selectable
+            >
+              {`(${draftCurrency})`}
             </Text>
           </View>
         </Pressable>
@@ -398,18 +396,19 @@ export function SubscriptionFormContent({
         <View style={rowStyle}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
             <Image source="sf:tag" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
-            <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+            <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
               Category
             </Text>
           </View>
           <Host matchContents>
             <Menu
+              systemImage="chevron.up.chevron.down"
               label={
                 categoryOptions.find(o => o.value === categoryId)?.label
                 || categoryOptions[0]?.label
                 || 'Category'
               }
-              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('automatic')]}
+              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('plain')]}
             >
               {categoryOptions.map(option => (
                 <Button
@@ -428,18 +427,19 @@ export function SubscriptionFormContent({
         <View style={rowStyle}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
             <Image source="sf:list.bullet" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
-            <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+            <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
               List
             </Text>
           </View>
           <Host matchContents>
             <Menu
+              systemImage="chevron.up.chevron.down"
               label={
                 listOptions.find(o => o.value === listId)?.label
                 || listOptions[0]?.label
                 || 'List'
               }
-              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('automatic')]}
+              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('plain')]}
             >
               {listOptions.map(option => (
                 <Button
@@ -463,18 +463,19 @@ export function SubscriptionFormContent({
                   style={{ width: 18, height: 18 }}
                   tintColor={colors.textMuted}
                 />
-                <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+                <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
                   Status
                 </Text>
               </View>
               <Host matchContents>
                 <Menu
+                  systemImage="chevron.up.chevron.down"
                   label={
                     STATUS_OPTIONS.find(o => o.value === status)?.label
                     || STATUS_OPTIONS[0]?.label
                     || 'Status'
                   }
-                  modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('automatic')]}
+                  modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('plain')]}
                 >
                   {STATUS_OPTIONS.map(option => (
                     <Button
@@ -499,18 +500,19 @@ export function SubscriptionFormContent({
               style={{ width: 18, height: 18 }}
               tintColor={colors.textMuted}
             />
-            <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
-              Payment method
+            <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
+              Pay with
             </Text>
           </View>
           <Host matchContents>
             <Menu
+              systemImage="chevron.up.chevron.down"
               label={
                 paymentMethodOptions.find(o => o.value === paymentMethodId)?.label
                 || paymentMethodOptions[0]?.label
                 || 'Payment method'
               }
-              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('automatic')]}
+              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('plain')]}
             >
               {paymentMethodOptions.map(option => (
                 <Button
@@ -529,18 +531,19 @@ export function SubscriptionFormContent({
         <View style={rowStyle}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
             <Image source="sf:bell" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
-            <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+            <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
               Notifications
             </Text>
           </View>
           <Host matchContents>
             <Menu
+              systemImage="chevron.up.chevron.down"
               label={
                 NOTIFICATION_OPTIONS.find(o => o.value === notificationMode)?.label
                 || NOTIFICATION_OPTIONS[0]?.label
                 || 'Notifications'
               }
-              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('automatic')]}
+              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('plain')]}
             >
               {NOTIFICATION_OPTIONS.map(option => (
                 <Button
