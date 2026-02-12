@@ -5,6 +5,8 @@ import { useRouter } from 'expo-router';
 import { Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useTheme } from '@/lib/hooks/use-theme';
+
 type NativeSheetProps = {
   title?: string;
   subtitle?: string;
@@ -28,6 +30,7 @@ export function NativeSheet({
 }: NativeSheetProps) {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { colors } = useTheme();
 
   const handleClose = () => {
     if (onClose) {
@@ -45,9 +48,9 @@ export function NativeSheet({
           accessibilityRole="button"
           accessibilityLabel="Back"
           onPress={handleClose}
-          className="rounded-full bg-white/5 p-2"
+          style={{ borderRadius: 9999, backgroundColor: colors.surfaceMuted, padding: 8 }}
         >
-          <Feather name="chevron-left" size={20} color="white" />
+          <Feather name="chevron-left" size={20} color={colors.text} />
         </Pressable>
       )
     : null);
@@ -57,16 +60,16 @@ export function NativeSheet({
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Close"
-          className="rounded-full bg-white/5 p-2"
+          style={{ borderRadius: 9999, backgroundColor: colors.surfaceMuted, padding: 8 }}
           onPress={handleClose}
         >
-          <Feather name="x" size={20} color="white" />
+          <Feather name="x" size={20} color={colors.text} />
         </Pressable>
       )
     : null);
 
   return (
-    <View className="relative flex-1 px-4" style={{ paddingBottom: insets.bottom }}>
+    <View className="relative flex-1 px-4" style={{ paddingBottom: insets.bottom, backgroundColor: colors.background }}>
       <View
         // Mark header as non-collapsable so React Native Screens can
         // correctly treat it as the fixed header when used with a ScrollView
@@ -85,7 +88,7 @@ export function NativeSheet({
         </View>
         <View style={{ flex: 1, alignItems: 'center' }}>
           {title && (
-            <Text style={{ fontSize: 18, fontWeight: '600', color: 'white' }}>
+            <Text style={{ fontSize: 18, fontWeight: '600', color: colors.text }}>
               {title}
             </Text>
           )}
@@ -93,7 +96,7 @@ export function NativeSheet({
             <Text
               style={{
                 fontSize: 12,
-                color: 'rgba(255,255,255,0.7)',
+                color: colors.textMuted,
                 marginTop: 2,
               }}
             >
