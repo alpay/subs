@@ -2,6 +2,7 @@ import type { AppStateStatus } from 'react-native';
 import { useEffect } from 'react';
 import { AppState } from 'react-native';
 
+import { configure } from '@/lib/notifications';
 import {
   useCategoriesStore,
   useCurrencyRatesStore,
@@ -18,6 +19,8 @@ function pullCurrencyRates() {
 
 export function useBootstrap() {
   useEffect(() => {
+    void configure();
+
     const subscriptions = useSubscriptionsStore.getState();
     const categories = useCategoriesStore.getState();
     const lists = useListsStore.getState();

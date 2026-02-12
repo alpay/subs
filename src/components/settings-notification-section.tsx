@@ -1,10 +1,10 @@
 import type { ReminderConfig } from '@/lib/db/schema';
 import { SwiftUI } from '@mgcrea/react-native-swiftui';
-import * as Notifications from 'expo-notifications';
 import { useToast } from 'heroui-native';
 import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 
+import { requestPermissions, scheduleTestNotification } from '@/lib/notifications';
 import { useSettingsStore } from '@/lib/stores';
 
 export const REMINDER_DAYS_OPTIONS = [
@@ -127,26 +127,12 @@ export function SettingsNotificationSection() {
 
   const handleTestNotification = useCallback(async () => {
     try {
-      const current = await Notifications.getPermissionsAsync();
-      let status = current.status;
-      if (status !== 'granted') {
-        const request = await Notifications.requestPermissionsAsync();
-        status = request.status;
-      }
-      if (status !== 'granted') {
+      const granted = await requestPermissions();
+      if (!granted) {
         toast.show('Enable notifications in Settings to test alerts.');
         return;
       }
-      await Notifications.scheduleNotificationAsync({
-        content: {
-          title: 'Test Notification',
-          body: 'Notifications are enabled.',
-        },
-        trigger: {
-          type: Notifications.SchedulableTriggerInputTypes.TIME_INTERVAL,
-          seconds: 2,
-        },
-      });
+      await scheduleTestNotification();
       toast.show('Test notification scheduled');
     }
     catch {

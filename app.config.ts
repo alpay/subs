@@ -78,13 +78,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-router',
     ['app-icon-badge', appIconBadgeConfig],
 
-    [
-      'expo-notifications',
-      {
-        icon: './assets/notification-icon.png',
-        color: '#2E3C4B',
-      },
-    ],
+    // iOS: local notifications only. Android options (icon, color) omitted.
+    'expo-notifications',
     'expo-image',
     [
       '@oleg_svetlichnyi/expo-icloud-storage',

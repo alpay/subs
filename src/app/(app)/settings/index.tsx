@@ -1,6 +1,5 @@
 import { SwiftUI } from '@mgcrea/react-native-swiftui';
 import { Image } from 'expo-image';
-import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
 import { useToast } from 'heroui-native';
 import { useCallback, useMemo } from 'react';
@@ -8,6 +7,7 @@ import { Alert, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { NativeSheet } from '@/components/native-sheet';
+import { cancelAll } from '@/lib/notifications/notifications-manager';
 import {
   SettingsRow,
   SettingsSection,
@@ -87,7 +87,7 @@ export default function SettingsScreen() {
           style: 'destructive',
           onPress: async () => {
             storage.clearAll();
-            await Notifications.cancelAllScheduledNotificationsAsync();
+            await cancelAll();
             useSettingsStore.getState().load();
             useCategoriesStore.getState().load();
             useSubscriptionsStore.getState().load();
