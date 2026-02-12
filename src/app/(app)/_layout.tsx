@@ -64,13 +64,6 @@ export default function AppLayout() {
         }}
       />
       <Stack.Screen
-        name="date-picker"
-        options={{
-          ...sheetBaseOptions,
-          sheetAllowedDetents: 'fitToContents' as const,
-        }}
-      />
-      <Stack.Screen
         name="subscription/day-view/[date]"
         options={{
           ...sheetBaseOptions,

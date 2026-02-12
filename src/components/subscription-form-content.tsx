@@ -1,9 +1,8 @@
 import type { MutableRefObject } from 'react';
 
 import type { NotificationMode, ScheduleType, Subscription, SubscriptionStatus } from '@/lib/db/schema';
-import { Button, Host, Menu } from '@expo/ui/swift-ui';
+import { Button, DatePicker, Host, Menu } from '@expo/ui/swift-ui';
 import { buttonStyle, fixedSize, labelStyle } from '@expo/ui/swift-ui/modifiers';
-import { parseISO } from 'date-fns';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { Input, TextArea } from 'heroui-native';
@@ -45,14 +44,6 @@ const INTERVAL_UNIT_OPTIONS = [
   { label: 'Month', value: 'month' },
   { label: 'Week', value: 'week' },
 ] as const;
-
-function formatDateLabel(date: Date) {
-  return date.toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  });
-}
 
 function toIsoLocalDate(date: Date) {
   const year = date.getFullYear();
@@ -166,13 +157,6 @@ export function SubscriptionFormContent({
   const handleAmountPress = useCallback(() => {
     router.push('/(app)/amount-picker');
   }, [router]);
-
-  const handleDatePress = useCallback(() => {
-    if (isEdit && isValidDateString(initialState.startDate)) {
-      draftStore.setStartDate(parseISO(initialState.startDate));
-    }
-    router.push('/(app)/date-picker');
-  }, [isEdit, initialState.startDate, draftStore, router]);
 
   const handleSave = useCallback(() => {
     if (!isValid)
@@ -363,29 +347,21 @@ export function SubscriptionFormContent({
           </>
         )}
         <View style={rowDivider} />
-        <Pressable onPress={handleDatePress} style={rowStyle}>
+        <View style={rowStyle}>
           <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
             Start Date
           </Text>
-          <View
-            style={{
-              paddingHorizontal: 10,
-              paddingVertical: 5,
-              borderRadius: 999,
-              borderCurve: 'continuous',
-              backgroundColor: colors.surfaceMuted,
-              borderWidth: 1,
-              borderColor: colors.surfaceBorder,
-            }}
-          >
-            <Text
-              style={{ fontSize: 12, color: colors.text, fontVariant: ['tabular-nums'] }}
-              selectable
-            >
-              {formatDateLabel(draftStartDate)}
-            </Text>
-          </View>
-        </Pressable>
+          <Host matchContents>
+            <DatePicker
+              title="Start date"
+              selection={draftStartDate}
+              displayedComponents={['date']}
+              onDateChange={date => {
+                draftStore.setStartDate(date);
+              }}
+            />
+          </Host>
+        </View>
       </GlassCard>
 
       <GlassCard style={{ marginBottom: 12 }}>
