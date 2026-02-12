@@ -150,12 +150,12 @@ export default function SettingsScreen() {
             )}
             value={(
               <SwiftUI.Text
-                text="Free"
+                text={settings.premium ? 'Pro' : 'Free'}
                 style={{ color: colors.accent, fontSize: 12, fontWeight: '600' }}
               />
             )}
             buttonColor={colors.text}
-            onPress={() => {}}
+            onPress={() => router.push('/(app)/paywall' as const)}
           />
         </SettingsSection>
 

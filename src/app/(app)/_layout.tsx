@@ -42,6 +42,13 @@ export default function AppLayout() {
           sheetAllowedDetents: [0.99] as const,
         }}
       />
+      <Stack.Screen
+        name="paywall"
+        options={{
+          ...sheetBaseOptions,
+          sheetAllowedDetents: 'fitToContents' as const,
+        }}
+      />
 
       {/* Subscription Screens */}
       <Stack.Screen name="subscription/[id]" />

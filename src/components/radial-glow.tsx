@@ -8,6 +8,8 @@ type RadialGlowProps = {
   radiusX?: string;
   radiusY?: string;
   maxOpacity?: number;
+  /** Unique id for SVG gradient when multiple glows are used. Defaults to "glow". */
+  gradientId?: string;
 };
 
 /**
@@ -21,6 +23,7 @@ export function RadialGlow({
   radiusX = '100%',
   radiusY = '100%',
   maxOpacity = 0.4,
+  gradientId = 'glow',
 }: RadialGlowProps) {
   // Generate many stops for ultra-smooth gradient (no pixelation)
   const stops = Array.from({ length: 30 }, (_, i) => {
@@ -43,7 +46,7 @@ export function RadialGlow({
     >
       <Svg width="100%" height="100%">
         <Defs>
-          <RadialGradient id="glow" cx={centerX} cy={centerY} rx={radiusX} ry={radiusY}>
+          <RadialGradient id={gradientId} cx={centerX} cy={centerY} rx={radiusX} ry={radiusY}>
             {stops.map((stop, idx) => (
               <Stop
                 key={idx}
@@ -54,7 +57,7 @@ export function RadialGlow({
             ))}
           </RadialGradient>
         </Defs>
-        <Rect x="0" y="0" width="100%" height="100%" fill="url(#glow)" />
+        <Rect x="0" y="0" width="100%" height="100%" fill={`url(#${gradientId})`} />
       </Svg>
     </View>
   );
