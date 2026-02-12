@@ -97,8 +97,18 @@ function SearchRow({
   return (
     <Link href={`/subscription/${sub.id}`} asChild>
       <Link.Trigger withAppleZoom>
-        <Pressable style={({ pressed }) => ({ transform: [{ scale: pressed ? 0.98 : 1 }] })}>
-          <GlassView style={{ flex: 1 }}>{rowContent}</GlassView>
+        <Pressable>
+          {({ pressed }) => (
+            <GlassView
+              style={{
+                flex: 1,
+                backgroundColor: pressed ? colors.surface : 'transparent',
+                opacity: pressed ? 0.9 : 1,
+              }}
+            >
+              {rowContent}
+            </GlassView>
+          )}
         </Pressable>
       </Link.Trigger>
     </Link>
@@ -118,28 +128,30 @@ export function HomeSearchResults({ results, settings }: HomeSearchResultsProps)
       }}
     >
       <GlassContainer spacing={0} style={{ borderRadius: GLASS_CARD_RADIUS, overflow: 'hidden' }}>
-        {results.length === 0 ? (
-          <GlassView
-            style={{
-              paddingHorizontal: ROW_PADDING_H,
-              paddingVertical: 24,
-            }}
-          >
-            <Text style={{ fontSize: 15, color: colors.textMuted }} selectable>
-              No subscriptions found.
-            </Text>
-          </GlassView>
-        ) : (
-          results.map((sub, index) => (
-            <SearchRow
-              key={sub.id}
-              sub={sub}
-              settings={settings}
-              isLast={index === results.length - 1}
-              colors={colors}
-            />
-          ))
-        )}
+        {results.length === 0
+          ? (
+              <GlassView
+                style={{
+                  paddingHorizontal: ROW_PADDING_H,
+                  paddingVertical: 24,
+                }}
+              >
+                <Text style={{ fontSize: 15, color: colors.textMuted }} selectable>
+                  No subscriptions found.
+                </Text>
+              </GlassView>
+            )
+          : (
+              results.map((sub, index) => (
+                <SearchRow
+                  key={sub.id}
+                  sub={sub}
+                  settings={settings}
+                  isLast={index === results.length - 1}
+                  colors={colors}
+                />
+              ))
+            )}
       </GlassContainer>
     </View>
   );
