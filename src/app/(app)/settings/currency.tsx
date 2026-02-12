@@ -45,17 +45,12 @@ export default function CurrencyScreen() {
     return result;
   }, [searchQuery, favoriteCurrencies]);
 
-  const handleSave = useCallback(() => {
-    update({ mainCurrency });
-    toast.show(`Default currency set to ${mainCurrency}`);
-    router.back();
-  }, [mainCurrency, update, toast, router]);
-
   const setDefault = useCallback(
     (code: string) => {
+      toast.show(`Default currency set to ${code}`);
       update({ mainCurrency: code });
     },
-    [update],
+    [update, toast],
   );
 
   const toggleFavorite = useCallback(
@@ -77,23 +72,6 @@ export default function CurrencyScreen() {
       title="Select Currency"
       showCloseIcon={false}
       showBackIcon
-      topRight={(
-        <Pressable
-          onPress={handleSave}
-          hitSlop={10}
-          style={({ pressed }) => [{ opacity: pressed ? 0.7 : 1 }]}
-        >
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: '600',
-              color: colors.accent,
-            }}
-          >
-            Done
-          </Text>
-        </Pressable>
-      )}
     >
       <ScrollView
         contentContainerStyle={{ paddingHorizontal: 8, paddingBottom: 24 }}
