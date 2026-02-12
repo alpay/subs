@@ -110,9 +110,7 @@ export function NativeSheet({
       </View>
 
       <View
-        // Mark header as non-collapsable so React Native Screens can
-        // correctly treat it as the fixed header when used with a ScrollView
-        // in a FormSheet presentation.
+        // Mark content as non-collapsabl
         collapsable={false}
         style={{ gap: 8 }}
       >

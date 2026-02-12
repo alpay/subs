@@ -73,13 +73,7 @@ export default function AnalyticsScreen() {
 
   return (
     <NativeSheet title="Analytics">
-      <View
-        style={{
-          gap: 16,
-          // paddingHorizontal: 16,
-          paddingBottom: 24,
-        }}
-      >
+      <View style={{ gap: 16 }}>
         <GlassCard>
           <View style={{ gap: 16, alignItems: 'center', paddingVertical: 20, paddingHorizontal: 16 }}>
             {activeCount > 0 && (

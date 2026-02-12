@@ -1,23 +1,11 @@
 import { Stack } from 'expo-router';
 import { Platform } from 'react-native';
 
-const transparentModalOptions = {
-  headerShown: false,
-  presentation: 'transparentModal' as const,
-  animation: 'fade' as const,
-  contentStyle: { backgroundColor: 'transparent' },
-};
-
 const sheetBaseOptions = {
   presentation: Platform.OS === 'ios' ? 'formSheet' : 'modal',
   sheetGrabberVisible: true,
-  sheetCornerRadius: 24,
   headerShown: false,
   contentStyle: { backgroundColor: 'transparent' },
-  // sheetAllowedDetents: [0.4],
-  // Control the backdrop dimming (0 = no dim, 1 = full dim)
-  // Or use 'transparent' for no overlay at all:
-  // sheetBackdropColor: 'transparent',
 } as const;
 
 export default function AppLayout() {
