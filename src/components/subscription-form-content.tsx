@@ -21,6 +21,7 @@ import {
   useSettingsStore,
 } from '@/lib/stores';
 import { getCurrencySymbol } from '@/lib/utils/format';
+import { toLocalDateString } from '@/lib/utils/subscription-dates';
 
 const SCHEDULE_OPTIONS = [
   { label: 'Monthly', value: 'monthly' },
@@ -44,13 +45,6 @@ const INTERVAL_UNIT_OPTIONS = [
   { label: 'Month', value: 'month' },
   { label: 'Week', value: 'week' },
 ] as const;
-
-function toIsoLocalDate(date: Date) {
-  const year = date.getFullYear();
-  const month = `${date.getMonth() + 1}`.padStart(2, '0');
-  const day = `${date.getDate()}`.padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
 
 function isValidDateString(value: string) {
   return !Number.isNaN(new Date(value).getTime());
@@ -164,7 +158,7 @@ export function SubscriptionFormContent({
 
     const finalAmount = Number(draftStore.amount);
     const finalCurrency = draftStore.currency;
-    const finalStartDate = toIsoLocalDate(draftStore.startDate);
+    const finalStartDate = toLocalDateString(draftStore.startDate);
     const normalizedIntervalCount
       = scheduleType === 'custom' ? Math.max(1, Number(intervalCount) || 1) : 1;
 

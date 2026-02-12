@@ -27,10 +27,7 @@ import {
   useSettingsStore,
   useSubscriptionsStore,
 } from '@/lib/stores';
-
-function todayIsoDate() {
-  return new Date().toISOString().slice(0, 10);
-}
+import { toLocalDateString } from '@/lib/utils/subscription-dates';
 
 export default function AddSubscriptionScreen() {
   const router = useRouter();
@@ -52,7 +49,7 @@ export default function AddSubscriptionScreen() {
   const paramStartDate = typeof params.startDate === 'string' ? params.startDate : params.startDate?.[0];
   const startDate = paramStartDate?.length === 10 && !Number.isNaN(Date.parse(paramStartDate))
     ? paramStartDate
-    : todayIsoDate();
+    : toLocalDateString(new Date());
 
   const { add } = useSubscriptionsStore();
   const { categories } = useCategoriesStore();

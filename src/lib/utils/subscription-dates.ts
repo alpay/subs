@@ -1,6 +1,11 @@
 import type { Subscription } from '@/lib/db/schema';
 
-import { addMonths, addWeeks, addYears, endOfMonth, getDate, getDaysInMonth, isAfter, isBefore, isEqual, parseISO, startOfDay, startOfMonth } from 'date-fns';
+import { addMonths, addWeeks, addYears, endOfMonth, format, getDate, getDaysInMonth, isAfter, isBefore, isEqual, parseISO, startOfDay, startOfMonth } from 'date-fns';
+
+/** Local date as yyyy-MM-dd (no UTC/timezone shift). Use for display and form defaults. */
+export function toLocalDateString(date: Date): string {
+  return format(date, 'yyyy-MM-dd');
+}
 
 /**
  * Add months and clamp to last day of target month when the source day
