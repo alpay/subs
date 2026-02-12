@@ -8,6 +8,7 @@ import { HomeSearchResults } from '@/components/home/home-search-results';
 import { HomeSummary } from '@/components/home/home-summary';
 import { MonthCalendar } from '@/components/month-calendar';
 import { ScreenShell } from '@/components/screen-shell';
+import { Haptic } from '@/lib/haptics';
 import { useHomeData } from '@/lib/hooks/use-home-data';
 import { usePremiumGuard } from '@/lib/hooks/use-premium-guard';
 import { useTheme } from '@/lib/hooks/use-theme';
@@ -52,7 +53,10 @@ export default function HomeScreen() {
             <Stack.Toolbar.MenuAction
               key={option.value}
               isOn={option.value === selectedListId}
-              onPress={() => setSelectedListId(option.value)}
+              onPress={() => {
+                Haptic.Light();
+                setSelectedListId(option.value);
+              }}
             >
               {option.label}
             </Stack.Toolbar.MenuAction>
@@ -61,14 +65,29 @@ export default function HomeScreen() {
       </Stack.Toolbar>
 
       <Stack.Toolbar placement="right">
-        <Stack.Toolbar.Button icon="chart.bar" onPress={() => router.push('/(app)/analytics')} />
-        <Stack.Toolbar.Button icon="gearshape" onPress={() => router.push('/(app)/settings')} />
+        <Stack.Toolbar.Button
+          icon="chart.bar"
+          onPress={() => {
+            Haptic.Light();
+            router.push('/(app)/analytics');
+          }}
+        />
+        <Stack.Toolbar.Button
+          icon="gearshape"
+          onPress={() => {
+            Haptic.Light();
+            router.push('/(app)/settings');
+          }}
+        />
       </Stack.Toolbar>
 
       <Stack.Toolbar placement="bottom">
         <Stack.Toolbar.Button
           icon={viewMode !== 'list' ? 'list.bullet' : 'calendar'}
-          onPress={() => setViewMode(prev => (prev === 'list' ? 'month' : 'list'))}
+          onPress={() => {
+            Haptic.Light();
+            setViewMode(prev => (prev === 'list' ? 'month' : 'list'));
+          }}
         />
         <Stack.Toolbar.Spacer />
         <Stack.SearchBar
@@ -80,12 +99,21 @@ export default function HomeScreen() {
             }
             setQuery(event.nativeEvent.text);
           }}
-          onCancelButtonPress={() => setQuery('')}
+          onCancelButtonPress={() => {
+            Haptic.Light();
+            setQuery('');
+          }}
           hideNavigationBar={false}
         />
         <Stack.Toolbar.SearchBarSlot />
         <Stack.Toolbar.Spacer />
-        <Stack.Toolbar.Button icon="plus" onPress={navigateToServicesOrPaywall} />
+        <Stack.Toolbar.Button
+          icon="plus"
+          onPress={() => {
+            Haptic.Light();
+            navigateToServicesOrPaywall();
+          }}
+        />
       </Stack.Toolbar>
 
       {viewMode === 'list' || hasQuery
@@ -123,6 +151,7 @@ export default function HomeScreen() {
                 date={visibleMonth}
                 subscriptions={filteredSubscriptions}
                 onDayPress={(day) => {
+                  Haptic.Light();
                   const dateParam = format(day, 'yyyy-MM-dd');
                   router.push({
                     pathname: '/(app)/subscription/day-view/[date]',

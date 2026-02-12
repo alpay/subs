@@ -8,6 +8,7 @@ import { Pressable, ScrollView, Text, View } from 'react-native';
 import { NativeSheet } from '@/components/native-sheet';
 import { SearchBar } from '@/components/SearchBar';
 import { CURRENCIES } from '@/lib/data/currencies';
+import { Haptic } from '@/lib/haptics';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useSettingsStore } from '@/lib/stores';
 
@@ -141,7 +142,10 @@ function CurrencyRow({
 }: CurrencyRowProps) {
   return (
     <Pressable
-      onPress={onSelect}
+      onPress={() => {
+        Haptic.Light();
+        onSelect();
+      }}
       style={({ pressed }) => [
         {
           flexDirection: 'row',
@@ -157,6 +161,7 @@ function CurrencyRow({
       <Pressable
         onPress={(e) => {
           e.stopPropagation();
+          Haptic.Light();
           onToggleFavorite();
         }}
         hitSlop={8}

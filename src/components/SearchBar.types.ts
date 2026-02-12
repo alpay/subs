@@ -1,12 +1,11 @@
 import type {
-  TextInputProps,
-  ViewStyle,
-  TextStyle,
   DimensionValue,
   StyleProp,
-} from "react-native";
+  TextStyle,
+  ViewStyle,
+} from 'react-native';
 
-export interface SearchBarProps {
+export type SearchBarProps = {
   /**
    * Placeholder text for the search input
    * @default "Search..."
@@ -61,4 +60,4 @@ export interface SearchBarProps {
   centerWhenUnfocused?: boolean;
   textCenterOffset?: number;
   iconCenterOffset?: number;
-}
+};

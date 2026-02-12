@@ -20,16 +20,20 @@ const notificationMap: Record<HapticNotificationType, Haptics.NotificationFeedba
   error: Haptics.NotificationFeedbackType.Error,
 };
 
+/** Only run haptics on iOS (no Android per product requirement). */
+function shouldRunHaptics(): boolean {
+  if (Platform.OS !== 'ios')
+    return false;
+  return isHapticsEnabled();
+}
+
 /**
  * Triggers haptic feedback with the specified intensity
  * @param type - The intensity of the haptic feedback
  */
 export function triggerHaptic(type: HapticType = 'light'): void {
-  if (Platform.OS === 'web')
+  if (!shouldRunHaptics())
     return;
-  if (!isHapticsEnabled())
-    return;
-
   Haptics.impactAsync(hapticMap[type]);
 }
 
@@ -38,11 +42,8 @@ export function triggerHaptic(type: HapticType = 'light'): void {
  * @param type - The type of notification feedback
  */
 export function triggerHapticNotification(type: HapticNotificationType): void {
-  if (Platform.OS === 'web')
+  if (!shouldRunHaptics())
     return;
-  if (!isHapticsEnabled())
-    return;
-
   Haptics.notificationAsync(notificationMap[type]);
 }
 
@@ -57,6 +58,17 @@ export const Haptic = {
   Warning: () => triggerHapticNotification('warning'),
   Error: () => triggerHapticNotification('error'),
 };
+
+/**
+ * Wraps a callback to trigger light haptic before invoking it. Use for any press/tap.
+ * No-op on non-iOS or when haptics are disabled.
+ */
+export function withHaptic<T extends (...args: any[]) => any>(fn: T): T {
+  return ((...args: Parameters<T>) => {
+    triggerHaptic('light');
+    return fn(...args);
+  }) as T;
+}
 
 function isHapticsEnabled() {
   const raw = storage.getString(STORAGE_KEYS.SETTINGS);

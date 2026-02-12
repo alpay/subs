@@ -23,6 +23,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
+import { Haptic } from '@/lib/haptics';
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
 const AnimatedView = Animated.createAnimatedComponent(View);
@@ -181,6 +182,7 @@ export function SearchBar({
   };
 
   const handleCancel = () => {
+    Haptic.Light();
     inputRef.current?.blur();
     setIsFocused(false);
     setQuery('');
@@ -212,6 +214,7 @@ export function SearchBar({
   };
 
   const handleClear = () => {
+    Haptic.Light();
     textOpacity.value = withTiming(0, { duration: 150 }, () => {
       scheduleOnRN(setQuery, '');
       textOpacity.value = withTiming(1, { duration: 150 });

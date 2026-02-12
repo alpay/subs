@@ -7,6 +7,7 @@ import { Pressable, Text, View } from 'react-native';
 import { Pill } from '@/components/pill';
 import { ServiceIcon } from '@/components/service-icon';
 import { GLASS_CARD_RADIUS } from '@/components/ui/glass-card';
+import { Haptic } from '@/lib/haptics';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { formatAmount } from '@/lib/utils/format';
 
@@ -97,7 +98,7 @@ function SearchRow({
   return (
     <Link href={`/subscription/${sub.id}`} asChild>
       <Link.Trigger withAppleZoom>
-        <Pressable>
+        <Pressable onPress={() => Haptic.Light()}>
           {({ pressed }) => (
             <GlassView
               style={{

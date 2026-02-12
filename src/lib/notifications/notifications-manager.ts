@@ -121,7 +121,8 @@ export async function scheduleForSubscription(
         },
       });
       ids.push(id);
-    } catch {
+    }
+    catch {
       // iOS can throw for invalid or past triggers; skip this reminder
     }
   }

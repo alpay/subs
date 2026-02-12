@@ -6,6 +6,7 @@ import { useCallback, useState } from 'react';
 import { Alert, Pressable, Text, View } from 'react-native';
 
 import { NativeSheet } from '@/components/native-sheet';
+import { Haptic } from '@/lib/haptics';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useListsStore } from '@/lib/stores';
 
@@ -19,8 +20,10 @@ export default function ListsScreen() {
   const [name, setName] = useState('');
 
   const handleAdd = useCallback(() => {
+    Haptic.Light();
     const trimmed = name.trim();
-    if (!trimmed) return;
+    if (!trimmed)
+      return;
     add(trimmed);
     setName('');
     toast.show(`${trimmed} added`);
@@ -37,7 +40,8 @@ export default function ListsScreen() {
             text: 'Save',
             onPress: (value: string | undefined) => {
               const trimmed = value?.trim();
-              if (trimmed) update({ ...list, name: trimmed });
+              if (trimmed)
+                update({ ...list, name: trimmed });
             },
           },
         ],
@@ -127,7 +131,10 @@ export default function ListsScreen() {
                 {list.name}
               </Text>
               <Pressable
-                onPress={() => openRename(list)}
+                onPress={() => {
+                  Haptic.Light();
+                  openRename(list);
+                }}
                 hitSlop={HIT_SLOP}
                 style={({ pressed }) => [{ marginLeft: 12, opacity: pressed ? 0.6 : 1 }]}
               >

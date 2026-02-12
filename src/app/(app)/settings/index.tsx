@@ -7,7 +7,6 @@ import { Alert, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { NativeSheet } from '@/components/native-sheet';
-import { cancelAll } from '@/lib/notifications/notifications-manager';
 import {
   SettingsRow,
   SettingsSection,
@@ -15,7 +14,9 @@ import {
 } from '@/components/settings';
 import { SettingsNotificationSection } from '@/components/settings-notification-section';
 import { CURRENCIES } from '@/lib/data/currencies';
+import { Haptic } from '@/lib/haptics';
 import { useTheme } from '@/lib/hooks/use-theme';
+import { cancelAll } from '@/lib/notifications/notifications-manager';
 import { storage } from '@/lib/storage';
 import {
   useCategoriesStore,
@@ -86,6 +87,7 @@ export default function SettingsScreen() {
           text: 'Reset',
           style: 'destructive',
           onPress: async () => {
+            Haptic.Light();
             storage.clearAll();
             await cancelAll();
             useSettingsStore.getState().load();
@@ -118,7 +120,10 @@ export default function SettingsScreen() {
             label="Reset App"
             buttonColor="red"
             trailingIcon={false}
-            onPress={handleResetApp}
+            onPress={() => {
+              Haptic.Light();
+              handleResetApp();
+            }}
           />
           <SettingsToggleRow
             icon="system:crown"
@@ -256,7 +261,10 @@ export default function SettingsScreen() {
               buttonStyle="default"
               style={{ color: colors.text }}
               disabled={isUpdating}
-              onPress={handleUpdateRates}
+              onPress={() => {
+                Haptic.Light();
+                handleUpdateRates();
+              }}
             />
           </SwiftUI.HStack>
         </SettingsSection>

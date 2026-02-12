@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { NativeSheet } from '@/components/native-sheet';
 import { SettingsRow, SettingsSection } from '@/components/settings';
+import { Haptic } from '@/lib/haptics';
 import { useTheme } from '@/lib/hooks/use-theme';
 import {
   downloadFromICloud,
@@ -136,6 +137,7 @@ export default function ICloudDataScreen() {
   );
 
   const handleExportCsv = useCallback(async () => {
+    Haptic.Light();
     if (subscriptions.length === 0) {
       toast.show('No subscriptions to export');
       return;
@@ -173,6 +175,7 @@ export default function ICloudDataScreen() {
   }, [subscriptions, getCategoryName, toast]);
 
   const handleDeleteAll = useCallback(() => {
+    Haptic.Light();
     Alert.alert(
       'Delete All Data',
       'This action permanently deletes all data from your device. If iCloud sync is enabled, data will also be removed from iCloud.',
@@ -182,6 +185,7 @@ export default function ICloudDataScreen() {
           text: 'Delete All Data',
           style: 'destructive',
           onPress: async () => {
+            Haptic.Light();
             storage.clearAll();
             await Notifications.cancelAllScheduledNotificationsAsync();
             useSettingsStore.getState().load();
@@ -232,6 +236,7 @@ export default function ICloudDataScreen() {
         {
           text: 'Restore',
           onPress: async () => {
+            Haptic.Light();
             setIsRestoring(true);
             try {
               await downloadFromICloud();
@@ -349,7 +354,10 @@ export default function ICloudDataScreen() {
           <SwiftUI.Button
             buttonStyle="default"
             style={{ color: colors.text }}
-            onPress={handleExportCsv}
+            onPress={() => {
+              Haptic.Light();
+              handleExportCsv();
+            }}
             disabled={isExporting}
           >
             <SwiftUI.HStack spacing={8}>
@@ -368,7 +376,10 @@ export default function ICloudDataScreen() {
         {/* Delete All Data */}
         <View style={{ marginBottom: 20 }}>
           <Pressable
-            onPress={handleDeleteAll}
+            onPress={() => {
+              Haptic.Light();
+              handleDeleteAll();
+            }}
             style={({ pressed }) => [
               {
                 backgroundColor: colors.danger,

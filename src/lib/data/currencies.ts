@@ -171,7 +171,8 @@ const CODE_TO_ENTRY = new Map(CURRENCIES.map(c => [c.code, c]));
 
 /** Returns the currency symbol for a code (e.g. USD → $, EUR → €, TRY → ₺). */
 export function getCurrencySymbol(currencyCode: string): string {
-  if (!currencyCode || currencyCode.length !== 3) return currencyCode;
+  if (!currencyCode || currencyCode.length !== 3)
+    return currencyCode;
   const entry = CODE_TO_ENTRY.get(currencyCode.toUpperCase());
   return entry?.symbol ?? currencyCode.toUpperCase();
 }

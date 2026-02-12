@@ -88,7 +88,7 @@ export async function downloadFromICloud(): Promise<void> {
   try {
     // Download the file from iCloud
     const localPath = await downloadFileAsync(remotePath, localDir);
-    
+
     // Read the downloaded file
     const content = await FileSystem.readAsStringAsync(localPath, {
       encoding: FileSystem.EncodingType.UTF8,

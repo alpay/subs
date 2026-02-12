@@ -6,9 +6,11 @@ import { Link, Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { BackButtonWithHaptic } from '@/components/back-button-with-haptic';
 import { RadialGlow } from '@/components/radial-glow';
 import { ServiceIcon } from '@/components/service-icon';
 import { GlassCard } from '@/components/ui/glass-card';
+import { Haptic } from '@/lib/haptics';
 import { useSubscriptionGlowColor, useTheme } from '@/lib/hooks';
 import {
   useCategoriesStore,
@@ -102,6 +104,7 @@ export default function SubscriptionDetailScreen() {
   const logoColor = useSubscriptionGlowColor(subscription);
 
   if (!subscription) {
+    Haptic.Light();
     router.back();
     return null;
   }
@@ -109,6 +112,7 @@ export default function SubscriptionDetailScreen() {
   const scheduleLabel = subscription.scheduleType.charAt(0).toUpperCase() + subscription.scheduleType.slice(1);
 
   const handleEdit = () => {
+    Haptic.Light();
     router.push({ pathname: '/(app)/subscription/edit/[id]', params: { id: subscription.id } });
   };
 
@@ -121,9 +125,9 @@ export default function SubscriptionDetailScreen() {
           headerShadowVisible: false,
           headerStyle: { backgroundColor: 'transparent' },
           headerTintColor: colors.text,
+          headerLeft: () => <BackButtonWithHaptic displayMode="minimal" />,
         }}
       />
-      <Stack.Screen.BackButton displayMode="minimal" />
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Button onPress={handleEdit}>
           Edit

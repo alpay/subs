@@ -10,9 +10,11 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { BackButtonWithHaptic } from '@/components/back-button-with-haptic';
 import { RadialGlow } from '@/components/radial-glow';
 import { getServiceColor } from '@/components/service-icon';
 import { SubscriptionFormContent } from '@/components/subscription-form-content';
+import { Haptic } from '@/lib/haptics';
 import { usePremiumGuard } from '@/lib/hooks/use-premium-guard';
 import { useTheme } from '@/lib/hooks/use-theme';
 import {
@@ -95,6 +97,7 @@ export default function AddSubscriptionScreen() {
     }
     add(payload);
     toast.show('Subscription created');
+    Haptic.Light();
     router.back();
   };
 
@@ -107,10 +110,16 @@ export default function AddSubscriptionScreen() {
           headerShadowVisible: false,
           headerStyle: { backgroundColor: 'transparent' },
           headerTintColor: colors.text,
+          headerLeft: () => <BackButtonWithHaptic displayMode="minimal" />,
           headerRight: () => (isPremium
             ? undefined
             : (
-                <Pressable onPress={showPaywall}>
+                <Pressable
+                  onPress={() => {
+                    Haptic.Light();
+                    showPaywall();
+                  }}
+                >
                   <Text
                     style={{
                       fontSize: 14,
@@ -124,7 +133,6 @@ export default function AddSubscriptionScreen() {
               )),
         }}
       />
-      <Stack.Screen.BackButton displayMode="minimal" />
       <Stack.Toolbar placement="bottom">
         <Stack.Toolbar.Spacer />
         <Stack.Toolbar.View>
@@ -132,7 +140,10 @@ export default function AddSubscriptionScreen() {
             variant="outline"
             size="md"
             isDisabled={!isFormValid}
-            onPress={() => saveRef.current?.()}
+            onPress={() => {
+              Haptic.Light();
+              saveRef.current?.();
+            }}
             style={{ minWidth: 200 }}
           >
             Create

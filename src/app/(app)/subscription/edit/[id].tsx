@@ -10,8 +10,10 @@ import { useMemo, useRef, useState } from 'react';
 import { Alert, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { BackButtonWithHaptic } from '@/components/back-button-with-haptic';
 import { RadialGlow } from '@/components/radial-glow';
 import { SubscriptionFormContent } from '@/components/subscription-form-content';
+import { Haptic } from '@/lib/haptics';
 import { useSubscriptionGlowColor, useTheme } from '@/lib/hooks';
 import { useSubscriptionsStore } from '@/lib/stores';
 
@@ -76,6 +78,7 @@ export default function EditSubscriptionScreen() {
           text: 'Delete',
           style: 'destructive',
           onPress: () => {
+            Haptic.Light();
             remove(subscription.id);
             toast.show('Subscription deleted');
             router.back();
@@ -86,6 +89,7 @@ export default function EditSubscriptionScreen() {
   };
 
   if (!subscription || !initialState) {
+    Haptic.Light();
     router.back();
     return null;
   }
@@ -99,12 +103,15 @@ export default function EditSubscriptionScreen() {
           headerShadowVisible: false,
           headerStyle: { backgroundColor: 'transparent' },
           headerTintColor: colors.text,
+          headerLeft: () => <BackButtonWithHaptic displayMode="minimal" />,
         }}
       />
-      <Stack.Screen.BackButton displayMode="minimal" />
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Button
-          onPress={handleDelete}
+          onPress={() => {
+            Haptic.Light();
+            handleDelete();
+          }}
           icon="trash"
         />
       </Stack.Toolbar>
@@ -115,7 +122,10 @@ export default function EditSubscriptionScreen() {
             variant="outline"
             size="md"
             isDisabled={!isFormValid}
-            onPress={() => saveRef.current?.()}
+            onPress={() => {
+              Haptic.Light();
+              saveRef.current?.();
+            }}
             style={{ minWidth: 200 }}
           >
             Save

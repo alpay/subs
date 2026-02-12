@@ -13,9 +13,11 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { BackButtonWithHaptic } from '@/components/back-button-with-haptic';
 import { ServiceIcon } from '@/components/service-icon';
 import { getLogoUrl, searchBrands } from '@/lib/api/brandfetch';
 import { PREDEFINED_SERVICES } from '@/lib/data/predefined-services';
+import { Haptic } from '@/lib/haptics';
 import { usePremiumGuard } from '@/lib/hooks/use-premium-guard';
 import { useTheme } from '@/lib/hooks/use-theme';
 
@@ -77,6 +79,7 @@ export default function ServicesScreen() {
   const displayQuery = searchQuery.trim();
 
   const handleServicePress = (service: PredefinedService) => {
+    Haptic.Light();
     router.push({
       pathname: '/(app)/subscription/add',
       params: { name: service.name, iconKey: service.iconKey },
@@ -86,6 +89,7 @@ export default function ServicesScreen() {
   const handleAddCustomPress = () => {
     if (!displayQuery)
       return;
+    Haptic.Light();
     router.push({
       pathname: '/(app)/subscription/add',
       params: { name: displayQuery, iconKey: 'custom' },
@@ -93,6 +97,7 @@ export default function ServicesScreen() {
   };
 
   const handleBrandSelect = (name: string, domain: string) => {
+    Haptic.Light();
     const logoUrl = getLogoUrl(domain);
     router.push({
       pathname: '/(app)/subscription/add',
@@ -128,10 +133,16 @@ export default function ServicesScreen() {
           headerStyle: { backgroundColor: colors.background },
           headerTintColor: colors.text,
           headerTitleStyle: { color: colors.text },
+          headerLeft: () => <BackButtonWithHaptic displayMode="minimal" />,
           headerRight: () => (isPremium
             ? undefined
             : (
-                <Pressable onPress={showPaywall}>
+                <Pressable
+                  onPress={() => {
+                    Haptic.Light();
+                    showPaywall();
+                  }}
+                >
                   <Text
                     style={{
                       fontSize: 14,
@@ -145,7 +156,6 @@ export default function ServicesScreen() {
               )),
         }}
       />
-      <Stack.Screen.BackButton displayMode="minimal" />
 
       <Stack.Toolbar placement="bottom">
         <Stack.SearchBar
@@ -154,7 +164,10 @@ export default function ServicesScreen() {
             const text = typeof event === 'string' ? event : event.nativeEvent.text;
             setSearchQuery(text);
           }}
-          onCancelButtonPress={() => setSearchQuery('')}
+          onCancelButtonPress={() => {
+            Haptic.Light();
+            setSearchQuery('');
+          }}
           hideNavigationBar={false}
         />
         <Stack.Toolbar.SearchBarSlot />

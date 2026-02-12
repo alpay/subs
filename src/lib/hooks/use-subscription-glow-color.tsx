@@ -16,8 +16,8 @@ function luminance(hex: string): number {
   return 0.2126 * r + 0.7152 * g + 0.0722 * b;
 }
 
-const MIN_LUMINANCE = 0.08;  // skip near-black (invisible glow on dark UI)
-const MAX_LUMINANCE = 0.92;  // skip near-white (logo background)
+const MIN_LUMINANCE = 0.08; // skip near-black (invisible glow on dark UI)
+const MAX_LUMINANCE = 0.92; // skip near-white (logo background)
 
 /**
  * Returns the color to use for the subscription glow (e.g. RadialGlow).
@@ -79,7 +79,7 @@ export function useSubscriptionGlowColor(
 
   useEffect(() => {
     let cancelled = false;
-    getSubscriptionGlowColor(subscription).then(resolved => {
+    getSubscriptionGlowColor(subscription).then((resolved) => {
       if (!cancelled)
         setColor(resolved);
     });

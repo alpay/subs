@@ -8,6 +8,7 @@ import { useCallback, useState } from 'react';
 import { Alert, Pressable, Text, View } from 'react-native';
 import { NativeSheet } from '@/components/native-sheet';
 import { OTHER_CATEGORY_NAME } from '@/lib/data/seed-defaults';
+import { Haptic } from '@/lib/haptics';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useCategoriesStore } from '@/lib/stores';
 
@@ -61,7 +62,10 @@ function CategoryRow({
       </Host>
       {canRename && (
         <Pressable
-          onPress={onRename}
+          onPress={() => {
+            Haptic.Light();
+            onRename();
+          }}
           hitSlop={HIT_SLOP}
           style={({ pressed }) => [{ marginLeft: 16, opacity: pressed ? 0.6 : 1 }]}
         >
@@ -74,7 +78,10 @@ function CategoryRow({
       )}
       {canDelete && (
         <Pressable
-          onPress={onDelete}
+          onPress={() => {
+            Haptic.Light();
+            onDelete();
+          }}
           hitSlop={HIT_SLOP}
           style={({ pressed }) => [{ marginLeft: 16, opacity: pressed ? 0.6 : 1 }]}
         >
@@ -97,6 +104,7 @@ export default function CategoriesScreen() {
   const [newColor, setNewColor] = useState(DEFAULT_NEW_COLOR);
 
   const handleAdd = useCallback(() => {
+    Haptic.Light();
     const trimmed = newName.trim();
     if (!trimmed)
       return;
@@ -115,6 +123,7 @@ export default function CategoriesScreen() {
           {
             text: 'Save',
             onPress: (value: string | undefined) => {
+              Haptic.Light();
               const trimmed = value?.trim();
               if (trimmed)
                 update({ ...category, name: trimmed });
@@ -136,7 +145,14 @@ export default function CategoriesScreen() {
         `Are you sure you want to delete "${category.name}"?`,
         [
           { text: 'Cancel', style: 'cancel' },
-          { text: 'Delete', style: 'destructive', onPress: () => remove(category.id) },
+          {
+            text: 'Delete',
+            style: 'destructive',
+            onPress: () => {
+              Haptic.Light();
+              remove(category.id);
+            },
+          },
         ],
       );
     },

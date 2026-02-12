@@ -7,6 +7,7 @@ import { Pressable, Text, View } from 'react-native';
 import { NativeSheet } from '@/components/native-sheet';
 import { ServiceIcon } from '@/components/service-icon';
 import { GlassCard } from '@/components/ui/glass-card';
+import { Haptic } from '@/lib/haptics';
 import { usePremiumGuard } from '@/lib/hooks/use-premium-guard';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useCurrencyRatesStore, useSettingsStore, useSubscriptionsStore } from '@/lib/stores';
@@ -87,6 +88,7 @@ export default function SubscriptionDayViewScreen() {
             >
               <Pressable
                 accessibilityRole="button"
+                onPress={() => Haptic.Light()}
                 style={({ pressed }) => [
                   pressed ? { opacity: 0.85 } : null,
                 ]}
@@ -125,7 +127,10 @@ export default function SubscriptionDayViewScreen() {
         <GlassCard>
           <Pressable
             accessibilityRole="button"
-            onPress={navigateToServicesOrPaywall}
+            onPress={() => {
+              Haptic.Light();
+              navigateToServicesOrPaywall();
+            }}
             style={({ pressed }) => [
               {
                 flexDirection: 'row',

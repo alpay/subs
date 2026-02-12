@@ -5,6 +5,7 @@ import { addMonths, format, getDay, getDaysInMonth, isToday, startOfMonth } from
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { InteractionManager, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
+import { Haptic } from '@/lib/haptics';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { getPaymentDatesForMonth } from '@/lib/utils/subscription-dates';
 import { getServiceColor, ServiceIcon } from './service-icon';
@@ -129,7 +130,10 @@ const MonthGrid = memo(({
             <Pressable
               key={key}
               accessibilityRole="button"
-              onPress={() => onDayPress?.(dayDate)}
+              onPress={() => {
+                Haptic.Light();
+                onDayPress?.(dayDate);
+              }}
               style={({ pressed }) => [
                 styles.cellBase,
                 cellShape,

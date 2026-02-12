@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { Haptic } from '@/lib/haptics';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { setItem } from '@/lib/storage';
 
@@ -59,6 +60,7 @@ export default function OnboardingScreen() {
   const flatListRef = useRef<FlatList<Slide> | null>(null);
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    Haptic.Soft();
     const index = Math.round(event.nativeEvent.contentOffset.x / width);
     setCurrentIndex(index);
   };
@@ -120,7 +122,13 @@ export default function OnboardingScreen() {
             </Text>
           </View>
 
-          <Pressable onPress={handleSkip} hitSlop={8}>
+          <Pressable
+            onPress={() => {
+              Haptic.Light();
+              handleSkip();
+            }}
+            hitSlop={8}
+          >
             <Text
               style={{
                 fontSize: 14,
@@ -208,7 +216,10 @@ export default function OnboardingScreen() {
         {/* Bottom actions */}
         <View className="mt-8 px-6">
           <Pressable
-            onPress={handleNext}
+            onPress={() => {
+              Haptic.Light();
+              handleNext();
+            }}
             style={{
               backgroundColor: colors.accent,
               borderRadius: 9999,

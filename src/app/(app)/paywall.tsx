@@ -12,6 +12,7 @@ import {
 
 import { NativeSheet } from '@/components/native-sheet';
 import { RadialGlow } from '@/components/radial-glow';
+import { Haptic } from '@/lib/haptics';
 import { useSettingsStore } from '@/lib/stores';
 import { formatAmount } from '@/lib/utils/format';
 
@@ -104,6 +105,7 @@ export default function PaywallScreen() {
   );
 
   const handlePurchase = useCallback(() => {
+    Haptic.Medium();
     if (settings.premium) {
       router.back();
       return;
@@ -113,6 +115,7 @@ export default function PaywallScreen() {
   }, [settings.premium, update, router]);
 
   const handleRestore = useCallback(() => {
+    Haptic.Light();
     // TODO: Implement restore purchases
   }, []);
 
@@ -231,13 +234,13 @@ export default function PaywallScreen() {
               </Text>
             </Pressable>
             <Text style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>•</Text>
-            <Pressable hitSlop={8}>
+            <Pressable hitSlop={8} onPress={() => Haptic.Light()}>
               <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)' }}>
                 Privacy
               </Text>
             </Pressable>
             <Text style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>•</Text>
-            <Pressable hitSlop={8}>
+            <Pressable hitSlop={8} onPress={() => Haptic.Light()}>
               <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)' }}>
                 Promo
               </Text>

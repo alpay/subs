@@ -4,6 +4,7 @@ import { useToast } from 'heroui-native';
 import { useCallback, useMemo } from 'react';
 import { View } from 'react-native';
 
+import { Haptic } from '@/lib/haptics';
 import { requestPermissions, scheduleTestNotification } from '@/lib/notifications';
 import { useSettingsStore } from '@/lib/stores';
 
@@ -126,6 +127,7 @@ export function SettingsNotificationSection() {
   );
 
   const handleTestNotification = useCallback(async () => {
+    Haptic.Light();
     try {
       const granted = await requestPermissions();
       if (!granted) {

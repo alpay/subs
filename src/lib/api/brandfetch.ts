@@ -45,4 +45,3 @@ export function getLogoUrl(domain: string): string {
   const cleanDomain = domain.replace(/^https?:\/\//i, '').split('/')[0] ?? domain;
   return `${CDN_BASE}/${cleanDomain}?c=${BRANDFETCH_CLIENT_ID}`;
 }
-

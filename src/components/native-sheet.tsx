@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import { Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { Haptic } from '@/lib/haptics';
 import { useTheme } from '@/lib/hooks/use-theme';
 
 type NativeSheetProps = {
@@ -33,6 +34,7 @@ export function NativeSheet({
   const { colors } = useTheme();
 
   const handleClose = () => {
+    Haptic.Light();
     if (onClose) {
       onClose();
       return;

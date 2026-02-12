@@ -6,6 +6,7 @@ import { Pressable, Text, TextInput, View } from 'react-native';
 import { Pill } from '@/components/pill';
 import { ScreenShell } from '@/components/screen-shell';
 import { ServiceIcon } from '@/components/service-icon';
+import { Haptic } from '@/lib/haptics';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useSettingsStore, useSubscriptionsStore } from '@/lib/stores';
 import { formatAmount } from '@/lib/utils/format';
@@ -68,7 +69,12 @@ export default function SearchScreen() {
               returnKeyType="search"
             />
             {query.length > 0 && (
-              <Pressable onPress={() => setQuery('')}>
+              <Pressable
+                onPress={() => {
+                  Haptic.Light();
+                  setQuery('');
+                }}
+              >
                 <Image
                   source="sf:xmark.circle.fill"
                   style={{ width: 18, height: 18 }}
@@ -77,7 +83,12 @@ export default function SearchScreen() {
               </Pressable>
             )}
           </View>
-          <Pressable onPress={() => router.back()}>
+          <Pressable
+            onPress={() => {
+              Haptic.Light();
+              router.back();
+            }}
+          >
             <Text style={{ fontSize: 16, color: colors.text }} selectable>
               Cancel
             </Text>
@@ -112,7 +123,7 @@ export default function SearchScreen() {
             return (
               <Link key={sub.id} href={`/subscription/${sub.id}`} asChild>
                 <Link.Trigger withAppleZoom>
-                  <Pressable>
+                  <Pressable onPress={() => Haptic.Light()}>
                     <View
                       style={{
                         flexDirection: 'row',

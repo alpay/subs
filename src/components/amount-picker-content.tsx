@@ -5,6 +5,7 @@ import { Image } from 'expo-image';
 import { useCallback, useEffect, useMemo } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { getCurrencySymbol } from '@/lib/data/currencies';
+import { Haptic } from '@/lib/haptics';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useAddSubscriptionDraftStore, useCurrencyRatesStore, useSettingsStore } from '@/lib/stores';
 
@@ -44,6 +45,7 @@ export function AmountPickerContent({ onDone }: AmountPickerContentProps) {
   }, [currency, currencyOptions, setCurrency]);
 
   const handleAmountKeyPress = useCallback((key: AmountKey) => {
+    Haptic.Light();
     setAmount((prev) => {
       if (key === 'back') {
         const next = prev.length > 1 ? prev.slice(0, -1) : '0';
@@ -141,7 +143,10 @@ export function AmountPickerContent({ onDone }: AmountPickerContentProps) {
       </View>
 
       <Pressable
-        onPress={onDone}
+        onPress={() => {
+          Haptic.Light();
+          onDone();
+        }}
         style={({ pressed }) => [
           {
             marginTop: 8,
@@ -198,7 +203,10 @@ export function AmountPickerCurrencyPill() {
             key={option.value}
             systemImage={option.value === currency ? 'checkmark' : undefined}
             label={option.label}
-            onPress={() => setCurrency(option.value)}
+            onPress={() => {
+              Haptic.Light();
+              setCurrency(option.value);
+            }}
           />
         ))}
       </Menu>

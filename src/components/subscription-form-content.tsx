@@ -11,6 +11,7 @@ import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { ServiceIcon } from '@/components/service-icon';
 import { GlassCard } from '@/components/ui/glass-card';
+import { Haptic } from '@/lib/haptics';
 import { useTheme } from '@/lib/hooks/use-theme';
 import {
   useAddSubscriptionDraftStore,
@@ -296,7 +297,10 @@ export function SubscriptionFormContent({
                   systemImage={option.value === scheduleType ? 'checkmark' : undefined}
                   label={option.label}
                   key={option.value}
-                  onPress={() => setScheduleType(option.value as ScheduleType)}
+                  onPress={() => {
+                    Haptic.Light();
+                    setScheduleType(option.value as ScheduleType);
+                  }}
                 />
               ))}
             </Menu>
@@ -337,7 +341,10 @@ export function SubscriptionFormContent({
                         key={option.value}
                         systemImage={option.value === intervalUnit ? 'checkmark' : undefined}
                         label={option.label}
-                        onPress={() => setIntervalUnit(option.value as 'week' | 'month')}
+                        onPress={() => {
+                          Haptic.Light();
+                          setIntervalUnit(option.value as 'week' | 'month');
+                        }}
                       />
                     ))}
                   </Menu>
@@ -365,7 +372,10 @@ export function SubscriptionFormContent({
 
       <GlassCard style={{ marginBottom: 12 }}>
         <Pressable
-          onPress={handleAmountPress}
+          onPress={() => {
+            Haptic.Light();
+            handleAmountPress();
+          }}
           hitSlop={8}
           accessibilityRole="button"
           style={rowStyle}
@@ -415,7 +425,10 @@ export function SubscriptionFormContent({
                   key={option.value}
                   systemImage={option.value === categoryId ? 'checkmark' : undefined}
                   label={option.label}
-                  onPress={() => setCategoryId(option.value)}
+                  onPress={() => {
+                    Haptic.Light();
+                    setCategoryId(option.value);
+                  }}
                 />
               ))}
             </Menu>
@@ -446,7 +459,10 @@ export function SubscriptionFormContent({
                   key={option.value}
                   systemImage={option.value === listId ? 'checkmark' : undefined}
                   label={option.label}
-                  onPress={() => setListId(option.value)}
+                  onPress={() => {
+                    Haptic.Light();
+                    setListId(option.value);
+                  }}
                 />
               ))}
             </Menu>
@@ -482,7 +498,10 @@ export function SubscriptionFormContent({
                       key={option.value}
                       systemImage={option.value === status ? 'checkmark' : undefined}
                       label={option.label}
-                      onPress={() => setStatus(option.value as SubscriptionStatus)}
+                      onPress={() => {
+                        Haptic.Light();
+                        setStatus(option.value as SubscriptionStatus);
+                      }}
                     />
                   ))}
                 </Menu>
@@ -519,7 +538,10 @@ export function SubscriptionFormContent({
                   key={option.value}
                   systemImage={option.value === paymentMethodId ? 'checkmark' : undefined}
                   label={option.label}
-                  onPress={() => setPaymentMethodId(option.value)}
+                  onPress={() => {
+                    Haptic.Light();
+                    setPaymentMethodId(option.value);
+                  }}
                 />
               ))}
             </Menu>
@@ -550,7 +572,10 @@ export function SubscriptionFormContent({
                   key={option.value}
                   systemImage={option.value === notificationMode ? 'checkmark' : undefined}
                   label={option.label}
-                  onPress={() => setNotificationMode(option.value as NotificationMode)}
+                  onPress={() => {
+                    Haptic.Light();
+                    setNotificationMode(option.value as NotificationMode);
+                  }}
                 />
               ))}
             </Menu>

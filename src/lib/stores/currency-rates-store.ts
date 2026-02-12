@@ -43,7 +43,8 @@ export const useCurrencyRatesStore = create<CurrencyRatesState>(set => ({
       const next = await fetchCurrencyRates(current);
       saveCurrencyRates(next);
       set({ rates: next });
-    } finally {
+    }
+    finally {
       set({ isUpdating: false });
     }
   },

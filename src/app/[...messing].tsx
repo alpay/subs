@@ -2,8 +2,15 @@ import { Stack, useRouter } from 'expo-router';
 import { Button, Card } from 'heroui-native';
 import { View } from 'react-native';
 
+import { Haptic } from '@/lib/haptics';
+
 export default function NotFoundScreen() {
   const router = useRouter();
+
+  const handleBackToHome = () => {
+    Haptic.Light();
+    router.replace('/home');
+  };
 
   return (
     <>
@@ -15,7 +22,7 @@ export default function NotFoundScreen() {
             <Card.Description>This route does not exist in the new HeroUI flow.</Card.Description>
           </Card.Header>
           <Card.Footer className="gap-3">
-            <Button variant="primary" onPress={() => router.replace('/home')}>
+            <Button variant="primary" onPress={handleBackToHome}>
               Back to Home
             </Button>
           </Card.Footer>

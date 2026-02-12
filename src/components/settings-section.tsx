@@ -3,6 +3,7 @@ import type { ComponentProps, ReactNode } from 'react';
 import { Image } from 'expo-image';
 import { Pressable, Text, View } from 'react-native';
 
+import { withHaptic } from '@/lib/haptics';
 import { useTheme } from '@/lib/hooks/use-theme';
 
 /** Rounded panel with a slightly elevated background for grouping settings (mockup style). */
@@ -63,11 +64,12 @@ export function SettingsRow({
   const { colors } = useTheme();
   const Container = onPress ? Pressable : View;
   const labelColor = labelTone === 'accent' ? colors.warning : colors.text;
+  const handlePress = onPress ? withHaptic(onPress) : undefined;
 
   return (
     <Container
       accessibilityRole={onPress ? 'button' : undefined}
-      onPress={onPress}
+      onPress={handlePress}
       style={onPress
         ? ({ pressed }) => [
             {

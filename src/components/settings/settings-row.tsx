@@ -1,5 +1,7 @@
-import { SwiftUI } from '@mgcrea/react-native-swiftui';
 import type { ReactNode } from 'react';
+import { SwiftUI } from '@mgcrea/react-native-swiftui';
+
+import { withHaptic } from '@/lib/haptics';
 
 const ICON_SIZE = 22;
 
@@ -24,12 +26,13 @@ export function SettingsRow({
 }: SettingsRowProps) {
   const iconName = icon.startsWith('system:') ? icon : `system:${icon}`;
   const trailingIconName = trailingIcon === 'chevron' ? 'system:chevron.right' : 'system:arrow.up.right';
+  const handlePress = withHaptic(onPress);
 
   return (
     <SwiftUI.Button
       buttonStyle="default"
       style={{ color: buttonColor }}
-      onPress={onPress}
+      onPress={handlePress}
     >
       <SwiftUI.HStack spacing={8}>
         <SwiftUI.Image name={iconName} style={{ width: ICON_SIZE, height: ICON_SIZE }} />
