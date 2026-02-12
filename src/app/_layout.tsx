@@ -20,10 +20,6 @@ import 'heroui-native/styles';
 
 export { ErrorBoundary } from 'expo-router';
 
-export const unstable_settings = {
-  initialRouteName: '(app)',
-};
-
 void SplashScreen.preventAutoHideAsync();
 SplashScreen.setOptions({
   duration: 500,
