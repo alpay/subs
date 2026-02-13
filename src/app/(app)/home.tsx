@@ -12,6 +12,7 @@ import { Haptic } from '@/lib/haptics';
 import { useHomeData } from '@/lib/hooks/use-home-data';
 import { usePremiumGuard } from '@/lib/hooks/use-premium-guard';
 import { useTheme } from '@/lib/hooks/use-theme';
+import { storage } from '@/lib/storage';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -19,7 +20,12 @@ export default function HomeScreen() {
   const { navigateToServicesOrPaywall } = usePremiumGuard();
   const insets = useSafeAreaInsets();
   const [visibleMonth, setVisibleMonth] = useState(() => startOfMonth(new Date()));
-  const [viewMode, setViewMode] = useState<'list' | 'month'>('list');
+  const [viewMode, setViewMode] = useState<'list' | 'month'>(() => {
+    const saved = storage.getString('subs:home_view_mode');
+    if (saved === 'list' || saved === 'month')
+      return saved;
+    return 'month';
+  });
 
   const {
     filteredSubscriptions,
@@ -82,7 +88,11 @@ export default function HomeScreen() {
           icon={viewMode !== 'list' ? 'list.bullet' : 'calendar'}
           onPress={() => {
             Haptic.Light();
-            setViewMode(prev => (prev === 'list' ? 'month' : 'list'));
+            setViewMode((prev) => {
+              const next = prev === 'list' ? 'month' : 'list';
+              storage.set('subs:home_view_mode', next);
+              return next;
+            });
           }}
         />
         <Stack.Toolbar.Spacer />
