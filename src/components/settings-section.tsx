@@ -14,7 +14,7 @@ export function SettingsSection({
   children: ReactNode;
   style?: ComponentProps<typeof View>['style'];
 }) {
-  const { colors, isDark } = useTheme();
+  const { isDark } = useTheme();
 
   return (
     <View

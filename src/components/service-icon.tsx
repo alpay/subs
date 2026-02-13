@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- getServiceColor + ICON_MAP shared with other components */
 import type { StyleProp, ViewStyle } from 'react-native';
 
 import { Image } from 'expo-image';

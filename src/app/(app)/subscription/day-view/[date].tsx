@@ -15,6 +15,13 @@ import { convertCurrency, roundCurrency } from '@/lib/utils/currency';
 import { formatAmount } from '@/lib/utils/format';
 import { getPaymentDatesForMonth } from '@/lib/utils/subscription-dates';
 
+function parseSelectedDay(dateParam: unknown): Date {
+  if (typeof dateParam !== 'string' || !dateParam)
+    return new Date();
+  const parsed = parseISO(dateParam);
+  return isValid(parsed) ? parsed : new Date();
+}
+
 type Params = {
   date?: string;
 };
@@ -31,7 +38,8 @@ export default function SubscriptionDayViewScreen() {
     router.dismiss();
     const startDate = typeof params.date === 'string' ? params.date : format(selectedDay, 'yyyy-MM-dd');
     InteractionManager.runAfterInteractions(() => {
-      if (canAdd) router.push({ pathname: '/(app)/services', params: { startDate } });
+      if (canAdd)
+        router.push({ pathname: '/(app)/services', params: { startDate } });
       else router.push('/(app)/paywall');
     });
   };
@@ -39,17 +47,7 @@ export default function SubscriptionDayViewScreen() {
   const { rates } = useCurrencyRatesStore();
   const { colors } = useTheme();
 
-  const selectedDay = useMemo(() => {
-    const value = params.date;
-    if (typeof value !== 'string' || !value) {
-      return new Date();
-    }
-    const parsed = parseISO(value);
-    if (!isValid(parsed)) {
-      return new Date();
-    }
-    return parsed;
-  }, [params.date]);
+  const selectedDay = parseSelectedDay(params.date);
 
   const daySubscriptions = useMemo(() => {
     const monthStart = startOfMonth(selectedDay);

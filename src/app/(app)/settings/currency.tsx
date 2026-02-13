@@ -1,5 +1,4 @@
 import type { CurrencyEntry } from '@/lib/data/currencies';
-import { useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useToast } from 'heroui-native';
 import { useCallback, useMemo, useState } from 'react';
@@ -25,14 +24,16 @@ function matchesSearch(entry: CurrencyEntry, query: string): boolean {
 type Section = { title: string; data: CurrencyEntry[] };
 
 export default function CurrencyScreen() {
-  const router = useRouter();
   const { toast } = useToast();
   const { colors } = useTheme();
   const { settings, update } = useSettingsStore();
 
   const [searchQuery, setSearchQuery] = useState('');
   const mainCurrency = settings.mainCurrency;
-  const favoriteCurrencies = settings.favoriteCurrencies ?? [];
+  const favoriteCurrencies = useMemo(
+    () => settings.favoriteCurrencies ?? [],
+    [settings.favoriteCurrencies],
+  );
 
   const sections = useMemo((): Section[] => {
     const filtered = CURRENCIES.filter(c => matchesSearch(c, searchQuery));

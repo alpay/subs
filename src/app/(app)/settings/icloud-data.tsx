@@ -94,7 +94,10 @@ export default function ICloudDataScreen() {
     if (!settings.iCloudEnabled || !iCloudAvailable)
       return;
     let cancelled = false;
-    setIsSyncing(true);
+    queueMicrotask(() => {
+      if (!cancelled)
+        setIsSyncing(true);
+    });
     void uploadToICloud()
       .then(() => {
         if (!cancelled)

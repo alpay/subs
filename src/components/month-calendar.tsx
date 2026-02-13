@@ -103,7 +103,8 @@ const MonthGrid = memo(({
     <View style={[styles.gridContainer, { width, gap: 14 }]}>
       <View style={styles.weekdayRow}>
         {WEEKDAYS.map((day, i) => (
-          <Text key={`weekday-${day}-${i}`} style={[styles.weekdayLabel, { width: cellSize, color: colors.textMuted }]}>
+          // eslint-disable-next-line react/no-array-index-key -- weekday labels duplicate (T,S), no stable id
+          <Text key={`weekday-${i}`} style={[styles.weekdayLabel, { width: cellSize, color: colors.textMuted }]}>
             {day}
           </Text>
         ))}
@@ -257,8 +258,8 @@ export function MonthCalendar({ date, subscriptions, style, onDayPress, onMonthC
         backgroundColor={colors.background}
       >
         <View style={styles.pagesRow}>
-          {months.map((monthDate, i) => (
-            <View key={i} style={pageStyle} collapsable={false}>
+          {months.map(monthDate => (
+            <View key={format(monthDate, 'yyyy-MM')} style={pageStyle} collapsable={false}>
               <MonthGrid
                 date={monthDate}
                 subscriptions={subscriptions}

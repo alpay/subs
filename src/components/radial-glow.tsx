@@ -47,14 +47,16 @@ export function RadialGlow({
       <Svg width="100%" height="100%">
         <Defs>
           <RadialGradient id={gradientId} cx={centerX} cy={centerY} rx={radiusX} ry={radiusY}>
+            {/* eslint-disable react/no-array-index-key -- gradient stops have no unique id */}
             {stops.map((stop, idx) => (
               <Stop
-                key={idx}
+                key={`stop-${String(stop.offset)}-${stop.opacity}-${idx}`}
                 offset={stop.offset}
                 stopColor={color}
                 stopOpacity={stop.opacity}
               />
             ))}
+            {/* eslint-enable react/no-array-index-key */}
           </RadialGradient>
         </Defs>
         <Rect x="0" y="0" width="100%" height="100%" fill={`url(#${gradientId})`} />

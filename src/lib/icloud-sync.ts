@@ -99,7 +99,7 @@ export async function downloadFromICloud(): Promise<void> {
     try {
       backup = JSON.parse(content);
     }
-    catch (parseError) {
+    catch {
       throw new Error('Invalid backup file format. The backup may be corrupted.');
     }
 

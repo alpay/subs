@@ -50,7 +50,7 @@ export function SearchBar({
   ...props
 }: SearchBarProps) {
   const [query, setQuery] = useState('');
-  const [isFocused, setIsFocused] = useState(false);
+  const [_isFocused, setIsFocused] = useState(false);
   const [containerDimensions, setContainerDimensions] = useState({ width: 0 });
   const inputRef = useRef<TextInput>(null);
 
@@ -69,7 +69,7 @@ export function SearchBar({
     else if (containerDimensions.width > 0) {
       currentWidth.value = containerDimensions.width;
     }
-  }, [containerWidth, containerDimensions.width]);
+  }, [containerWidth, containerDimensions.width, currentWidth]);
 
   const animatedContainerStyle = useAnimatedStyle(() => {
     if (!enableWidthAnimation) {
@@ -172,6 +172,8 @@ export function SearchBar({
   const handleFocus = () => {
     onSearchMount();
     setIsFocused(true);
+    // Reanimated shared values are mutated on purpose
+    /* eslint-disable react-hooks/immutability */
     focusProgress.value = withSpring(1, {
       damping: 20,
       stiffness: 200,
@@ -179,6 +181,7 @@ export function SearchBar({
       velocity: 0.5,
       duration: 550 as any,
     });
+    /* eslint-enable react-hooks/immutability */
   };
 
   const handleCancel = () => {
@@ -188,9 +191,11 @@ export function SearchBar({
     setQuery('');
     onSearchDone();
     onClear?.();
+    /* eslint-disable react-hooks/immutability */
     focusProgress.value = withTiming(0);
     clearButtonScale.value = withTiming(0);
     clearButtonOpacity.value = withTiming(0, { duration: 200 });
+    /* eslint-enable react-hooks/immutability */
   };
 
   const handleBlur = () => {
@@ -200,6 +205,7 @@ export function SearchBar({
 
   const handleChangeText = (text: string) => {
     setQuery(text);
+    /* eslint-disable react-hooks/immutability */
     if (text.length > 0) {
       clearButtonScale.value = withSpring(1);
       clearButtonOpacity.value = withTiming(1, { duration: 200 });
@@ -209,12 +215,14 @@ export function SearchBar({
       clearButtonScale.value = withSpring(0);
       clearButtonOpacity.value = withTiming(0, { duration: 200 });
     }
+    /* eslint-enable react-hooks/immutability */
 
     onSearch?.(text);
   };
 
   const handleClear = () => {
     Haptic.Light();
+    /* eslint-disable react-hooks/immutability */
     textOpacity.value = withTiming(0, { duration: 150 }, () => {
       scheduleOnRN(setQuery, '');
       textOpacity.value = withTiming(1, { duration: 150 });
@@ -222,6 +230,7 @@ export function SearchBar({
 
     clearButtonScale.value = withTiming(0);
     clearButtonOpacity.value = withTiming(0, { duration: 200 });
+    /* eslint-enable react-hooks/immutability */
     onClear?.();
     inputRef.current?.focus();
   };

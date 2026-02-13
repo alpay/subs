@@ -30,12 +30,13 @@ type RingChartProps = {
  * Get segment index from touch position. Ring starts at top (-90°) and goes clockwise.
  * Angle 0 = top, π/2 = right, π = bottom, 3π/2 = left.
  */
-function getSegmentIndexFromTouch(
-  locationX: number,
-  locationY: number,
-  size: number,
-  normalizedSegments: { value: number }[],
-): number {
+function getSegmentIndexFromTouch(opts: {
+  locationX: number;
+  locationY: number;
+  size: number;
+  normalizedSegments: { value: number }[];
+}): number {
+  const { locationX, locationY, size, normalizedSegments } = opts;
   const cx = size / 2;
   const cy = size / 2;
   const dx = locationX - cx;
@@ -83,11 +84,24 @@ export function RingChart({
     if (!onSegmentPress || normalizedSegments.length === 0)
       return;
     const { locationX, locationY } = e.nativeEvent;
-    const index = getSegmentIndexFromTouch(locationX, locationY, size, normalizedSegments);
+    const index = getSegmentIndexFromTouch({
+      locationX,
+      locationY,
+      size,
+      normalizedSegments,
+    });
     onSegmentPress(index);
   };
 
-  let offset = 0;
+  const segmentOffsets = useMemo(
+    () =>
+      normalizedSegments.map((_, i) =>
+        -normalizedSegments
+          .slice(0, i)
+          .reduce((sum, seg) => sum + seg.value * circumference, 0),
+      ),
+    [normalizedSegments, circumference],
+  );
 
   return (
     <View
@@ -107,13 +121,12 @@ export function RingChart({
         {normalizedSegments.map((segment, index) => {
           const length = segment.value * circumference;
           const dashArray = [length, circumference];
-          const dashOffset = -offset;
-          offset += length;
+          const dashOffset = segmentOffsets[index];
           const isSelected = selectedIndex === index;
 
           return (
             <Circle
-              key={`${segment.color}-${index}`}
+              key={segment.id ?? `${segment.color}-${index}`}
               cx={size / 2}
               cy={size / 2}
               r={radius}
