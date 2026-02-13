@@ -19,6 +19,7 @@ const DIVIDER_INSET_LEFT = ICON_SIZE + 12 + 12; // icon + gap + align with text
 type HomeSearchResultsProps = {
   results: Subscription[];
   settings: Settings;
+  onAddFirst?: () => void;
 };
 
 function SearchRow({
@@ -116,8 +117,68 @@ function SearchRow({
   );
 }
 
-export function HomeSearchResults({ results, settings }: HomeSearchResultsProps) {
+export function HomeSearchResults({ results, settings, onAddFirst }: HomeSearchResultsProps) {
   const { colors } = useTheme();
+
+  if (results.length === 0) {
+    return (
+      <View style={{ overflow: 'hidden', borderRadius: GLASS_CARD_RADIUS, borderWidth: 1, borderColor: colors.surfaceBorder, marginTop: '50%' }}>
+        <GlassContainer spacing={0} style={{ borderRadius: GLASS_CARD_RADIUS, overflow: 'hidden' }}>
+          <GlassView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Pressable
+              onPress={() => {
+                Haptic.Light();
+                onAddFirst?.();
+              }}
+              style={({ pressed }) => ({
+                paddingHorizontal: ROW_PADDING_H,
+                paddingVertical: 32,
+                alignItems: 'center',
+                justifyContent: 'center',
+                opacity: pressed ? 0.85 : 1,
+              })}
+            >
+
+              <Text
+                style={{
+                  fontSize: 18,
+                  fontWeight: '600',
+                  color: colors.text,
+                  marginBottom: 24,
+                  textAlign: 'center',
+                }}
+              >
+                No subscriptions found
+              </Text>
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 6,
+                  paddingHorizontal: 16,
+                  paddingVertical: 10,
+                  borderRadius: 12,
+                  backgroundColor: colors.surface,
+                  borderWidth: 1,
+                  borderColor: colors.surfaceBorder,
+                }}
+              >
+                <Image
+                  source="sf:plus.circle.fill"
+                  style={{ width: 20, height: 20 }}
+                  tintColor={colors.text}
+                />
+                <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }}>
+                  Tap here to add your first
+                </Text>
+              </View>
+            </Pressable>
+          </GlassView>
+        </GlassContainer>
+      </View>
+    );
+  }
 
   return (
     <View
@@ -129,30 +190,17 @@ export function HomeSearchResults({ results, settings }: HomeSearchResultsProps)
       }}
     >
       <GlassContainer spacing={0} style={{ borderRadius: GLASS_CARD_RADIUS, overflow: 'hidden' }}>
-        {results.length === 0
-          ? (
-              <GlassView
-                style={{
-                  paddingHorizontal: ROW_PADDING_H,
-                  paddingVertical: 24,
-                }}
-              >
-                <Text style={{ fontSize: 15, color: colors.textMuted }} selectable>
-                  No subscriptions found.
-                </Text>
-              </GlassView>
-            )
-          : (
-              results.map((sub, index) => (
-                <SearchRow
-                  key={sub.id}
-                  sub={sub}
-                  settings={settings}
-                  isLast={index === results.length - 1}
-                  colors={colors}
-                />
-              ))
-            )}
+        {
+          results.map((sub, index) => (
+            <SearchRow
+              key={sub.id}
+              sub={sub}
+              settings={settings}
+              isLast={index === results.length - 1}
+              colors={colors}
+            />
+          ))
+        }
       </GlassContainer>
     </View>
   );

@@ -111,7 +111,7 @@ export default function AddSubscriptionScreen() {
     const subscriptionCountBefore = useSubscriptionsStore.getState().subscriptions.length;
     add(payload);
     toast.show('Subscription created');
-    Haptic.Light();
+    Haptic.Success();
 
     // Ask for review once after first subscription
     if (subscriptionCountBefore === 0) {

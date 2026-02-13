@@ -133,6 +133,7 @@ export default function HomeScreen() {
               <HomeSearchResults
                 results={searchResults}
                 settings={settings}
+                onAddFirst={navigateToServicesOrPaywall}
               />
             </ScreenShell>
           )
