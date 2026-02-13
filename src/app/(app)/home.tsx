@@ -40,10 +40,6 @@ export default function HomeScreen() {
       <Stack.Screen
         options={{
           title: '',
-          headerShadowVisible: false,
-          headerStyle: { backgroundColor: colors.background },
-          headerTintColor: colors.text,
-          headerTitleStyle: { color: colors.text },
         }}
       />
       <Stack.Toolbar placement="left">

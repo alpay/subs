@@ -100,8 +100,6 @@ export default function EditSubscriptionScreen() {
         options={{
           title: 'Edit Subscription',
           headerShown: true,
-          headerShadowVisible: false,
-          headerStyle: { backgroundColor: 'transparent' },
           headerTintColor: colors.text,
           headerLeft: () => <BackButtonWithHaptic displayMode="minimal" />,
         }}

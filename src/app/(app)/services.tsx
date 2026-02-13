@@ -133,10 +133,8 @@ export default function ServicesScreen() {
       <Stack.Screen
         options={{
           title: 'Services',
-          headerShadowVisible: false,
-          headerStyle: { backgroundColor: colors.background },
-          headerTintColor: colors.text,
           headerTitleStyle: { color: colors.text },
+
           headerLeft: () => <BackButtonWithHaptic displayMode="minimal" />,
           headerRight: () => (isPremium
             ? undefined
@@ -182,7 +180,7 @@ export default function ServicesScreen() {
           style={{ flex: 1, backgroundColor: colors.background }}
           contentContainerStyle={{
             paddingHorizontal: CONTENT_PADDING,
-            paddingTop: insets.top,
+            paddingTop: 32,
             paddingBottom: insets.bottom + 32,
           }}
           contentInsetAdjustmentBehavior="automatic"

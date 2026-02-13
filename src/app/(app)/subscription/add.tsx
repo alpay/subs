@@ -132,9 +132,8 @@ export default function AddSubscriptionScreen() {
         options={{
           title: 'New Subscription',
           headerShown: true,
-          headerShadowVisible: false,
-          headerStyle: { backgroundColor: 'transparent' },
           headerTintColor: colors.text,
+
           headerLeft: () => <BackButtonWithHaptic displayMode="minimal" />,
           headerRight: () => (isPremium
             ? undefined
