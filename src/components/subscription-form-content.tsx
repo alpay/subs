@@ -2,7 +2,7 @@ import type { MutableRefObject } from 'react';
 
 import type { NotificationMode, ScheduleType, Subscription, SubscriptionStatus } from '@/lib/db/schema';
 import { Button, DatePicker, Host, Menu } from '@expo/ui/swift-ui';
-import { buttonStyle, fixedSize, labelStyle } from '@expo/ui/swift-ui/modifiers';
+import { buttonStyle, controlSize, fixedSize, labelStyle } from '@expo/ui/swift-ui/modifiers';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { Input, TextArea } from 'heroui-native';
@@ -285,7 +285,7 @@ export function SubscriptionFormContent({
             Schedule
           </Text>
           <Host matchContents>
-            <Menu label={scheduleLabel} systemImage="chevron.up.chevron.down" modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass')]}>
+            <Menu label={scheduleLabel} systemImage="chevron.up.chevron.down" modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass'), controlSize('mini')]}>
               {SCHEDULE_OPTIONS.map(option => (
                 <Button
                   systemImage={option.value === scheduleType ? 'checkmark' : undefined}
@@ -328,7 +328,7 @@ export function SubscriptionFormContent({
                   <Menu
                     systemImage="chevron.up.chevron.down"
                     label={INTERVAL_UNIT_OPTIONS.find(o => o.value === intervalUnit)?.label ?? 'Month'}
-                    modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass')]}
+                    modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass'), controlSize('mini')]}
                   >
                     {INTERVAL_UNIT_OPTIONS.map(option => (
                       <Button
@@ -412,7 +412,7 @@ export function SubscriptionFormContent({
                 || categoryOptions[0]?.label
                 || 'Category'
               }
-              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass')]}
+              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass'), controlSize('mini')]}
             >
               {categoryOptions.map(option => (
                 <Button
@@ -446,7 +446,7 @@ export function SubscriptionFormContent({
                 || listOptions[0]?.label
                 || 'List'
               }
-              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass')]}
+              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass'), controlSize('mini')]}
             >
               {listOptions.map(option => (
                 <Button
@@ -485,7 +485,7 @@ export function SubscriptionFormContent({
                     || STATUS_OPTIONS[0]?.label
                     || 'Status'
                   }
-                  modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('plain')]}
+                  modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass'), controlSize('mini')]}
                 >
                   {STATUS_OPTIONS.map(option => (
                     <Button
@@ -525,7 +525,7 @@ export function SubscriptionFormContent({
                 || paymentMethodOptions[0]?.label
                 || 'Payment method'
               }
-              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass')]}
+              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass'), controlSize('mini')]}
             >
               {paymentMethodOptions.map(option => (
                 <Button
@@ -559,7 +559,7 @@ export function SubscriptionFormContent({
                 || NOTIFICATION_OPTIONS[0]?.label
                 || 'Notifications'
               }
-              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass')]}
+              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass'), controlSize('mini')]}
             >
               {NOTIFICATION_OPTIONS.map(option => (
                 <Button
@@ -579,9 +579,6 @@ export function SubscriptionFormContent({
 
       <GlassCard style={{ marginBottom: 12 }}>
         <View style={{ paddingVertical: 14, paddingHorizontal: 18, gap: 10 }}>
-          <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
-            Notes
-          </Text>
           <TextArea
             value={notes}
             onChangeText={setNotes}
@@ -589,6 +586,7 @@ export function SubscriptionFormContent({
             placeholderTextColor={colors.textMuted}
             numberOfLines={4}
             style={{
+              fontSize: 16,
               backgroundColor: colors.surfaceMuted,
               borderWidth: 1,
               borderColor: colors.surfaceBorder,

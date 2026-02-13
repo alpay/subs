@@ -480,7 +480,9 @@ export default function ICloudDataScreen() {
           footer={
             isSyncing
               ? 'Syncing...'
-              : 'Your subscription data will be securely synced across all your devices via iCloud Drive.'
+              : backupInfo?.createdAt
+                  ? `Last backup: ${formatBackupDate(backupInfo.createdAt)}`
+                  : 'Your subscription data will be securely synced across all your devices via iCloud Drive.'
           }
           minHeight={settings.iCloudEnabled && iCloudAvailable ? 250 : 150}
         >

@@ -30,7 +30,6 @@ const NOTIFICATION_LABELS: Record<Subscription['notificationMode'], string> = {
 function DetailRow({
   label,
   value,
-  showArrow,
 }: { label: string; value: string; showArrow?: boolean }) {
   const { colors } = useTheme();
   return (
@@ -47,13 +46,6 @@ function DetailRow({
         <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
           {label}
         </Text>
-        {showArrow && (
-          <Image
-            source="sf:arrow.up"
-            style={{ width: 12, height: 12 }}
-            tintColor={colors.textMuted}
-          />
-        )}
       </View>
       <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }} selectable>
         {value}
@@ -196,7 +188,6 @@ export default function SubscriptionDetailScreen() {
             <DetailRow
               label="Amount"
               value={formatAmount(subscription.amount, subscription.currency, settings.roundWholeNumbers)}
-              showArrow
             />
             <View style={{ height: 1, marginLeft: 18, marginRight: 18, backgroundColor: colors.surfaceBorder, opacity: 0.7 }} />
             <DetailRow label="Next payment" value={nextPaymentLabel} />
@@ -214,13 +205,13 @@ export default function SubscriptionDetailScreen() {
             <View style={styles.rowInner}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                 <Image source="sf:tag" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
-                <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+                <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
                   Category
                 </Text>
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                 <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: colors.surfaceMuted }} />
-                <Text style={{ fontSize: 15, color: colors.text }} selectable>
+                <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }} selectable>
                   {categoryName}
                 </Text>
               </View>
@@ -232,11 +223,11 @@ export default function SubscriptionDetailScreen() {
             <View style={styles.rowInner}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                 <Image source="sf:list.bullet" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
-                <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+                <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
                   List
                 </Text>
               </View>
-              <Text style={{ fontSize: 15, color: colors.text }} selectable>
+              <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }} selectable>
                 {listName}
               </Text>
             </View>
