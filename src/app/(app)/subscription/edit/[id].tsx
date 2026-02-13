@@ -6,7 +6,7 @@ import type {
 import type { ScheduleType } from '@/lib/db/schema';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { Button, useToast } from 'heroui-native';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -88,9 +88,15 @@ export default function EditSubscriptionScreen() {
     );
   };
 
+  // Defer navigation so we don't update navigator state during render (e.g. after delete)
+  useEffect(() => {
+    if (!subscription || !initialState) {
+      Haptic.Light();
+      router.back();
+    }
+  }, [subscription, initialState, router]);
+
   if (!subscription || !initialState) {
-    Haptic.Light();
-    router.back();
     return null;
   }
 

@@ -34,7 +34,7 @@ export default function AddSubscriptionScreen() {
   const { toast } = useToast();
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
-  const { canAdd, countLabel, isPremium, showPaywall } = usePremiumGuard();
+  const { canAdd, countLabel, isPremium, limit, showPaywall } = usePremiumGuard();
   const params = useLocalSearchParams<{
     templateId?: string;
     name?: string;
@@ -93,12 +93,14 @@ export default function AddSubscriptionScreen() {
   );
 
   const saveRef = useRef<(() => void) | null>(null);
+  const justSavedAtLimitRef = useRef(false);
   const [isFormValid, setIsFormValid] = useState(false);
 
   useEffect(() => {
-    if (!canAdd) {
+    if (!canAdd && !justSavedAtLimitRef.current) {
       router.replace('/(app)/paywall');
     }
+    justSavedAtLimitRef.current = false;
   }, [canAdd, router]);
 
   const handleSave = async (payload: SubscriptionFormPayload) => {
@@ -123,7 +125,17 @@ export default function AddSubscriptionScreen() {
       }
     }
 
-    router.dismissTo('/(app)/home');
+    // If we just hit the free limit, show paywall instead of home to avoid
+    // navigation race with the useEffect that redirects when !canAdd.
+    const atLimit = !isPremium && subscriptionCountBefore + 1 >= limit;
+    if (atLimit) {
+      justSavedAtLimitRef.current = true;
+      router.dismissTo('/(app)/home');
+      router.push('/(app)/paywall');
+    }
+    else {
+      router.dismissTo('/(app)/home');
+    }
   };
 
   return (
