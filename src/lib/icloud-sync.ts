@@ -31,14 +31,29 @@ const BACKUP_FILENAME = 'subs-backup.json';
 
 export type ICloudSyncStatus = ' unavailable' | 'idle' | 'syncing' | 'error';
 
+/**
+ * Use for enabling the toggle in UI. Only checks if user is signed in to iCloud.
+ * On device, defaultICloudContainerPath can be null at module load; this allows
+ * the user to try turning sync on and get a clear error if the container isn't ready.
+ */
+export async function isICloudAvailableForUI(): Promise<boolean> {
+  return isICloudAvailableAsync();
+}
+
 export async function isICloudReady(): Promise<boolean> {
   const available = await isICloudAvailableAsync();
   return available && defaultICloudContainerPath != null;
 }
 
 export async function uploadToICloud(): Promise<void> {
-  if (!(await isICloudReady()) || !defaultICloudContainerPath) {
-    throw new Error('iCloud is not available');
+  const signedIn = await isICloudAvailableAsync();
+  if (!signedIn) {
+    throw new Error('iCloud is not available. Sign in to iCloud in Settings.');
+  }
+  if (!defaultICloudContainerPath) {
+    throw new Error(
+      'iCloud Drive is not ready yet. Make sure iCloud Drive is enabled in Settings → [Your Name] → iCloud and try again.',
+    );
   }
 
   const backup = {

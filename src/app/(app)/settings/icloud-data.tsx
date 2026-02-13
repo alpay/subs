@@ -13,10 +13,11 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NativeSheet } from '@/components/native-sheet';
 import { SettingsRow, SettingsSection } from '@/components/settings';
 import { Haptic } from '@/lib/haptics';
+import { usePremiumGuard } from '@/lib/hooks/use-premium-guard';
 import { useTheme } from '@/lib/hooks/use-theme';
 import {
   downloadFromICloud,
-  isICloudReady,
+  isICloudAvailableForUI,
   uploadToICloud,
 } from '@/lib/icloud-sync';
 import { storage } from '@/lib/storage';
@@ -55,6 +56,7 @@ export default function ICloudDataScreen() {
   const { bottom } = useSafeAreaInsets();
   const { toast } = useToast();
 
+  const { isPremium, showPaywall } = usePremiumGuard();
   const { settings, update } = useSettingsStore();
   const { subscriptions, load: loadSubscriptions } = useSubscriptionsStore();
   const { categories } = useCategoriesStore();
@@ -80,7 +82,7 @@ export default function ICloudDataScreen() {
   }, [subscriptions]);
 
   useEffect(() => {
-    void isICloudReady().then(setICloudAvailable);
+    void isICloudAvailableForUI().then(setICloudAvailable);
   }, []);
 
   // When iCloud is unavailable (e.g. simulator), ensure toggle shows off
@@ -121,6 +123,11 @@ export default function ICloudDataScreen() {
         return;
       }
 
+      if (value && !isPremium) {
+        showPaywall();
+        return;
+      }
+
       update({ iCloudEnabled: value });
 
       if (value) {
@@ -136,7 +143,7 @@ export default function ICloudDataScreen() {
         }
       }
     },
-    [iCloudAvailable, update, toast],
+    [iCloudAvailable, isPremium, showPaywall, update, toast],
   );
 
   const handleExportCsv = useCallback(async () => {
