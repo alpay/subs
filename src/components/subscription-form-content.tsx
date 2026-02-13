@@ -285,7 +285,7 @@ export function SubscriptionFormContent({
             Schedule
           </Text>
           <Host matchContents>
-            <Menu label={scheduleLabel} systemImage="chevron.up.chevron.down" modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('plain')]}>
+            <Menu label={scheduleLabel} systemImage="chevron.up.chevron.down" modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass')]}>
               {SCHEDULE_OPTIONS.map(option => (
                 <Button
                   systemImage={option.value === scheduleType ? 'checkmark' : undefined}
@@ -328,7 +328,7 @@ export function SubscriptionFormContent({
                   <Menu
                     systemImage="chevron.up.chevron.down"
                     label={INTERVAL_UNIT_OPTIONS.find(o => o.value === intervalUnit)?.label ?? 'Month'}
-                    modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('plain')]}
+                    modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass')]}
                   >
                     {INTERVAL_UNIT_OPTIONS.map(option => (
                       <Button
@@ -412,7 +412,7 @@ export function SubscriptionFormContent({
                 || categoryOptions[0]?.label
                 || 'Category'
               }
-              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('plain')]}
+              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass')]}
             >
               {categoryOptions.map(option => (
                 <Button
@@ -446,7 +446,7 @@ export function SubscriptionFormContent({
                 || listOptions[0]?.label
                 || 'List'
               }
-              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('plain')]}
+              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass')]}
             >
               {listOptions.map(option => (
                 <Button
@@ -525,7 +525,7 @@ export function SubscriptionFormContent({
                 || paymentMethodOptions[0]?.label
                 || 'Payment method'
               }
-              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('plain')]}
+              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass')]}
             >
               {paymentMethodOptions.map(option => (
                 <Button
@@ -559,7 +559,7 @@ export function SubscriptionFormContent({
                 || NOTIFICATION_OPTIONS[0]?.label
                 || 'Notifications'
               }
-              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('plain')]}
+              modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass')]}
             >
               {NOTIFICATION_OPTIONS.map(option => (
                 <Button
