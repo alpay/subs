@@ -2,8 +2,8 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import type { Subscription } from '@/lib/db/schema';
 
 import { addMonths, format, getDay, getDaysInMonth, isToday, startOfMonth } from 'date-fns';
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { InteractionManager, Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { memo, useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import { Haptic } from '@/lib/haptics';
 import { useTheme } from '@/lib/hooks/use-theme';
@@ -209,11 +209,10 @@ export function MonthCalendar({ date, subscriptions, style, onDayPress, onMonthC
     if (metrics?.viewportWidth) {
       scrollRef.current?.scrollTo({ x: metrics.viewportWidth, animated: false });
     }
-  }, [metrics?.viewportWidth]);
+  }, [metrics]);
 
-  useEffect(() => {
-    const task = InteractionManager.runAfterInteractions(() => requestAnimationFrame(resetScroll));
-    return () => task.cancel();
+  useLayoutEffect(() => {
+    resetScroll();
   }, [date, resetScroll]);
 
   const handleMomentumEnd = useCallback(
