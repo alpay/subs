@@ -1,8 +1,9 @@
 import type { Category } from '@/lib/db/schema';
 
 import { create } from 'zustand';
-import { DEFAULT_CATEGORIES } from '@/lib/data/seed-defaults';
-import { getCategories, saveCategories } from '@/lib/db/storage';
+import { DEFAULT_CATEGORIES, OTHER_CATEGORY_NAME } from '@/lib/data/seed-defaults';
+import { getCategories, getSubscriptions, saveCategories, saveSubscriptions } from '@/lib/db/storage';
+import { useSubscriptionsStore } from '@/lib/stores/subscriptions-store';
 import { createId } from '@/lib/utils/ids';
 
 const nowIso = () => new Date().toISOString();
@@ -48,6 +49,22 @@ export const useCategoriesStore = create<CategoriesState>((set, get) => ({
   },
   remove: (categoryId) => {
     const next = get().categories.filter(item => item.id !== categoryId);
+    const otherCategory = next.find(c => c.name === OTHER_CATEGORY_NAME);
+    if (otherCategory) {
+      const subscriptions = getSubscriptions();
+      const updated = subscriptions.map(sub =>
+        sub.categoryId === categoryId
+          ? { ...sub, categoryId: otherCategory.id, updatedAt: nowIso() }
+          : sub,
+      );
+      const changed = updated.some((s, i) => s.categoryId !== subscriptions[i]?.categoryId);
+      if (changed) {
+        saveSubscriptions(updated);
+        if (useSubscriptionsStore.getState().isLoaded) {
+          useSubscriptionsStore.getState().load();
+        }
+      }
+    }
     saveCategories(next);
     set({ categories: next });
   },
