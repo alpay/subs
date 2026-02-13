@@ -6,8 +6,9 @@ import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
 import * as Sharing from 'expo-sharing';
 import { useToast } from 'heroui-native';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
+import { useIsCloudAvailable } from 'react-native-cloud-storage';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { NativeSheet } from '@/components/native-sheet';
@@ -17,7 +18,7 @@ import { usePremiumGuard } from '@/lib/hooks/use-premium-guard';
 import { useTheme } from '@/lib/hooks/use-theme';
 import {
   downloadFromICloud,
-  isICloudAvailableForUI,
+  getICloudBackupInfo,
   uploadToICloud,
 } from '@/lib/icloud-sync';
 import { storage } from '@/lib/storage';
@@ -50,6 +51,17 @@ function buildCsvRows(
   return [header, ...rows].join('\n');
 }
 
+function formatBackupDate(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime()))
+    return iso;
+
+  return d.toLocaleString(undefined, {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  });
+}
+
 export default function ICloudDataScreen() {
   const router = useRouter();
   const { colors } = useTheme();
@@ -60,12 +72,22 @@ export default function ICloudDataScreen() {
   const { settings, update } = useSettingsStore();
   const { subscriptions, load: loadSubscriptions } = useSubscriptionsStore();
   const { categories } = useCategoriesStore();
+  const { lists } = useListsStore();
+  const { methods: paymentMethods } = usePaymentMethodsStore();
 
-  const [iCloudAvailable, setICloudAvailable] = useState(false);
+  const iCloudAvailable = useIsCloudAvailable();
+  const toastRef = useRef(toast);
+  toastRef.current = toast;
+
   const [isExporting, setIsExporting] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [isBackingUp, setIsBackingUp] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
+  const [backupInfo, setBackupInfo] = useState<{
+    exists: boolean;
+    createdAt?: string;
+    subscriptionCount?: number;
+  } | null>(null);
 
   const getCategoryName = useCallback(
     (id: string) => categories.find(c => c.id === id)?.name ?? 'Other',
@@ -81,40 +103,70 @@ export default function ICloudDataScreen() {
     return { active, canceled, archived };
   }, [subscriptions]);
 
-  useEffect(() => {
-    void isICloudAvailableForUI().then(setICloudAvailable);
-  }, []);
-
-  // When iCloud is unavailable (e.g. simulator), ensure toggle shows off
-  useEffect(() => {
-    if (!iCloudAvailable && settings.iCloudEnabled) {
-      update({ iCloudEnabled: false });
-    }
-  }, [iCloudAvailable, settings.iCloudEnabled, update]);
-
+  // Auto-sync to iCloud when sync is on and local DB data changes (debounced to avoid loop + toast storms)
+  const AUTO_SYNC_DELAY_MS = 2000;
   useEffect(() => {
     if (!settings.iCloudEnabled || !iCloudAvailable)
       return;
+
     let cancelled = false;
-    queueMicrotask(() => {
-      if (!cancelled)
-        setIsSyncing(true);
-    });
-    void uploadToICloud()
-      .then(() => {
+    const timeoutId = setTimeout(() => {
+      if (cancelled)
+        return;
+      queueMicrotask(() => {
         if (!cancelled)
-          setIsSyncing(false);
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setIsSyncing(false);
-          toast.show('Failed to sync to iCloud');
-        }
+          setIsSyncing(true);
       });
+      void uploadToICloud()
+        .then(() => {
+          if (!cancelled)
+            setIsSyncing(false);
+        })
+        .catch(() => {
+          if (!cancelled) {
+            setIsSyncing(false);
+            toastRef.current.show('Failed to sync to iCloud');
+          }
+        });
+    }, AUTO_SYNC_DELAY_MS);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeoutId);
+    };
+  }, [
+    settings.iCloudEnabled,
+    iCloudAvailable,
+    subscriptions,
+    categories,
+    lists,
+    paymentMethods,
+  ]);
+
+  // Load backup metadata (last backup time) when screen mounts / availability changes
+  useEffect(() => {
+    let cancelled = false;
+    if (!iCloudAvailable) {
+      setBackupInfo(null);
+      return;
+    }
+
+    void (async () => {
+      try {
+        const info = await getICloudBackupInfo();
+        if (!cancelled)
+          setBackupInfo(info);
+      }
+      catch {
+        if (!cancelled)
+          setBackupInfo(null);
+      }
+    })();
+
     return () => {
       cancelled = true;
     };
-  }, [settings.iCloudEnabled, iCloudAvailable, subscriptions, toast]);
+  }, [iCloudAvailable, settings.iCloudEnabled]);
 
   const handleToggleICloud = useCallback(
     async (value: boolean) => {
@@ -128,22 +180,165 @@ export default function ICloudDataScreen() {
         return;
       }
 
-      update({ iCloudEnabled: value });
-
       if (value) {
-        setIsSyncing(true);
+        const hasLocalData = subscriptions.length > 0;
+        let info: { exists: boolean; createdAt?: string; subscriptionCount?: number } = {
+          exists: false,
+        };
+
         try {
-          await uploadToICloud();
+          info = await getICloudBackupInfo();
         }
-        catch {
-          toast.show('Failed to upload to iCloud');
+        catch (error) {
+          const message
+            = error instanceof Error ? error.message : 'Failed to check iCloud backup';
+          toast.show(message);
+          return;
         }
-        finally {
-          setIsSyncing(false);
+
+        // 1) Backup yoksa: local -> iCloud
+        if (!info.exists) {
+          setIsSyncing(true);
+          try {
+            await uploadToICloud();
+            update({ iCloudEnabled: true });
+            const refreshed = await getICloudBackupInfo();
+            setBackupInfo(refreshed);
+          }
+          catch (error) {
+            const message
+              = error instanceof Error ? error.message : 'Failed to sync with iCloud';
+            toast.show(message);
+            update({ iCloudEnabled: false });
+          }
+          finally {
+            setIsSyncing(false);
+          }
+          return;
         }
+
+        // 2) Backup var ama local boşsa: sessizce iCloud -> local
+        if (!hasLocalData) {
+          setIsSyncing(true);
+          try {
+            await downloadFromICloud();
+            loadSubscriptions();
+            useCategoriesStore.getState().load();
+            useListsStore.getState().load();
+            usePaymentMethodsStore.getState().load();
+            useSettingsStore.getState().load();
+            toast.show('Data restored from iCloud');
+            update({ iCloudEnabled: true });
+            const refreshed = await getICloudBackupInfo();
+            setBackupInfo(refreshed);
+          }
+          catch (error) {
+            const message
+              = error instanceof Error ? error.message : 'Failed to restore from iCloud';
+            toast.show(message);
+            update({ iCloudEnabled: false });
+          }
+          finally {
+            setIsSyncing(false);
+          }
+          return;
+        }
+
+        // 3) Backup var ve local doluysa: kullanıcıya sor
+        const formattedDate = info.createdAt ? formatBackupDate(info.createdAt) : null;
+        const backupSummaryParts = [];
+        if (formattedDate)
+          backupSummaryParts.push(`Last backup: ${formattedDate}`);
+        if (typeof info.subscriptionCount === 'number')
+          backupSummaryParts.push(`Subscriptions in backup: ${info.subscriptionCount}`);
+        const backupSummary = backupSummaryParts.join('\n');
+
+        Alert.alert(
+          'iCloud backup found',
+          backupSummary.length > 0
+            ? `${backupSummary}\n\nWhat would you like to do?`
+            : 'An existing iCloud backup was found. What would you like to do?',
+          [
+            {
+              text: 'Cancel',
+              style: 'cancel',
+              onPress: () => {
+                // iCloudEnabled state değişmeden kalır (false)
+              },
+            },
+            {
+              text: 'Use iCloud backup',
+              style: 'destructive',
+              onPress: () => {
+                setIsSyncing(true);
+                void (async () => {
+                  try {
+                    await downloadFromICloud();
+                    loadSubscriptions();
+                    useCategoriesStore.getState().load();
+                    useListsStore.getState().load();
+                    usePaymentMethodsStore.getState().load();
+                    useSettingsStore.getState().load();
+                    toast.show('Data restored from iCloud');
+                    update({ iCloudEnabled: true });
+                    const refreshed = await getICloudBackupInfo();
+                    setBackupInfo(refreshed);
+                  }
+                  catch (error) {
+                    const message
+                      = error instanceof Error
+                        ? error.message
+                        : 'Failed to restore from iCloud';
+                    toast.show(message);
+                    update({ iCloudEnabled: false });
+                  }
+                  finally {
+                    setIsSyncing(false);
+                  }
+                })();
+              },
+            },
+            {
+              text: 'Keep this device data',
+              onPress: () => {
+                setIsSyncing(true);
+                void (async () => {
+                  try {
+                    await uploadToICloud();
+                    update({ iCloudEnabled: true });
+                    const refreshed = await getICloudBackupInfo();
+                    setBackupInfo(refreshed);
+                  }
+                  catch (error) {
+                    const message
+                      = error instanceof Error
+                        ? error.message
+                        : 'Failed to sync with iCloud';
+                    toast.show(message);
+                    update({ iCloudEnabled: false });
+                  }
+                  finally {
+                    setIsSyncing(false);
+                  }
+                })();
+              },
+            },
+          ],
+        );
+      }
+      else {
+        update({ iCloudEnabled: false });
       }
     },
-    [iCloudAvailable, isPremium, showPaywall, update, toast],
+    [
+      iCloudAvailable,
+      isPremium,
+      showPaywall,
+      update,
+      toast,
+      loadSubscriptions,
+      subscriptions.length,
+    ],
   );
 
   const handleExportCsv = useCallback(async () => {

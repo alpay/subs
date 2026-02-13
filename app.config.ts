@@ -82,10 +82,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     'expo-notifications',
     'expo-image',
     [
-      '@oleg_svetlichnyi/expo-icloud-storage',
+      'react-native-cloud-storage',
       {
-        containerIdentifier: `iCloud.${Env.EXPO_PUBLIC_BUNDLE_ID}`,
-        containerName: Env.EXPO_PUBLIC_NAME,
+        // Tek bir CloudKit container kullan (hem dev hem prod): iCloud.com.subs
+        iCloudContainerIdentifier: 'iCloud.com.subs',
+        // Dev / preview için CloudKit Development env, prod için Production
+        iCloudContainerEnvironment:
+          Env.EXPO_PUBLIC_APP_ENV === 'production' ? 'Production' : 'Development',
       },
     ],
   ],

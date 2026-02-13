@@ -1,17 +1,14 @@
 /**
- * iCloud sync utilities using expo-icloud-storage
- * Syncs app data to iCloud Drive when enabled
+ * iCloud sync using react-native-cloud-storage
+ * Syncs app DB (subscriptions, categories, lists, payment methods, settings) to iCloud
+ * @see https://react-native-cloud-storage.oss.kuatsu.de/docs/api/CloudStorage
  */
 
 import {
-  createDirAsync,
-  defaultICloudContainerPath,
-  downloadFileAsync,
-  isExistAsync,
-  isICloudAvailableAsync,
-  uploadFileAsync,
-} from '@oleg_svetlichnyi/expo-icloud-storage';
-import * as FileSystem from 'expo-file-system/legacy';
+  CloudStorage,
+  CloudStorageErrorCode,
+  CloudStorageScope,
+} from 'react-native-cloud-storage';
 
 import {
   getCategories,
@@ -26,37 +23,66 @@ import {
   saveSubscriptions,
 } from '@/lib/db/storage';
 
-const ICLOUD_DIR = 'Subs';
-const BACKUP_FILENAME = 'subs-backup.json';
+const BACKUP_DIR = '/Subs';
+const BACKUP_FILE = `${BACKUP_DIR}/subs-backup.json`;
 
-export type ICloudSyncStatus = ' unavailable' | 'idle' | 'syncing' | 'error';
+// Explicit scope: App Data = iCloud container (example app uses this for iCloud)
+const SCOPE = CloudStorageScope.AppData;
+
+const RETRY_ATTEMPTS = 3;
+const RETRY_DELAY_MS = 1500;
+
+function delay(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function withRetry<T>(
+  fn: () => Promise<T>,
+  isRetryable: (err: unknown) => boolean,
+): Promise<T> {
+  let lastErr: unknown;
+  for (let attempt = 1; attempt <= RETRY_ATTEMPTS; attempt++) {
+    try {
+      return await fn();
+    }
+    catch (err) {
+      lastErr = err;
+      if (!isRetryable(err) || attempt === RETRY_ATTEMPTS)
+        throw err;
+      await delay(RETRY_DELAY_MS);
+    }
+  }
+  throw lastErr;
+}
+
+export type ICloudSyncStatus = 'unavailable' | 'idle' | 'syncing' | 'error';
+
+export type ICloudBackupInfo = {
+  exists: boolean;
+  createdAt?: string;
+  subscriptionCount?: number;
+};
 
 /**
- * Use for enabling the toggle in UI. Only checks if user is signed in to iCloud.
- * On device, defaultICloudContainerPath can be null at module load; this allows
- * the user to try turning sync on and get a clear error if the container isn't ready.
+ * Whether cloud storage (iCloud on iOS) is available.
  */
 export async function isICloudAvailableForUI(): Promise<boolean> {
-  return isICloudAvailableAsync();
+  return CloudStorage.isCloudAvailable();
 }
 
-export async function isICloudReady(): Promise<boolean> {
-  const available = await isICloudAvailableAsync();
-  return available && defaultICloudContainerPath != null;
-}
-
+/**
+ * Upload full DB snapshot to iCloud. Always creates /Subs first (exists() can throw before we get to mkdir).
+ */
 export async function uploadToICloud(): Promise<void> {
-  const signedIn = await isICloudAvailableAsync();
-  if (!signedIn) {
+  const available = await CloudStorage.isCloudAvailable();
+  if (!available) {
     throw new Error('iCloud is not available. Sign in to iCloud in Settings.');
   }
-  if (!defaultICloudContainerPath) {
-    throw new Error(
-      'iCloud Drive is not ready yet. Make sure iCloud Drive is enabled in Settings → [Your Name] → iCloud and try again.',
-    );
-  }
+
+  const now = new Date().toISOString();
 
   const backup = {
+    createdAt: now,
     subscriptions: getSubscriptions(),
     categories: getCategories(),
     lists: getLists(),
@@ -65,86 +91,157 @@ export async function uploadToICloud(): Promise<void> {
   };
 
   const json = JSON.stringify(backup);
-  const localPath = `${FileSystem.cacheDirectory}${BACKUP_FILENAME}`;
-  await FileSystem.writeAsStringAsync(localPath, json, {
-    encoding: FileSystem.EncodingType.UTF8,
-  });
 
-  if (!(await isExistAsync(ICLOUD_DIR, true))) {
-    await createDirAsync(ICLOUD_DIR);
-  }
-
-  await uploadFileAsync({
-    destinationPath: `${ICLOUD_DIR}/${BACKUP_FILENAME}`,
-    filePath: localPath,
-  });
-}
-
-export async function downloadFromICloud(): Promise<void> {
-  if (!(await isICloudReady()) || !defaultICloudContainerPath) {
-    throw new Error('iCloud is not available');
-  }
-
-  const remoteFilePath = `${ICLOUD_DIR}/${BACKUP_FILENAME}`;
-
-  // Check if the backup file exists in iCloud
-  const fileExists = await isExistAsync(remoteFilePath, false);
-  if (!fileExists) {
-    throw new Error('No backup found in iCloud. Please create a backup first.');
-  }
-
-  // Construct the full path to the iCloud file
-  const remotePath = `${defaultICloudContainerPath}/Documents/${ICLOUD_DIR}/${BACKUP_FILENAME}`;
-  const localDir = FileSystem.cacheDirectory ?? FileSystem.documentDirectory;
-  if (!localDir) {
-    throw new Error('No local directory available');
-  }
+  const isDirNotFound = (err: unknown) =>
+    (err as { code?: string })?.code === CloudStorageErrorCode.DIRECTORY_NOT_FOUND;
 
   try {
-    // Download the file from iCloud
-    const localPath = await downloadFileAsync(remotePath, localDir);
+    await withRetry(async () => {
+      CloudStorage.setProviderOptions({ scope: SCOPE });
+      await CloudStorage.mkdir(BACKUP_DIR);
+      await CloudStorage.writeFile(BACKUP_FILE, json);
+    }, isDirNotFound);
+  }
+  catch (err: unknown) {
+    const code = (err as { code?: string })?.code;
+    if (code === CloudStorageErrorCode.DIRECTORY_NOT_FOUND) {
+      throw new Error(
+        'iCloud Drive isn\'t ready. Turn on iCloud Drive in Settings → [Your Name] → iCloud, then try Backup again in a few seconds.',
+      );
+    }
+    throw err;
+  }
+}
 
-    // Read the downloaded file
-    const content = await FileSystem.readAsStringAsync(localPath, {
-      encoding: FileSystem.EncodingType.UTF8,
-    });
+/**
+ * Download backup from iCloud and restore into local DB.
+ * Uses triggerSync so iCloud has finished downloading the file before read.
+ */
+export async function downloadFromICloud(): Promise<void> {
+  const available = await CloudStorage.isCloudAvailable();
+  if (!available) {
+    throw new Error('iCloud is not available. Sign in to iCloud in Settings.');
+  }
 
-    // Parse the backup data
-    let backup;
+  const isDirNotFound = (err: unknown) =>
+    (err as { code?: string })?.code === CloudStorageErrorCode.DIRECTORY_NOT_FOUND;
+
+  let content: string;
+  try {
+    content = await withRetry(async () => {
+      CloudStorage.setProviderOptions({ scope: SCOPE });
+      const fileExists = await CloudStorage.exists(BACKUP_FILE);
+      if (!fileExists) {
+        throw new Error('No backup found in iCloud. Please create a backup first.');
+      }
+      await CloudStorage.triggerSync(BACKUP_FILE);
+      return CloudStorage.readFile(BACKUP_FILE);
+    }, isDirNotFound);
+  }
+  catch (err: unknown) {
+    const code = (err as { code?: string })?.code;
+    if (code === CloudStorageErrorCode.DIRECTORY_NOT_FOUND) {
+      throw new Error(
+        'iCloud Drive isn\'t ready. Turn on iCloud Drive in Settings → [Your Name] → iCloud, then try again in a few seconds.',
+      );
+    }
+    throw err;
+  }
+
+  let backup: unknown;
+  try {
+    backup = JSON.parse(content);
+  }
+  catch {
+    throw new Error('Invalid backup file format. The backup may be corrupted.');
+  }
+
+  if (!backup || typeof backup !== 'object') {
+    throw new Error('Invalid backup file structure.');
+  }
+
+  const data = backup as Record<string, unknown>;
+
+  if (data.subscriptions && Array.isArray(data.subscriptions)) {
+    saveSubscriptions(data.subscriptions as Parameters<typeof saveSubscriptions>[0]);
+  }
+  if (data.categories && Array.isArray(data.categories)) {
+    saveCategories(data.categories as Parameters<typeof saveCategories>[0]);
+  }
+  if (data.lists && Array.isArray(data.lists)) {
+    saveLists(data.lists as Parameters<typeof saveLists>[0]);
+  }
+  if (data.paymentMethods && Array.isArray(data.paymentMethods)) {
+    savePaymentMethods(data.paymentMethods as Parameters<typeof savePaymentMethods>[0]);
+  }
+  if (data.settings && typeof data.settings === 'object' && data.settings !== null) {
+    saveSettings(data.settings as Parameters<typeof saveSettings>[0]);
+  }
+}
+
+/**
+ * Return metadata about the current backup in iCloud (if any).
+ */
+export async function getICloudBackupInfo(): Promise<ICloudBackupInfo> {
+  const available = await CloudStorage.isCloudAvailable();
+  if (!available)
+    return { exists: false };
+
+  const isDirNotFound = (err: unknown) =>
+    (err as { code?: string })?.code === CloudStorageErrorCode.DIRECTORY_NOT_FOUND;
+
+  try {
+    let content: string | null = null;
+
+    await withRetry(async () => {
+      CloudStorage.setProviderOptions({ scope: SCOPE });
+      const exists = await CloudStorage.exists(BACKUP_FILE);
+      if (!exists) {
+        content = null;
+        return;
+      }
+      await CloudStorage.triggerSync(BACKUP_FILE);
+      content = await CloudStorage.readFile(BACKUP_FILE);
+    }, isDirNotFound);
+
+    if (content == null)
+      return { exists: false };
+
     try {
-      backup = JSON.parse(content);
+      const parsed = JSON.parse(content) as Record<string, unknown>;
+      const createdAt = typeof parsed.createdAt === 'string'
+        ? parsed.createdAt
+        : undefined;
+      const subs = Array.isArray(parsed.subscriptions)
+        ? (parsed.subscriptions as unknown[])
+        : [];
+
+      return {
+        exists: true,
+        createdAt,
+        subscriptionCount: subs.length,
+      };
     }
     catch {
-      throw new Error('Invalid backup file format. The backup may be corrupted.');
-    }
-
-    // Validate backup structure
-    if (!backup || typeof backup !== 'object') {
-      throw new Error('Invalid backup file structure.');
-    }
-
-    // Restore data from backup
-    if (backup.subscriptions && Array.isArray(backup.subscriptions)) {
-      saveSubscriptions(backup.subscriptions);
-    }
-    if (backup.categories && Array.isArray(backup.categories)) {
-      saveCategories(backup.categories);
-    }
-    if (backup.lists && Array.isArray(backup.lists)) {
-      saveLists(backup.lists);
-    }
-    if (backup.paymentMethods && Array.isArray(backup.paymentMethods)) {
-      savePaymentMethods(backup.paymentMethods);
-    }
-    if (backup.settings && typeof backup.settings === 'object') {
-      saveSettings(backup.settings);
+      // Backup var ama metadata yok / bozuksa sadece exists=true döneriz
+      return { exists: true };
     }
   }
-  catch (error) {
-    // Re-throw with more context if it's not already an Error
-    if (error instanceof Error) {
-      throw error;
+  catch (err: unknown) {
+    const code = (err as { code?: string })?.code;
+    if (code === CloudStorageErrorCode.DIRECTORY_NOT_FOUND) {
+      throw new Error(
+        'iCloud Drive isn\'t ready. Turn on iCloud Drive in Settings → [Your Name] → iCloud, then try again in a few seconds.',
+      );
     }
-    throw new Error(`Failed to download from iCloud: ${String(error)}`);
+    throw err;
   }
+}
+
+/**
+ * Simple boolean wrapper around getICloudBackupInfo.
+ */
+export async function hasICloudBackup(): Promise<boolean> {
+  const info = await getICloudBackupInfo();
+  return info.exists;
 }
