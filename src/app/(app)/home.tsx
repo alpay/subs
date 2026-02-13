@@ -22,11 +22,11 @@ export default function HomeScreen() {
   const [viewMode, setViewMode] = useState<'list' | 'month'>('list');
 
   const {
-    averageMonthly,
     filteredSubscriptions,
     hasQuery,
     listOptions,
     monthlyTotal,
+    remainingInMonth,
     searchResults,
     selectedListId,
     selectedListLabel,
@@ -139,7 +139,7 @@ export default function HomeScreen() {
             >
               <HomeSummary
                 monthlyTotal={monthlyTotal}
-                averageMonthly={averageMonthly}
+                remainingInMonth={remainingInMonth}
                 settings={settings}
                 monthDate={visibleMonth}
               />

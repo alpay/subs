@@ -1,6 +1,6 @@
 import type { CurrencyRates, Settings, Subscription } from '@/lib/db/schema';
 
-import { endOfMonth, endOfYear, parseISO, startOfMonth, startOfYear } from 'date-fns';
+import { endOfMonth, endOfYear, isBefore, parseISO, startOfDay, startOfMonth, startOfYear } from 'date-fns';
 import { convertCurrency, roundCurrency } from './currency';
 import { getPaymentDatesInRange } from './subscription-dates';
 
@@ -36,6 +36,48 @@ export function calculateMonthlyTotal({ subscriptions, monthDate, settings, rate
     .filter(sub => sub.status === 'active')
     .reduce((sum, sub) => {
       const dueDates = getPaymentDatesInRange(sub, start, end);
+      const converted = dueDates.reduce((acc) => {
+        const amount = convertCurrency({
+          amount: sub.amount,
+          from: sub.currency,
+          to: settings.mainCurrency,
+          rates,
+        });
+        return acc + amount;
+      }, 0);
+      return sum + converted;
+    }, 0);
+
+  return roundCurrency(total, settings.roundWholeNumbers);
+}
+
+export type RemainingInMonthInput = {
+  subscriptions: Subscription[];
+  monthDate: Date;
+  settings: Settings;
+  rates: CurrencyRates;
+  now?: Date;
+};
+
+/** Total amount still to be paid from now until end of the given month. */
+export function calculateRemainingInMonth({
+  subscriptions,
+  monthDate,
+  settings,
+  rates,
+  now = new Date(),
+}: RemainingInMonthInput) {
+  const monthStart = startOfMonth(monthDate);
+  const monthEnd = endOfMonth(monthDate);
+  if (isBefore(monthEnd, now)) {
+    return roundCurrency(0, settings.roundWholeNumbers);
+  }
+  const rangeStart = isBefore(monthStart, now) ? startOfDay(now) : monthStart;
+
+  const total = subscriptions
+    .filter(sub => sub.status === 'active')
+    .reduce((sum, sub) => {
+      const dueDates = getPaymentDatesInRange(sub, rangeStart, monthEnd);
       const converted = dueDates.reduce((acc) => {
         const amount = convertCurrency({
           amount: sub.amount,

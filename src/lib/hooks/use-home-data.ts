@@ -3,7 +3,7 @@ import { useCallback, useMemo, useState } from 'react';
 
 import { useCurrencyRatesStore, useListsStore, useSettingsStore, useSubscriptionsStore } from '@/lib/stores';
 import { getPaymentDatesForMonth } from '@/lib/utils/subscription-dates';
-import { calculateAverageMonthly, calculateMonthlyTotal } from '@/lib/utils/totals';
+import { calculateMonthlyTotal, calculateRemainingInMonth } from '@/lib/utils/totals';
 
 const ALL_LISTS = 'all';
 
@@ -84,16 +84,21 @@ export function useHomeData({ monthDate }: UseHomeDataOptions = {}) {
     [filteredSubscriptions, resolvedMonthDate, settings, rates],
   );
 
-  const averageMonthly = useMemo(
-    () => calculateAverageMonthly({ subscriptions: filteredSubscriptions, settings, rates }),
-    [filteredSubscriptions, settings, rates],
+  const remainingInMonth = useMemo(
+    () =>
+      calculateRemainingInMonth({
+        subscriptions: filteredSubscriptions,
+        monthDate: resolvedMonthDate,
+        settings,
+        rates,
+      }),
+    [filteredSubscriptions, resolvedMonthDate, settings, rates],
   );
 
   const hasQuery = query.trim().length > 0;
   const selectedListLabel = listOptions.find(option => option.value === selectedListId)?.label ?? 'All Subs';
 
   return {
-    averageMonthly,
     filteredSubscriptions,
     handleDayPress,
     handleSheetClose,
@@ -101,6 +106,7 @@ export function useHomeData({ monthDate }: UseHomeDataOptions = {}) {
     listOptions,
     monthlyTotal,
     query,
+    remainingInMonth,
     rates,
     searchResults,
     selectedDay,
