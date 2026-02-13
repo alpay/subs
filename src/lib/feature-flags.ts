@@ -6,6 +6,8 @@
 export const FEATURE_FLAGS = {
   /** Hide the import section (Notion, Sheets, file, Apple) on the Services screen */
   hideImport: true,
+  /** Enable theme selector in Settings > Interface */
+  themeSelector: false,
 } as const;
 
 export type FeatureFlags = typeof FEATURE_FLAGS;

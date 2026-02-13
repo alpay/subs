@@ -16,6 +16,7 @@ import {
 } from '@/components/settings';
 import { SettingsNotificationSection } from '@/components/settings-notification-section';
 import { CURRENCIES } from '@/lib/data/currencies';
+import { FEATURE_FLAGS } from '@/lib/feature-flags';
 import { Haptic } from '@/lib/haptics';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { cancelAll } from '@/lib/notifications/notifications-manager';
@@ -228,13 +229,23 @@ export default function SettingsScreen() {
         <SettingsNotificationSection />
 
         {/* Interface */}
-        <SettingsSection header="Interface" minHeight={150}>
+        <SettingsSection header="Interface" minHeight={FEATURE_FLAGS.themeSelector ? 200 : 150}>
           <SettingsToggleRow
             icon="system:paintbrush.fill"
             label="True Dark Colors"
             isOn={settings.trueDarkColors}
             onChange={value => update({ trueDarkColors: value })}
           />
+          {FEATURE_FLAGS.themeSelector && (
+            <SettingsRow
+              icon="system:circle.lefthalf.filled"
+              label="Theme"
+              value="Preview & choose"
+              valueColor={colors.textMuted}
+              buttonColor={colors.text}
+              onPress={() => router.push('/(app)/settings/theme')}
+            />
+          )}
           <SettingsToggleRow
             icon="system:hand.tap.fill"
             label="Haptic Feedback"
