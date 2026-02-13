@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import {
   getICloudBackupInfo,
@@ -59,6 +59,14 @@ export function useICloudAutoSync({
   onSyncEnd,
   onSyncError,
 }: UseICloudAutoSyncArgs) {
+  const onSyncStartRef = useRef(onSyncStart);
+  const onSyncEndRef = useRef(onSyncEnd);
+  const onSyncErrorRef = useRef(onSyncError);
+
+  onSyncStartRef.current = onSyncStart;
+  onSyncEndRef.current = onSyncEnd;
+  onSyncErrorRef.current = onSyncError;
+
   useEffect(() => {
     if (!enabled || !available)
       return;
@@ -70,18 +78,18 @@ export function useICloudAutoSync({
 
       queueMicrotask(() => {
         if (!cancelled)
-          onSyncStart();
+          onSyncStartRef.current();
       });
 
       void uploadToICloud()
         .then(() => {
           if (!cancelled)
-            onSyncEnd();
+            onSyncEndRef.current();
         })
         .catch(() => {
           if (!cancelled) {
-            onSyncEnd();
-            onSyncError('Failed to sync to iCloud');
+            onSyncEndRef.current();
+            onSyncErrorRef.current('Failed to sync to iCloud');
           }
         });
     }, AUTO_SYNC_DELAY_MS);
@@ -90,6 +98,6 @@ export function useICloudAutoSync({
       cancelled = true;
       clearTimeout(timeoutId);
     };
-  }, [enabled, available, onSyncEnd, onSyncError, onSyncStart, ...deps]);
+  }, [enabled, available, ...deps]);
 }
 

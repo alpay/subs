@@ -6,7 +6,7 @@ import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
 import * as Sharing from 'expo-sharing';
 import { useToast } from 'heroui-native';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useIsCloudAvailable } from 'react-native-cloud-storage';
 
@@ -14,8 +14,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NativeSheet } from '@/components/native-sheet';
 import { SettingsRow, SettingsSection } from '@/components/settings';
 import { Haptic } from '@/lib/haptics';
-import { usePremiumGuard } from '@/lib/hooks/use-premium-guard';
 import { useICloudAutoSync, useICloudBackupInfo } from '@/lib/hooks/use-icloud-sync';
+import { usePremiumGuard } from '@/lib/hooks/use-premium-guard';
 import { useTheme } from '@/lib/hooks/use-theme';
 import {
   buildBackupSummary,
@@ -76,6 +76,7 @@ export default function ICloudDataScreen() {
   const [isSyncing, setIsSyncing] = useState(false);
   const [isBackingUp, setIsBackingUp] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
+  const [icloudToggleVersion, setIcloudToggleVersion] = useState(0);
 
   const getCategoryName = useCallback(
     (id: string) => categories.find(c => c.id === id)?.name ?? 'Other',
@@ -116,6 +117,8 @@ export default function ICloudDataScreen() {
 
       if (value && !isPremium) {
         showPaywall();
+        // SwiftUI.Toggle keeps its own internal state; force a remount so UI snaps back to OFF.
+        setIcloudToggleVersion(v => v + 1);
         return;
       }
 
@@ -424,7 +427,8 @@ export default function ICloudDataScreen() {
                 ? `Last backup: ${formatBackupDate(backupInfo.createdAt)}`
                 : 'Your subscription data will be securely synced across all your devices via iCloud Drive.'
           }
-          minHeight={settings.iCloudEnabled && iCloudAvailable ? 250 : 150}
+          minHeight={settings.iCloudEnabled ? 250 : 150}
+          marginBottom={0}
         >
           <SwiftUI.HStack spacing={8}>
             <SwiftUI.Image
@@ -437,6 +441,7 @@ export default function ICloudDataScreen() {
             />
             <SwiftUI.Spacer />
             <SwiftUI.Toggle
+              key={`icloud-toggle-${icloudToggleVersion}`}
               label=""
               isOn={settings.iCloudEnabled}
               onChange={handleToggleICloud}
@@ -444,7 +449,7 @@ export default function ICloudDataScreen() {
             />
           </SwiftUI.HStack>
 
-          {settings.iCloudEnabled && iCloudAvailable && (
+          {settings.iCloudEnabled && (
             <>
               <View style={{ height: 1, backgroundColor: colors.border, marginVertical: 8 }} />
               <SettingsRow
@@ -466,7 +471,7 @@ export default function ICloudDataScreen() {
         </SettingsSection>
 
         {/* Current Base */}
-        <SettingsSection header="Current Subs" minHeight={200}>
+        <SettingsSection header="Current Subs" minHeight={200} marginBottom={0}>
           <SettingsRow
             icon="system:checkmark.circle"
             label="Active & One time"

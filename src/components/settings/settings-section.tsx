@@ -9,16 +9,18 @@ type SettingsSectionProps = {
   footer?: string;
   minHeight?: number;
   children: ReactNode;
+  marginBottom?: number;
 };
 
 export function SettingsSection({
   header = '',
   footer = '',
   minHeight = DEFAULT_MIN_HEIGHT,
+  marginBottom = 16,
   children,
 }: SettingsSectionProps) {
   return (
-    <View style={{ marginBottom: 16 }}>
+    <View style={{ marginBottom }}>
       <SwiftUI style={{ flex: 1, minHeight }}>
         <SwiftUI.Form scrollDisabled contentMargins={{ leading: 1, trailing: 1 }}>
           <SwiftUI.Section header={header} footer={footer}>
