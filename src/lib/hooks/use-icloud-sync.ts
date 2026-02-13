@@ -1,9 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import type { ICloudBackupInfo } from '@/lib/icloud-sync';
 
+import { useEffect, useRef, useState } from 'react';
 import {
   getICloudBackupInfo,
+
   uploadToICloud,
-  type ICloudBackupInfo,
 } from '@/lib/icloud-sync';
 
 const AUTO_SYNC_DELAY_MS = 2000;
@@ -100,4 +101,3 @@ export function useICloudAutoSync({
     };
   }, [enabled, available, ...deps]);
 }
-

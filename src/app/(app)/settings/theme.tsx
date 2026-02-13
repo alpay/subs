@@ -1,9 +1,10 @@
+import type { AppThemeId } from '@/lib/hooks/use-theme';
 import { Image } from 'expo-image';
-import { ScrollView, Text, View, Pressable } from 'react-native';
 
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import { NativeSheet } from '@/components/native-sheet';
 import { Haptic } from '@/lib/haptics';
-import { APP_THEMES, APP_THEME_COLORS, type AppThemeId, useTheme } from '@/lib/hooks/use-theme';
+import { APP_THEME_COLORS, APP_THEMES, useTheme } from '@/lib/hooks/use-theme';
 
 export default function ThemeSettingsScreen() {
   const { isDark, appThemeId, setAppTheme } = useTheme();
@@ -97,22 +98,24 @@ export default function ThemeSettingsScreen() {
                       backgroundColor: isSelected ? palette.accent : palette.pill,
                     }}
                   >
-                    {isSelected ? (
-                      <Image
-                        source="sf:checkmark"
-                        style={{ width: 16, height: 16 }}
-                        tintColor={palette.iconOnColor}
-                      />
-                    ) : (
-                      <View
-                        style={{
-                          width: 10,
-                          height: 10,
-                          borderRadius: 5,
-                          backgroundColor: palette.accent,
-                        }}
-                      />
-                    )}
+                    {isSelected
+                      ? (
+                          <Image
+                            source="sf:checkmark"
+                            style={{ width: 16, height: 16 }}
+                            tintColor={palette.iconOnColor}
+                          />
+                        )
+                      : (
+                          <View
+                            style={{
+                              width: 10,
+                              height: 10,
+                              borderRadius: 5,
+                              backgroundColor: palette.accent,
+                            }}
+                          />
+                        )}
                   </View>
                 </View>
 
@@ -216,4 +219,3 @@ export default function ThemeSettingsScreen() {
     </NativeSheet>
   );
 }
-
