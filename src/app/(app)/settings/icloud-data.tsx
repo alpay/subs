@@ -1,5 +1,5 @@
 import type { Subscription } from '@/lib/db/schema';
-
+import type { ICloudBackupInfo } from '@/lib/icloud-sync';
 import { SwiftUI } from '@mgcrea/react-native-swiftui';
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Notifications from 'expo-notifications';
@@ -9,15 +9,19 @@ import { useToast } from 'heroui-native';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useIsCloudAvailable } from 'react-native-cloud-storage';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { NativeSheet } from '@/components/native-sheet';
 import { SettingsRow, SettingsSection } from '@/components/settings';
 import { Haptic } from '@/lib/haptics';
 import { usePremiumGuard } from '@/lib/hooks/use-premium-guard';
+import { useICloudAutoSync, useICloudBackupInfo } from '@/lib/hooks/use-icloud-sync';
 import { useTheme } from '@/lib/hooks/use-theme';
 import {
+  buildBackupSummary,
+  deleteICloudBackup,
   downloadFromICloud,
+  formatBackupDate,
   getICloudBackupInfo,
   uploadToICloud,
 } from '@/lib/icloud-sync';
@@ -51,17 +55,6 @@ function buildCsvRows(
   return [header, ...rows].join('\n');
 }
 
-function formatBackupDate(iso: string): string {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime()))
-    return iso;
-
-  return d.toLocaleString(undefined, {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  });
-}
-
 export default function ICloudDataScreen() {
   const router = useRouter();
   const { colors } = useTheme();
@@ -83,11 +76,6 @@ export default function ICloudDataScreen() {
   const [isSyncing, setIsSyncing] = useState(false);
   const [isBackingUp, setIsBackingUp] = useState(false);
   const [isRestoring, setIsRestoring] = useState(false);
-  const [backupInfo, setBackupInfo] = useState<{
-    exists: boolean;
-    createdAt?: string;
-    subscriptionCount?: number;
-  } | null>(null);
 
   const getCategoryName = useCallback(
     (id: string) => categories.find(c => c.id === id)?.name ?? 'Other',
@@ -103,70 +91,21 @@ export default function ICloudDataScreen() {
     return { active, canceled, archived };
   }, [subscriptions]);
 
-  // Auto-sync to iCloud when sync is on and local DB data changes (debounced to avoid loop + toast storms)
-  const AUTO_SYNC_DELAY_MS = 2000;
-  useEffect(() => {
-    if (!settings.iCloudEnabled || !iCloudAvailable)
-      return;
+  const { backupInfo, setBackupInfo } = useICloudBackupInfo({
+    enabled: settings.iCloudEnabled,
+    available: iCloudAvailable,
+  });
 
-    let cancelled = false;
-    const timeoutId = setTimeout(() => {
-      if (cancelled)
-        return;
-      queueMicrotask(() => {
-        if (!cancelled)
-          setIsSyncing(true);
-      });
-      void uploadToICloud()
-        .then(() => {
-          if (!cancelled)
-            setIsSyncing(false);
-        })
-        .catch(() => {
-          if (!cancelled) {
-            setIsSyncing(false);
-            toastRef.current.show('Failed to sync to iCloud');
-          }
-        });
-    }, AUTO_SYNC_DELAY_MS);
-
-    return () => {
-      cancelled = true;
-      clearTimeout(timeoutId);
-    };
-  }, [
-    settings.iCloudEnabled,
-    iCloudAvailable,
-    subscriptions,
-    categories,
-    lists,
-    paymentMethods,
-  ]);
-
-  // Load backup metadata (last backup time) when screen mounts / availability changes
-  useEffect(() => {
-    let cancelled = false;
-    if (!iCloudAvailable) {
-      setBackupInfo(null);
-      return;
-    }
-
-    void (async () => {
-      try {
-        const info = await getICloudBackupInfo();
-        if (!cancelled)
-          setBackupInfo(info);
-      }
-      catch {
-        if (!cancelled)
-          setBackupInfo(null);
-      }
-    })();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [iCloudAvailable, settings.iCloudEnabled]);
+  useICloudAutoSync({
+    enabled: settings.iCloudEnabled,
+    available: iCloudAvailable,
+    deps: [subscriptions, categories, lists, paymentMethods],
+    onSyncStart: () => setIsSyncing(true),
+    onSyncEnd: () => setIsSyncing(false),
+    onSyncError: (message) => {
+      toastRef.current.show(message);
+    },
+  });
 
   const handleToggleICloud = useCallback(
     async (value: boolean) => {
@@ -182,9 +121,7 @@ export default function ICloudDataScreen() {
 
       if (value) {
         const hasLocalData = subscriptions.length > 0;
-        let info: { exists: boolean; createdAt?: string; subscriptionCount?: number } = {
-          exists: false,
-        };
+        let info: ICloudBackupInfo = { exists: false };
 
         try {
           info = await getICloudBackupInfo();
@@ -245,13 +182,7 @@ export default function ICloudDataScreen() {
         }
 
         // 3) Backup var ve local doluysa: kullanıcıya sor
-        const formattedDate = info.createdAt ? formatBackupDate(info.createdAt) : null;
-        const backupSummaryParts = [];
-        if (formattedDate)
-          backupSummaryParts.push(`Last backup: ${formattedDate}`);
-        if (typeof info.subscriptionCount === 'number')
-          backupSummaryParts.push(`Subscriptions in backup: ${info.subscriptionCount}`);
-        const backupSummary = backupSummaryParts.join('\n');
+        const backupSummary = buildBackupSummary(info);
 
         Alert.alert(
           'iCloud backup found',
@@ -338,6 +269,7 @@ export default function ICloudDataScreen() {
       toast,
       loadSubscriptions,
       subscriptions.length,
+      setBackupInfo,
     ],
   );
 
@@ -391,6 +323,14 @@ export default function ICloudDataScreen() {
           style: 'destructive',
           onPress: async () => {
             Haptic.Light();
+            if (settings.iCloudEnabled) {
+              try {
+                await deleteICloudBackup();
+              }
+              catch {
+                // iCloud backup silinemezse local data yine de silinir.
+              }
+            }
             storage.clearAll();
             await Notifications.cancelAllScheduledNotificationsAsync();
             useSettingsStore.getState().load();
@@ -405,7 +345,7 @@ export default function ICloudDataScreen() {
         },
       ],
     );
-  }, [router]);
+  }, [router, settings.iCloudEnabled]);
 
   const handleBackupToICloud = useCallback(async () => {
     if (!iCloudAvailable) {
@@ -481,8 +421,8 @@ export default function ICloudDataScreen() {
             isSyncing
               ? 'Syncing...'
               : backupInfo?.createdAt
-                  ? `Last backup: ${formatBackupDate(backupInfo.createdAt)}`
-                  : 'Your subscription data will be securely synced across all your devices via iCloud Drive.'
+                ? `Last backup: ${formatBackupDate(backupInfo.createdAt)}`
+                : 'Your subscription data will be securely synced across all your devices via iCloud Drive.'
           }
           minHeight={settings.iCloudEnabled && iCloudAvailable ? 250 : 150}
         >
