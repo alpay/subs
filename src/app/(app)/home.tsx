@@ -8,6 +8,7 @@ import { HomeSearchResults } from '@/components/home/home-search-results';
 import { HomeSummary } from '@/components/home/home-summary';
 import { MonthCalendar } from '@/components/month-calendar';
 import { ScreenShell } from '@/components/screen-shell';
+import { UnderSheetTransform } from '@/components/under-sheet-transform';
 import { Haptic } from '@/lib/haptics';
 import { useHomeData } from '@/lib/hooks/use-home-data';
 import { usePremiumGuard } from '@/lib/hooks/use-premium-guard';
@@ -42,12 +43,14 @@ export default function HomeScreen() {
   } = useHomeData({ monthDate: visibleMonth });
 
   return (
-    <>
+    <UnderSheetTransform>
+
       <Stack.Screen
         options={{
           title: '',
         }}
       />
+
       <Stack.Toolbar placement="left">
         <Stack.Toolbar.Menu>
           <Stack.Toolbar.Label>{selectedListLabel}</Stack.Toolbar.Label>
@@ -169,6 +172,8 @@ export default function HomeScreen() {
               />
             </View>
           )}
-    </>
+
+    </UnderSheetTransform>
+
   );
 }
