@@ -80,6 +80,7 @@
     "lightbox_hint": "Swipe up or down to dismiss"
   },
   "home": {
+    "all_subs": "All Subs",
     "remaining": "Remaining",
     "search_placeholder": "Search subs"
   },

@@ -30,10 +30,7 @@ function useNotificationLabels() {
   } as Record<Subscription['notificationMode'], string>;
 }
 
-function DetailRow({
-  label,
-  value,
-}: { label: string; value: string; showArrow?: boolean }) {
+function DetailRow({ label, value }: { label: string; value: string }) {
   const { colors } = useTheme();
   return (
     <View

@@ -34,21 +34,7 @@ import {
   useSettingsStore,
   useSubscriptionsStore,
 } from '@/lib/stores';
-
-function formatLastUpdated(value: string, neverLabel: string, locale: string) {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return neverLabel;
-  }
-  return new Intl.DateTimeFormat(locale, {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  }).format(date);
-}
+import { formatLastUpdated } from '@/lib/utils/format';
 
 export default function SettingsScreen() {
   const router = useRouter();

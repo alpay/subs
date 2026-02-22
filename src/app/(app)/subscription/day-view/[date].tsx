@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { InteractionManager, Pressable, Text, View } from 'react-native';
 
 import { NativeSheet } from '@/components/native-sheet';
-import { ServiceIcon } from '@/components/service-icon';
+import { SubscriptionRow } from '@/components/subscription-row';
 import { GlassCard } from '@/components/ui/glass-card';
 import { Haptic } from '@/lib/haptics';
 import { usePremiumGuard } from '@/lib/hooks/use-premium-guard';
@@ -88,48 +88,13 @@ export default function SubscriptionDayViewScreen() {
               href={{ pathname: '/subscription/[id]', params: { id: sub.id } }}
               replace
               asChild
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingHorizontal: 16,
-                paddingVertical: 12,
-                gap: 12,
-              }}
             >
               <Pressable
                 accessibilityRole="button"
                 onPress={() => Haptic.Light()}
-                style={({ pressed }) => [
-                  pressed ? { opacity: 0.85 } : null,
-                ]}
+                style={({ pressed }) => [pressed ? { opacity: 0.85 } : null]}
               >
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12, flex: 1 }}>
-                  <Link.AppleZoom>
-                    <ServiceIcon
-                      iconKey={sub.iconKey}
-                      iconUri={sub.iconType === 'image' ? sub.iconUri : undefined}
-                      size={42}
-                    />
-                  </Link.AppleZoom>
-                  <View style={{ gap: 2, flex: 1, marginLeft: 4 }}>
-                    <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }} selectable>
-                      {sub.name}
-                    </Text>
-                    <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
-                      {t(`subscription.${sub.scheduleType}`)}
-                      {' '}
-                      •
-                      {' '}
-                      {formatAmount(sub.amount, sub.currency, settings.roundWholeNumbers)}
-                    </Text>
-                  </View>
-                </View>
-                <Image
-                  source="sf:chevron.right"
-                  style={{ width: 14, height: 14 }}
-                  tintColor={colors.textMuted}
-                />
+                <SubscriptionRow sub={sub} settings={settings} variant="day" />
               </Pressable>
             </Link>
           </GlassCard>

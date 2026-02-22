@@ -1,13 +1,14 @@
-import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
+import type { FlashListRef } from '@shopify/flash-list';
 
+import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { FlashList } from '@shopify/flash-list';
 import { Stack, useRouter } from 'expo-router';
 import LottieView from 'lottie-react-native';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Dimensions,
-  FlatList,
   Pressable,
   Text,
   View,
@@ -38,7 +39,8 @@ export default function OnboardingScreen() {
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const flatListRef = useRef<FlatList<{ id: string; title: string; description: string; image: any }> | null>(null);
+  type SlideItem = { id: string; title: string; description: string; image: any };
+  const listRef = useRef<FlashListRef<SlideItem> | null>(null);
 
   const slides = SLIDE_IDS.map((id, i) => ({
     id,
@@ -67,7 +69,7 @@ export default function OnboardingScreen() {
     const nextIndex = currentIndex + 1;
     setCurrentIndex(nextIndex);
 
-    flatListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
+    listRef.current?.scrollToIndex({ index: nextIndex, animated: true });
   };
 
   const handleSkip = () => {
@@ -130,8 +132,8 @@ export default function OnboardingScreen() {
         </View>
 
         {/* Slides */}
-        <FlatList
-          ref={flatListRef}
+        <FlashList
+          ref={listRef}
           data={slides}
           horizontal
           pagingEnabled

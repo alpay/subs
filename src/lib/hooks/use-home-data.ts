@@ -1,5 +1,6 @@
 import { isSameDay, startOfMonth } from 'date-fns';
 import { useCallback, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useCurrencyRatesStore, useListsStore, useSettingsStore, useSubscriptionsStore } from '@/lib/stores';
 import { getPaymentDatesForMonth } from '@/lib/utils/subscription-dates';
@@ -17,6 +18,7 @@ type UseHomeDataOptions = {
 };
 
 export function useHomeData({ monthDate }: UseHomeDataOptions = {}) {
+  const { t } = useTranslation();
   const { subscriptions } = useSubscriptionsStore();
   const { lists } = useListsStore();
   const { settings } = useSettingsStore();
@@ -30,10 +32,10 @@ export function useHomeData({ monthDate }: UseHomeDataOptions = {}) {
 
   const listOptions = useMemo<HomeListOption[]>(
     () => [
-      { label: 'All Subs', value: ALL_LISTS },
+      { label: t('home.all_subs'), value: ALL_LISTS },
       ...lists.map(list => ({ label: list.name, value: list.id })),
     ],
-    [lists],
+    [lists, t],
   );
 
   const filteredSubscriptions = useMemo(() => {
@@ -96,7 +98,7 @@ export function useHomeData({ monthDate }: UseHomeDataOptions = {}) {
   );
 
   const hasQuery = query.trim().length > 0;
-  const selectedListLabel = listOptions.find(option => option.value === selectedListId)?.label ?? 'All Subs';
+  const selectedListLabel = listOptions.find(option => option.value === selectedListId)?.label ?? '';
 
   return {
     filteredSubscriptions,

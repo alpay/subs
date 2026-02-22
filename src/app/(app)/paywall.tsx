@@ -1,4 +1,6 @@
+import type { FlashListRef } from '@shopify/flash-list';
 import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -7,7 +9,6 @@ import {
   ActivityIndicator,
   Alert,
   Dimensions,
-  FlatList,
   Pressable,
   Text,
   View,
@@ -43,7 +44,7 @@ export default function PaywallScreen() {
   const [purchasing, setPurchasing] = useState(false);
   const [restoring, setRestoring] = useState(false);
   const [lifetimePriceString, setLifetimePriceString] = useState<string | null>(null);
-  const flatListRef = useRef<FlatList>(null);
+  const listRef = useRef<FlashListRef<{ id: string; icon: string; color: string; title: string; description: string }> | null>(null);
   const activeIndexRef = useRef(0);
   const userHasScrolledRef = useRef(false);
   const { width: screenWidth } = Dimensions.get('window');
@@ -73,7 +74,7 @@ export default function PaywallScreen() {
         return;
       const nextIndex = (activeIndexRef.current + 1) % paywallFeatures.length;
       const offset = nextIndex * screenWidth;
-      flatListRef.current?.scrollToOffset({ offset, animated: true });
+      listRef.current?.scrollToOffset({ offset, animated: true });
     }, AUTO_SCROLL_INTERVAL_MS);
     return () => clearInterval(id);
   }, [screenWidth, paywallFeatures.length]);
@@ -179,8 +180,8 @@ export default function PaywallScreen() {
         <View style={{ flex: 1, gap: 24 }}>
           {/* Features carousel - each item full width so snap keeps all items centered */}
           <View style={{ marginHorizontal: -16 }}>
-            <FlatList
-              ref={flatListRef}
+            <FlashList
+              ref={listRef}
               data={paywallFeatures}
               horizontal
               pagingEnabled
