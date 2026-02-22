@@ -1,6 +1,5 @@
 import type { Subscription } from '@/lib/db/schema';
 
-import { parseISO } from 'date-fns';
 import { Image } from 'expo-image';
 import { Link, Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useMemo } from 'react';
@@ -19,7 +18,7 @@ import {
   useSubscriptionsStore,
 } from '@/lib/stores';
 import { formatAmount, formatNextPayment } from '@/lib/utils/format';
-import { countPaymentsUpTo } from '@/lib/utils/subscription-dates';
+import { computeNextPaymentDate, countPaymentsUpTo } from '@/lib/utils/subscription-dates';
 
 const NOTIFICATION_LABELS: Record<Subscription['notificationMode'], string> = {
   default: 'Default',
@@ -70,10 +69,12 @@ export default function SubscriptionDetailScreen() {
     [subscriptions, params.id],
   );
 
-  const categoryName = useMemo(
-    () => categories.find(c => c.id === subscription?.categoryId)?.name ?? 'Other',
+  const category = useMemo(
+    () => categories.find(c => c.id === subscription?.categoryId),
     [categories, subscription?.categoryId],
   );
+  const categoryName = category?.name ?? 'Other';
+  const categoryColor = category?.color ?? colors.surfaceMuted;
 
   const listName = useMemo(
     () => lists.find(l => l.id === subscription?.listId)?.name ?? '—',
@@ -88,9 +89,10 @@ export default function SubscriptionDetailScreen() {
   }, [subscription]);
 
   const nextPaymentLabel = useMemo(() => {
-    if (!subscription?.nextPaymentDate)
+    if (!subscription)
       return '—';
-    return formatNextPayment(parseISO(subscription.nextPaymentDate));
+    const nextDate = computeNextPaymentDate(subscription);
+    return formatNextPayment(nextDate);
   }, [subscription]);
 
   const logoColor = useSubscriptionGlowColor(subscription);
@@ -210,7 +212,7 @@ export default function SubscriptionDetailScreen() {
                 </Text>
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: colors.surfaceMuted }} />
+                <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: categoryColor }} />
                 <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }} selectable>
                   {categoryName}
                 </Text>

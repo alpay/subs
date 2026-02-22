@@ -286,7 +286,7 @@ export default function ServicesScreen() {
                           numberOfLines={1}
                           style={{
                             fontSize: 13,
-                            fontWeight: '500',
+                            fontWeight: '700',
                             color: colors.text,
                             textAlign: 'center',
                             maxWidth: CARD_WIDTH - 24,
@@ -294,7 +294,6 @@ export default function ServicesScreen() {
                         >
                           {displayQuery}
                         </Text>
-                        <SymbolView name="plus" size={12} tintColor={colors.textMuted} />
                       </View>
                     </Pressable>
                     {isBrandSearching && brandResults.length === 0 && (
@@ -317,7 +316,7 @@ export default function ServicesScreen() {
                           numberOfLines={1}
                           style={{
                             fontSize: 13,
-                            fontWeight: '500',
+                            fontWeight: '700',
                             color: colors.text,
                             textAlign: 'center',
                             maxWidth: CARD_WIDTH - 16,
