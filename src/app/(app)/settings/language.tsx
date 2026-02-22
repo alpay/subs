@@ -6,9 +6,9 @@ import { NativeSheet } from '@/components/native-sheet';
 import { Haptic } from '@/lib/haptics';
 import { useSelectedLanguage } from '@/lib/i18n/utils';
 import { useTheme } from '@/lib/hooks/use-theme';
-import { LANGUAGE_NAMES, type Language } from '@/lib/i18n/resources';
+import { LANGUAGE_FLAGS, LANGUAGE_NAMES, type Language } from '@/lib/i18n/resources';
 
-const LANGUAGES: Language[] = ['en', 'tr'];
+const LANGUAGES: Language[] = ['en', 'de', 'es', 'nl', 'it', 'pt', 'ru', 'zh', 'tr'];
 
 export default function LanguageScreen() {
   const { t } = useTranslation();
@@ -38,6 +38,7 @@ export default function LanguageScreen() {
             <LanguageRow
               key={lang}
               lang={lang}
+              flag={LANGUAGE_FLAGS[lang]}
               label={LANGUAGE_NAMES[lang]}
               isSelected={currentLanguage === lang}
               onSelect={() => handleSelect(lang)}
@@ -52,6 +53,7 @@ export default function LanguageScreen() {
 
 type LanguageRowProps = {
   lang: Language;
+  flag: string;
   label: string;
   isSelected: boolean;
   onSelect: () => void;
@@ -59,6 +61,7 @@ type LanguageRowProps = {
 };
 
 function LanguageRow({
+  flag,
   label,
   isSelected,
   onSelect,
@@ -79,6 +82,7 @@ function LanguageRow({
         pressed && { opacity: 0.7 },
       ]}
     >
+      <Text style={{ fontSize: 24, marginRight: 12 }}>{flag}</Text>
       <View style={{ flex: 1 }}>
         <Text
           style={{

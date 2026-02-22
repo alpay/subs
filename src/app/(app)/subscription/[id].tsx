@@ -114,7 +114,7 @@ export default function SubscriptionDetailScreen() {
     return null;
   }
 
-  const scheduleLabel = subscription.scheduleType.charAt(0).toUpperCase() + subscription.scheduleType.slice(1);
+  const scheduleLabel = t(`subscription.${subscription.scheduleType}`);
 
   const handleEdit = () => {
     Haptic.Light();

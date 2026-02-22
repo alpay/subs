@@ -117,7 +117,7 @@ export default function SubscriptionDayViewScreen() {
                       {sub.name}
                     </Text>
                     <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
-                      {sub.scheduleType.charAt(0).toUpperCase() + sub.scheduleType.slice(1)}
+                      {t(`subscription.${sub.scheduleType}`)}
                       {' '}
                       •
                       {' '}

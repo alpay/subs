@@ -74,7 +74,7 @@ function SearchRow({
               selectable
               numberOfLines={1}
             >
-              {sub.scheduleType}
+              {t(`subscription.${sub.scheduleType}`)}
               {' · '}
               {formatAmount(sub.amount, sub.currency, settings.roundWholeNumbers)}
             </Text>
