@@ -5,7 +5,7 @@
   "packageManager": "pnpm@10.28.2",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/user/repo-name.git"
+    "url": "git+https://github.com/alpay/subs.git"
   },
   "main": "expo-router/entry",
   "scripts": {
@@ -88,6 +88,7 @@
     "react-native-keyboard-controller": "1.20.4",
     "react-native-mmkv": "~4.1.1",
     "react-native-nitro-modules": "^0.33.2",
+    "react-native-purchases": "^9.10.3",
     "react-native-reanimated": "~4.2.1",
     "react-native-restart": "0.0.27",
     "react-native-safe-area-context": "5.6.2",

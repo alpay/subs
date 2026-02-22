@@ -18,6 +18,9 @@ const envSchema = z.object({
   EXPO_PUBLIC_DEFAULT_LOCALE: z.string().default('tr-TR'),
   /** Brandfetch API client ID for company search & logos (optional). */
   EXPO_PUBLIC_BRANDFETCH_CLIENT_ID: z.string().optional(),
+  /** RevenueCat public API keys (required for IAP). Use Test Store key for dev. */
+  EXPO_PUBLIC_REVENUECAT_IOS: z.string().optional(),
+  EXPO_PUBLIC_REVENUECAT_ANDROID: z.string().optional(),
 
   // only available for app.config.ts usage
   APP_BUILD_ONLY_VAR: z.string().optional(),
@@ -65,6 +68,8 @@ const _env: z.infer<typeof envSchema> = {
   EXPO_PUBLIC_APP_NAME: NAME ?? 'Subs',
   EXPO_PUBLIC_DEFAULT_LOCALE: process.env.EXPO_PUBLIC_DEFAULT_LOCALE ?? 'tr-TR',
   EXPO_PUBLIC_BRANDFETCH_CLIENT_ID: process.env.EXPO_PUBLIC_BRANDFETCH_CLIENT_ID,
+  EXPO_PUBLIC_REVENUECAT_IOS: process.env.EXPO_PUBLIC_REVENUECAT_IOS,
+  EXPO_PUBLIC_REVENUECAT_ANDROID: process.env.EXPO_PUBLIC_REVENUECAT_ANDROID,
   APP_BUILD_ONLY_VAR: process.env.APP_BUILD_ONLY_VAR,
 };
 

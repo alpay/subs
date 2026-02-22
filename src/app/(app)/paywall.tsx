@@ -3,6 +3,7 @@ import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
+  Alert,
   Dimensions,
   FlatList,
   Pressable,
@@ -13,6 +14,11 @@ import {
 import { NativeSheet } from '@/components/native-sheet';
 import { RadialGlow } from '@/components/radial-glow';
 import { Haptic } from '@/lib/haptics';
+import {
+  isRevenueCatConfigured,
+  purchaseLifetime,
+  restorePurchases,
+} from '@/lib/revenuecat';
 import { useSettingsStore } from '@/lib/stores';
 import { formatAmount } from '@/lib/utils/format';
 
@@ -69,12 +75,15 @@ const LIFETIME_PRICE = 299.99;
 
 export default function PaywallScreen() {
   const router = useRouter();
-  const { settings, update } = useSettingsStore();
+  const { settings } = useSettingsStore();
   const [activeIndex, setActiveIndex] = useState(0);
+  const [purchasing, setPurchasing] = useState(false);
+  const [restoring, setRestoring] = useState(false);
   const flatListRef = useRef<FlatList>(null);
   const activeIndexRef = useRef(0);
   const userHasScrolledRef = useRef(false);
   const { width: screenWidth } = Dimensions.get('window');
+  const hasRevenueCat = isRevenueCatConfigured();
 
   activeIndexRef.current = activeIndex;
 
@@ -104,20 +113,68 @@ export default function PaywallScreen() {
     [screenWidth, activeIndex],
   );
 
-  const handlePurchase = useCallback(() => {
+  const handlePurchase = useCallback(async () => {
     Haptic.Medium();
     if (settings.premium) {
       router.back();
       return;
     }
-    update({ premium: true });
-    router.back();
-  }, [settings.premium, update, router]);
+    if (!hasRevenueCat) {
+      Alert.alert(
+        'Not available',
+        'In-app purchase is not configured for this build. Use a development build with RevenueCat API keys to test.',
+      );
+      return;
+    }
+    setPurchasing(true);
+    try {
+      const result = await purchaseLifetime();
+      if (result.success) {
+        router.back();
+      } else if (!result.userCancelled) {
+        const message =
+          result.error instanceof Error
+            ? result.error.message
+            : 'Purchase failed. Please try again.';
+        Alert.alert('Purchase failed', message);
+      }
+    } finally {
+      setPurchasing(false);
+    }
+  }, [settings.premium, hasRevenueCat, router]);
 
-  const handleRestore = useCallback(() => {
+  const handleRestore = useCallback(async () => {
     Haptic.Light();
-    // TODO: Implement restore purchases
-  }, []);
+    if (!hasRevenueCat) {
+      Alert.alert(
+        'Not available',
+        'Restore is not available for this build.',
+      );
+      return;
+    }
+    setRestoring(true);
+    try {
+      const result = await restorePurchases();
+      if (result.success) {
+        if (result.hadPremium) {
+          router.back();
+        } else {
+          Alert.alert(
+            'Restore complete',
+            'No previous purchase was found for this Apple ID.',
+          );
+        }
+      } else {
+        const message =
+          result.error instanceof Error
+            ? result.error.message
+            : 'Restore failed. Please try again.';
+        Alert.alert('Restore failed', message);
+      }
+    } finally {
+      setRestoring(false);
+    }
+  }, [hasRevenueCat, router]);
 
   const formattedPrice = formatAmount(
     LIFETIME_PRICE,
@@ -193,6 +250,7 @@ export default function PaywallScreen() {
           {/* Lifetime option */}
           <Pressable
             onPress={handlePurchase}
+            disabled={purchasing}
             style={({ pressed }) => [
               {
                 flexDirection: 'row',
@@ -203,7 +261,7 @@ export default function PaywallScreen() {
                 paddingVertical: 18,
                 paddingHorizontal: 20,
               },
-              pressed && { opacity: 0.85 },
+              (pressed || purchasing) && { opacity: 0.85 },
             ]}
           >
             <View>
@@ -215,7 +273,7 @@ export default function PaywallScreen() {
               </Text>
             </View>
             <Text style={{ fontSize: 18, fontWeight: '700', color: 'white' }}>
-              {formattedPrice}
+              {purchasing ? '…' : formattedPrice}
             </Text>
           </Pressable>
 
@@ -228,9 +286,18 @@ export default function PaywallScreen() {
               gap: 8,
             }}
           >
-            <Pressable onPress={handleRestore} hitSlop={8}>
-              <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)' }}>
-                Restore Purchases
+            <Pressable
+              onPress={handleRestore}
+              disabled={restoring}
+              hitSlop={8}
+            >
+              <Text
+                style={{
+                  fontSize: 13,
+                  color: restoring ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.6)',
+                }}
+              >
+                {restoring ? 'Restoring…' : 'Restore Purchases'}
               </Text>
             </Pressable>
             <Text style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>•</Text>

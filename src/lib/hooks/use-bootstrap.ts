@@ -4,6 +4,10 @@ import { AppState } from 'react-native';
 
 import { configure } from '@/lib/notifications';
 import {
+  configureRevenueCat,
+  refreshCustomerInfoAndSyncPremium,
+} from '@/lib/revenuecat';
+import {
   useCategoriesStore,
   useCurrencyRatesStore,
   useListsStore,
@@ -20,6 +24,9 @@ function pullCurrencyRates() {
 export function useBootstrap() {
   useEffect(() => {
     void configure();
+
+    configureRevenueCat();
+    void refreshCustomerInfoAndSyncPremium();
 
     const subscriptions = useSubscriptionsStore.getState();
     const categories = useCategoriesStore.getState();
@@ -55,11 +62,12 @@ export function useBootstrap() {
     pullCurrencyRates();
   }, []);
 
-  // Pull latest rates when user comes back from another app (background → active).
+  // Pull latest rates and RevenueCat premium status when app becomes active.
   useEffect(() => {
     const subscription = AppState.addEventListener('change', (nextState: AppStateStatus) => {
       if (nextState === 'active') {
         pullCurrencyRates();
+        void refreshCustomerInfoAndSyncPremium();
       }
     });
     return () => subscription.remove();
