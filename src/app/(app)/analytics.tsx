@@ -140,7 +140,7 @@ export default function AnalyticsScreen() {
           </View>
         </GlassCard>
 
-            <View style={{ flexDirection: 'row', gap: 12 }}>
+        <View style={{ flexDirection: 'row', gap: 12 }}>
           <GlassCard style={{ flex: 1 }}>
             <View style={{ padding: 16, gap: 4 }}>
               <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>

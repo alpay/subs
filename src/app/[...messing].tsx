@@ -1,6 +1,6 @@
 import { Stack, useRouter } from 'expo-router';
-import { useTranslation } from 'react-i18next';
 import { Button, Card } from 'heroui-native';
+import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
 import { Haptic } from '@/lib/haptics';

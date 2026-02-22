@@ -3,14 +3,12 @@
  * Handles configure, premium sync from entitlements, purchase, and restore.
  */
 
-import { Platform } from 'react-native';
-
-import Purchases, {
-  type CustomerInfo,
-  type PurchasesPackage,
-} from 'react-native-purchases';
+import type { CustomerInfo, PurchasesPackage } from 'react-native-purchases';
 
 import Env from 'env';
+
+import { Platform } from 'react-native';
+import Purchases from 'react-native-purchases';
 
 import { useSettingsStore } from './stores';
 
@@ -46,7 +44,8 @@ export function configureRevenueCat(): void {
     Purchases.configure({ apiKey });
     Purchases.addCustomerInfoUpdateListener(syncPremiumFromCustomerInfo);
     isConfigured = true;
-  } catch (e) {
+  }
+  catch (e) {
     __DEV__ && console.warn('[RevenueCat] configure failed:', e);
   }
 }
@@ -79,7 +78,8 @@ export async function refreshCustomerInfoAndSyncPremium(): Promise<CustomerInfo 
     const customerInfo = await Purchases.getCustomerInfo();
     syncPremiumFromCustomerInfo(customerInfo);
     return customerInfo;
-  } catch (e) {
+  }
+  catch (e) {
     __DEV__ && console.warn('[RevenueCat] getCustomerInfo failed:', e);
     return null;
   }
@@ -99,15 +99,16 @@ export async function getLifetimePackage(): Promise<PurchasesPackage | null> {
       return null;
     }
     return current.lifetime ?? null;
-  } catch (e) {
+  }
+  catch (e) {
     __DEV__ && console.warn('[RevenueCat] getOfferings failed:', e);
     return null;
   }
 }
 
-export type PurchaseResult =
-  | { success: true; customerInfo: CustomerInfo }
-  | { success: false; userCancelled: boolean; error?: unknown };
+export type PurchaseResult
+  = | { success: true; customerInfo: CustomerInfo }
+    | { success: false; userCancelled: boolean; error?: unknown };
 
 /**
  * Purchase the lifetime package. On success, premium is synced to settings.
@@ -128,16 +129,17 @@ export async function purchaseLifetime(): Promise<PurchaseResult> {
     const { customerInfo } = await Purchases.purchasePackage(pkg);
     syncPremiumFromCustomerInfo(customerInfo);
     return { success: true, customerInfo };
-  } catch (e: unknown) {
+  }
+  catch (e: unknown) {
     const err = e as { userCancelled?: boolean };
     const userCancelled = err?.userCancelled === true;
     return { success: false, userCancelled, error: e };
   }
 }
 
-export type RestoreResult =
-  | { success: true; customerInfo: CustomerInfo; hadPremium: boolean }
-  | { success: false; error?: unknown };
+export type RestoreResult
+  = | { success: true; customerInfo: CustomerInfo; hadPremium: boolean }
+    | { success: false; error?: unknown };
 
 /**
  * Restore purchases (e.g. from "Restore Purchases" button). Syncs premium to settings.
@@ -152,7 +154,8 @@ export async function restorePurchases(): Promise<RestoreResult> {
     const hadPremium = Boolean(entitlement?.isActive);
     syncPremiumFromCustomerInfo(customerInfo);
     return { success: true, customerInfo, hadPremium };
-  } catch (e) {
+  }
+  catch (e) {
     __DEV__ && console.warn('[RevenueCat] restorePurchases failed:', e);
     return { success: false, error: e };
   }

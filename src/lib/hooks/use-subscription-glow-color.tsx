@@ -9,7 +9,8 @@ const FALLBACK = '#8E8E93';
 
 /** Score 0–1: best for glow = saturated, mid lightness (not black/white). */
 function score(hex: string): number {
-  if (!/^#[0-9a-f]{6}$/i.test(hex)) return -1;
+  if (!/^#[0-9a-f]{6}$/i.test(hex))
+    return -1;
   const n = Number.parseInt(hex.slice(1), 16);
   const r = ((n >> 16) & 0xFF) / 255;
   const g = ((n >> 8) & 0xFF) / 255;
@@ -17,7 +18,8 @@ function score(hex: string): number {
   const max = Math.max(r, g, b);
   const min = Math.min(r, g, b);
   const l = (max + min) / 2;
-  if (l < 0.05 || l > 0.95) return -1;
+  if (l < 0.05 || l > 0.95)
+    return -1;
   const d = max - min;
   const s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
   const lScore = 1 - Math.abs(l - 0.5) * 2;
@@ -52,7 +54,8 @@ export async function getSubscriptionGlowColor(
       pixelSpacing: 1,
       ...(uri.length > 500 && { key: subscription.id }),
     });
-    if (result.platform !== 'ios') return fallback;
+    if (result.platform !== 'ios')
+      return fallback;
     return pickBest([
       result.background,
       result.primary,
@@ -74,7 +77,8 @@ export function useSubscriptionGlowColor(
   useEffect(() => {
     let cancelled = false;
     getSubscriptionGlowColor(subscription).then((c) => {
-      if (!cancelled) setColor(c);
+      if (!cancelled)
+        setColor(c);
     });
     return () => { cancelled = true; };
   }, [subscription]);

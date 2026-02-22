@@ -1,1 +1,375 @@
-{"app":{"brand":"Subs","brand_initial":"S","contact_email":"hello@alpay.dev","made_with":"Mit Sorgfalt gemacht","version_prefix":"v"},"calendar":{"this_month":"Dieser Monat"},"csv_export":{"name":"Name","period":"Intervall","price":"Preis","start_date":"Startdatum","category":"Kategorie"},"common":{"accessibility":{"close_modal_hint":"Schließt das Fenster","close_modal_label":"Fenster schließen","back_label":"Zurück"},"cancel":"Abbrechen","close":"Schließen","coming_soon":"Demnächst","confirm":"Bestätigen","delete":"Löschen","error":"Fehler","no_data":"Keine Daten","notes":"Notizen","optional":"Optional","pause":"Pausieren","save":"Speichern","saving":"Wird gespeichert…","search":"Suchen","select_placeholder":"Auswählen…","something_went_wrong":"Etwas ist schiefgelaufen","add":"Hinzufügen","done":"Fertig","never":"Nie","on":"An","off":"Aus","other":"Sonstige","currency":"Währung","amount":"Betrag","unknown_error":"Unbekannter Fehler"},"diary":{"lightbox_hint":"Zum Schließen nach oben oder unten wischen"},"not_found":{"title":"Nicht gefunden","subtitle":"Diese Seite existiert nicht.","cta":"Zur Startseite","page_title":"Seite nicht gefunden","route_description":"Diese Route existiert im HeroUI-Flow nicht.","back_to_home":"Zurück zur Startseite"},"home":{"search_placeholder":"Abos suchen","remaining":"Verbleibend"},"paywall":{"features":{"unlimited":{"title":"Unbegrenzte Abos","description":"Verwalte deine Abos ohne Limit."},"icloud":{"title":"iCloud-Sync","description":"Deine Daten sicher auf allen Geräten synchron halten."},"analytics":{"title":"Einblicke & Analysen","description":"Ausgaben mit Analysen und Prognosen im Blick behalten."},"categories":{"title":"Smarte Kategorien","description":"Abos nach deinen Wünschen ordnen und kategorisieren."},"support":{"title":"Entwickler unterstützen","description":"Dein Kauf motiviert den Entwickler, die App weiter zu verbessern."},"updates":{"title":"Neue Funktionen & Updates","description":"Lebenslang neue Funktionen und regelmäßige Updates."}},"lifetime":"Einmal kaufen","pay_once_forever":"Einmal zahlen, für immer nutzen!","restoring":"Wird wiederhergestellt…","restore_purchases":"Käufe wiederherstellen","privacy":"Datenschutz","promo":"Aktion","not_available_title":"Nicht verfügbar","not_available_message":"In-App-Kauf ist in diesem Build nicht konfiguriert. Nutze einen Development Build mit RevenueCat-API-Schlüsseln zum Testen.","restore_not_available":"Wiederherstellung ist in diesem Build nicht verfügbar.","purchase_failed_title":"Kauf fehlgeschlagen","purchase_failed_message":"Kauf fehlgeschlagen. Bitte erneut versuchen.","restore_complete_title":"Wiederherstellung abgeschlossen","restore_complete_no_purchase":"Für diese Apple-ID wurde kein früherer Kauf gefunden.","restore_failed_title":"Wiederherstellung fehlgeschlagen","restore_failed_message":"Wiederherstellung fehlgeschlagen. Bitte erneut versuchen."},"services":{"title":"Dienste","search_placeholder":"Dienste suchen","search_results":"SUCHERGEBNISSE","popular_services":"BELIEBTE DIENSTE","no_brands_found":"Kein Anbieter gefunden. Tippe auf die Karte oben, um {{name}} als eigenen Dienst hinzuzufügen.","import":{"notion":"Aus Notion importieren","sheets":"Aus Google Tabellen importieren","file":"Aus Datei importieren","apple":"Von Apple importieren"}},"settings":{"title":"Einstellungen","developer":"Entwickler","reset_app":"App zurücksetzen","premium":"Premium","account":"Konto","unlock_lifetime":"Alle Funktionen mit einer Einmalkauf-Lizenz freischalten.","subscription_day":"Subscription Day","account_type":"Kontotyp","pro":"Pro","free":"Kostenlos","general":"Allgemein","icloud_data":"iCloud & Daten","language":"Sprache","main_currency":"Hauptwährung","round_whole_numbers":"Auf ganze Zahlen runden","data":"Daten","lists":"Listen","categories":"Kategorien","payment_methods":"Zahlungsmethoden","interface":"Oberfläche","true_dark_colors":"Echtes Dunkel","theme":"Design","preview_choose":"Vorschau & wählen","haptic_feedback":"Haptisches Feedback","currency_rates":"Wechselkurse","currency_rates_footer":"Kurse kommen von einer öffentlichen API (ExchangeRate-API). Tippe auf „Jetzt aktualisieren“, um zu aktualisieren. Werte sind ungefähr.","last_updated":"Zuletzt aktualisiert","update_now":"Jetzt aktualisieren","updating":"Wird aktualisiert…","more":"Mehr","rate_review":"Bewerten & Rezension","ideas_roadmap":"Ideen & Roadmap","contact_me":"Kontakt","visit_website":"Website besuchen","share_friend":"Mit Freund teilen","made_with_love":"Mit Liebe zum Detail von Appps™ © 2026","version":"Version: {{version}}","reset_alert_title":"App zurücksetzen","reset_alert_message":"Alle Daten werden gelöscht und du landest auf der Startseite. Fortfahren?","reset_confirm":"Zurücksetzen","currency_updated":"Wechselkurse aktualisiert","currency_update_failed":"Aktualisierung fehlgeschlagen. Verbindung prüfen."},"onboarding":{"brand":"Subs","skip":"Überspringen","get_started":"Loslegen","next":"Weiter","slides":{"1":{"title":"Einfacher Einstieg","description":"Rundum-Sorglos-Erlebnis"},"2":{"title":"Kopieren und einfügen","description":"Klare Oberfläche für deine Abo-App"},"3":{"title":"Kostenlos nutzbar","description":"Design, Layout und State nach deinen Wünschen anpassen."}}},"subscription":{"new":"Neues Abo","edit":"Abo bearbeiten","edit_button":"Bearbeiten","create":"Erstellen","delete_title":"Abo löschen","delete_confirm":"Möchtest du „{{name}}\" wirklich löschen?","deleted":"Abo gelöscht","created":"Abo erstellt","updated":"Abo aktualisiert","next_payment":"Nächste Zahlung","total_spent":"Gesamt ausgegeben","notifications":"Benachrichtigungen","category":"Kategorie","list":"Liste","name":"Name","schedule":"Intervall","monthly":"Monatlich","yearly":"Jährlich","weekly":"Wöchentlich","custom":"Benutzerdefiniert","start_date":"Startdatum","interval":"Intervall","month":"Monat","week":"Woche","pay_with":"Zahlen mit","payment_method":"Zahlungsmethode","none":"Keine","add_notes_placeholder":"Notizen hinzufügen","name_placeholder":"Cursor","status_active":"Aktiv","status_paused":"Pausiert","status_canceled":"Gekündigt","status":"Status","notification_default":"Standard","notification_disabled":"Aus","notification_custom":"Benutzerdefiniert","next_payment_today":"heute","next_payment_in_one_day":"in 1 Tag","next_payment_in_days":"in {{count}} Tagen"},"subscription_day_view":{"title":"Abos","add_new":"Neues Abo hinzufügen","total":"Gesamt"},"home_search":{"no_results":"Keine Abos gefunden","tap_to_add_first":"Tippe hier, um dein erstes Abo hinzuzufügen"},"subscription_status":{"active":"Aktiv","paused":"Pausiert","canceled":"Gekündigt"},"notifications":{"section_header":"Benachrichtigungen","section_footer":"Bei aktivierten Fokus-Modi können Benachrichtigungen ausbleiben.","first_reminder":"Erste Erinnerung","second_reminder":"Zweite Erinnerung","test_notification":"Test-Benachrichtigung","enable_in_settings":"Aktiviere Benachrichtigungen in den Einstellungen zum Testen.","test_scheduled":"Test-Benachrichtigung geplant","unable_to_schedule":"Test-Benachrichtigung konnte nicht geplant werden","same_day":"Gleicher Tag","days":{"1":"1 Tag","2":"2 Tage","3":"3 Tage","4":"4 Tage","5":"5 Tage","10":"10 Tage","15":"15 Tage","30":"30 Tage"}},"currency":{"select_title":"Währung wählen","search_placeholder":"Suchen","favorites":"FAVORITEN","all":"ALLE WÄHRUNGEN","default_set":"Standardwährung auf {{code}} gesetzt"},"language":{"select_title":"Sprache"},"theme":{"title":"Design","pick_vibe":"Wähle die Stimmung. Nur App-Farben ändern sich, nicht das System-Design.","options":{"classic":{"name":"Klassisch","description":"Warmer Orangeton mit neutralen Akzenten."},"midnight":{"name":"Mitternacht","description":"Tiefe Blautöne für konzentriertes Arbeiten."},"forest":{"name":"Wald","description":"Sanfte Grüntöne inspiriert von der Natur."},"sunset":{"name":"Sonnenuntergang","description":"Goldene Orange mit gemütlichem Kontrast."}}},"categories":{"title":"Kategorien","new_placeholder":"Neue Kategorie","rename_title":"Kategorie umbenennen","delete_title":"Kategorie löschen","delete_confirm":"„{{name}}\" wirklich löschen?","other_footer":"Die Kategorie „Sonstige\" kann nicht gelöscht werden; sie dient als Standard für Abos ohne Kategorie."},"lists":{"title":"Listen","new_placeholder":"Neue Liste","added":"{{name}} hinzugefügt","rename_title":"Liste umbenennen","no_lists":"Noch keine Listen."},"payment_methods":{"title":"Zahlungsmethoden","new_placeholder":"Neue Zahlungsmethode","added":"Zahlungsmethode „{{name}}\" hinzugefügt","rename_title":"Zahlungsmethode umbenennen","delete_title":"Zahlungsmethode löschen","delete_confirm":"„{{name}}\" wirklich löschen?","no_methods":"Noch keine Zahlungsmethoden.","security_note":"Aus Sicherheitsgründen bitte keine vollständigen Kartennummern oder Kontodaten speichern."},"icloud":{"title":"iCloud & Daten","syncing":"Wird synchronisiert…","last_backup":"Letzte Sicherung: {{date}}","backup_footer":"Deine Abo-Daten werden sicher über iCloud Drive auf allen Geräten synchronisiert.","icloud_sync":"iCloud-Synchronisation","backup":"Sichern","backing_up":"Wird gesichert…","restore":"Aus iCloud wiederherstellen","restoring":"Wird wiederhergestellt…","current_subs":"Aktuelle Abos","active_one_time":"Aktiv & Einmalig","canceled":"Gekündigt","archived":"Archiviert","export_csv":"Daten als CSV exportieren","exporting":"Wird exportiert…","delete_all":"Alle Daten löschen","delete_all_confirm_title":"Alle Daten löschen","delete_all_confirm_message":"Alle Daten auf dem Gerät werden dauerhaft gelöscht. Bei aktivierter iCloud-Sync werden sie auch aus iCloud entfernt.","delete_all_footer":"Alle Daten auf dem Gerät werden dauerhaft gelöscht. Bei aktivierter iCloud-Sync werden sie auch aus iCloud entfernt.","not_available":"iCloud nicht verfügbar. In den Einstellungen bei iCloud anmelden.","not_available_short":"iCloud nicht verfügbar","last_backup_line":"Letzte Sicherung: {{date}}","subscriptions_in_backup":"Abos in der Sicherung: {{count}}","check_backup_failed":"iCloud-Sicherung konnte nicht geprüft werden","sync_failed":"Synchronisation mit iCloud fehlgeschlagen","restored":"Daten aus iCloud wiederhergestellt","restore_failed":"Wiederherstellung aus iCloud fehlgeschlagen","backup_found_title":"iCloud-Sicherung gefunden","backup_found_message":"Es wurde eine iCloud-Sicherung gefunden. Was möchtest du tun?","backup_found_with_summary":"{{summary}}\n\nWas möchtest du tun?","use_backup":"iCloud-Sicherung verwenden","keep_device":"Daten auf diesem Gerät behalten","no_subs_to_export":"Keine Abos zum Exportieren","export_dialog_title":"Abos exportieren","sharing_unavailable":"Teilen ist auf diesem Gerät nicht verfügbar","export_failed":"Export fehlgeschlagen","backup_success":"Sicherung erfolgreich abgeschlossen","backup_failed":"Sicherung fehlgeschlagen: {{message}}","restore_confirm_title":"Aus iCloud wiederherstellen","restore_confirm_message":"Deine lokalen Daten werden durch die iCloud-Sicherung ersetzt. Fortfahren?","restore_button":"Wiederherstellen"},"analytics":{"title":"Analysen","active_count":"Du hast {{count}} aktives Abo","active_count_plural":"Du hast {{count}} aktive Abos","yearly_forecast":"Jährlich","forecast":"Prognose","average_monthly":"Durchschnitt","monthly_cost":"Monatliche Kosten","year_to_date":"Seit Jahresbeginn","no_category_spend":"Noch keine Ausgaben nach Kategorie."},"amount_picker":{"amount_label":"BETRAG"}}
+{
+  "amount_picker": {
+    "amount_label": "BETRAG"
+  },
+  "analytics": {
+    "active_count": "Du hast {{count}} aktives Abo",
+    "active_count_plural": "Du hast {{count}} aktive Abos",
+    "average_monthly": "Durchschnitt",
+    "forecast": "Prognose",
+    "monthly_cost": "Monatliche Kosten",
+    "no_category_spend": "Noch keine Ausgaben nach Kategorie.",
+    "title": "Analysen",
+    "year_to_date": "Seit Jahresbeginn",
+    "yearly_forecast": "Jährlich"
+  },
+  "app": {
+    "brand": "Subs",
+    "brand_initial": "S",
+    "contact_email": "hello@alpay.dev",
+    "made_with": "Mit Sorgfalt gemacht",
+    "version_prefix": "v"
+  },
+  "calendar": {
+    "this_month": "Dieser Monat"
+  },
+  "categories": {
+    "delete_confirm": "„{{name}}\" wirklich löschen?",
+    "delete_title": "Kategorie löschen",
+    "new_placeholder": "Neue Kategorie",
+    "other_footer": "Die Kategorie „Sonstige\" kann nicht gelöscht werden; sie dient als Standard für Abos ohne Kategorie.",
+    "rename_title": "Kategorie umbenennen",
+    "title": "Kategorien"
+  },
+  "common": {
+    "accessibility": {
+      "back_label": "Zurück",
+      "close_modal_hint": "Schließt das Fenster",
+      "close_modal_label": "Fenster schließen"
+    },
+    "add": "Hinzufügen",
+    "amount": "Betrag",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "coming_soon": "Demnächst",
+    "confirm": "Bestätigen",
+    "currency": "Währung",
+    "delete": "Löschen",
+    "done": "Fertig",
+    "error": "Fehler",
+    "never": "Nie",
+    "no_data": "Keine Daten",
+    "notes": "Notizen",
+    "off": "Aus",
+    "on": "An",
+    "optional": "Optional",
+    "other": "Sonstige",
+    "pause": "Pausieren",
+    "save": "Speichern",
+    "saving": "Wird gespeichert…",
+    "search": "Suchen",
+    "select_placeholder": "Auswählen…",
+    "something_went_wrong": "Etwas ist schiefgelaufen",
+    "unknown_error": "Unbekannter Fehler"
+  },
+  "csv_export": {
+    "category": "Kategorie",
+    "name": "Name",
+    "period": "Intervall",
+    "price": "Preis",
+    "start_date": "Startdatum"
+  },
+  "currency": {
+    "all": "ALLE WÄHRUNGEN",
+    "default_set": "Standardwährung auf {{code}} gesetzt",
+    "favorites": "FAVORITEN",
+    "search_placeholder": "Suchen",
+    "select_title": "Währung wählen"
+  },
+  "diary": {
+    "lightbox_hint": "Zum Schließen nach oben oder unten wischen"
+  },
+  "home": {
+    "remaining": "Verbleibend",
+    "search_placeholder": "Abos suchen"
+  },
+  "home_search": {
+    "no_results": "Keine Abos gefunden",
+    "tap_to_add_first": "Tippe hier, um dein erstes Abo hinzuzufügen"
+  },
+  "icloud": {
+    "active_one_time": "Aktiv & Einmalig",
+    "archived": "Archiviert",
+    "backing_up": "Wird gesichert…",
+    "backup": "Sichern",
+    "backup_failed": "Sicherung fehlgeschlagen: {{message}}",
+    "backup_footer": "Deine Abo-Daten werden sicher über iCloud Drive auf allen Geräten synchronisiert.",
+    "backup_found_message": "Es wurde eine iCloud-Sicherung gefunden. Was möchtest du tun?",
+    "backup_found_title": "iCloud-Sicherung gefunden",
+    "backup_found_with_summary": "{{summary}}\n\nWas möchtest du tun?",
+    "backup_success": "Sicherung erfolgreich abgeschlossen",
+    "canceled": "Gekündigt",
+    "check_backup_failed": "iCloud-Sicherung konnte nicht geprüft werden",
+    "current_subs": "Aktuelle Abos",
+    "delete_all": "Alle Daten löschen",
+    "delete_all_confirm_message": "Alle Daten auf dem Gerät werden dauerhaft gelöscht. Bei aktivierter iCloud-Sync werden sie auch aus iCloud entfernt.",
+    "delete_all_confirm_title": "Alle Daten löschen",
+    "delete_all_footer": "Alle Daten auf dem Gerät werden dauerhaft gelöscht. Bei aktivierter iCloud-Sync werden sie auch aus iCloud entfernt.",
+    "export_csv": "Daten als CSV exportieren",
+    "export_dialog_title": "Abos exportieren",
+    "export_failed": "Export fehlgeschlagen",
+    "exporting": "Wird exportiert…",
+    "icloud_sync": "iCloud-Synchronisation",
+    "keep_device": "Daten auf diesem Gerät behalten",
+    "last_backup": "Letzte Sicherung: {{date}}",
+    "last_backup_line": "Letzte Sicherung: {{date}}",
+    "no_subs_to_export": "Keine Abos zum Exportieren",
+    "not_available": "iCloud nicht verfügbar. In den Einstellungen bei iCloud anmelden.",
+    "not_available_short": "iCloud nicht verfügbar",
+    "restore": "Aus iCloud wiederherstellen",
+    "restore_button": "Wiederherstellen",
+    "restore_confirm_message": "Deine lokalen Daten werden durch die iCloud-Sicherung ersetzt. Fortfahren?",
+    "restore_confirm_title": "Aus iCloud wiederherstellen",
+    "restore_failed": "Wiederherstellung aus iCloud fehlgeschlagen",
+    "restored": "Daten aus iCloud wiederhergestellt",
+    "restoring": "Wird wiederhergestellt…",
+    "sharing_unavailable": "Teilen ist auf diesem Gerät nicht verfügbar",
+    "subscriptions_in_backup": "Abos in der Sicherung: {{count}}",
+    "sync_failed": "Synchronisation mit iCloud fehlgeschlagen",
+    "syncing": "Wird synchronisiert…",
+    "title": "iCloud & Daten",
+    "use_backup": "iCloud-Sicherung verwenden"
+  },
+  "language": {
+    "select_title": "Sprache"
+  },
+  "lists": {
+    "added": "{{name}} hinzugefügt",
+    "new_placeholder": "Neue Liste",
+    "no_lists": "Noch keine Listen.",
+    "rename_title": "Liste umbenennen",
+    "title": "Listen"
+  },
+  "not_found": {
+    "back_to_home": "Zurück zur Startseite",
+    "cta": "Zur Startseite",
+    "page_title": "Seite nicht gefunden",
+    "route_description": "Diese Route existiert im HeroUI-Flow nicht.",
+    "subtitle": "Diese Seite existiert nicht.",
+    "title": "Nicht gefunden"
+  },
+  "notifications": {
+    "days": {
+      "1": "1 Tag",
+      "2": "2 Tage",
+      "3": "3 Tage",
+      "4": "4 Tage",
+      "5": "5 Tage",
+      "10": "10 Tage",
+      "15": "15 Tage",
+      "30": "30 Tage"
+    },
+    "enable_in_settings": "Aktiviere Benachrichtigungen in den Einstellungen zum Testen.",
+    "first_reminder": "Erste Erinnerung",
+    "same_day": "Gleicher Tag",
+    "second_reminder": "Zweite Erinnerung",
+    "section_footer": "Bei aktivierten Fokus-Modi können Benachrichtigungen ausbleiben.",
+    "section_header": "Benachrichtigungen",
+    "test_notification": "Test-Benachrichtigung",
+    "test_scheduled": "Test-Benachrichtigung geplant",
+    "unable_to_schedule": "Test-Benachrichtigung konnte nicht geplant werden"
+  },
+  "onboarding": {
+    "brand": "Subs",
+    "get_started": "Loslegen",
+    "next": "Weiter",
+    "skip": "Überspringen",
+    "slides": {
+      "1": {
+        "description": "Rundum-Sorglos-Erlebnis",
+        "title": "Einfacher Einstieg"
+      },
+      "2": {
+        "description": "Klare Oberfläche für deine Abo-App",
+        "title": "Kopieren und einfügen"
+      },
+      "3": {
+        "description": "Design, Layout und State nach deinen Wünschen anpassen.",
+        "title": "Kostenlos nutzbar"
+      }
+    }
+  },
+  "payment_methods": {
+    "added": "Zahlungsmethode „{{name}}\" hinzugefügt",
+    "delete_confirm": "„{{name}}\" wirklich löschen?",
+    "delete_title": "Zahlungsmethode löschen",
+    "new_placeholder": "Neue Zahlungsmethode",
+    "no_methods": "Noch keine Zahlungsmethoden.",
+    "rename_title": "Zahlungsmethode umbenennen",
+    "security_note": "Aus Sicherheitsgründen bitte keine vollständigen Kartennummern oder Kontodaten speichern.",
+    "title": "Zahlungsmethoden"
+  },
+  "paywall": {
+    "features": {
+      "analytics": {
+        "description": "Ausgaben mit Analysen und Prognosen im Blick behalten.",
+        "title": "Einblicke & Analysen"
+      },
+      "categories": {
+        "description": "Abos nach deinen Wünschen ordnen und kategorisieren.",
+        "title": "Smarte Kategorien"
+      },
+      "icloud": {
+        "description": "Deine Daten sicher auf allen Geräten synchron halten.",
+        "title": "iCloud-Sync"
+      },
+      "support": {
+        "description": "Dein Kauf motiviert den Entwickler, die App weiter zu verbessern.",
+        "title": "Entwickler unterstützen"
+      },
+      "unlimited": {
+        "description": "Verwalte deine Abos ohne Limit.",
+        "title": "Unbegrenzte Abos"
+      },
+      "updates": {
+        "description": "Lebenslang neue Funktionen und regelmäßige Updates.",
+        "title": "Neue Funktionen & Updates"
+      }
+    },
+    "lifetime": "Einmal kaufen",
+    "not_available_message": "In-App-Kauf ist in diesem Build nicht konfiguriert. Nutze einen Development Build mit RevenueCat-API-Schlüsseln zum Testen.",
+    "not_available_title": "Nicht verfügbar",
+    "pay_once_forever": "Einmal zahlen, für immer nutzen!",
+    "privacy": "Datenschutz",
+    "promo": "Aktion",
+    "purchase_failed_message": "Kauf fehlgeschlagen. Bitte erneut versuchen.",
+    "purchase_failed_title": "Kauf fehlgeschlagen",
+    "restore_complete_no_purchase": "Für diese Apple-ID wurde kein früherer Kauf gefunden.",
+    "restore_complete_title": "Wiederherstellung abgeschlossen",
+    "restore_failed_message": "Wiederherstellung fehlgeschlagen. Bitte erneut versuchen.",
+    "restore_failed_title": "Wiederherstellung fehlgeschlagen",
+    "restore_not_available": "Wiederherstellung ist in diesem Build nicht verfügbar.",
+    "restore_purchases": "Käufe wiederherstellen",
+    "restoring": "Wird wiederhergestellt…"
+  },
+  "services": {
+    "import": {
+      "apple": "Von Apple importieren",
+      "file": "Aus Datei importieren",
+      "notion": "Aus Notion importieren",
+      "sheets": "Aus Google Tabellen importieren"
+    },
+    "no_brands_found": "Kein Anbieter gefunden. Tippe auf die Karte oben, um {{name}} als eigenen Dienst hinzuzufügen.",
+    "popular_services": "BELIEBTE DIENSTE",
+    "search_placeholder": "Dienste suchen",
+    "search_results": "SUCHERGEBNISSE",
+    "title": "Dienste"
+  },
+  "settings": {
+    "account": "Konto",
+    "account_type": "Kontotyp",
+    "categories": "Kategorien",
+    "contact_me": "Kontakt",
+    "currency_rates": "Wechselkurse",
+    "currency_rates_footer": "Kurse kommen von einer öffentlichen API (ExchangeRate-API). Tippe auf „Jetzt aktualisieren“, um zu aktualisieren. Werte sind ungefähr.",
+    "currency_update_failed": "Aktualisierung fehlgeschlagen. Verbindung prüfen.",
+    "currency_updated": "Wechselkurse aktualisiert",
+    "data": "Daten",
+    "developer": "Entwickler",
+    "free": "Kostenlos",
+    "general": "Allgemein",
+    "haptic_feedback": "Haptisches Feedback",
+    "icloud_data": "iCloud & Daten",
+    "ideas_roadmap": "Ideen & Roadmap",
+    "interface": "Oberfläche",
+    "language": "Sprache",
+    "last_updated": "Zuletzt aktualisiert",
+    "lists": "Listen",
+    "made_with_love": "Mit Liebe zum Detail von Appps™ © 2026",
+    "main_currency": "Hauptwährung",
+    "more": "Mehr",
+    "payment_methods": "Zahlungsmethoden",
+    "premium": "Premium",
+    "preview_choose": "Vorschau & wählen",
+    "pro": "Pro",
+    "rate_review": "Bewerten & Rezension",
+    "reset_alert_message": "Alle Daten werden gelöscht und du landest auf der Startseite. Fortfahren?",
+    "reset_alert_title": "App zurücksetzen",
+    "reset_app": "App zurücksetzen",
+    "reset_confirm": "Zurücksetzen",
+    "round_whole_numbers": "Auf ganze Zahlen runden",
+    "share_friend": "Mit Freund teilen",
+    "subscription_day": "Subscription Day",
+    "theme": "Design",
+    "title": "Einstellungen",
+    "true_dark_colors": "Echtes Dunkel",
+    "unlock_lifetime": "Alle Funktionen mit einer Einmalkauf-Lizenz freischalten.",
+    "update_now": "Jetzt aktualisieren",
+    "updating": "Wird aktualisiert…",
+    "version": "Version: {{version}}",
+    "visit_website": "Website besuchen"
+  },
+  "subscription": {
+    "add_notes_placeholder": "Notizen hinzufügen",
+    "category": "Kategorie",
+    "create": "Erstellen",
+    "created": "Abo erstellt",
+    "custom": "Benutzerdefiniert",
+    "delete_confirm": "Möchtest du „{{name}}\" wirklich löschen?",
+    "delete_title": "Abo löschen",
+    "deleted": "Abo gelöscht",
+    "edit": "Abo bearbeiten",
+    "edit_button": "Bearbeiten",
+    "interval": "Intervall",
+    "list": "Liste",
+    "month": "Monat",
+    "monthly": "Monatlich",
+    "name": "Name",
+    "name_placeholder": "Cursor",
+    "new": "Neues Abo",
+    "next_payment": "Nächste Zahlung",
+    "next_payment_in_days": "in {{count}} Tagen",
+    "next_payment_in_one_day": "in 1 Tag",
+    "next_payment_today": "heute",
+    "none": "Keine",
+    "notification_custom": "Benutzerdefiniert",
+    "notification_default": "Standard",
+    "notification_disabled": "Aus",
+    "notifications": "Benachrichtigungen",
+    "pay_with": "Zahlen mit",
+    "payment_method": "Zahlungsmethode",
+    "schedule": "Intervall",
+    "start_date": "Startdatum",
+    "status": "Status",
+    "status_active": "Aktiv",
+    "status_canceled": "Gekündigt",
+    "status_paused": "Pausiert",
+    "total_spent": "Gesamt ausgegeben",
+    "updated": "Abo aktualisiert",
+    "week": "Woche",
+    "weekly": "Wöchentlich",
+    "yearly": "Jährlich"
+  },
+  "subscription_day_view": {
+    "add_new": "Neues Abo hinzufügen",
+    "title": "Abos",
+    "total": "Gesamt"
+  },
+  "subscription_status": {
+    "active": "Aktiv",
+    "canceled": "Gekündigt",
+    "paused": "Pausiert"
+  },
+  "theme": {
+    "options": {
+      "classic": {
+        "description": "Warmer Orangeton mit neutralen Akzenten.",
+        "name": "Klassisch"
+      },
+      "forest": {
+        "description": "Sanfte Grüntöne inspiriert von der Natur.",
+        "name": "Wald"
+      },
+      "midnight": {
+        "description": "Tiefe Blautöne für konzentriertes Arbeiten.",
+        "name": "Mitternacht"
+      },
+      "sunset": {
+        "description": "Goldene Orange mit gemütlichem Kontrast.",
+        "name": "Sonnenuntergang"
+      }
+    },
+    "pick_vibe": "Wähle die Stimmung. Nur App-Farben ändern sich, nicht das System-Design.",
+    "title": "Design"
+  }
+}

@@ -1,7 +1,7 @@
 import { differenceInDays, format } from 'date-fns';
-import i18n from '@/lib/i18n';
-
 import { getCurrencySymbol } from '@/lib/data/currencies';
+
+import i18n from '@/lib/i18n';
 import { getDateFnsLocale } from '@/lib/i18n/date-locale';
 
 export { getCurrencySymbol } from '@/lib/data/currencies';
@@ -32,8 +32,8 @@ export function formatDateLong(date: Date) {
 export function formatNextPayment(nextPaymentDate: Date) {
   const dayMonth = format(nextPaymentDate, 'd MMM', { locale: locale() });
   const days = differenceInDays(nextPaymentDate, new Date());
-  const inDays =
-    days === 0
+  const inDays
+    = days === 0
       ? i18n.t('subscription.next_payment_today')
       : days === 1
         ? i18n.t('subscription.next_payment_in_one_day')

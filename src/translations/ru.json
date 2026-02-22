@@ -1,1 +1,375 @@
-{"app":{"brand":"Subs","brand_initial":"S","contact_email":"hello@alpay.dev","made_with":"Сделано с заботой","version_prefix":"v"},"calendar":{"this_month":"Этот месяц"},"csv_export":{"name":"Название","period":"Период","price":"Цена","start_date":"Дата начала","category":"Категория"},"common":{"accessibility":{"close_modal_hint":"Закрывает окно","close_modal_label":"Закрыть окно","back_label":"Назад"},"cancel":"Отмена","close":"Закрыть","coming_soon":"Скоро","confirm":"Подтвердить","delete":"Удалить","error":"Ошибка","no_data":"Нет данных","notes":"Заметки","optional":"Необязательно","pause":"Приостановить","save":"Сохранить","saving":"Сохранение…","search":"Поиск","select_placeholder":"Выберите…","something_went_wrong":"Что-то пошло не так","add":"Добавить","done":"Готово","never":"Никогда","on":"Вкл","off":"Выкл","other":"Другое","currency":"Валюта","amount":"Сумма","unknown_error":"Неизвестная ошибка"},"diary":{"lightbox_hint":"Смахните вверх или вниз, чтобы закрыть"},"not_found":{"title":"Не найдено","subtitle":"Этот экран не существует.","cta":"На главную","page_title":"Страница не найдена","route_description":"Этот маршрут не существует в потоке HeroUI.","back_to_home":"На главную"},"home":{"search_placeholder":"Поиск подпис.","remaining":"Осталось"},"paywall":{"features":{"unlimited":{"title":"Безлимитные подписки","description":"Управляйте подписками без ограничений."},"icloud":{"title":"Синхронизация iCloud","description":"Храните данные в безопасности и синхронизируйте на всех устройствах."},"analytics":{"title":"Аналитика и отчёты","description":"Отслеживайте расходы с детальной аналитикой и прогнозами."},"categories":{"title":"Умные категории","description":"Организуйте и категоризируйте подписки по-своему."},"support":{"title":"Поддержать разработчика","description":"Ваша покупка мотивирует разработчика улучшать приложение."},"updates":{"title":"Новые функции и обновления","description":"Доступ к новым функциям навсегда и регулярным обновлениям."}},"lifetime":"Навсегда","pay_once_forever":"Заплати один раз — пользуйся вечно!","restoring":"Восстановление…","restore_purchases":"Восстановить покупки","privacy":"Конфиденциальность","promo":"Акция","not_available_title":"Недоступно","not_available_message":"Внутриигровая покупка не настроена для этой сборки. Используйте dev-сборку с ключами RevenueCat для теста.","restore_not_available":"Восстановление недоступно в этой сборке.","purchase_failed_title":"Покупка не выполнена","purchase_failed_message":"Покупка не удалась. Попробуйте снова.","restore_complete_title":"Восстановление завершено","restore_complete_no_purchase":"Для этого Apple ID предыдущих покупок не найдено.","restore_failed_title":"Восстановление не удалось","restore_failed_message":"Восстановление не удалось. Попробуйте снова."},"services":{"title":"Сервисы","search_placeholder":"Поиск сервисов","search_results":"РЕЗУЛЬТАТЫ","popular_services":"ПОПУЛЯРНЫЕ СЕРВИСЫ","no_brands_found":"Сервисы не найдены. Нажмите на карточку выше, чтобы добавить {{name}} как свой сервис.","import":{"notion":"Импорт из Notion","sheets":"Импорт из Google Таблиц","file":"Импорт из файла","apple":"Импорт из Apple"}},"settings":{"title":"Настройки","developer":"Разработчик","reset_app":"Сбросить приложение","premium":"Премиум","account":"Аккаунт","unlock_lifetime":"Разблокируйте все функции по единой лицензии навсегда.","subscription_day":"Subscription Day","account_type":"Тип аккаунта","pro":"Про","free":"Бесплатно","general":"Основные","icloud_data":"iCloud и данные","language":"Язык","main_currency":"Основная валюта","round_whole_numbers":"Округлять до целых","data":"Данные","lists":"Списки","categories":"Категории","payment_methods":"Способы оплаты","interface":"Интерфейс","true_dark_colors":"Настоящая тёмная тема","theme":"Тема","preview_choose":"Предпросмотр и выбор","haptic_feedback":"Тактильная отдача","currency_rates":"Курсы валют","currency_rates_footer":"Курсы загружаются из публичного API (ExchangeRate-API). Нажмите «Обновить», чтобы обновить. Значения приблизительные.","last_updated":"Обновлено","update_now":"Обновить","updating":"Обновление…","more":"Ещё","rate_review":"Оценить и отзыв","ideas_roadmap":"Идеи и план","contact_me":"Связаться","visit_website":"Открыть сайт","share_friend":"Поделиться с другом","made_with_love":"Сделано с любовью в Appps™ © 2026","version":"Версия: {{version}}","reset_alert_title":"Сбросить приложение","reset_alert_message":"Все данные будут удалены и вы вернётесь на главный экран. Продолжить?","reset_confirm":"Сбросить","currency_updated":"Курсы валют обновлены","currency_update_failed":"Не удалось обновить. Проверьте соединение."},"onboarding":{"brand":"Subs","skip":"Пропустить","get_started":"Начать","next":"Далее","slides":{"1":{"title":"Простое начало","description":"Полный опыт"},"2":{"title":"Копировать и вставить","description":"Удобный интерфейс для приложения подписок"},"3":{"title":"Бесплатно","description":"Настраивайте темы, макеты и состояние под себя."}}},"subscription":{"new":"Новая подписка","edit":"Редактировать подписку","edit_button":"Изменить","create":"Создать","delete_title":"Удалить подписку","delete_confirm":"Вы уверены, что хотите удалить «{{name}}»?","deleted":"Подписка удалена","created":"Подписка создана","updated":"Подписка обновлена","next_payment":"Следующий платёж","total_spent":"Всего потрачено","notifications":"Уведомления","category":"Категория","list":"Список","name":"Название","schedule":"Периодичность","monthly":"Ежемесячно","yearly":"Ежегодно","weekly":"Еженедельно","custom":"Своя","start_date":"Дата начала","interval":"Интервал","month":"Месяц","week":"Неделя","pay_with":"Оплата","payment_method":"Способ оплаты","none":"Нет","add_notes_placeholder":"Добавить заметки","name_placeholder":"Cursor","status_active":"Активна","status_paused":"Приостановлена","status_canceled":"Отменена","status":"Статус","notification_default":"По умолчанию","notification_disabled":"Выкл","notification_custom":"Своё","next_payment_today":"сегодня","next_payment_in_one_day":"через 1 день","next_payment_in_days":"через {{count}} дн."},"subscription_day_view":{"title":"Подписки","add_new":"Добавить подписку","total":"Итого"},"home_search":{"no_results":"Подписки не найдены","tap_to_add_first":"Нажмите здесь, чтобы добавить первую"},"subscription_status":{"active":"Активна","paused":"Приостановлена","canceled":"Отменена"},"notifications":{"section_header":"Уведомления","section_footer":"При включённых режимах фокуса уведомления могут не показываться.","first_reminder":"Первое напоминание","second_reminder":"Второе напоминание","test_notification":"Тестовое уведомление","enable_in_settings":"Включите уведомления в Настройках для проверки.","test_scheduled":"Тестовое уведомление запланировано","unable_to_schedule":"Не удалось запланировать тестовое уведомление","same_day":"В тот же день","days":{"1":"1 день","2":"2 дня","3":"3 дня","4":"4 дня","5":"5 дней","10":"10 дней","15":"15 дней","30":"30 дней"}},"currency":{"select_title":"Выбор валюты","search_placeholder":"Поиск","favorites":"ИЗБРАННОЕ","all":"ВСЕ ВАЛЮТЫ","default_set":"Валюта по умолчанию: {{code}}"},"language":{"select_title":"Язык"},"theme":{"title":"Тема","pick_vibe":"Выберите стиль. Меняются только цвета приложения, не системная тема.","options":{"classic":{"name":"Классика","description":"Тёплый оранжевый акцент с нейтральными тонами."},"midnight":{"name":"Полночь","description":"Глубокие синие тона для кинематографичного вида."},"forest":{"name":"Лес","description":"Мягкие зелёные тона, вдохновлённые природой."},"sunset":{"name":"Закат","description":"Золотисто-оранжевые тона с уютным контрастом."}}},"categories":{"title":"Категории","new_placeholder":"Новая категория","rename_title":"Переименовать категорию","delete_title":"Удалить категорию","delete_confirm":"Вы уверены, что хотите удалить «{{name}}»?","other_footer":"Категорию «Другое» удалить нельзя — она используется по умолчанию для подписок без категории."},"lists":{"title":"Списки","new_placeholder":"Новый список","added":"{{name}} добавлено","rename_title":"Переименовать список","no_lists":"Списков пока нет."},"payment_methods":{"title":"Способы оплаты","new_placeholder":"Новый способ оплаты","added":"Способ оплаты «{{name}}» добавлен","rename_title":"Переименовать способ оплаты","delete_title":"Удалить способ оплаты","delete_confirm":"Вы уверены, что хотите удалить «{{name}}»?","no_methods":"Способов оплаты пока нет.","security_note":"Не храните полные номера карт или данные счетов."},"icloud":{"title":"iCloud и данные","syncing":"Синхронизация…","last_backup":"Последняя копия: {{date}}","backup_footer":"Данные подписок безопасно синхронизируются на всех устройствах через iCloud Drive.","icloud_sync":"Синхронизация iCloud","backup":"Резервная копия","backing_up":"Создание копии…","restore":"Восстановить из iCloud","restoring":"Восстановление…","current_subs":"Текущие подписки","active_one_time":"Активные и разовые","canceled":"Отменённые","archived":"В архиве","export_csv":"Экспорт в CSV","exporting":"Экспорт…","delete_all":"Удалить все данные","delete_all_confirm_title":"Удалить все данные","delete_all_confirm_message":"Все данные на устройстве будут удалены безвозвратно. При включённой синхронизации iCloud они также удалятся из iCloud.","delete_all_footer":"Все данные на устройстве будут удалены безвозвратно. При включённой синхронизации iCloud они также удалятся из iCloud.","not_available":"iCloud недоступен. Войдите в iCloud в Настройках.","not_available_short":"iCloud недоступен","last_backup_line":"Последняя копия: {{date}}","subscriptions_in_backup":"Подписок в копии: {{count}}","check_backup_failed":"Не удалось проверить копию iCloud","sync_failed":"Ошибка синхронизации с iCloud","restored":"Данные восстановлены из iCloud","restore_failed":"Ошибка восстановления из iCloud","backup_found_title":"Найдена копия iCloud","backup_found_message":"Найдена существующая копия iCloud. Что делать?","backup_found_with_summary":"{{summary}}\n\nЧто делать?","use_backup":"Использовать копию iCloud","keep_device":"Оставить данные на этом устройстве","no_subs_to_export":"Нет подписок для экспорта","export_dialog_title":"Экспорт подписок","sharing_unavailable":"Поделиться на этом устройстве нельзя","export_failed":"Ошибка экспорта","backup_success":"Резервная копия создана","backup_failed":"Ошибка копии: {{message}}","restore_confirm_title":"Восстановить из iCloud","restore_confirm_message":"Локальные данные будут заменены копией из iCloud. Продолжить?","restore_button":"Восстановить"},"analytics":{"title":"Аналитика","active_count":"У вас {{count}} активная подписка","active_count_plural":"У вас {{count}} активных подписок","yearly_forecast":"За год","forecast":"Прогноз","average_monthly":"В среднем","monthly_cost":"В месяц","year_to_date":"С начала года","no_category_spend":"Расходов по категориям пока нет."},"amount_picker":{"amount_label":"СУММА"}}
+{
+  "amount_picker": {
+    "amount_label": "СУММА"
+  },
+  "analytics": {
+    "active_count": "У вас {{count}} активная подписка",
+    "active_count_plural": "У вас {{count}} активных подписок",
+    "average_monthly": "В среднем",
+    "forecast": "Прогноз",
+    "monthly_cost": "В месяц",
+    "no_category_spend": "Расходов по категориям пока нет.",
+    "title": "Аналитика",
+    "year_to_date": "С начала года",
+    "yearly_forecast": "За год"
+  },
+  "app": {
+    "brand": "Subs",
+    "brand_initial": "S",
+    "contact_email": "hello@alpay.dev",
+    "made_with": "Сделано с заботой",
+    "version_prefix": "v"
+  },
+  "calendar": {
+    "this_month": "Этот месяц"
+  },
+  "categories": {
+    "delete_confirm": "Вы уверены, что хотите удалить «{{name}}»?",
+    "delete_title": "Удалить категорию",
+    "new_placeholder": "Новая категория",
+    "other_footer": "Категорию «Другое» удалить нельзя — она используется по умолчанию для подписок без категории.",
+    "rename_title": "Переименовать категорию",
+    "title": "Категории"
+  },
+  "common": {
+    "accessibility": {
+      "back_label": "Назад",
+      "close_modal_hint": "Закрывает окно",
+      "close_modal_label": "Закрыть окно"
+    },
+    "add": "Добавить",
+    "amount": "Сумма",
+    "cancel": "Отмена",
+    "close": "Закрыть",
+    "coming_soon": "Скоро",
+    "confirm": "Подтвердить",
+    "currency": "Валюта",
+    "delete": "Удалить",
+    "done": "Готово",
+    "error": "Ошибка",
+    "never": "Никогда",
+    "no_data": "Нет данных",
+    "notes": "Заметки",
+    "off": "Выкл",
+    "on": "Вкл",
+    "optional": "Необязательно",
+    "other": "Другое",
+    "pause": "Приостановить",
+    "save": "Сохранить",
+    "saving": "Сохранение…",
+    "search": "Поиск",
+    "select_placeholder": "Выберите…",
+    "something_went_wrong": "Что-то пошло не так",
+    "unknown_error": "Неизвестная ошибка"
+  },
+  "csv_export": {
+    "category": "Категория",
+    "name": "Название",
+    "period": "Период",
+    "price": "Цена",
+    "start_date": "Дата начала"
+  },
+  "currency": {
+    "all": "ВСЕ ВАЛЮТЫ",
+    "default_set": "Валюта по умолчанию: {{code}}",
+    "favorites": "ИЗБРАННОЕ",
+    "search_placeholder": "Поиск",
+    "select_title": "Выбор валюты"
+  },
+  "diary": {
+    "lightbox_hint": "Смахните вверх или вниз, чтобы закрыть"
+  },
+  "home": {
+    "remaining": "Осталось",
+    "search_placeholder": "Поиск подпис."
+  },
+  "home_search": {
+    "no_results": "Подписки не найдены",
+    "tap_to_add_first": "Нажмите здесь, чтобы добавить первую"
+  },
+  "icloud": {
+    "active_one_time": "Активные и разовые",
+    "archived": "В архиве",
+    "backing_up": "Создание копии…",
+    "backup": "Резервная копия",
+    "backup_failed": "Ошибка копии: {{message}}",
+    "backup_footer": "Данные подписок безопасно синхронизируются на всех устройствах через iCloud Drive.",
+    "backup_found_message": "Найдена существующая копия iCloud. Что делать?",
+    "backup_found_title": "Найдена копия iCloud",
+    "backup_found_with_summary": "{{summary}}\n\nЧто делать?",
+    "backup_success": "Резервная копия создана",
+    "canceled": "Отменённые",
+    "check_backup_failed": "Не удалось проверить копию iCloud",
+    "current_subs": "Текущие подписки",
+    "delete_all": "Удалить все данные",
+    "delete_all_confirm_message": "Все данные на устройстве будут удалены безвозвратно. При включённой синхронизации iCloud они также удалятся из iCloud.",
+    "delete_all_confirm_title": "Удалить все данные",
+    "delete_all_footer": "Все данные на устройстве будут удалены безвозвратно. При включённой синхронизации iCloud они также удалятся из iCloud.",
+    "export_csv": "Экспорт в CSV",
+    "export_dialog_title": "Экспорт подписок",
+    "export_failed": "Ошибка экспорта",
+    "exporting": "Экспорт…",
+    "icloud_sync": "Синхронизация iCloud",
+    "keep_device": "Оставить данные на этом устройстве",
+    "last_backup": "Последняя копия: {{date}}",
+    "last_backup_line": "Последняя копия: {{date}}",
+    "no_subs_to_export": "Нет подписок для экспорта",
+    "not_available": "iCloud недоступен. Войдите в iCloud в Настройках.",
+    "not_available_short": "iCloud недоступен",
+    "restore": "Восстановить из iCloud",
+    "restore_button": "Восстановить",
+    "restore_confirm_message": "Локальные данные будут заменены копией из iCloud. Продолжить?",
+    "restore_confirm_title": "Восстановить из iCloud",
+    "restore_failed": "Ошибка восстановления из iCloud",
+    "restored": "Данные восстановлены из iCloud",
+    "restoring": "Восстановление…",
+    "sharing_unavailable": "Поделиться на этом устройстве нельзя",
+    "subscriptions_in_backup": "Подписок в копии: {{count}}",
+    "sync_failed": "Ошибка синхронизации с iCloud",
+    "syncing": "Синхронизация…",
+    "title": "iCloud и данные",
+    "use_backup": "Использовать копию iCloud"
+  },
+  "language": {
+    "select_title": "Язык"
+  },
+  "lists": {
+    "added": "{{name}} добавлено",
+    "new_placeholder": "Новый список",
+    "no_lists": "Списков пока нет.",
+    "rename_title": "Переименовать список",
+    "title": "Списки"
+  },
+  "not_found": {
+    "back_to_home": "На главную",
+    "cta": "На главную",
+    "page_title": "Страница не найдена",
+    "route_description": "Этот маршрут не существует в потоке HeroUI.",
+    "subtitle": "Этот экран не существует.",
+    "title": "Не найдено"
+  },
+  "notifications": {
+    "days": {
+      "1": "1 день",
+      "2": "2 дня",
+      "3": "3 дня",
+      "4": "4 дня",
+      "5": "5 дней",
+      "10": "10 дней",
+      "15": "15 дней",
+      "30": "30 дней"
+    },
+    "enable_in_settings": "Включите уведомления в Настройках для проверки.",
+    "first_reminder": "Первое напоминание",
+    "same_day": "В тот же день",
+    "second_reminder": "Второе напоминание",
+    "section_footer": "При включённых режимах фокуса уведомления могут не показываться.",
+    "section_header": "Уведомления",
+    "test_notification": "Тестовое уведомление",
+    "test_scheduled": "Тестовое уведомление запланировано",
+    "unable_to_schedule": "Не удалось запланировать тестовое уведомление"
+  },
+  "onboarding": {
+    "brand": "Subs",
+    "get_started": "Начать",
+    "next": "Далее",
+    "skip": "Пропустить",
+    "slides": {
+      "1": {
+        "description": "Полный опыт",
+        "title": "Простое начало"
+      },
+      "2": {
+        "description": "Удобный интерфейс для приложения подписок",
+        "title": "Копировать и вставить"
+      },
+      "3": {
+        "description": "Настраивайте темы, макеты и состояние под себя.",
+        "title": "Бесплатно"
+      }
+    }
+  },
+  "payment_methods": {
+    "added": "Способ оплаты «{{name}}» добавлен",
+    "delete_confirm": "Вы уверены, что хотите удалить «{{name}}»?",
+    "delete_title": "Удалить способ оплаты",
+    "new_placeholder": "Новый способ оплаты",
+    "no_methods": "Способов оплаты пока нет.",
+    "rename_title": "Переименовать способ оплаты",
+    "security_note": "Не храните полные номера карт или данные счетов.",
+    "title": "Способы оплаты"
+  },
+  "paywall": {
+    "features": {
+      "analytics": {
+        "description": "Отслеживайте расходы с детальной аналитикой и прогнозами.",
+        "title": "Аналитика и отчёты"
+      },
+      "categories": {
+        "description": "Организуйте и категоризируйте подписки по-своему.",
+        "title": "Умные категории"
+      },
+      "icloud": {
+        "description": "Храните данные в безопасности и синхронизируйте на всех устройствах.",
+        "title": "Синхронизация iCloud"
+      },
+      "support": {
+        "description": "Ваша покупка мотивирует разработчика улучшать приложение.",
+        "title": "Поддержать разработчика"
+      },
+      "unlimited": {
+        "description": "Управляйте подписками без ограничений.",
+        "title": "Безлимитные подписки"
+      },
+      "updates": {
+        "description": "Доступ к новым функциям навсегда и регулярным обновлениям.",
+        "title": "Новые функции и обновления"
+      }
+    },
+    "lifetime": "Навсегда",
+    "not_available_message": "Внутриигровая покупка не настроена для этой сборки. Используйте dev-сборку с ключами RevenueCat для теста.",
+    "not_available_title": "Недоступно",
+    "pay_once_forever": "Заплати один раз — пользуйся вечно!",
+    "privacy": "Конфиденциальность",
+    "promo": "Акция",
+    "purchase_failed_message": "Покупка не удалась. Попробуйте снова.",
+    "purchase_failed_title": "Покупка не выполнена",
+    "restore_complete_no_purchase": "Для этого Apple ID предыдущих покупок не найдено.",
+    "restore_complete_title": "Восстановление завершено",
+    "restore_failed_message": "Восстановление не удалось. Попробуйте снова.",
+    "restore_failed_title": "Восстановление не удалось",
+    "restore_not_available": "Восстановление недоступно в этой сборке.",
+    "restore_purchases": "Восстановить покупки",
+    "restoring": "Восстановление…"
+  },
+  "services": {
+    "import": {
+      "apple": "Импорт из Apple",
+      "file": "Импорт из файла",
+      "notion": "Импорт из Notion",
+      "sheets": "Импорт из Google Таблиц"
+    },
+    "no_brands_found": "Сервисы не найдены. Нажмите на карточку выше, чтобы добавить {{name}} как свой сервис.",
+    "popular_services": "ПОПУЛЯРНЫЕ СЕРВИСЫ",
+    "search_placeholder": "Поиск сервисов",
+    "search_results": "РЕЗУЛЬТАТЫ",
+    "title": "Сервисы"
+  },
+  "settings": {
+    "account": "Аккаунт",
+    "account_type": "Тип аккаунта",
+    "categories": "Категории",
+    "contact_me": "Связаться",
+    "currency_rates": "Курсы валют",
+    "currency_rates_footer": "Курсы загружаются из публичного API (ExchangeRate-API). Нажмите «Обновить», чтобы обновить. Значения приблизительные.",
+    "currency_update_failed": "Не удалось обновить. Проверьте соединение.",
+    "currency_updated": "Курсы валют обновлены",
+    "data": "Данные",
+    "developer": "Разработчик",
+    "free": "Бесплатно",
+    "general": "Основные",
+    "haptic_feedback": "Тактильная отдача",
+    "icloud_data": "iCloud и данные",
+    "ideas_roadmap": "Идеи и план",
+    "interface": "Интерфейс",
+    "language": "Язык",
+    "last_updated": "Обновлено",
+    "lists": "Списки",
+    "made_with_love": "Сделано с любовью в Appps™ © 2026",
+    "main_currency": "Основная валюта",
+    "more": "Ещё",
+    "payment_methods": "Способы оплаты",
+    "premium": "Премиум",
+    "preview_choose": "Предпросмотр и выбор",
+    "pro": "Про",
+    "rate_review": "Оценить и отзыв",
+    "reset_alert_message": "Все данные будут удалены и вы вернётесь на главный экран. Продолжить?",
+    "reset_alert_title": "Сбросить приложение",
+    "reset_app": "Сбросить приложение",
+    "reset_confirm": "Сбросить",
+    "round_whole_numbers": "Округлять до целых",
+    "share_friend": "Поделиться с другом",
+    "subscription_day": "Subscription Day",
+    "theme": "Тема",
+    "title": "Настройки",
+    "true_dark_colors": "Настоящая тёмная тема",
+    "unlock_lifetime": "Разблокируйте все функции по единой лицензии навсегда.",
+    "update_now": "Обновить",
+    "updating": "Обновление…",
+    "version": "Версия: {{version}}",
+    "visit_website": "Открыть сайт"
+  },
+  "subscription": {
+    "add_notes_placeholder": "Добавить заметки",
+    "category": "Категория",
+    "create": "Создать",
+    "created": "Подписка создана",
+    "custom": "Своя",
+    "delete_confirm": "Вы уверены, что хотите удалить «{{name}}»?",
+    "delete_title": "Удалить подписку",
+    "deleted": "Подписка удалена",
+    "edit": "Редактировать подписку",
+    "edit_button": "Изменить",
+    "interval": "Интервал",
+    "list": "Список",
+    "month": "Месяц",
+    "monthly": "Ежемесячно",
+    "name": "Название",
+    "name_placeholder": "Cursor",
+    "new": "Новая подписка",
+    "next_payment": "Следующий платёж",
+    "next_payment_in_days": "через {{count}} дн.",
+    "next_payment_in_one_day": "через 1 день",
+    "next_payment_today": "сегодня",
+    "none": "Нет",
+    "notification_custom": "Своё",
+    "notification_default": "По умолчанию",
+    "notification_disabled": "Выкл",
+    "notifications": "Уведомления",
+    "pay_with": "Оплата",
+    "payment_method": "Способ оплаты",
+    "schedule": "Периодичность",
+    "start_date": "Дата начала",
+    "status": "Статус",
+    "status_active": "Активна",
+    "status_canceled": "Отменена",
+    "status_paused": "Приостановлена",
+    "total_spent": "Всего потрачено",
+    "updated": "Подписка обновлена",
+    "week": "Неделя",
+    "weekly": "Еженедельно",
+    "yearly": "Ежегодно"
+  },
+  "subscription_day_view": {
+    "add_new": "Добавить подписку",
+    "title": "Подписки",
+    "total": "Итого"
+  },
+  "subscription_status": {
+    "active": "Активна",
+    "canceled": "Отменена",
+    "paused": "Приостановлена"
+  },
+  "theme": {
+    "options": {
+      "classic": {
+        "description": "Тёплый оранжевый акцент с нейтральными тонами.",
+        "name": "Классика"
+      },
+      "forest": {
+        "description": "Мягкие зелёные тона, вдохновлённые природой.",
+        "name": "Лес"
+      },
+      "midnight": {
+        "description": "Глубокие синие тона для кинематографичного вида.",
+        "name": "Полночь"
+      },
+      "sunset": {
+        "description": "Золотисто-оранжевые тона с уютным контрастом.",
+        "name": "Закат"
+      }
+    },
+    "pick_vibe": "Выберите стиль. Меняются только цвета приложения, не системная тема.",
+    "title": "Тема"
+  }
+}

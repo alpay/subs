@@ -1,1 +1,375 @@
-{"app":{"brand":"Subs","brand_initial":"S","contact_email":"hello@alpay.dev","made_with":"Met zorg gemaakt","version_prefix":"v"},"calendar":{"this_month":"Deze maand"},"csv_export":{"name":"Naam","period":"Periode","price":"Prijs","start_date":"Startdatum","category":"Categorie"},"common":{"accessibility":{"close_modal_hint":"Sluit het venster","close_modal_label":"Venster sluiten","back_label":"Terug"},"cancel":"Annuleren","close":"Sluiten","coming_soon":"Binnenkort","confirm":"Bevestigen","delete":"Verwijderen","error":"Fout","no_data":"Geen gegevens","notes":"Notities","optional":"Optioneel","pause":"Pauzeren","save":"Opslaan","saving":"Opslaan…","search":"Zoeken","select_placeholder":"Kies…","something_went_wrong":"Er is iets misgegaan","add":"Toevoegen","done":"Klaar","never":"Nooit","on":"Aan","off":"Uit","other":"Overig","currency":"Valuta","amount":"Bedrag","unknown_error":"Onbekende fout"},"diary":{"lightbox_hint":"Veeg omhoog of omlaag om te sluiten"},"not_found":{"title":"Niet gevonden","subtitle":"Dit scherm bestaat niet.","cta":"Naar start","page_title":"Pagina niet gevonden","route_description":"Deze route bestaat niet in de HeroUI-flow.","back_to_home":"Terug naar start"},"home":{"search_placeholder":"Zoek abon.","remaining":"Resterend"},"paywall":{"features":{"unlimited":{"title":"Onbeperkte abonnementen","description":"Beheer abonnementen zonder limiet."},"icloud":{"title":"iCloud-sync","description":"Houd je gegevens veilig en gesynchroniseerd op al je apparaten."},"analytics":{"title":"Inzichten en analyses","description":"Volg je uitgaven met gedetailleerde analyses en voorspellingen."},"categories":{"title":"Slimme categorieën","description":"Rangschik en categoriseer abonnementen zoals jij wilt."},"support":{"title":"Steun de ontwikkelaar","description":"Je aankoop motiveert de ontwikkelaar om de app te verbeteren."},"updates":{"title":"Nieuwe functies en updates","description":"Levenslang toegang tot nieuwe functies en regelmatige updates."}},"lifetime":"Eenmalig","pay_once_forever":"Eenmalig betalen, voor altijd gebruiken!","restoring":"Herstellen…","restore_purchases":"Aankopen herstellen","privacy":"Privacy","promo":"Promo","not_available_title":"Niet beschikbaar","not_available_message":"In-app aankoop is niet geconfigureerd voor deze build. Gebruik een development build met RevenueCat API-sleutels om te testen.","restore_not_available":"Herstellen is niet beschikbaar in deze build.","purchase_failed_title":"Aankoop mislukt","purchase_failed_message":"Aankoop mislukt. Probeer het opnieuw.","restore_complete_title":"Herstel voltooid","restore_complete_no_purchase":"Geen eerdere aankoop gevonden voor dit Apple ID.","restore_failed_title":"Herstel mislukt","restore_failed_message":"Herstel mislukt. Probeer het opnieuw."},"services":{"title":"Diensten","search_placeholder":"Zoek diensten","search_results":"ZOEKRESULTATEN","popular_services":"POPULAIRE DIENSTEN","no_brands_found":"Geen diensten gevonden. Tik op de kaart hierboven om {{name}} als aangepaste dienst toe te voegen.","import":{"notion":"Importeren uit Notion","sheets":"Importeren uit Google Sheets","file":"Importeren uit bestand","apple":"Importeren uit Apple"}},"settings":{"title":"Instellingen","developer":"Ontwikkelaar","reset_app":"App resetten","premium":"Premium","account":"Account","unlock_lifetime":"Ontgrendel alle functies met een eenmalige licentie.","subscription_day":"Subscription Day","account_type":"Accounttype","pro":"Pro","free":"Gratis","general":"Algemeen","icloud_data":"iCloud en gegevens","language":"Taal","main_currency":"Hoofdvaluta","round_whole_numbers":"Afronden op hele getallen","data":"Gegevens","lists":"Lijsten","categories":"Categorieën","payment_methods":"Betaalmethoden","interface":"Interface","true_dark_colors":"Echt donker","theme":"Thema","preview_choose":"Preview en kiezen","haptic_feedback":"Haptische feedback","currency_rates":"Wisselkoersen","currency_rates_footer":"Koersen komen van een openbare API (ExchangeRate-API). Tik op Nu bijwerken om te vernieuwen. Waarden zijn indicatief.","last_updated":"Laatst bijgewerkt","update_now":"Nu bijwerken","updating":"Bijwerken…","more":"Meer","rate_review":"Beoordelen en recensie","ideas_roadmap":"Ideeën en roadmap","contact_me":"Contact","visit_website":"Bezoek website","share_friend":"Deel met een vriend","made_with_love":"Met liefde gemaakt door Appps™ © 2026","version":"Versie: {{version}}","reset_alert_title":"App resetten","reset_alert_message":"Alle gegevens worden gewist en je gaat terug naar het startscherm. Doorgaan?","reset_confirm":"Resetten","currency_updated":"Wisselkoersen bijgewerkt","currency_update_failed":"Bijwerken mislukt. Controleer je verbinding."},"onboarding":{"brand":"Subs","skip":"Overslaan","get_started":"Beginnen","next":"Volgende","slides":{"1":{"title":"Eenvoudige onboarding","description":"Complete ervaring"},"2":{"title":"Kopiëren en plakken","description":"Strak design voor je abonnementen-app"},"3":{"title":"Gratis te gebruiken","description":"Pas thema's, lay-outs en state eenvoudig aan."}}},"subscription":{"new":"Nieuw abonnement","edit":"Abonnement bewerken","edit_button":"Bewerken","create":"Aanmaken","delete_title":"Abonnement verwijderen","delete_confirm":"Weet je zeker dat je \"{{name}}\" wilt verwijderen?","deleted":"Abonnement verwijderd","created":"Abonnement aangemaakt","updated":"Abonnement bijgewerkt","next_payment":"Volgende betaling","total_spent":"Totaal besteed","notifications":"Meldingen","category":"Categorie","list":"Lijst","name":"Naam","schedule":"Frequentie","monthly":"Maandelijks","yearly":"Jaarlijks","weekly":"Wekelijks","custom":"Aangepast","start_date":"Startdatum","interval":"Interval","month":"Maand","week":"Week","pay_with":"Betalen met","payment_method":"Betaalmethode","none":"Geen","add_notes_placeholder":"Notities toevoegen","name_placeholder":"Cursor","status_active":"Actief","status_paused":"Gepauzeerd","status_canceled":"Opgezegd","status":"Status","notification_default":"Standaard","notification_disabled":"Uit","notification_custom":"Aangepast","next_payment_today":"vandaag","next_payment_in_one_day":"over 1 dag","next_payment_in_days":"over {{count}} dagen"},"subscription_day_view":{"title":"Abonnementen","add_new":"Abonnement toevoegen","total":"Totaal"},"home_search":{"no_results":"Geen abonnementen gevonden","tap_to_add_first":"Tik hier om je eerste toe te voegen"},"subscription_status":{"active":"Actief","paused":"Gepauzeerd","canceled":"Opgezegd"},"notifications":{"section_header":"Meldingen","section_footer":"Bij ingeschakelde focusmodi kunnen meldingen uitblijven.","first_reminder":"Eerste herinnering","second_reminder":"Tweede herinnering","test_notification":"Testmelding","enable_in_settings":"Zet meldingen aan in Instellingen om te testen.","test_scheduled":"Testmelding gepland","unable_to_schedule":"Kon testmelding niet plannen","same_day":"Zelfde dag","days":{"1":"1 dag","2":"2 dagen","3":"3 dagen","4":"4 dagen","5":"5 dagen","10":"10 dagen","15":"15 dagen","30":"30 dagen"}},"currency":{"select_title":"Valuta kiezen","search_placeholder":"Zoeken","favorites":"FAVORIETEN","all":"ALLE VALUTA","default_set":"Standaardvaluta: {{code}}"},"language":{"select_title":"Taal"},"theme":{"title":"Thema","pick_vibe":"Kies de sfeer. Alleen de appkleuren veranderen, niet je systeemthema.","options":{"classic":{"name":"Klassiek","description":"Warm oranjeaccent met neutrale tinten."},"midnight":{"name":"Middernacht","description":"Diepe blauwtinten voor een filmische look."},"forest":{"name":"Bos","description":"Zachte groentinten geïnspireerd door de natuur."},"sunset":{"name":"Zonsondergang","description":"Gouden oranje met warm contrast."}}},"categories":{"title":"Categorieën","new_placeholder":"Nieuwe categorie","rename_title":"Categorie hernoemen","delete_title":"Categorie verwijderen","delete_confirm":"Weet je zeker dat je \"{{name}}\" wilt verwijderen?","other_footer":"De categorie \"Overig\" kan niet worden verwijderd; die is de standaard voor abonnementen zonder categorie."},"lists":{"title":"Lijsten","new_placeholder":"Nieuwe lijst","added":"{{name}} toegevoegd","rename_title":"Lijst hernoemen","no_lists":"Nog geen lijsten."},"payment_methods":{"title":"Betaalmethoden","new_placeholder":"Nieuwe betaalmethode","added":"Betaalmethode \"{{name}}\" toegevoegd","rename_title":"Betaalmethode hernoemen","delete_title":"Betaalmethode verwijderen","delete_confirm":"Weet je zeker dat je \"{{name}}\" wilt verwijderen?","no_methods":"Nog geen betaalmethoden.","security_note":"Sla geen volledige kaartnummers of rekeninggegevens op."},"icloud":{"title":"iCloud en gegevens","syncing":"Synchroniseren…","last_backup":"Laatste backup: {{date}}","backup_footer":"Je abonnementsgegevens worden veilig via iCloud Drive op al je apparaten gesynchroniseerd.","icloud_sync":"iCloud-synchronisatie","backup":"Back-up","backing_up":"Back-up maken…","restore":"Herstellen uit iCloud","restoring":"Herstellen…","current_subs":"Huidige abonnementen","active_one_time":"Actief en eenmalig","canceled":"Opgezegd","archived":"Gearchiveerd","export_csv":"Gegevens exporteren naar CSV","exporting":"Exporteren…","delete_all":"Alle gegevens verwijderen","delete_all_confirm_title":"Alle gegevens verwijderen","delete_all_confirm_message":"Alle gegevens op dit apparaat worden permanent verwijderd. Met iCloud-sync worden ze ook uit iCloud verwijderd.","delete_all_footer":"Alle gegevens op dit apparaat worden permanent verwijderd. Met iCloud-sync worden ze ook uit iCloud verwijderd.","not_available":"iCloud is niet beschikbaar. Meld je aan bij iCloud in Instellingen.","not_available_short":"iCloud niet beschikbaar","last_backup_line":"Laatste backup: {{date}}","subscriptions_in_backup":"Abonnementen in backup: {{count}}","check_backup_failed":"Kon iCloud-backup niet controleren","sync_failed":"Synchronisatie met iCloud mislukt","restored":"Gegevens hersteld uit iCloud","restore_failed":"Herstel uit iCloud mislukt","backup_found_title":"iCloud-backup gevonden","backup_found_message":"Er is een bestaande iCloud-backup. Wat wil je doen?","backup_found_with_summary":"{{summary}}\n\nWat wil je doen?","use_backup":"iCloud-backup gebruiken","keep_device":"Gegevens op dit apparaat behouden","no_subs_to_export":"Geen abonnementen om te exporteren","export_dialog_title":"Abonnementen exporteren","sharing_unavailable":"Delen is niet beschikbaar op dit apparaat","export_failed":"Exporteren mislukt","backup_success":"Back-up voltooid","backup_failed":"Back-up mislukt: {{message}}","restore_confirm_title":"Herstellen uit iCloud","restore_confirm_message":"Je lokale gegevens worden vervangen door de iCloud-backup. Doorgaan?","restore_button":"Herstellen"},"analytics":{"title":"Analyses","active_count":"Je hebt {{count}} actief abonnement","active_count_plural":"Je hebt {{count}} actieve abonnementen","yearly_forecast":"Jaarlijks","forecast":"Voorspelling","average_monthly":"Gemiddelde","monthly_cost":"Maandelijkse kosten","year_to_date":"Sinds begin jaar","no_category_spend":"Nog geen uitgaven per categorie."},"amount_picker":{"amount_label":"BEDRAG"}}
+{
+  "amount_picker": {
+    "amount_label": "BEDRAG"
+  },
+  "analytics": {
+    "active_count": "Je hebt {{count}} actief abonnement",
+    "active_count_plural": "Je hebt {{count}} actieve abonnementen",
+    "average_monthly": "Gemiddelde",
+    "forecast": "Voorspelling",
+    "monthly_cost": "Maandelijkse kosten",
+    "no_category_spend": "Nog geen uitgaven per categorie.",
+    "title": "Analyses",
+    "year_to_date": "Sinds begin jaar",
+    "yearly_forecast": "Jaarlijks"
+  },
+  "app": {
+    "brand": "Subs",
+    "brand_initial": "S",
+    "contact_email": "hello@alpay.dev",
+    "made_with": "Met zorg gemaakt",
+    "version_prefix": "v"
+  },
+  "calendar": {
+    "this_month": "Deze maand"
+  },
+  "categories": {
+    "delete_confirm": "Weet je zeker dat je \"{{name}}\" wilt verwijderen?",
+    "delete_title": "Categorie verwijderen",
+    "new_placeholder": "Nieuwe categorie",
+    "other_footer": "De categorie \"Overig\" kan niet worden verwijderd; die is de standaard voor abonnementen zonder categorie.",
+    "rename_title": "Categorie hernoemen",
+    "title": "Categorieën"
+  },
+  "common": {
+    "accessibility": {
+      "back_label": "Terug",
+      "close_modal_hint": "Sluit het venster",
+      "close_modal_label": "Venster sluiten"
+    },
+    "add": "Toevoegen",
+    "amount": "Bedrag",
+    "cancel": "Annuleren",
+    "close": "Sluiten",
+    "coming_soon": "Binnenkort",
+    "confirm": "Bevestigen",
+    "currency": "Valuta",
+    "delete": "Verwijderen",
+    "done": "Klaar",
+    "error": "Fout",
+    "never": "Nooit",
+    "no_data": "Geen gegevens",
+    "notes": "Notities",
+    "off": "Uit",
+    "on": "Aan",
+    "optional": "Optioneel",
+    "other": "Overig",
+    "pause": "Pauzeren",
+    "save": "Opslaan",
+    "saving": "Opslaan…",
+    "search": "Zoeken",
+    "select_placeholder": "Kies…",
+    "something_went_wrong": "Er is iets misgegaan",
+    "unknown_error": "Onbekende fout"
+  },
+  "csv_export": {
+    "category": "Categorie",
+    "name": "Naam",
+    "period": "Periode",
+    "price": "Prijs",
+    "start_date": "Startdatum"
+  },
+  "currency": {
+    "all": "ALLE VALUTA",
+    "default_set": "Standaardvaluta: {{code}}",
+    "favorites": "FAVORIETEN",
+    "search_placeholder": "Zoeken",
+    "select_title": "Valuta kiezen"
+  },
+  "diary": {
+    "lightbox_hint": "Veeg omhoog of omlaag om te sluiten"
+  },
+  "home": {
+    "remaining": "Resterend",
+    "search_placeholder": "Zoek abon."
+  },
+  "home_search": {
+    "no_results": "Geen abonnementen gevonden",
+    "tap_to_add_first": "Tik hier om je eerste toe te voegen"
+  },
+  "icloud": {
+    "active_one_time": "Actief en eenmalig",
+    "archived": "Gearchiveerd",
+    "backing_up": "Back-up maken…",
+    "backup": "Back-up",
+    "backup_failed": "Back-up mislukt: {{message}}",
+    "backup_footer": "Je abonnementsgegevens worden veilig via iCloud Drive op al je apparaten gesynchroniseerd.",
+    "backup_found_message": "Er is een bestaande iCloud-backup. Wat wil je doen?",
+    "backup_found_title": "iCloud-backup gevonden",
+    "backup_found_with_summary": "{{summary}}\n\nWat wil je doen?",
+    "backup_success": "Back-up voltooid",
+    "canceled": "Opgezegd",
+    "check_backup_failed": "Kon iCloud-backup niet controleren",
+    "current_subs": "Huidige abonnementen",
+    "delete_all": "Alle gegevens verwijderen",
+    "delete_all_confirm_message": "Alle gegevens op dit apparaat worden permanent verwijderd. Met iCloud-sync worden ze ook uit iCloud verwijderd.",
+    "delete_all_confirm_title": "Alle gegevens verwijderen",
+    "delete_all_footer": "Alle gegevens op dit apparaat worden permanent verwijderd. Met iCloud-sync worden ze ook uit iCloud verwijderd.",
+    "export_csv": "Gegevens exporteren naar CSV",
+    "export_dialog_title": "Abonnementen exporteren",
+    "export_failed": "Exporteren mislukt",
+    "exporting": "Exporteren…",
+    "icloud_sync": "iCloud-synchronisatie",
+    "keep_device": "Gegevens op dit apparaat behouden",
+    "last_backup": "Laatste backup: {{date}}",
+    "last_backup_line": "Laatste backup: {{date}}",
+    "no_subs_to_export": "Geen abonnementen om te exporteren",
+    "not_available": "iCloud is niet beschikbaar. Meld je aan bij iCloud in Instellingen.",
+    "not_available_short": "iCloud niet beschikbaar",
+    "restore": "Herstellen uit iCloud",
+    "restore_button": "Herstellen",
+    "restore_confirm_message": "Je lokale gegevens worden vervangen door de iCloud-backup. Doorgaan?",
+    "restore_confirm_title": "Herstellen uit iCloud",
+    "restore_failed": "Herstel uit iCloud mislukt",
+    "restored": "Gegevens hersteld uit iCloud",
+    "restoring": "Herstellen…",
+    "sharing_unavailable": "Delen is niet beschikbaar op dit apparaat",
+    "subscriptions_in_backup": "Abonnementen in backup: {{count}}",
+    "sync_failed": "Synchronisatie met iCloud mislukt",
+    "syncing": "Synchroniseren…",
+    "title": "iCloud en gegevens",
+    "use_backup": "iCloud-backup gebruiken"
+  },
+  "language": {
+    "select_title": "Taal"
+  },
+  "lists": {
+    "added": "{{name}} toegevoegd",
+    "new_placeholder": "Nieuwe lijst",
+    "no_lists": "Nog geen lijsten.",
+    "rename_title": "Lijst hernoemen",
+    "title": "Lijsten"
+  },
+  "not_found": {
+    "back_to_home": "Terug naar start",
+    "cta": "Naar start",
+    "page_title": "Pagina niet gevonden",
+    "route_description": "Deze route bestaat niet in de HeroUI-flow.",
+    "subtitle": "Dit scherm bestaat niet.",
+    "title": "Niet gevonden"
+  },
+  "notifications": {
+    "days": {
+      "1": "1 dag",
+      "2": "2 dagen",
+      "3": "3 dagen",
+      "4": "4 dagen",
+      "5": "5 dagen",
+      "10": "10 dagen",
+      "15": "15 dagen",
+      "30": "30 dagen"
+    },
+    "enable_in_settings": "Zet meldingen aan in Instellingen om te testen.",
+    "first_reminder": "Eerste herinnering",
+    "same_day": "Zelfde dag",
+    "second_reminder": "Tweede herinnering",
+    "section_footer": "Bij ingeschakelde focusmodi kunnen meldingen uitblijven.",
+    "section_header": "Meldingen",
+    "test_notification": "Testmelding",
+    "test_scheduled": "Testmelding gepland",
+    "unable_to_schedule": "Kon testmelding niet plannen"
+  },
+  "onboarding": {
+    "brand": "Subs",
+    "get_started": "Beginnen",
+    "next": "Volgende",
+    "skip": "Overslaan",
+    "slides": {
+      "1": {
+        "description": "Complete ervaring",
+        "title": "Eenvoudige onboarding"
+      },
+      "2": {
+        "description": "Strak design voor je abonnementen-app",
+        "title": "Kopiëren en plakken"
+      },
+      "3": {
+        "description": "Pas thema's, lay-outs en state eenvoudig aan.",
+        "title": "Gratis te gebruiken"
+      }
+    }
+  },
+  "payment_methods": {
+    "added": "Betaalmethode \"{{name}}\" toegevoegd",
+    "delete_confirm": "Weet je zeker dat je \"{{name}}\" wilt verwijderen?",
+    "delete_title": "Betaalmethode verwijderen",
+    "new_placeholder": "Nieuwe betaalmethode",
+    "no_methods": "Nog geen betaalmethoden.",
+    "rename_title": "Betaalmethode hernoemen",
+    "security_note": "Sla geen volledige kaartnummers of rekeninggegevens op.",
+    "title": "Betaalmethoden"
+  },
+  "paywall": {
+    "features": {
+      "analytics": {
+        "description": "Volg je uitgaven met gedetailleerde analyses en voorspellingen.",
+        "title": "Inzichten en analyses"
+      },
+      "categories": {
+        "description": "Rangschik en categoriseer abonnementen zoals jij wilt.",
+        "title": "Slimme categorieën"
+      },
+      "icloud": {
+        "description": "Houd je gegevens veilig en gesynchroniseerd op al je apparaten.",
+        "title": "iCloud-sync"
+      },
+      "support": {
+        "description": "Je aankoop motiveert de ontwikkelaar om de app te verbeteren.",
+        "title": "Steun de ontwikkelaar"
+      },
+      "unlimited": {
+        "description": "Beheer abonnementen zonder limiet.",
+        "title": "Onbeperkte abonnementen"
+      },
+      "updates": {
+        "description": "Levenslang toegang tot nieuwe functies en regelmatige updates.",
+        "title": "Nieuwe functies en updates"
+      }
+    },
+    "lifetime": "Eenmalig",
+    "not_available_message": "In-app aankoop is niet geconfigureerd voor deze build. Gebruik een development build met RevenueCat API-sleutels om te testen.",
+    "not_available_title": "Niet beschikbaar",
+    "pay_once_forever": "Eenmalig betalen, voor altijd gebruiken!",
+    "privacy": "Privacy",
+    "promo": "Promo",
+    "purchase_failed_message": "Aankoop mislukt. Probeer het opnieuw.",
+    "purchase_failed_title": "Aankoop mislukt",
+    "restore_complete_no_purchase": "Geen eerdere aankoop gevonden voor dit Apple ID.",
+    "restore_complete_title": "Herstel voltooid",
+    "restore_failed_message": "Herstel mislukt. Probeer het opnieuw.",
+    "restore_failed_title": "Herstel mislukt",
+    "restore_not_available": "Herstellen is niet beschikbaar in deze build.",
+    "restore_purchases": "Aankopen herstellen",
+    "restoring": "Herstellen…"
+  },
+  "services": {
+    "import": {
+      "apple": "Importeren uit Apple",
+      "file": "Importeren uit bestand",
+      "notion": "Importeren uit Notion",
+      "sheets": "Importeren uit Google Sheets"
+    },
+    "no_brands_found": "Geen diensten gevonden. Tik op de kaart hierboven om {{name}} als aangepaste dienst toe te voegen.",
+    "popular_services": "POPULAIRE DIENSTEN",
+    "search_placeholder": "Zoek diensten",
+    "search_results": "ZOEKRESULTATEN",
+    "title": "Diensten"
+  },
+  "settings": {
+    "account": "Account",
+    "account_type": "Accounttype",
+    "categories": "Categorieën",
+    "contact_me": "Contact",
+    "currency_rates": "Wisselkoersen",
+    "currency_rates_footer": "Koersen komen van een openbare API (ExchangeRate-API). Tik op Nu bijwerken om te vernieuwen. Waarden zijn indicatief.",
+    "currency_update_failed": "Bijwerken mislukt. Controleer je verbinding.",
+    "currency_updated": "Wisselkoersen bijgewerkt",
+    "data": "Gegevens",
+    "developer": "Ontwikkelaar",
+    "free": "Gratis",
+    "general": "Algemeen",
+    "haptic_feedback": "Haptische feedback",
+    "icloud_data": "iCloud en gegevens",
+    "ideas_roadmap": "Ideeën en roadmap",
+    "interface": "Interface",
+    "language": "Taal",
+    "last_updated": "Laatst bijgewerkt",
+    "lists": "Lijsten",
+    "made_with_love": "Met liefde gemaakt door Appps™ © 2026",
+    "main_currency": "Hoofdvaluta",
+    "more": "Meer",
+    "payment_methods": "Betaalmethoden",
+    "premium": "Premium",
+    "preview_choose": "Preview en kiezen",
+    "pro": "Pro",
+    "rate_review": "Beoordelen en recensie",
+    "reset_alert_message": "Alle gegevens worden gewist en je gaat terug naar het startscherm. Doorgaan?",
+    "reset_alert_title": "App resetten",
+    "reset_app": "App resetten",
+    "reset_confirm": "Resetten",
+    "round_whole_numbers": "Afronden op hele getallen",
+    "share_friend": "Deel met een vriend",
+    "subscription_day": "Subscription Day",
+    "theme": "Thema",
+    "title": "Instellingen",
+    "true_dark_colors": "Echt donker",
+    "unlock_lifetime": "Ontgrendel alle functies met een eenmalige licentie.",
+    "update_now": "Nu bijwerken",
+    "updating": "Bijwerken…",
+    "version": "Versie: {{version}}",
+    "visit_website": "Bezoek website"
+  },
+  "subscription": {
+    "add_notes_placeholder": "Notities toevoegen",
+    "category": "Categorie",
+    "create": "Aanmaken",
+    "created": "Abonnement aangemaakt",
+    "custom": "Aangepast",
+    "delete_confirm": "Weet je zeker dat je \"{{name}}\" wilt verwijderen?",
+    "delete_title": "Abonnement verwijderen",
+    "deleted": "Abonnement verwijderd",
+    "edit": "Abonnement bewerken",
+    "edit_button": "Bewerken",
+    "interval": "Interval",
+    "list": "Lijst",
+    "month": "Maand",
+    "monthly": "Maandelijks",
+    "name": "Naam",
+    "name_placeholder": "Cursor",
+    "new": "Nieuw abonnement",
+    "next_payment": "Volgende betaling",
+    "next_payment_in_days": "over {{count}} dagen",
+    "next_payment_in_one_day": "over 1 dag",
+    "next_payment_today": "vandaag",
+    "none": "Geen",
+    "notification_custom": "Aangepast",
+    "notification_default": "Standaard",
+    "notification_disabled": "Uit",
+    "notifications": "Meldingen",
+    "pay_with": "Betalen met",
+    "payment_method": "Betaalmethode",
+    "schedule": "Frequentie",
+    "start_date": "Startdatum",
+    "status": "Status",
+    "status_active": "Actief",
+    "status_canceled": "Opgezegd",
+    "status_paused": "Gepauzeerd",
+    "total_spent": "Totaal besteed",
+    "updated": "Abonnement bijgewerkt",
+    "week": "Week",
+    "weekly": "Wekelijks",
+    "yearly": "Jaarlijks"
+  },
+  "subscription_day_view": {
+    "add_new": "Abonnement toevoegen",
+    "title": "Abonnementen",
+    "total": "Totaal"
+  },
+  "subscription_status": {
+    "active": "Actief",
+    "canceled": "Opgezegd",
+    "paused": "Gepauzeerd"
+  },
+  "theme": {
+    "options": {
+      "classic": {
+        "description": "Warm oranjeaccent met neutrale tinten.",
+        "name": "Klassiek"
+      },
+      "forest": {
+        "description": "Zachte groentinten geïnspireerd door de natuur.",
+        "name": "Bos"
+      },
+      "midnight": {
+        "description": "Diepe blauwtinten voor een filmische look.",
+        "name": "Middernacht"
+      },
+      "sunset": {
+        "description": "Gouden oranje met warm contrast.",
+        "name": "Zonsondergang"
+      }
+    },
+    "pick_vibe": "Kies de sfeer. Alleen de appkleuren veranderen, niet je systeemthema.",
+    "title": "Thema"
+  }
+}

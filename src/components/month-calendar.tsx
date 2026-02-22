@@ -7,8 +7,8 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import { Haptic } from '@/lib/haptics';
-import { getDateFnsLocale } from '@/lib/i18n/date-locale';
 import { useTheme } from '@/lib/hooks/use-theme';
+import { getDateFnsLocale } from '@/lib/i18n/date-locale';
 import { getPaymentDatesForMonth } from '@/lib/utils/subscription-dates';
 import { getServiceColor, ServiceIcon } from './service-icon';
 

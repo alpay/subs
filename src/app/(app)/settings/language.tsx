@@ -1,12 +1,13 @@
+import type { Language } from '@/lib/i18n/resources';
 import { SymbolView } from 'expo-symbols';
 import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { NativeSheet } from '@/components/native-sheet';
 import { Haptic } from '@/lib/haptics';
-import { useSelectedLanguage } from '@/lib/i18n/utils';
 import { useTheme } from '@/lib/hooks/use-theme';
-import { LANGUAGE_FLAGS, LANGUAGE_NAMES, type Language } from '@/lib/i18n/resources';
+import { LANGUAGE_FLAGS, LANGUAGE_NAMES } from '@/lib/i18n/resources';
+import { useSelectedLanguage } from '@/lib/i18n/utils';
 
 const LANGUAGES: Language[] = ['en', 'de', 'es', 'nl', 'it', 'pt', 'ru', 'zh', 'tr'];
 

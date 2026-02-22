@@ -1,4 +1,18 @@
 {
+  "amount_picker": {
+    "amount_label": "AMOUNT"
+  },
+  "analytics": {
+    "active_count": "You have {{count}} active subscription",
+    "active_count_plural": "You have {{count}} active subscriptions",
+    "average_monthly": "Average",
+    "forecast": "Forecast",
+    "monthly_cost": "Monthly Cost",
+    "no_category_spend": "No category spend yet.",
+    "title": "Analytics",
+    "year_to_date": "Year to Date",
+    "yearly_forecast": "Yearly"
+  },
   "app": {
     "brand": "Subs",
     "brand_initial": "S",
@@ -9,244 +23,132 @@
   "calendar": {
     "this_month": "This month"
   },
-  "csv_export": {
-    "name": "Name",
-    "period": "Period",
-    "price": "Price",
-    "start_date": "Start Date",
-    "category": "Category"
+  "categories": {
+    "delete_confirm": "Are you sure you want to delete \"{{name}}\"?",
+    "delete_title": "Delete Category",
+    "new_placeholder": "New Category",
+    "other_footer": "The 'Other' category cannot be deleted as it automatically serves as a default for subscriptions without a specific category.",
+    "rename_title": "Rename Category",
+    "title": "Categories"
   },
   "common": {
     "accessibility": {
+      "back_label": "Back",
       "close_modal_hint": "Closes the modal",
-      "close_modal_label": "Close modal",
-      "back_label": "Back"
+      "close_modal_label": "Close modal"
     },
+    "add": "Add",
+    "amount": "Amount",
     "cancel": "Cancel",
     "close": "Close",
     "coming_soon": "Coming soon",
     "confirm": "Confirm",
+    "currency": "Currency",
     "delete": "Delete",
+    "done": "Done",
     "error": "Error",
+    "never": "Never",
     "no_data": "No data",
     "notes": "Notes",
+    "off": "Off",
+    "on": "On",
     "optional": "Optional",
+    "other": "Other",
     "pause": "Pause",
     "save": "Save",
     "saving": "Saving...",
     "search": "Search",
     "select_placeholder": "Select...",
     "something_went_wrong": "Something went wrong",
-    "add": "Add",
-    "done": "Done",
-    "never": "Never",
-    "on": "On",
-    "off": "Off",
-    "other": "Other",
-    "currency": "Currency",
-    "amount": "Amount",
     "unknown_error": "Unknown error"
+  },
+  "csv_export": {
+    "category": "Category",
+    "name": "Name",
+    "period": "Period",
+    "price": "Price",
+    "start_date": "Start Date"
+  },
+  "currency": {
+    "all": "ALL CURRENCIES",
+    "default_set": "Default currency set to {{code}}",
+    "favorites": "FAVORITES",
+    "search_placeholder": "Search",
+    "select_title": "Select Currency"
   },
   "diary": {
     "lightbox_hint": "Swipe up or down to dismiss"
   },
-  "not_found": {
-    "title": "Not found",
-    "subtitle": "This screen doesn't exist.",
-    "cta": "Go home",
-    "page_title": "Page not found",
-    "route_description": "This route does not exist in the new HeroUI flow.",
-    "back_to_home": "Back to Home"
-  },
   "home": {
-    "search_placeholder": "Search subs",
-    "remaining": "Remaining"
-  },
-  "paywall": {
-    "features": {
-      "unlimited": {
-        "title": "Unlimited Subscriptions",
-        "description": "Enjoy the freedom of managing subscriptions without limits."
-      },
-      "icloud": {
-        "title": "iCloud Sync",
-        "description": "Securely store your data and keep it in sync across all your devices."
-      },
-      "analytics": {
-        "title": "Insights & Analytics",
-        "description": "Track your spending with detailed analytics and forecasts."
-      },
-      "categories": {
-        "title": "Smart Categories",
-        "description": "Organize and categorize your subscriptions your way."
-      },
-      "support": {
-        "title": "Support the Developer",
-        "description": "Your purchase motivates a developer to keep improving the app."
-      },
-      "updates": {
-        "title": "New Features & Updates",
-        "description": "Access new functions for life along with regular updates."
-      }
-    },
-    "lifetime": "Lifetime",
-    "pay_once_forever": "Pay once, use forever!",
-    "restoring": "Restoring…",
-    "restore_purchases": "Restore Purchases",
-    "privacy": "Privacy",
-    "promo": "Promo",
-    "not_available_title": "Not available",
-    "not_available_message": "In-app purchase is not configured for this build. Use a development build with RevenueCat API keys to test.",
-    "restore_not_available": "Restore is not available for this build.",
-    "purchase_failed_title": "Purchase failed",
-    "purchase_failed_message": "Purchase failed. Please try again.",
-    "restore_complete_title": "Restore complete",
-    "restore_complete_no_purchase": "No previous purchase was found for this Apple ID.",
-    "restore_failed_title": "Restore failed",
-    "restore_failed_message": "Restore failed. Please try again."
-  },
-  "services": {
-    "title": "Services",
-    "search_placeholder": "Search services",
-    "search_results": "SEARCH RESULTS",
-    "popular_services": "POPULAR SERVICES",
-    "no_brands_found": "No brands found. Tap the card above to add {{name}} as a custom service.",
-    "import": {
-      "notion": "Import from Notion",
-      "sheets": "Import from Google Sheets",
-      "file": "Import from file",
-      "apple": "Import from Apple"
-    }
-  },
-  "settings": {
-    "title": "Settings",
-    "developer": "Developer",
-    "reset_app": "Reset App",
-    "premium": "Premium",
-    "account": "Account",
-    "unlock_lifetime": "Unlock all features with a lifetime license.",
-    "subscription_day": "Subscription Day",
-    "account_type": "Account type",
-    "pro": "Pro",
-    "free": "Free",
-    "general": "General",
-    "icloud_data": "iCloud & Data",
-    "language": "Language",
-    "main_currency": "Main Currency",
-    "round_whole_numbers": "Round to Whole Numbers",
-    "data": "Data",
-    "lists": "Lists",
-    "categories": "Categories",
-    "payment_methods": "Payment Methods",
-    "interface": "Interface",
-    "true_dark_colors": "True Dark Colors",
-    "theme": "Theme",
-    "preview_choose": "Preview & choose",
-    "haptic_feedback": "Haptic Feedback",
-    "currency_rates": "Currency Rates",
-    "currency_rates_footer": "Rates are fetched from a public API (ExchangeRate-API). Tap Update Now to refresh. Values are approximate and may differ from your local rates.",
-    "last_updated": "Last updated",
-    "update_now": "Update Now",
-    "updating": "Updating...",
-    "more": "More",
-    "rate_review": "Rate & Review",
-    "ideas_roadmap": "Ideas & Roadmap",
-    "contact_me": "Contact me",
-    "visit_website": "Visit Website",
-    "share_friend": "Share with a friend",
-    "made_with_love": "Made with love for details at Appps™ © 2026",
-    "version": "Version: {{version}}",
-    "reset_alert_title": "Reset App",
-    "reset_alert_message": "This will clear all data and return to the home screen. Continue?",
-    "reset_confirm": "Reset",
-    "currency_updated": "Currency rates updated",
-    "currency_update_failed": "Failed to update rates. Check your connection."
-  },
-  "onboarding": {
-    "brand": "Subs",
-    "skip": "Skip",
-    "get_started": "Get started",
-    "next": "Next",
-    "slides": {
-      "1": {
-        "title": "Simple onboarding",
-        "description": "Complete shopping experience"
-      },
-      "2": {
-        "title": "Copy and paste",
-        "description": "Elegant design for your shopping app"
-      },
-      "3": {
-        "title": "Free to use",
-        "description": "Easily modify themes, layouts, and state management for your app."
-      }
-    }
-  },
-  "subscription": {
-    "new": "New Subscription",
-    "edit": "Edit Subscription",
-    "edit_button": "Edit",
-    "create": "Create",
-    "delete_title": "Delete Subscription",
-    "delete_confirm": "Are you sure you want to delete \"{{name}}\"?",
-    "deleted": "Subscription deleted",
-    "created": "Subscription created",
-    "updated": "Subscription updated",
-    "next_payment": "Next payment",
-    "total_spent": "Total spent",
-    "notifications": "Notifications",
-    "category": "Category",
-    "list": "List",
-    "name": "Name",
-    "schedule": "Schedule",
-    "monthly": "Monthly",
-    "yearly": "Yearly",
-    "weekly": "Weekly",
-    "custom": "Custom",
-    "start_date": "Start Date",
-    "interval": "Interval",
-    "month": "Month",
-    "week": "Week",
-    "pay_with": "Pay with",
-    "payment_method": "Payment method",
-    "none": "None",
-    "add_notes_placeholder": "Add any notes",
-    "name_placeholder": "Cursor",
-    "status_active": "Active",
-    "status_paused": "Paused",
-    "status_canceled": "Canceled",
-    "status": "Status",
-    "notification_default": "Default",
-    "notification_disabled": "Disabled",
-    "notification_custom": "Custom",
-    "next_payment_today": "today",
-    "next_payment_in_one_day": "in 1 day",
-    "next_payment_in_days": "in {{count}} days"
-  },
-  "subscription_day_view": {
-    "title": "Subscriptions",
-    "add_new": "Add new subscription",
-    "total": "Total"
+    "remaining": "Remaining",
+    "search_placeholder": "Search subs"
   },
   "home_search": {
     "no_results": "No subscriptions found",
     "tap_to_add_first": "Tap here to add your first"
   },
-  "subscription_status": {
-    "active": "Active",
-    "paused": "Paused",
-    "canceled": "Canceled"
+  "icloud": {
+    "active_one_time": "Active & One time",
+    "archived": "Archived",
+    "backing_up": "Backing up...",
+    "backup": "Backup",
+    "backup_failed": "Failed to backup: {{message}}",
+    "backup_footer": "Your subscription data will be securely synced across all your devices via iCloud Drive.",
+    "backup_found_message": "An existing iCloud backup was found. What would you like to do?",
+    "backup_found_title": "iCloud backup found",
+    "backup_found_with_summary": "{{summary}}\n\nWhat would you like to do?",
+    "backup_success": "Backup completed successfully",
+    "canceled": "Canceled",
+    "check_backup_failed": "Failed to check iCloud backup",
+    "current_subs": "Current Subs",
+    "delete_all": "Delete All Data",
+    "delete_all_confirm_message": "This action permanently deletes all data from your device. If iCloud sync is enabled, data will also be removed from iCloud.",
+    "delete_all_confirm_title": "Delete All Data",
+    "delete_all_footer": "This action permanently deletes all data from your device. If iCloud sync is enabled, data will also be removed from iCloud.",
+    "export_csv": "Export data to CSV",
+    "export_dialog_title": "Export Subscriptions",
+    "export_failed": "Failed to export",
+    "exporting": "Exporting...",
+    "icloud_sync": "iCloud synchronization",
+    "keep_device": "Keep this device data",
+    "last_backup": "Last backup: {{date}}",
+    "last_backup_line": "Last backup: {{date}}",
+    "no_subs_to_export": "No subscriptions to export",
+    "not_available": "iCloud is not available. Sign in to iCloud in Settings.",
+    "not_available_short": "iCloud is not available",
+    "restore": "Restore from iCloud",
+    "restore_button": "Restore",
+    "restore_confirm_message": "This will replace your local data with the backup from iCloud. Continue?",
+    "restore_confirm_title": "Restore from iCloud",
+    "restore_failed": "Failed to restore from iCloud",
+    "restored": "Data restored from iCloud",
+    "restoring": "Restoring...",
+    "sharing_unavailable": "Sharing is not available on this device",
+    "subscriptions_in_backup": "Subscriptions in backup: {{count}}",
+    "sync_failed": "Failed to sync with iCloud",
+    "syncing": "Syncing...",
+    "title": "iCloud & Data",
+    "use_backup": "Use iCloud backup"
+  },
+  "language": {
+    "select_title": "Language"
+  },
+  "lists": {
+    "added": "{{name}} added",
+    "new_placeholder": "New List",
+    "no_lists": "No lists yet.",
+    "rename_title": "Rename List",
+    "title": "Lists"
+  },
+  "not_found": {
+    "back_to_home": "Back to Home",
+    "cta": "Go home",
+    "page_title": "Page not found",
+    "route_description": "This route does not exist in the new HeroUI flow.",
+    "subtitle": "This screen doesn't exist.",
+    "title": "Not found"
   },
   "notifications": {
-    "section_header": "Notifications",
-    "section_footer": "If Focus Modes are enabled, notifications might not appear.",
-    "first_reminder": "First Reminder",
-    "second_reminder": "Second Reminder",
-    "test_notification": "Test Notification",
-    "enable_in_settings": "Enable notifications in Settings to test alerts.",
-    "test_scheduled": "Test notification scheduled",
-    "unable_to_schedule": "Unable to schedule a test notification",
-    "same_day": "Same day",
     "days": {
       "1": "1 Day",
       "2": "2 Days",
@@ -256,120 +158,218 @@
       "10": "10 Days",
       "15": "15 Days",
       "30": "30 Days"
-    }
+    },
+    "enable_in_settings": "Enable notifications in Settings to test alerts.",
+    "first_reminder": "First Reminder",
+    "same_day": "Same day",
+    "second_reminder": "Second Reminder",
+    "section_footer": "If Focus Modes are enabled, notifications might not appear.",
+    "section_header": "Notifications",
+    "test_notification": "Test Notification",
+    "test_scheduled": "Test notification scheduled",
+    "unable_to_schedule": "Unable to schedule a test notification"
   },
-  "currency": {
-    "select_title": "Select Currency",
-    "search_placeholder": "Search",
-    "favorites": "FAVORITES",
-    "all": "ALL CURRENCIES",
-    "default_set": "Default currency set to {{code}}"
-  },
-  "language": {
-    "select_title": "Language"
-  },
-  "theme": {
-    "title": "Theme",
-    "pick_vibe": "Pick the vibe you like. This only changes the app's colors, not your system theme.",
-    "options": {
-      "classic": {
-        "name": "Classic",
-        "description": "Warm orange accent with balanced neutrals."
+  "onboarding": {
+    "brand": "Subs",
+    "get_started": "Get started",
+    "next": "Next",
+    "skip": "Skip",
+    "slides": {
+      "1": {
+        "description": "Complete shopping experience",
+        "title": "Simple onboarding"
       },
-      "midnight": {
-        "name": "Midnight",
-        "description": "Deep blues for a focused, cinematic look."
+      "2": {
+        "description": "Elegant design for your shopping app",
+        "title": "Copy and paste"
       },
-      "forest": {
-        "name": "Forest",
-        "description": "Soft greens inspired by nature."
-      },
-      "sunset": {
-        "name": "Sunset",
-        "description": "Golden hour oranges with cozy contrast."
+      "3": {
+        "description": "Easily modify themes, layouts, and state management for your app.",
+        "title": "Free to use"
       }
     }
   },
-  "categories": {
-    "title": "Categories",
-    "new_placeholder": "New Category",
-    "rename_title": "Rename Category",
-    "delete_title": "Delete Category",
-    "delete_confirm": "Are you sure you want to delete \"{{name}}\"?",
-    "other_footer": "The 'Other' category cannot be deleted as it automatically serves as a default for subscriptions without a specific category."
-  },
-  "lists": {
-    "title": "Lists",
-    "new_placeholder": "New List",
-    "added": "{{name}} added",
-    "rename_title": "Rename List",
-    "no_lists": "No lists yet."
-  },
   "payment_methods": {
-    "title": "Payment Methods",
-    "new_placeholder": "New Payment Method",
     "added": "Payment method \"{{name}}\" added",
-    "rename_title": "Rename Payment Method",
-    "delete_title": "Delete Payment Method",
     "delete_confirm": "Are you sure you want to delete \"{{name}}\"?",
+    "delete_title": "Delete Payment Method",
+    "new_placeholder": "New Payment Method",
     "no_methods": "No payment methods yet.",
-    "security_note": "We care about your security, so please do not store full card numbers or account details."
+    "rename_title": "Rename Payment Method",
+    "security_note": "We care about your security, so please do not store full card numbers or account details.",
+    "title": "Payment Methods"
   },
-  "icloud": {
-    "title": "iCloud & Data",
-    "syncing": "Syncing...",
-    "last_backup": "Last backup: {{date}}",
-    "backup_footer": "Your subscription data will be securely synced across all your devices via iCloud Drive.",
-    "icloud_sync": "iCloud synchronization",
-    "backup": "Backup",
-    "backing_up": "Backing up...",
-    "restore": "Restore from iCloud",
-    "restoring": "Restoring...",
-    "current_subs": "Current Subs",
-    "active_one_time": "Active & One time",
+  "paywall": {
+    "features": {
+      "analytics": {
+        "description": "Track your spending with detailed analytics and forecasts.",
+        "title": "Insights & Analytics"
+      },
+      "categories": {
+        "description": "Organize and categorize your subscriptions your way.",
+        "title": "Smart Categories"
+      },
+      "icloud": {
+        "description": "Securely store your data and keep it in sync across all your devices.",
+        "title": "iCloud Sync"
+      },
+      "support": {
+        "description": "Your purchase motivates a developer to keep improving the app.",
+        "title": "Support the Developer"
+      },
+      "unlimited": {
+        "description": "Enjoy the freedom of managing subscriptions without limits.",
+        "title": "Unlimited Subscriptions"
+      },
+      "updates": {
+        "description": "Access new functions for life along with regular updates.",
+        "title": "New Features & Updates"
+      }
+    },
+    "lifetime": "Lifetime",
+    "not_available_message": "In-app purchase is not configured for this build. Use a development build with RevenueCat API keys to test.",
+    "not_available_title": "Not available",
+    "pay_once_forever": "Pay once, use forever!",
+    "privacy": "Privacy",
+    "promo": "Promo",
+    "purchase_failed_message": "Purchase failed. Please try again.",
+    "purchase_failed_title": "Purchase failed",
+    "restore_complete_no_purchase": "No previous purchase was found for this Apple ID.",
+    "restore_complete_title": "Restore complete",
+    "restore_failed_message": "Restore failed. Please try again.",
+    "restore_failed_title": "Restore failed",
+    "restore_not_available": "Restore is not available for this build.",
+    "restore_purchases": "Restore Purchases",
+    "restoring": "Restoring…"
+  },
+  "services": {
+    "import": {
+      "apple": "Import from Apple",
+      "file": "Import from file",
+      "notion": "Import from Notion",
+      "sheets": "Import from Google Sheets"
+    },
+    "no_brands_found": "No brands found. Tap the card above to add {{name}} as a custom service.",
+    "popular_services": "POPULAR SERVICES",
+    "search_placeholder": "Search services",
+    "search_results": "SEARCH RESULTS",
+    "title": "Services"
+  },
+  "settings": {
+    "account": "Account",
+    "account_type": "Account type",
+    "categories": "Categories",
+    "contact_me": "Contact me",
+    "currency_rates": "Currency Rates",
+    "currency_rates_footer": "Rates are fetched from a public API (ExchangeRate-API). Tap Update Now to refresh. Values are approximate and may differ from your local rates.",
+    "currency_update_failed": "Failed to update rates. Check your connection.",
+    "currency_updated": "Currency rates updated",
+    "data": "Data",
+    "developer": "Developer",
+    "free": "Free",
+    "general": "General",
+    "haptic_feedback": "Haptic Feedback",
+    "icloud_data": "iCloud & Data",
+    "ideas_roadmap": "Ideas & Roadmap",
+    "interface": "Interface",
+    "language": "Language",
+    "last_updated": "Last updated",
+    "lists": "Lists",
+    "made_with_love": "Made with love for details at Appps™ © 2026",
+    "main_currency": "Main Currency",
+    "more": "More",
+    "payment_methods": "Payment Methods",
+    "premium": "Premium",
+    "preview_choose": "Preview & choose",
+    "pro": "Pro",
+    "rate_review": "Rate & Review",
+    "reset_alert_message": "This will clear all data and return to the home screen. Continue?",
+    "reset_alert_title": "Reset App",
+    "reset_app": "Reset App",
+    "reset_confirm": "Reset",
+    "round_whole_numbers": "Round to Whole Numbers",
+    "share_friend": "Share with a friend",
+    "subscription_day": "Subscription Day",
+    "theme": "Theme",
+    "title": "Settings",
+    "true_dark_colors": "True Dark Colors",
+    "unlock_lifetime": "Unlock all features with a lifetime license.",
+    "update_now": "Update Now",
+    "updating": "Updating...",
+    "version": "Version: {{version}}",
+    "visit_website": "Visit Website"
+  },
+  "subscription": {
+    "add_notes_placeholder": "Add any notes",
+    "category": "Category",
+    "create": "Create",
+    "created": "Subscription created",
+    "custom": "Custom",
+    "delete_confirm": "Are you sure you want to delete \"{{name}}\"?",
+    "delete_title": "Delete Subscription",
+    "deleted": "Subscription deleted",
+    "edit": "Edit Subscription",
+    "edit_button": "Edit",
+    "interval": "Interval",
+    "list": "List",
+    "month": "Month",
+    "monthly": "Monthly",
+    "name": "Name",
+    "name_placeholder": "Cursor",
+    "new": "New Subscription",
+    "next_payment": "Next payment",
+    "next_payment_in_days": "in {{count}} days",
+    "next_payment_in_one_day": "in 1 day",
+    "next_payment_today": "today",
+    "none": "None",
+    "notification_custom": "Custom",
+    "notification_default": "Default",
+    "notification_disabled": "Disabled",
+    "notifications": "Notifications",
+    "pay_with": "Pay with",
+    "payment_method": "Payment method",
+    "schedule": "Schedule",
+    "start_date": "Start Date",
+    "status": "Status",
+    "status_active": "Active",
+    "status_canceled": "Canceled",
+    "status_paused": "Paused",
+    "total_spent": "Total spent",
+    "updated": "Subscription updated",
+    "week": "Week",
+    "weekly": "Weekly",
+    "yearly": "Yearly"
+  },
+  "subscription_day_view": {
+    "add_new": "Add new subscription",
+    "title": "Subscriptions",
+    "total": "Total"
+  },
+  "subscription_status": {
+    "active": "Active",
     "canceled": "Canceled",
-    "archived": "Archived",
-    "export_csv": "Export data to CSV",
-    "exporting": "Exporting...",
-    "delete_all": "Delete All Data",
-    "delete_all_confirm_title": "Delete All Data",
-    "delete_all_confirm_message": "This action permanently deletes all data from your device. If iCloud sync is enabled, data will also be removed from iCloud.",
-    "delete_all_footer": "This action permanently deletes all data from your device. If iCloud sync is enabled, data will also be removed from iCloud.",
-    "not_available": "iCloud is not available. Sign in to iCloud in Settings.",
-    "not_available_short": "iCloud is not available",
-    "last_backup_line": "Last backup: {{date}}",
-    "subscriptions_in_backup": "Subscriptions in backup: {{count}}",
-    "check_backup_failed": "Failed to check iCloud backup",
-    "sync_failed": "Failed to sync with iCloud",
-    "restored": "Data restored from iCloud",
-    "restore_failed": "Failed to restore from iCloud",
-    "backup_found_title": "iCloud backup found",
-    "backup_found_message": "An existing iCloud backup was found. What would you like to do?",
-    "backup_found_with_summary": "{{summary}}\n\nWhat would you like to do?",
-    "use_backup": "Use iCloud backup",
-    "keep_device": "Keep this device data",
-    "no_subs_to_export": "No subscriptions to export",
-    "export_dialog_title": "Export Subscriptions",
-    "sharing_unavailable": "Sharing is not available on this device",
-    "export_failed": "Failed to export",
-    "backup_success": "Backup completed successfully",
-    "backup_failed": "Failed to backup: {{message}}",
-    "restore_confirm_title": "Restore from iCloud",
-    "restore_confirm_message": "This will replace your local data with the backup from iCloud. Continue?",
-    "restore_button": "Restore"
+    "paused": "Paused"
   },
-  "analytics": {
-    "title": "Analytics",
-    "active_count": "You have {{count}} active subscription",
-    "active_count_plural": "You have {{count}} active subscriptions",
-    "yearly_forecast": "Yearly",
-    "forecast": "Forecast",
-    "average_monthly": "Average",
-    "monthly_cost": "Monthly Cost",
-    "year_to_date": "Year to Date",
-    "no_category_spend": "No category spend yet."
-  },
-  "amount_picker": {
-    "amount_label": "AMOUNT"
+  "theme": {
+    "options": {
+      "classic": {
+        "description": "Warm orange accent with balanced neutrals.",
+        "name": "Classic"
+      },
+      "forest": {
+        "description": "Soft greens inspired by nature.",
+        "name": "Forest"
+      },
+      "midnight": {
+        "description": "Deep blues for a focused, cinematic look.",
+        "name": "Midnight"
+      },
+      "sunset": {
+        "description": "Golden hour oranges with cozy contrast.",
+        "name": "Sunset"
+      }
+    },
+    "pick_vibe": "Pick the vibe you like. This only changes the app's colors, not your system theme.",
+    "title": "Theme"
   }
 }

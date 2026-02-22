@@ -60,7 +60,8 @@ export default function PaywallScreen() {
   activeIndexRef.current = activeIndex;
 
   useEffect(() => {
-    if (!hasRevenueCat) return;
+    if (!hasRevenueCat)
+      return;
     getLifetimePackage()
       .then(pkg => (pkg ? setLifetimePriceString(pkg.product.priceString) : null))
       .catch(() => {});
@@ -109,14 +110,16 @@ export default function PaywallScreen() {
       const result = await purchaseLifetime();
       if (result.success) {
         router.back();
-      } else if (!result.userCancelled) {
-        const message =
-          result.error instanceof Error
+      }
+      else if (!result.userCancelled) {
+        const message
+          = result.error instanceof Error
             ? result.error.message
             : t('paywall.purchase_failed_message');
         Alert.alert(t('paywall.purchase_failed_title'), message);
       }
-    } finally {
+    }
+    finally {
       setPurchasing(false);
     }
   }, [settings.premium, hasRevenueCat, router, t]);
@@ -136,20 +139,23 @@ export default function PaywallScreen() {
       if (result.success) {
         if (result.hadPremium) {
           router.back();
-        } else {
+        }
+        else {
           Alert.alert(
             t('paywall.restore_complete_title'),
             t('paywall.restore_complete_no_purchase'),
           );
         }
-      } else {
-        const message =
-          result.error instanceof Error
+      }
+      else {
+        const message
+          = result.error instanceof Error
             ? result.error.message
             : t('paywall.restore_failed_message');
         Alert.alert(t('paywall.restore_failed_title'), message);
       }
-    } finally {
+    }
+    finally {
       setRestoring(false);
     }
   }, [hasRevenueCat, router, t]);
@@ -246,13 +252,15 @@ export default function PaywallScreen() {
                 {t('paywall.pay_once_forever')}
               </Text>
             </View>
-            {purchasing ? (
-              <ActivityIndicator size="small" color="white" />
-            ) : (
-              <Text style={{ fontSize: 18, fontWeight: '700', color: 'white' }}>
-                {displayPrice}
-              </Text>
-            )}
+            {purchasing
+              ? (
+                  <ActivityIndicator size="small" color="white" />
+                )
+              : (
+                  <Text style={{ fontSize: 18, fontWeight: '700', color: 'white' }}>
+                    {displayPrice}
+                  </Text>
+                )}
           </Pressable>
 
           {/* Footer links */}
