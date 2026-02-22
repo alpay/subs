@@ -14,6 +14,12 @@ const LOCALE_MAP: Record<string, Locale> = {
   zh: zhCN,
 };
 
+/** Returns date-fns locale for the given language code (e.g. 'en', 'tr'). */
+export function getDateFnsLocaleForLanguage(lang: string): Locale {
+  const code = lang?.split('-')[0] ?? 'en';
+  return LOCALE_MAP[code] ?? enUS;
+}
+
 /** Returns date-fns locale for the current i18n language (for month/weekday names, etc.). */
 export function getDateFnsLocale(): Locale {
   const lang = i18n.language?.split('-')[0] ?? 'en';

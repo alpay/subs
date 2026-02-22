@@ -99,5 +99,5 @@ export function useICloudAutoSync({
       cancelled = true;
       clearTimeout(timeoutId);
     };
-  }, [enabled, available, ...deps]);
+  }, [enabled, available, deps]);
 }

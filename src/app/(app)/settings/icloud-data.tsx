@@ -100,10 +100,14 @@ export default function ICloudDataScreen() {
     available: iCloudAvailable,
   });
 
+  const syncDeps = useMemo(
+    () => [subscriptions, categories, lists, paymentMethods],
+    [subscriptions, categories, lists, paymentMethods],
+  );
   useICloudAutoSync({
     enabled: settings.iCloudEnabled,
     available: iCloudAvailable,
-    deps: [subscriptions, categories, lists, paymentMethods],
+    deps: syncDeps,
     onSyncStart: () => setIsSyncing(true),
     onSyncEnd: () => setIsSyncing(false),
     onSyncError: (message) => {
@@ -400,7 +404,7 @@ export default function ICloudDataScreen() {
               toast.show(t('icloud.restored'));
             }
             catch (error) {
-              const errorMessage = error instanceof Error ? error.message : t('common.unknown_error');
+              const _errorMessage = error instanceof Error ? error.message : t('common.unknown_error');
               toast.show(t('icloud.restore_failed'));
             }
             finally {

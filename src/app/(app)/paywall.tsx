@@ -68,13 +68,14 @@ export default function PaywallScreen() {
   }, [hasRevenueCat]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    const id = setInterval(() => {
       if (userHasScrolledRef.current)
         return;
       const nextIndex = (activeIndexRef.current + 1) % paywallFeatures.length;
       const offset = nextIndex * screenWidth;
       flatListRef.current?.scrollToOffset({ offset, animated: true });
     }, AUTO_SCROLL_INTERVAL_MS);
+    return () => clearInterval(id);
   }, [screenWidth, paywallFeatures.length]);
 
   const handleScrollBeginDrag = useCallback(() => {

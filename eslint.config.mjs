@@ -145,7 +145,8 @@ export default antfu(
         },
       ],
       'i18n-json/valid-json': 2,
-      'i18n-json/sorted-keys': [2, { order: 'asc', indentSpaces: 2 }],
+      // Disabled: autofix conflicts with processor and causes circular fixes
+      'i18n-json/sorted-keys': 'off',
       'i18n-json/identical-keys': [
         2,
         { filePath: path.resolve(__dirname, './src/translations/en.json') },

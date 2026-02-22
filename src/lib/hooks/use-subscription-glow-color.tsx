@@ -80,7 +80,9 @@ export function useSubscriptionGlowColor(
       if (!cancelled)
         setColor(c);
     });
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [subscription]);
 
   const useImage = subscription?.iconType === 'image' && subscription?.iconUri;

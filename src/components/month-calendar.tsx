@@ -8,13 +8,13 @@ import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } fr
 
 import { Haptic } from '@/lib/haptics';
 import { useTheme } from '@/lib/hooks/use-theme';
-import { getDateFnsLocale } from '@/lib/i18n/date-locale';
+import { getDateFnsLocaleForLanguage } from '@/lib/i18n/date-locale';
 import { getPaymentDatesForMonth } from '@/lib/utils/subscription-dates';
 import { getServiceColor, ServiceIcon } from './service-icon';
 
 /** Monday 00:00 as base; then +0..6 days for Mon–Sun. */
 const WEEK_BASE = new Date(2024, 0, 1);
-function getWeekdayLetters(locale: ReturnType<typeof getDateFnsLocale>): string[] {
+function getWeekdayLetters(locale: ReturnType<typeof getDateFnsLocaleForLanguage>): string[] {
   return Array.from({ length: 7 }, (_, i) => {
     const d = new Date(WEEK_BASE);
     d.setDate(d.getDate() + i);
@@ -80,9 +80,10 @@ const MonthGrid = memo(({
 }: MonthGridProps) => {
   const { i18n } = useTranslation();
   const { gap, cellSize, cellHeight, cellRadius, iconSize, badgeSize, calendarWidth: width } = metrics;
+  const language = i18n.language;
   const weekdayLetters = useMemo(
-    () => getWeekdayLetters(getDateFnsLocale()),
-    [i18n.language],
+    () => getWeekdayLetters(getDateFnsLocaleForLanguage(language)),
+    [language],
   );
 
   const paymentMap = useMemo(() => {
