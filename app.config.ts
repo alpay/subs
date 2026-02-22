@@ -12,13 +12,8 @@ const EXPO_ACCOUNT_OWNER = 'mangoser';
 const EAS_PROJECT_ID = '457bc03e-a6f5-4c84-ae9e-14df4d911373';
 
 const appIconBadgeConfig: AppIconBadgeConfig = {
-  enabled: Env.EXPO_PUBLIC_APP_ENV !== 'production',
+  enabled: false,
   badges: [
-    {
-      text: Env.EXPO_PUBLIC_APP_ENV,
-      type: 'banner',
-      color: 'white',
-    },
     {
       text: Env.EXPO_PUBLIC_VERSION.toString(),
       type: 'ribbon',
@@ -84,11 +79,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'react-native-cloud-storage',
       {
-        // Tek bir CloudKit container kullan (hem dev hem prod): iCloud.com.subs
         iCloudContainerIdentifier: 'iCloud.com.subs',
-        // Dev / preview için CloudKit Development env, prod için Production
-        iCloudContainerEnvironment:
-          Env.EXPO_PUBLIC_APP_ENV === 'production' ? 'Production' : 'Development',
+        iCloudContainerEnvironment: 'Production',
       },
     ],
   ],

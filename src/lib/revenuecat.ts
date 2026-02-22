@@ -21,7 +21,7 @@ let isConfigured = false;
 
 /**
  * Get the RevenueCat API key for the current platform.
- * Use Test Store key in development if you want to test without real IAP.
+ * Bundle ID must be com.subs (RevenueCat app config).
  */
 function getApiKey(): string | undefined {
   if (Platform.OS === 'ios') {

@@ -2,9 +2,8 @@ import z from 'zod';
 
 import packageJSON from './package.json';
 
-// Single unified environment schema
+// Single environment: always com.subs (no development/preview variants)
 const envSchema = z.object({
-  EXPO_PUBLIC_APP_ENV: z.enum(['development', 'preview', 'production']),
   EXPO_PUBLIC_NAME: z.string(),
   EXPO_PUBLIC_SCHEME: z.string(),
   EXPO_PUBLIC_BUNDLE_ID: z.string(),
@@ -18,7 +17,7 @@ const envSchema = z.object({
   EXPO_PUBLIC_DEFAULT_LOCALE: z.string().default('tr-TR'),
   /** Brandfetch API client ID for company search & logos (optional). */
   EXPO_PUBLIC_BRANDFETCH_CLIENT_ID: z.string().optional(),
-  /** RevenueCat public API keys (required for IAP). Use Test Store key for dev. */
+  /** RevenueCat public API keys (required for IAP). */
   EXPO_PUBLIC_REVENUECAT_IOS: z.string().optional(),
   EXPO_PUBLIC_REVENUECAT_ANDROID: z.string().optional(),
 
@@ -26,40 +25,20 @@ const envSchema = z.object({
   APP_BUILD_ONLY_VAR: z.string().optional(),
 });
 
-// Config records per environment
-const EXPO_PUBLIC_APP_ENV = (process.env.EXPO_PUBLIC_APP_ENV
-  ?? 'development') as z.infer<typeof envSchema>['EXPO_PUBLIC_APP_ENV'];
-
-const BUNDLE_IDS = {
-  development: 'com.subs.development',
-  preview: 'com.subs.preview',
-  production: 'com.subs',
-} as const;
-
-const PACKAGES = {
-  development: 'com.subs.development',
-  preview: 'com.subs.preview',
-  production: 'com.subs',
-} as const;
-
-const SCHEMES = {
-  development: 'subs',
-  preview: 'subs.preview',
-  production: 'subs',
-} as const;
-
 const NAME = 'Subs';
+const BUNDLE_ID = 'com.subs';
+const PACKAGE_ID = 'com.subs';
+const SCHEME = 'subs';
 
 // Check if strict validation is required (before prebuild)
 const STRICT_ENV_VALIDATION = process.env.STRICT_ENV_VALIDATION === '1';
 
-// Build env object
+// Build env object (single app: com.subs)
 const _env: z.infer<typeof envSchema> = {
-  EXPO_PUBLIC_APP_ENV,
   EXPO_PUBLIC_NAME: NAME,
-  EXPO_PUBLIC_SCHEME: SCHEMES[EXPO_PUBLIC_APP_ENV],
-  EXPO_PUBLIC_BUNDLE_ID: BUNDLE_IDS[EXPO_PUBLIC_APP_ENV],
-  EXPO_PUBLIC_PACKAGE: PACKAGES[EXPO_PUBLIC_APP_ENV],
+  EXPO_PUBLIC_SCHEME: SCHEME,
+  EXPO_PUBLIC_BUNDLE_ID: BUNDLE_ID,
+  EXPO_PUBLIC_PACKAGE: PACKAGE_ID,
   EXPO_PUBLIC_VERSION: packageJSON.version,
   EXPO_PUBLIC_API_URL: process.env.EXPO_PUBLIC_API_URL ?? '',
   EXPO_PUBLIC_ASSOCIATED_DOMAIN: process.env.EXPO_PUBLIC_ASSOCIATED_DOMAIN,
@@ -80,7 +59,7 @@ function getValidatedEnv(env: z.infer<typeof envSchema>) {
     const errorMessage
       = `❌ Invalid environment variables:${
         JSON.stringify(parsed.error.flatten().fieldErrors, null, 2)
-      }\n❌ Missing variables in .env file for APP_ENV=${EXPO_PUBLIC_APP_ENV}`
+      }\n❌ Missing variables in .env file.`
       + `\n💡 Tip: If you recently updated the .env file, try restarting with -c flag to clear the cache.`;
 
     if (STRICT_ENV_VALIDATION) {

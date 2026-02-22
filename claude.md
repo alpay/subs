@@ -41,11 +41,11 @@ pnpm test               # Run Jest tests
 pnpm check-all          # All quality checks
 ```
 
-**Environment-Specific:**
+**Build / Run:**
 ```bash
-pnpm start:preview              # Preview environment
-pnpm ios:production             # Production iOS
-pnpm build:production:ios       # EAS production build
+pnpm prebuild                   # Regenerate native projects (com.subs)
+pnpm ios / pnpm ios:device      # Run on simulator / device
+pnpm build:ios                  # EAS production build
 ```
 
 ## How: Key Patterns
