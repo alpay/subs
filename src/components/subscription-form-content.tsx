@@ -38,7 +38,7 @@ const STATUS_OPTIONS = [
 
 const NOTIFICATION_OPTIONS = [
   { label: 'Default', value: 'default' },
-  { label: 'None', value: 'none' },
+  { label: 'Disabled', value: 'disabled' },
 ] as const;
 
 const INTERVAL_UNIT_OPTIONS = [

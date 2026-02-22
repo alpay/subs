@@ -110,14 +110,14 @@ export default function SubscriptionDayViewScreen() {
                       size={42}
                     />
                   </Link.AppleZoom>
-                  <View style={{ gap: 4, flex: 1 }}>
+                  <View style={{ gap: 2, flex: 1, marginLeft: 4 }}>
                     <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }} selectable>
                       {sub.name}
                     </Text>
                     <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
                       {sub.scheduleType.charAt(0).toUpperCase() + sub.scheduleType.slice(1)}
                       {' '}
-                      ·
+                      •
                       {' '}
                       {formatAmount(sub.amount, sub.currency, settings.roundWholeNumbers)}
                     </Text>
@@ -151,9 +151,9 @@ export default function SubscriptionDayViewScreen() {
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
               <View
                 style={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: 18,
+                  width: 42,
+                  height: 42,
+                  borderRadius: 21,
                   borderCurve: 'continuous',
                   backgroundColor: colors.surfaceMuted,
                   borderWidth: 1,
@@ -181,12 +181,12 @@ export default function SubscriptionDayViewScreen() {
               paddingVertical: 14,
             }}
           >
-            <Text style={{ fontSize: 15, fontWeight: '600', color: colors.text }} selectable>
+            <Text style={{ fontSize: 18, fontWeight: '600', color: colors.textMuted }} selectable>
               Total
             </Text>
             <Text
               style={{
-                fontSize: 16,
+                fontSize: 18,
                 fontWeight: '700',
                 color: colors.text,
                 fontVariant: ['tabular-nums'],

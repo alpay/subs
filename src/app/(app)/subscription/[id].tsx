@@ -24,7 +24,7 @@ import { countPaymentsUpTo } from '@/lib/utils/subscription-dates';
 const NOTIFICATION_LABELS: Record<Subscription['notificationMode'], string> = {
   default: 'Default',
   custom: 'Custom',
-  none: 'None',
+  disabled: 'Disabled',
 };
 
 function DetailRow({

@@ -38,7 +38,7 @@ function isValidReminder(reminder: ReminderConfig | null | undefined): reminder 
 }
 
 function getReminders(subscription: Subscription, settings: Settings): ReminderConfig[] {
-  if (subscription.notificationMode === 'none') {
+  if (subscription.notificationMode === 'disabled') {
     return [];
   }
   if (subscription.notificationMode === 'custom') {
@@ -80,7 +80,7 @@ export async function requestPermissions(): Promise<boolean> {
 /**
  * Schedule reminder notifications for one subscription using its next payment date.
  * Uses default reminders (from settings) when notificationMode is 'default',
- * custom reminders when 'custom', and nothing when 'none'.
+ * custom reminders when 'custom', and nothing when 'disabled'.
  * Reminders use "days before" (0 = same day) and a time (HH:mm).
  */
 export async function scheduleForSubscription(

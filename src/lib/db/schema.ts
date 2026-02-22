@@ -11,7 +11,7 @@ export type CurrencyCode = string;
 export type SubscriptionStatus = 'active' | 'paused' | 'canceled';
 export type ScheduleType = 'monthly' | 'yearly' | 'weekly' | 'custom';
 export type CustomIntervalUnit = 'week' | 'month';
-export type NotificationMode = 'default' | 'custom' | 'none';
+export type NotificationMode = 'default' | 'custom' | 'disabled';
 
 export type ReminderConfig = {
   daysBefore: number; // 0 = same day
