@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import * as StoreReview from 'expo-store-review';
 import { useToast } from 'heroui-native';
 import { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, ScrollView, Text, View } from 'react-native';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -19,6 +20,9 @@ import { CURRENCIES } from '@/lib/data/currencies';
 import { FEATURE_FLAGS } from '@/lib/feature-flags';
 import { Haptic } from '@/lib/haptics';
 import { useTheme } from '@/lib/hooks/use-theme';
+import { getIntlLocale } from '@/lib/i18n/date-locale';
+import { LANGUAGE_NAMES } from '@/lib/i18n/resources';
+import { useSelectedLanguage } from '@/lib/i18n/utils';
 import { cancelAll } from '@/lib/notifications/notifications-manager';
 import { storage } from '@/lib/storage';
 import {
@@ -31,12 +35,12 @@ import {
   useSubscriptionsStore,
 } from '@/lib/stores';
 
-function formatLastUpdated(value: string) {
+function formatLastUpdated(value: string, neverLabel: string, locale: string) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) {
-    return 'Never';
+    return neverLabel;
   }
-  return new Intl.DateTimeFormat(undefined, {
+  return new Intl.DateTimeFormat(locale, {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
@@ -48,6 +52,7 @@ function formatLastUpdated(value: string) {
 
 export default function SettingsScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { colors } = useTheme();
   const { bottom } = useSafeAreaInsets();
 
@@ -57,16 +62,18 @@ export default function SettingsScreen() {
   const { methods } = usePaymentMethodsStore();
   const { toast } = useToast();
   const { rates, isUpdating, fetchAndUpdateRates } = useCurrencyRatesStore();
+  const { language: currentLanguage } = useSelectedLanguage();
+  const currentLanguageLabel = currentLanguage ? LANGUAGE_NAMES[currentLanguage] : '';
 
   const handleUpdateRates = useCallback(async () => {
     try {
       await fetchAndUpdateRates();
-      toast.show('Currency rates updated');
+      toast.show(t('settings.currency_updated'));
     }
     catch {
-      toast.show('Failed to update rates. Check your connection.');
+      toast.show(t('settings.currency_update_failed'));
     }
-  }, [fetchAndUpdateRates, toast]);
+  }, [fetchAndUpdateRates, toast, t]);
 
   const currencyFlag = useMemo(() => {
     const entry = CURRENCIES.find(
@@ -76,18 +83,18 @@ export default function SettingsScreen() {
   }, [settings.mainCurrency]);
 
   const lastUpdatedLabel = useMemo(
-    () => formatLastUpdated(rates.updatedAt),
-    [rates.updatedAt],
+    () => formatLastUpdated(rates.updatedAt, t('common.never'), getIntlLocale()),
+    [rates.updatedAt, t],
   );
 
   const handleResetApp = () => {
     Alert.alert(
-      'Reset App',
-      'This will clear all data and return to the home screen. Continue?',
+      t('settings.reset_alert_title'),
+      t('settings.reset_alert_message'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Reset',
+          text: t('settings.reset_confirm'),
           style: 'destructive',
           onPress: async () => {
             Haptic.Light();
@@ -108,7 +115,7 @@ export default function SettingsScreen() {
   };
 
   return (
-    <NativeSheet title="Settings">
+    <NativeSheet title={t('settings.title')}>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{
@@ -117,10 +124,10 @@ export default function SettingsScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Developer */}
-        <SettingsSection header="Developer" minHeight={150}>
+        <SettingsSection header={t('settings.developer')} minHeight={150}>
           <SettingsRow
             icon="system:trash"
-            label="Reset App"
+            label={t('settings.reset_app')}
             buttonColor="red"
             trailingIcon={false}
             onPress={() => {
@@ -130,7 +137,7 @@ export default function SettingsScreen() {
           />
           <SettingsToggleRow
             icon="system:crown"
-            label="Premium"
+            label={t('settings.premium')}
             isOn={settings.premium}
             onChange={value => update({ premium: value })}
           />
@@ -138,8 +145,8 @@ export default function SettingsScreen() {
 
         {/* Account */}
         <SettingsSection
-          header="Account"
-          footer="Unlock all features with a lifetime license."
+          header={t('settings.account')}
+          footer={t('settings.unlock_lifetime')}
           minHeight={150}
         >
           <SettingsRow
@@ -147,18 +154,18 @@ export default function SettingsScreen() {
             label={(
               <SwiftUI.VStack alignment="leading" spacing={2}>
                 <SwiftUI.Text
-                  text="Subscription Day"
+                  text={t('settings.subscription_day')}
                   style={{ fontSize: 17, fontWeight: '600' }}
                 />
                 <SwiftUI.Text
-                  text="Account type"
+                  text={t('settings.account_type')}
                   style={{ color: colors.textMuted, fontSize: 12 }}
                 />
               </SwiftUI.VStack>
             )}
             value={(
               <SwiftUI.Text
-                text={settings.premium ? 'Pro' : 'Free'}
+                text={settings.premium ? t('settings.pro') : t('settings.free')}
                 style={{ color: colors.accent, fontSize: 12, fontWeight: '600' }}
               />
             )}
@@ -168,18 +175,26 @@ export default function SettingsScreen() {
         </SettingsSection>
 
         {/* General */}
-        <SettingsSection header="General" minHeight={200}>
+        <SettingsSection header={t('settings.general')} minHeight={280}>
           <SettingsRow
             icon="system:externaldrive"
-            label="iCloud & Data"
-            value={settings.iCloudEnabled ? 'On' : 'Off'}
+            label={t('settings.icloud_data')}
+            value={settings.iCloudEnabled ? t('common.on') : t('common.off')}
             valueColor={colors.textMuted}
             buttonColor={colors.text}
             onPress={() => router.push('/(app)/settings/icloud-data')}
           />
           <SettingsRow
+            icon="system:globe"
+            label={t('settings.language')}
+            value={currentLanguageLabel}
+            valueColor={colors.textMuted}
+            buttonColor={colors.text}
+            onPress={() => router.push('/(app)/settings/language')}
+          />
+          <SettingsRow
             icon="system:dollarsign"
-            label="Main Currency"
+            label={t('settings.main_currency')}
             value={(
               <SwiftUI.HStack spacing={6}>
                 {currencyFlag ? <SwiftUI.Text text={currencyFlag} /> : null}
@@ -191,17 +206,17 @@ export default function SettingsScreen() {
           />
           <SettingsToggleRow
             icon="system:number"
-            label="Round to Whole Numbers"
+            label={t('settings.round_whole_numbers')}
             isOn={settings.roundWholeNumbers}
             onChange={value => update({ roundWholeNumbers: value })}
           />
         </SettingsSection>
 
         {/* Data */}
-        <SettingsSection header="Data" minHeight={200}>
+        <SettingsSection header={t('settings.data')} minHeight={200}>
           <SettingsRow
             icon="system:list.bullet"
-            label="Lists"
+            label={t('settings.lists')}
             value={String(lists.length)}
             valueColor={colors.textMuted}
             buttonColor={colors.text}
@@ -209,7 +224,7 @@ export default function SettingsScreen() {
           />
           <SettingsRow
             icon="system:square.grid.2x2"
-            label="Categories"
+            label={t('settings.categories')}
             value={String(categories.length)}
             valueColor={colors.textMuted}
             buttonColor={colors.text}
@@ -217,7 +232,7 @@ export default function SettingsScreen() {
           />
           <SettingsRow
             icon="system:creditcard"
-            label="Payment Methods"
+            label={t('settings.payment_methods')}
             value={String(methods.length)}
             valueColor={colors.textMuted}
             buttonColor={colors.text}
@@ -229,18 +244,18 @@ export default function SettingsScreen() {
         <SettingsNotificationSection />
 
         {/* Interface */}
-        <SettingsSection header="Interface" minHeight={FEATURE_FLAGS.themeSelector ? 200 : 150}>
+        <SettingsSection header={t('settings.interface')} minHeight={FEATURE_FLAGS.themeSelector ? 200 : 150}>
           <SettingsToggleRow
             icon="system:paintbrush.fill"
-            label="True Dark Colors"
+            label={t('settings.true_dark_colors')}
             isOn={settings.trueDarkColors}
             onChange={value => update({ trueDarkColors: value })}
           />
           {FEATURE_FLAGS.themeSelector && (
             <SettingsRow
               icon="system:circle.lefthalf.filled"
-              label="Theme"
-              value="Preview & choose"
+              label={t('settings.theme')}
+              value={t('settings.preview_choose')}
               valueColor={colors.textMuted}
               buttonColor={colors.text}
               onPress={() => router.push('/(app)/settings/theme')}
@@ -248,7 +263,7 @@ export default function SettingsScreen() {
           )}
           <SettingsToggleRow
             icon="system:hand.tap.fill"
-            label="Haptic Feedback"
+            label={t('settings.haptic_feedback')}
             isOn={settings.hapticsEnabled}
             onChange={value => update({ hapticsEnabled: value })}
           />
@@ -256,13 +271,13 @@ export default function SettingsScreen() {
 
         {/* Currency rates */}
         <SettingsSection
-          header="Currency Rates"
-          footer="Rates are fetched from a public API (ExchangeRate-API). Tap Update Now to refresh. Values are approximate and may differ from your local rates."
+          header={t('settings.currency_rates')}
+          footer={t('settings.currency_rates_footer')}
           minHeight={180}
         >
           <SwiftUI.HStack spacing={8}>
             <SwiftUI.VStack alignment="leading" spacing={4}>
-              <SwiftUI.Text text="Last updated" />
+              <SwiftUI.Text text={t('settings.last_updated')} />
               <SwiftUI.Text
                 text={lastUpdatedLabel}
                 style={{ color: colors.textMuted, fontSize: 12 }}
@@ -270,7 +285,7 @@ export default function SettingsScreen() {
             </SwiftUI.VStack>
             <SwiftUI.Spacer />
             <SwiftUI.Button
-              title={isUpdating ? 'Updating...' : 'Update Now'}
+              title={isUpdating ? t('settings.updating') : t('settings.update_now')}
               buttonStyle="default"
               style={{ color: colors.text }}
               disabled={isUpdating}
@@ -283,10 +298,10 @@ export default function SettingsScreen() {
         </SettingsSection>
 
         {/* More */}
-        <SettingsSection header="More" minHeight={300}>
+        <SettingsSection header={t('settings.more')} minHeight={300}>
           <SettingsRow
             icon="system:star"
-            label="Rate & Review"
+            label={t('settings.rate_review')}
             trailingIcon="arrow"
             buttonColor={colors.text}
             onPress={async () => {
@@ -299,27 +314,27 @@ export default function SettingsScreen() {
           />
           <SettingsRow
             icon="system:list.bullet.rectangle"
-            label="Ideas & Roadmap"
+            label={t('settings.ideas_roadmap')}
             trailingIcon="arrow"
             buttonColor={colors.text}
             onPress={() => {}}
           />
           <SettingsRow
             icon="system:envelope"
-            label="Contact me"
+            label={t('settings.contact_me')}
             buttonColor={colors.text}
             onPress={() => {}}
           />
           <SettingsRow
             icon="system:globe"
-            label="Visit Website"
+            label={t('settings.visit_website')}
             trailingIcon="arrow"
             buttonColor={colors.text}
             onPress={() => {}}
           />
           <SettingsRow
             icon="system:square.and.arrow.up"
-            label="Share with a friend"
+            label={t('settings.share_friend')}
             buttonColor={colors.text}
             onPress={() => {}}
           />
@@ -332,10 +347,10 @@ export default function SettingsScreen() {
             tintColor="#FF4D4F"
           />
           <Text style={{ color: colors.textMuted, fontSize: 12, textAlign: 'center' }} selectable>
-            Made with love for details at Appps™ © 2026
+            {t('settings.made_with_love')}
           </Text>
           <Text style={{ color: colors.textMuted, fontSize: 12 }} selectable>
-            Version: 1.0
+            {t('settings.version', { version: '1.0' })}
           </Text>
         </View>
       </ScrollView>

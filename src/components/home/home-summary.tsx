@@ -1,6 +1,7 @@
 import type { Settings } from '@/lib/db/schema';
 
 import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, Text } from 'react-native';
 import Animated, {
   FadeIn,
@@ -33,8 +34,9 @@ export function HomeSummary({
   monthDate,
 }: HomeSummaryProps) {
   const { colors } = useTheme();
+  const { t } = useTranslation();
   const [showRemaining, setShowRemaining] = useState(false);
-  const label = showRemaining ? 'Remaining' : formatMonthYear(monthDate);
+  const label = showRemaining ? t('home.remaining') : formatMonthYear(monthDate);
   const amount = showRemaining ? remainingInMonth : monthlyTotal;
 
   const amountValue = useSharedValue(amount);

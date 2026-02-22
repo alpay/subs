@@ -1,6 +1,7 @@
 import { format, startOfMonth } from 'date-fns';
 import { Stack, useRouter } from 'expo-router';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -17,6 +18,7 @@ import { storage } from '@/lib/storage';
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { colors } = useTheme();
   const { navigateToServicesOrPaywall } = usePremiumGuard();
   const insets = useSafeAreaInsets();
@@ -100,7 +102,7 @@ export default function HomeScreen() {
         />
         <Stack.Toolbar.Spacer />
         <Stack.SearchBar
-          placeholder="Search subs"
+          placeholder={t('home.search_placeholder')}
           onChangeText={(event) => {
             if (typeof event === 'string') {
               setQuery(event);

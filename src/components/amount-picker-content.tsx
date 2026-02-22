@@ -3,6 +3,7 @@ import { buttonStyle, fixedSize, labelStyle } from '@expo/ui/swift-ui/modifiers'
 import { Image } from 'expo-image';
 
 import { useCallback, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, Text, View } from 'react-native';
 import { getCurrencySymbol } from '@/lib/data/currencies';
 import { Haptic } from '@/lib/haptics';
@@ -23,6 +24,7 @@ type AmountPickerContentProps = {
 };
 
 export function AmountPickerContent({ onDone }: AmountPickerContentProps) {
+  const { t } = useTranslation();
   const { colors, isDark } = useTheme();
   const { rates } = useCurrencyRatesStore();
   const { settings } = useSettingsStore();
@@ -76,7 +78,7 @@ export function AmountPickerContent({ onDone }: AmountPickerContentProps) {
     <View style={{ gap: 18 }}>
       <View style={{ alignItems: 'center', gap: 6 }}>
         <Text style={{ fontSize: 12, letterSpacing: 1.4, color: colors.textMuted }} selectable>
-          AMOUNT
+          {t('amount_picker.amount_label')}
         </Text>
         <Text
           style={{
@@ -168,7 +170,7 @@ export function AmountPickerContent({ onDone }: AmountPickerContentProps) {
           }}
           selectable
         >
-          Done
+          {t('common.done')}
         </Text>
       </Pressable>
     </View>
@@ -187,6 +189,7 @@ export function AmountPickerCurrencyPill() {
     const list = codes.length === 0 ? Object.keys(rates.rates).sort() : codes;
     return list.map(code => ({ label: `${code} (${getCurrencySymbol(code)})`, value: code }));
   }, [rates.rates, settings.favoriteCurrencies]);
+  const { t } = useTranslation();
   const currencyOption = useMemo(
     () => currencyOptions.find(option => option.value === currency),
     [currency, currencyOptions],
@@ -195,7 +198,7 @@ export function AmountPickerCurrencyPill() {
     <Host matchContents>
       <Menu
         systemImage="chevron.up.chevron.down"
-        label={currencyOption?.label ?? 'Currency'}
+        label={currencyOption?.label ?? t('common.currency')}
         modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass')]}
       >
         {currencyOptions.map(option => (

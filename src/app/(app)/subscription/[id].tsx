@@ -3,6 +3,7 @@ import type { Subscription } from '@/lib/db/schema';
 import { Image } from 'expo-image';
 import { Link, Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BackButtonWithHaptic } from '@/components/back-button-with-haptic';
@@ -20,11 +21,14 @@ import {
 import { formatAmount, formatNextPayment } from '@/lib/utils/format';
 import { computeNextPaymentDate, countPaymentsUpTo } from '@/lib/utils/subscription-dates';
 
-const NOTIFICATION_LABELS: Record<Subscription['notificationMode'], string> = {
-  default: 'Default',
-  custom: 'Custom',
-  disabled: 'Disabled',
-};
+function useNotificationLabels() {
+  const { t } = useTranslation();
+  return {
+    default: t('subscription.notification_default'),
+    custom: t('subscription.notification_custom'),
+    disabled: t('subscription.notification_disabled'),
+  } as Record<Subscription['notificationMode'], string>;
+}
 
 function DetailRow({
   label,
@@ -69,11 +73,13 @@ export default function SubscriptionDetailScreen() {
     [subscriptions, params.id],
   );
 
+  const { t } = useTranslation();
+  const notificationLabels = useNotificationLabels();
   const category = useMemo(
     () => categories.find(c => c.id === subscription?.categoryId),
     [categories, subscription?.categoryId],
   );
-  const categoryName = category?.name ?? 'Other';
+  const categoryName = category?.name ?? t('common.other');
   const categoryColor = category?.color ?? colors.surfaceMuted;
 
   const listName = useMemo(
@@ -127,7 +133,7 @@ export default function SubscriptionDetailScreen() {
       />
       <Stack.Toolbar placement="right">
         <Stack.Toolbar.Button onPress={handleEdit}>
-          Edit
+          {t('subscription.edit_button')}
         </Stack.Toolbar.Button>
       </Stack.Toolbar>
       <View style={{ flex: 1, backgroundColor: colors.background }}>
@@ -188,18 +194,18 @@ export default function SubscriptionDetailScreen() {
           {/* Details section – same glass card as Category/List */}
           <GlassCard style={{ marginHorizontal: 20, marginBottom: 12 }}>
             <DetailRow
-              label="Amount"
+              label={t('common.amount')}
               value={formatAmount(subscription.amount, subscription.currency, settings.roundWholeNumbers)}
             />
             <View style={{ height: 1, marginLeft: 18, marginRight: 18, backgroundColor: colors.surfaceBorder, opacity: 0.7 }} />
-            <DetailRow label="Next payment" value={nextPaymentLabel} />
+            <DetailRow label={t('subscription.next_payment')} value={nextPaymentLabel} />
             <View style={{ height: 1, marginLeft: 18, marginRight: 18, backgroundColor: colors.surfaceBorder, opacity: 0.7 }} />
             <DetailRow
-              label="Total spent"
+              label={t('subscription.total_spent')}
               value={formatAmount(totalSpent, subscription.currency, settings.roundWholeNumbers)}
             />
             <View style={{ height: 1, marginLeft: 18, marginRight: 18, backgroundColor: colors.surfaceBorder, opacity: 0.7 }} />
-            <DetailRow label="Notifications" value={NOTIFICATION_LABELS[subscription.notificationMode]} />
+            <DetailRow label={t('subscription.notifications')} value={notificationLabels[subscription.notificationMode]} />
           </GlassCard>
 
           {/* Category row */}
@@ -208,7 +214,7 @@ export default function SubscriptionDetailScreen() {
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                 <Image source="sf:tag" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
                 <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
-                  Category
+                  {t('subscription.category')}
                 </Text>
               </View>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
@@ -226,7 +232,7 @@ export default function SubscriptionDetailScreen() {
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                 <Image source="sf:list.bullet" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
                 <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
-                  List
+                  {t('subscription.list')}
                 </Text>
               </View>
               <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }} selectable>

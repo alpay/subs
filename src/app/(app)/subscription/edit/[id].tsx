@@ -7,6 +7,7 @@ import type { ScheduleType } from '@/lib/db/schema';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { Button, useToast } from 'heroui-native';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, ScrollView, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -19,6 +20,7 @@ import { useSubscriptionsStore } from '@/lib/stores';
 
 export default function EditSubscriptionScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { toast } = useToast();
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
@@ -61,7 +63,7 @@ export default function EditSubscriptionScreen() {
     if (!subscription)
       return;
     update({ ...subscription, ...payload });
-    toast.show('Subscription updated');
+    toast.show(t('subscription.updated'));
     router.back();
   };
 
@@ -70,17 +72,17 @@ export default function EditSubscriptionScreen() {
       return;
 
     Alert.alert(
-      'Delete Subscription',
-      `Are you sure you want to delete "${subscription.name}"?`,
+      t('subscription.delete_title'),
+      t('subscription.delete_confirm', { name: subscription.name }),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Delete',
+          text: t('common.delete'),
           style: 'destructive',
           onPress: () => {
             Haptic.Light();
             remove(subscription.id);
-            toast.show('Subscription deleted');
+            toast.show(t('subscription.deleted'));
             router.back();
           },
         },
@@ -104,7 +106,7 @@ export default function EditSubscriptionScreen() {
     <>
       <Stack.Screen
         options={{
-          title: 'Edit Subscription',
+          title: t('subscription.edit'),
           headerShown: true,
           headerTintColor: colors.text,
           headerLeft: () => <BackButtonWithHaptic displayMode="minimal" />,
@@ -132,7 +134,7 @@ export default function EditSubscriptionScreen() {
             }}
             style={{ minWidth: 200 }}
           >
-            Save
+            {t('common.save')}
           </Button>
         </Stack.Toolbar.View>
         <Stack.Toolbar.Spacer />

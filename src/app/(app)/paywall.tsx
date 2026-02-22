@@ -2,6 +2,7 @@ import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   Alert,
@@ -25,55 +26,18 @@ import { useSettingsStore } from '@/lib/stores';
 
 const AUTO_SCROLL_INTERVAL_MS = 5000;
 
-// Paywall feature carousel items
-const PAYWALL_FEATURES = [
-
-  {
-    id: 'unlimited',
-    icon: 'infinity',
-    title: 'Unlimited Subscriptions',
-    description: 'Enjoy the freedom of managing subscriptions without limits.',
-    color: '#22C55E',
-  },
-  {
-    id: 'icloud',
-    icon: 'icloud.and.arrow.down.fill',
-    title: 'iCloud Sync',
-    description: 'Securely store your data and keep it in sync across all your devices.',
-    color: '#3B82F6',
-  },
-  {
-    id: 'analytics',
-    icon: 'chart.bar.fill',
-    title: 'Insights & Analytics',
-    description: 'Track your spending with detailed analytics and forecasts.',
-    color: '#A855F7',
-  },
-  {
-    id: 'categories',
-    icon: 'square.grid.2x2.fill',
-    title: 'Smart Categories',
-    description: 'Organize and categorize your subscriptions your way.',
-    color: '#F97316',
-  },
-  {
-    id: 'support',
-    icon: 'heart.fill',
-    title: 'Support the Developer',
-    description: 'Your purchase motivates a developer to keep improving the app.',
-    color: '#E11D48',
-  },
-  {
-    id: 'updates',
-    icon: 'arrow.up.circle.fill',
-    title: 'New Features & Updates',
-    description: 'Access new functions for life along with regular updates.',
-    color: '#0EA5E9',
-  },
+const PAYWALL_FEATURE_IDS = [
+  { id: 'unlimited', icon: 'infinity', color: '#22C55E' },
+  { id: 'icloud', icon: 'icloud.and.arrow.down.fill', color: '#3B82F6' },
+  { id: 'analytics', icon: 'chart.bar.fill', color: '#A855F7' },
+  { id: 'categories', icon: 'square.grid.2x2.fill', color: '#F97316' },
+  { id: 'support', icon: 'heart.fill', color: '#E11D48' },
+  { id: 'updates', icon: 'arrow.up.circle.fill', color: '#0EA5E9' },
 ] as const;
 
 export default function PaywallScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { settings } = useSettingsStore();
   const [activeIndex, setActiveIndex] = useState(0);
   const [purchasing, setPurchasing] = useState(false);
@@ -84,6 +48,14 @@ export default function PaywallScreen() {
   const userHasScrolledRef = useRef(false);
   const { width: screenWidth } = Dimensions.get('window');
   const hasRevenueCat = isRevenueCatConfigured();
+
+  const paywallFeatures = PAYWALL_FEATURE_IDS.map(({ id, icon, color }) => ({
+    id,
+    icon,
+    color,
+    title: t(`paywall.features.${id}.title`),
+    description: t(`paywall.features.${id}.description`),
+  }));
 
   activeIndexRef.current = activeIndex;
 
@@ -98,12 +70,11 @@ export default function PaywallScreen() {
     const interval = setInterval(() => {
       if (userHasScrolledRef.current)
         return;
-      const nextIndex = (activeIndexRef.current + 1) % PAYWALL_FEATURES.length;
+      const nextIndex = (activeIndexRef.current + 1) % paywallFeatures.length;
       const offset = nextIndex * screenWidth;
       flatListRef.current?.scrollToOffset({ offset, animated: true });
     }, AUTO_SCROLL_INTERVAL_MS);
-    return () => clearInterval(interval);
-  }, [screenWidth]);
+  }, [screenWidth, paywallFeatures.length]);
 
   const handleScrollBeginDrag = useCallback(() => {
     userHasScrolledRef.current = true;
@@ -113,11 +84,11 @@ export default function PaywallScreen() {
     (e: NativeSyntheticEvent<NativeScrollEvent>) => {
       const offsetX = e.nativeEvent.contentOffset.x;
       const index = Math.round(offsetX / screenWidth);
-      if (index >= 0 && index < PAYWALL_FEATURES.length && index !== activeIndex) {
+      if (index >= 0 && index < paywallFeatures.length && index !== activeIndex) {
         setActiveIndex(index);
       }
     },
-    [screenWidth, activeIndex],
+    [screenWidth, activeIndex, paywallFeatures.length],
   );
 
   const handlePurchase = useCallback(async () => {
@@ -128,8 +99,8 @@ export default function PaywallScreen() {
     }
     if (!hasRevenueCat) {
       Alert.alert(
-        'Not available',
-        'In-app purchase is not configured for this build. Use a development build with RevenueCat API keys to test.',
+        t('paywall.not_available_title'),
+        t('paywall.not_available_message'),
       );
       return;
     }
@@ -142,20 +113,20 @@ export default function PaywallScreen() {
         const message =
           result.error instanceof Error
             ? result.error.message
-            : 'Purchase failed. Please try again.';
-        Alert.alert('Purchase failed', message);
+            : t('paywall.purchase_failed_message');
+        Alert.alert(t('paywall.purchase_failed_title'), message);
       }
     } finally {
       setPurchasing(false);
     }
-  }, [settings.premium, hasRevenueCat, router]);
+  }, [settings.premium, hasRevenueCat, router, t]);
 
   const handleRestore = useCallback(async () => {
     Haptic.Light();
     if (!hasRevenueCat) {
       Alert.alert(
-        'Not available',
-        'Restore is not available for this build.',
+        t('paywall.not_available_title'),
+        t('paywall.restore_not_available'),
       );
       return;
     }
@@ -167,21 +138,21 @@ export default function PaywallScreen() {
           router.back();
         } else {
           Alert.alert(
-            'Restore complete',
-            'No previous purchase was found for this Apple ID.',
+            t('paywall.restore_complete_title'),
+            t('paywall.restore_complete_no_purchase'),
           );
         }
       } else {
         const message =
           result.error instanceof Error
             ? result.error.message
-            : 'Restore failed. Please try again.';
-        Alert.alert('Restore failed', message);
+            : t('paywall.restore_failed_message');
+        Alert.alert(t('paywall.restore_failed_title'), message);
       }
     } finally {
       setRestoring(false);
     }
-  }, [hasRevenueCat, router]);
+  }, [hasRevenueCat, router, t]);
 
   const displayPrice = lifetimePriceString ?? '—';
 
@@ -189,7 +160,7 @@ export default function PaywallScreen() {
     <View>
       {/* Dynamic glow from active feature color */}
       <RadialGlow
-        color={PAYWALL_FEATURES[activeIndex]?.color ?? '#22C55E'}
+        color={paywallFeatures[activeIndex]?.color ?? '#22C55E'}
         centerY="25%"
         radiusX="80%"
         radiusY="80%"
@@ -203,7 +174,7 @@ export default function PaywallScreen() {
           <View style={{ marginHorizontal: -16 }}>
             <FlatList
               ref={flatListRef}
-              data={PAYWALL_FEATURES}
+              data={paywallFeatures}
               horizontal
               pagingEnabled
               showsHorizontalScrollIndicator={false}
@@ -237,9 +208,9 @@ export default function PaywallScreen() {
               gap: 6,
             }}
           >
-            {PAYWALL_FEATURES.map((_, i) => (
+            {paywallFeatures.map((_, i) => (
               <View
-                key={PAYWALL_FEATURES[i].id}
+                key={paywallFeatures[i].id}
                 style={{
                   width: i === activeIndex ? 8 : 6,
                   height: 6,
@@ -269,10 +240,10 @@ export default function PaywallScreen() {
           >
             <View>
               <Text style={{ fontSize: 18, fontWeight: '700', color: 'white' }}>
-                Lifetime
+                {t('paywall.lifetime')}
               </Text>
               <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', marginTop: 2 }}>
-                Pay once, use forever!
+                {t('paywall.pay_once_forever')}
               </Text>
             </View>
             {purchasing ? (
@@ -304,19 +275,19 @@ export default function PaywallScreen() {
                   color: restoring ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.6)',
                 }}
               >
-                {restoring ? 'Restoring…' : 'Restore Purchases'}
+                {restoring ? t('paywall.restoring') : t('paywall.restore_purchases')}
               </Text>
             </Pressable>
             <Text style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>•</Text>
             <Pressable hitSlop={8} onPress={() => Haptic.Light()}>
               <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)' }}>
-                Privacy
+                {t('paywall.privacy')}
               </Text>
             </Pressable>
             <Text style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>•</Text>
             <Pressable hitSlop={8} onPress={() => Haptic.Light()}>
               <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)' }}>
-                Promo
+                {t('paywall.promo')}
               </Text>
             </Pressable>
           </View>
@@ -327,7 +298,13 @@ export default function PaywallScreen() {
 }
 
 type FeatureCardProps = {
-  feature: (typeof PAYWALL_FEATURES)[number];
+  feature: {
+    id: string;
+    icon: string;
+    color: string;
+    title: string;
+    description: string;
+  };
 };
 
 function FeatureCard({ feature }: FeatureCardProps) {

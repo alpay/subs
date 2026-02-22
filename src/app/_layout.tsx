@@ -14,6 +14,7 @@ import { APIProvider } from '@/lib/api';
 import { useBootstrap } from '@/lib/hooks/use-bootstrap';
 import { useTheme } from '@/lib/hooks/use-theme';
 
+import '@/lib/i18n';
 import '../global.css';
 import 'heroui-native/styles';
 

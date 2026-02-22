@@ -7,6 +7,7 @@ import { useRouter } from 'expo-router';
 import * as Sharing from 'expo-sharing';
 import { useToast } from 'heroui-native';
 import { useCallback, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useIsCloudAvailable } from 'react-native-cloud-storage';
 
@@ -43,8 +44,9 @@ function formatPeriod(scheduleType: string): string {
 function buildCsvRows(
   subscriptions: Subscription[],
   getCategoryName: (id: string) => string,
+  t: (key: string) => string,
 ): string {
-  const header = 'Name,Period,Price,Start Date,Category';
+  const header = [t('csv_export.name'), t('csv_export.period'), t('csv_export.price'), t('csv_export.start_date'), t('csv_export.category')].join(',');
   const rows = subscriptions.map((sub) => {
     const period = formatPeriod(sub.scheduleType);
     const price = `${sub.amount.toFixed(2)} ${sub.currency}`;
@@ -57,6 +59,7 @@ function buildCsvRows(
 
 export default function ICloudDataScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { colors } = useTheme();
   const { bottom } = useSafeAreaInsets();
   const { toast } = useToast();
@@ -79,8 +82,8 @@ export default function ICloudDataScreen() {
   const [icloudToggleVersion, setIcloudToggleVersion] = useState(0);
 
   const getCategoryName = useCallback(
-    (id: string) => categories.find(c => c.id === id)?.name ?? 'Other',
-    [categories],
+    (id: string) => categories.find(c => c.id === id)?.name ?? t('common.other'),
+    [categories, t],
   );
 
   const counts = useMemo(() => {
@@ -111,7 +114,7 @@ export default function ICloudDataScreen() {
   const handleToggleICloud = useCallback(
     async (value: boolean) => {
       if (!iCloudAvailable) {
-        toast.show('iCloud is not available. Sign in to iCloud in Settings.');
+        toast.show(t('icloud.not_available'));
         return;
       }
 
@@ -131,7 +134,7 @@ export default function ICloudDataScreen() {
         }
         catch (error) {
           const message
-            = error instanceof Error ? error.message : 'Failed to check iCloud backup';
+            = error instanceof Error ? error.message : t('icloud.check_backup_failed');
           toast.show(message);
           return;
         }
@@ -147,7 +150,7 @@ export default function ICloudDataScreen() {
           }
           catch (error) {
             const message
-              = error instanceof Error ? error.message : 'Failed to sync with iCloud';
+              = error instanceof Error ? error.message : t('icloud.sync_failed');
             toast.show(message);
             update({ iCloudEnabled: false });
           }
@@ -167,14 +170,14 @@ export default function ICloudDataScreen() {
             useListsStore.getState().load();
             usePaymentMethodsStore.getState().load();
             useSettingsStore.getState().load();
-            toast.show('Data restored from iCloud');
+            toast.show(t('icloud.restored'));
             update({ iCloudEnabled: true });
             const refreshed = await getICloudBackupInfo();
             setBackupInfo(refreshed);
           }
           catch (error) {
             const message
-              = error instanceof Error ? error.message : 'Failed to restore from iCloud';
+              = error instanceof Error ? error.message : t('icloud.restore_failed');
             toast.show(message);
             update({ iCloudEnabled: false });
           }
@@ -188,20 +191,20 @@ export default function ICloudDataScreen() {
         const backupSummary = buildBackupSummary(info);
 
         Alert.alert(
-          'iCloud backup found',
+          t('icloud.backup_found_title'),
           backupSummary.length > 0
-            ? `${backupSummary}\n\nWhat would you like to do?`
-            : 'An existing iCloud backup was found. What would you like to do?',
+            ? t('icloud.backup_found_with_summary', { summary: backupSummary })
+            : t('icloud.backup_found_message'),
           [
             {
-              text: 'Cancel',
+              text: t('common.cancel'),
               style: 'cancel',
               onPress: () => {
                 // iCloudEnabled state değişmeden kalır (false)
               },
             },
             {
-              text: 'Use iCloud backup',
+              text: t('icloud.use_backup'),
               style: 'destructive',
               onPress: () => {
                 setIsSyncing(true);
@@ -213,7 +216,7 @@ export default function ICloudDataScreen() {
                     useListsStore.getState().load();
                     usePaymentMethodsStore.getState().load();
                     useSettingsStore.getState().load();
-                    toast.show('Data restored from iCloud');
+                    toast.show(t('icloud.restored'));
                     update({ iCloudEnabled: true });
                     const refreshed = await getICloudBackupInfo();
                     setBackupInfo(refreshed);
@@ -222,7 +225,7 @@ export default function ICloudDataScreen() {
                     const message
                       = error instanceof Error
                         ? error.message
-                        : 'Failed to restore from iCloud';
+                        : t('icloud.restore_failed');
                     toast.show(message);
                     update({ iCloudEnabled: false });
                   }
@@ -233,7 +236,7 @@ export default function ICloudDataScreen() {
               },
             },
             {
-              text: 'Keep this device data',
+              text: t('icloud.keep_device'),
               onPress: () => {
                 setIsSyncing(true);
                 void (async () => {
@@ -247,7 +250,7 @@ export default function ICloudDataScreen() {
                     const message
                       = error instanceof Error
                         ? error.message
-                        : 'Failed to sync with iCloud';
+                        : t('icloud.sync_failed');
                     toast.show(message);
                     update({ iCloudEnabled: false });
                   }
@@ -270,6 +273,7 @@ export default function ICloudDataScreen() {
       showPaywall,
       update,
       toast,
+      t,
       loadSubscriptions,
       subscriptions.length,
       setBackupInfo,
@@ -279,13 +283,13 @@ export default function ICloudDataScreen() {
   const handleExportCsv = useCallback(async () => {
     Haptic.Light();
     if (subscriptions.length === 0) {
-      toast.show('No subscriptions to export');
+      toast.show(t('icloud.no_subs_to_export'));
       return;
     }
 
     setIsExporting(true);
     try {
-      const csv = buildCsvRows(subscriptions, getCategoryName);
+      const csv = buildCsvRows(subscriptions, getCategoryName, t);
       const date = new Date().toISOString().split('T')[0];
       const filename = `SubscriptionDay_Export_${date}.csv`;
       const fileUri = `${FileSystem.cacheDirectory}${filename}`;
@@ -299,30 +303,30 @@ export default function ICloudDataScreen() {
         await Sharing.shareAsync(fileUri, {
           mimeType: 'text/csv',
           UTI: 'public.comma-separated-values-text',
-          dialogTitle: 'Export Subscriptions',
+          dialogTitle: t('icloud.export_dialog_title'),
         });
       }
       else {
-        toast.show('Sharing is not available on this device');
+        toast.show(t('icloud.sharing_unavailable'));
       }
     }
     catch {
-      toast.show('Failed to export');
+      toast.show(t('icloud.export_failed'));
     }
     finally {
       setIsExporting(false);
     }
-  }, [subscriptions, getCategoryName, toast]);
+  }, [subscriptions, getCategoryName, toast, t]);
 
   const handleDeleteAll = useCallback(() => {
     Haptic.Light();
     Alert.alert(
-      'Delete All Data',
-      'This action permanently deletes all data from your device. If iCloud sync is enabled, data will also be removed from iCloud.',
+      t('icloud.delete_all_confirm_title'),
+      t('icloud.delete_all_confirm_message'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Delete All Data',
+          text: t('icloud.delete_all'),
           style: 'destructive',
           onPress: async () => {
             Haptic.Light();
@@ -348,41 +352,41 @@ export default function ICloudDataScreen() {
         },
       ],
     );
-  }, [router, settings.iCloudEnabled]);
+  }, [router, settings.iCloudEnabled, t]);
 
   const handleBackupToICloud = useCallback(async () => {
     if (!iCloudAvailable) {
-      toast.show('iCloud is not available');
+      toast.show(t('icloud.not_available_short'));
       return;
     }
 
     setIsBackingUp(true);
     try {
       await uploadToICloud();
-      toast.show('Backup completed successfully');
+      toast.show(t('icloud.backup_success'));
     }
     catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      toast.show(`Failed to backup: ${errorMessage}`);
+      const errorMessage = error instanceof Error ? error.message : t('common.unknown_error');
+      toast.show(t('icloud.backup_failed', { message: errorMessage }));
     }
     finally {
       setIsBackingUp(false);
     }
-  }, [iCloudAvailable, toast]);
+  }, [iCloudAvailable, toast, t]);
 
   const handleRestoreFromICloud = useCallback(async () => {
     if (!iCloudAvailable) {
-      toast.show('iCloud is not available');
+      toast.show(t('icloud.not_available_short'));
       return;
     }
 
     Alert.alert(
-      'Restore from iCloud',
-      'This will replace your local data with the backup from iCloud. Continue?',
+      t('icloud.restore_confirm_title'),
+      t('icloud.restore_confirm_message'),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Restore',
+          text: t('icloud.restore_button'),
           onPress: async () => {
             Haptic.Light();
             setIsRestoring(true);
@@ -393,11 +397,11 @@ export default function ICloudDataScreen() {
               useListsStore.getState().load();
               usePaymentMethodsStore.getState().load();
               useSettingsStore.getState().load();
-              toast.show('Data restored from iCloud');
+              toast.show(t('icloud.restored'));
             }
             catch (error) {
-              const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-              toast.show(`Failed to restore: ${errorMessage}`);
+              const errorMessage = error instanceof Error ? error.message : t('common.unknown_error');
+              toast.show(t('icloud.restore_failed'));
             }
             finally {
               setIsRestoring(false);
@@ -406,10 +410,10 @@ export default function ICloudDataScreen() {
         },
       ],
     );
-  }, [iCloudAvailable, loadSubscriptions, toast]);
+  }, [iCloudAvailable, loadSubscriptions, toast, t]);
 
   return (
-    <NativeSheet title="iCloud & Data" showCloseIcon={false} showBackIcon>
+    <NativeSheet title={t('icloud.title')} showCloseIcon={false} showBackIcon>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{
@@ -422,10 +426,10 @@ export default function ICloudDataScreen() {
           header=""
           footer={
             isSyncing
-              ? 'Syncing...'
+              ? t('icloud.syncing')
               : backupInfo?.createdAt
-                ? `Last backup: ${formatBackupDate(backupInfo.createdAt)}`
-                : 'Your subscription data will be securely synced across all your devices via iCloud Drive.'
+                ? t('icloud.last_backup', { date: formatBackupDate(backupInfo.createdAt) })
+                : t('icloud.backup_footer')
           }
           minHeight={settings.iCloudEnabled ? 250 : 150}
           marginBottom={0}
@@ -436,7 +440,7 @@ export default function ICloudDataScreen() {
               style={{ width: 18, height: 18 }}
             />
             <SwiftUI.Text
-              text="iCloud synchronization"
+              text={t('icloud.icloud_sync')}
               style={{ fontSize: 17, fontWeight: '500' }}
             />
             <SwiftUI.Spacer />
@@ -454,14 +458,14 @@ export default function ICloudDataScreen() {
               <View style={{ height: 1, backgroundColor: colors.border, marginVertical: 8 }} />
               <SettingsRow
                 icon="system:icloud.and.arrow.up"
-                label={isBackingUp ? 'Backing up...' : 'Backup'}
+                label={isBackingUp ? t('icloud.backing_up') : t('icloud.backup')}
                 trailingIcon={false}
                 buttonColor={colors.text}
                 onPress={handleBackupToICloud}
               />
               <SettingsRow
                 icon="system:icloud.and.arrow.down"
-                label={isRestoring ? 'Restoring...' : 'Restore from iCloud'}
+                label={isRestoring ? t('icloud.restoring') : t('icloud.restore')}
                 trailingIcon={false}
                 buttonColor={colors.text}
                 onPress={handleRestoreFromICloud}
@@ -471,10 +475,10 @@ export default function ICloudDataScreen() {
         </SettingsSection>
 
         {/* Current Base */}
-        <SettingsSection header="Current Subs" minHeight={200} marginBottom={0}>
+        <SettingsSection header={t('icloud.current_subs')} minHeight={200} marginBottom={0}>
           <SettingsRow
             icon="system:checkmark.circle"
-            label="Active & One time"
+            label={t('icloud.active_one_time')}
             value={String(counts.active)}
             valueColor={colors.textMuted}
             trailingIcon={false}
@@ -483,7 +487,7 @@ export default function ICloudDataScreen() {
           />
           <SettingsRow
             icon="system:xmark.circle"
-            label="Canceled"
+            label={t('icloud.canceled')}
             value={String(counts.canceled)}
             valueColor={colors.textMuted}
             trailingIcon={false}
@@ -492,7 +496,7 @@ export default function ICloudDataScreen() {
           />
           <SettingsRow
             icon="system:archivebox"
-            label="Archived"
+            label={t('icloud.archived')}
             value={String(counts.archived)}
             valueColor={colors.textMuted}
             trailingIcon={false}
@@ -518,7 +522,7 @@ export default function ICloudDataScreen() {
                 style={{ width: 22, height: 22 }}
               />
               <SwiftUI.Text
-                text={isExporting ? 'Exporting...' : 'Export data to CSV'}
+                text={isExporting ? t('icloud.exporting') : t('icloud.export_csv')}
               />
               <SwiftUI.Spacer />
             </SwiftUI.HStack>
@@ -552,7 +556,7 @@ export default function ICloudDataScreen() {
               }}
               selectable
             >
-              Delete All Data
+              {t('icloud.delete_all')}
             </Text>
           </Pressable>
           <Text
@@ -565,8 +569,7 @@ export default function ICloudDataScreen() {
             }}
             selectable
           >
-            This action permanently deletes all data from your device. If iCloud
-            sync is enabled, data will also be removed from iCloud.
+            {t('icloud.delete_all_footer')}
           </Text>
         </View>
       </ScrollView>

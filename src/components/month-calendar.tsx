@@ -3,14 +3,24 @@ import type { Subscription } from '@/lib/db/schema';
 
 import { addMonths, format, getDay, getDaysInMonth, isToday, startOfMonth } from 'date-fns';
 import { memo, useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import { Haptic } from '@/lib/haptics';
+import { getDateFnsLocale } from '@/lib/i18n/date-locale';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { getPaymentDatesForMonth } from '@/lib/utils/subscription-dates';
 import { getServiceColor, ServiceIcon } from './service-icon';
 
-const WEEKDAYS = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+/** Monday 00:00 as base; then +0..6 days for Mon–Sun. */
+const WEEK_BASE = new Date(2024, 0, 1);
+function getWeekdayLetters(locale: ReturnType<typeof getDateFnsLocale>): string[] {
+  return Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(WEEK_BASE);
+    d.setDate(d.getDate() + i);
+    return format(d, 'EEEEE', { locale });
+  });
+}
 const TOTAL_CELLS = 6 * 7;
 const SIDE_PADDING = 8;
 const GAP_BETWEEN_PAGES = 16;
@@ -68,7 +78,12 @@ const MonthGrid = memo(({
   colors,
   isDark,
 }: MonthGridProps) => {
+  const { i18n } = useTranslation();
   const { gap, cellSize, cellHeight, cellRadius, iconSize, badgeSize, calendarWidth: width } = metrics;
+  const weekdayLetters = useMemo(
+    () => getWeekdayLetters(getDateFnsLocale()),
+    [i18n.language],
+  );
 
   const paymentMap = useMemo(() => {
     const map = new Map<string, Subscription[]>();
@@ -102,8 +117,8 @@ const MonthGrid = memo(({
   return (
     <View style={[styles.gridContainer, { width, gap: 14 }]}>
       <View style={styles.weekdayRow}>
-        {WEEKDAYS.map((day, i) => (
-          // eslint-disable-next-line react/no-array-index-key -- weekday labels duplicate (T,S), no stable id
+        {weekdayLetters.map((day, i) => (
+          // eslint-disable-next-line react/no-array-index-key -- weekday labels duplicate in some locales, no stable id
           <Text key={`weekday-${i}`} style={[styles.weekdayLabel, { width: cellSize, color: colors.textMuted }]}>
             {day}
           </Text>

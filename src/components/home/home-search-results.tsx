@@ -2,6 +2,7 @@ import type { Settings, Subscription } from '@/lib/db/schema';
 import { GlassContainer, GlassView } from 'expo-glass-effect';
 import { Image } from 'expo-image';
 import { Link } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { Pressable, Text, View } from 'react-native';
 
 import { Pill } from '@/components/pill';
@@ -33,7 +34,15 @@ function SearchRow({
   isLast: boolean;
   colors: ReturnType<typeof useTheme>['colors'];
 }) {
+  const { t } = useTranslation();
   const isActive = sub.status === 'active';
+  const statusLabel = isActive
+    ? t('subscription_status.active')
+    : sub.status === 'paused'
+      ? t('subscription_status.paused')
+      : sub.status === 'canceled'
+        ? t('subscription_status.canceled')
+        : sub.status;
   const rowContent = (
     <>
       <View
@@ -73,7 +82,7 @@ function SearchRow({
         </View>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10, flexShrink: 0 }}>
           <Pill tone={isActive ? 'success' : 'neutral'}>
-            {isActive ? 'Active' : sub.status}
+            {statusLabel}
           </Pill>
           <Image
             source="sf:chevron.right"
@@ -119,6 +128,7 @@ function SearchRow({
 
 export function HomeSearchResults({ results, settings, onAddFirst }: HomeSearchResultsProps) {
   const { colors } = useTheme();
+  const { t } = useTranslation();
 
   if (results.length === 0) {
     return (
@@ -148,7 +158,7 @@ export function HomeSearchResults({ results, settings, onAddFirst }: HomeSearchR
                   textAlign: 'center',
                 }}
               >
-                No subscriptions found
+                {t('home_search.no_results')}
               </Text>
 
               <View
@@ -170,7 +180,7 @@ export function HomeSearchResults({ results, settings, onAddFirst }: HomeSearchR
                   tintColor={colors.text}
                 />
                 <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }}>
-                  Tap here to add your first
+                  {t('home_search.tap_to_add_first')}
                 </Text>
               </View>
             </Pressable>

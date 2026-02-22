@@ -22,6 +22,8 @@ import {
   saveSettings,
   saveSubscriptions,
 } from '@/lib/db/storage';
+import i18n from '@/lib/i18n';
+import { getIntlLocale } from '@/lib/i18n/date-locale';
 
 const BACKUP_DIR = '/Subs';
 const BACKUP_FILE = `${BACKUP_DIR}/subs-backup.json`;
@@ -79,7 +81,7 @@ export function formatBackupDate(iso: string): string {
   if (Number.isNaN(d.getTime()))
     return iso;
 
-  return d.toLocaleString(undefined, {
+  return d.toLocaleString(getIntlLocale(), {
     dateStyle: 'medium',
     timeStyle: 'short',
   });
@@ -90,10 +92,10 @@ export function buildBackupSummary(info: ICloudBackupInfo): string {
   const parts: string[] = [];
 
   if (formattedDate)
-    parts.push(`Last backup: ${formattedDate}`);
+    parts.push(i18n.t('icloud.last_backup_line', { date: formattedDate }));
 
   if (typeof info.subscriptionCount === 'number')
-    parts.push(`Subscriptions in backup: ${info.subscriptionCount}`);
+    parts.push(i18n.t('icloud.subscriptions_in_backup', { count: info.subscriptionCount }));
 
   return parts.join('\n');
 }

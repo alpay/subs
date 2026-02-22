@@ -2,24 +2,14 @@ import type { ReminderConfig } from '@/lib/db/schema';
 import { SwiftUI } from '@mgcrea/react-native-swiftui';
 import { useToast } from 'heroui-native';
 import { useCallback, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
 import { Haptic } from '@/lib/haptics';
 import { requestPermissions, scheduleTestNotification } from '@/lib/notifications';
 import { useSettingsStore } from '@/lib/stores';
 
-export const REMINDER_DAYS_OPTIONS = [
-  { value: '-1', label: 'Never' },
-  { value: '0', label: 'Same day' },
-  { value: '1', label: '1 Day' },
-  { value: '2', label: '2 Days' },
-  { value: '3', label: '3 Days' },
-  { value: '4', label: '4 Days' },
-  { value: '5', label: '5 Days' },
-  { value: '10', label: '10 Days' },
-  { value: '15', label: '15 Days' },
-  { value: '30', label: '30 Days' },
-] as const;
+const REMINDER_DAY_VALUES = ['-1', '0', '1', '2', '3', '4', '5', '10', '15', '30'] as const;
 
 function timeStringToDate(time: string): Date {
   const [hours, minutes] = time.split(':').map(Number);
@@ -33,29 +23,44 @@ function dateToTimeString(date: Date): string {
 }
 
 export function SettingsNotificationSection() {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const { settings, update } = useSettingsStore();
+
+  const reminderDaysOptions = useMemo(
+    () =>
+      REMINDER_DAY_VALUES.map(value => ({
+        value,
+        label:
+          value === '-1'
+            ? t('common.never')
+            : value === '0'
+              ? t('notifications.same_day')
+              : t(`notifications.days.${value}`),
+      })),
+    [t],
+  );
 
   const firstReminderValue = useMemo(
     () =>
       String(
-        REMINDER_DAYS_OPTIONS.find(
+        reminderDaysOptions.find(
           o => Number(o.value) === settings.notificationDefaults.first.daysBefore,
-        )?.value ?? REMINDER_DAYS_OPTIONS[0].value,
+        )?.value ?? reminderDaysOptions[0]?.value ?? '-1',
       ),
-    [settings.notificationDefaults.first.daysBefore],
+    [settings.notificationDefaults.first.daysBefore, reminderDaysOptions],
   );
   const secondReminderValue = useMemo(
     () =>
       settings.notificationDefaults.second === null
-        ? REMINDER_DAYS_OPTIONS[0].value
+        ? (reminderDaysOptions[0]?.value ?? '-1')
         : String(
-            REMINDER_DAYS_OPTIONS.find(
+            reminderDaysOptions.find(
               o =>
                 Number(o.value) === settings.notificationDefaults.second!.daysBefore,
-            )?.value ?? REMINDER_DAYS_OPTIONS[0].value,
+            )?.value ?? reminderDaysOptions[0]?.value ?? '-1',
           ),
-    [settings.notificationDefaults.second],
+    [settings.notificationDefaults.second, reminderDaysOptions],
   );
   const firstIsNever = settings.notificationDefaults.first.daysBefore < 0;
   const secondIsNever = settings.notificationDefaults.second === null;
@@ -131,16 +136,16 @@ export function SettingsNotificationSection() {
     try {
       const granted = await requestPermissions();
       if (!granted) {
-        toast.show('Enable notifications in Settings to test alerts.');
+        toast.show(t('notifications.enable_in_settings'));
         return;
       }
       await scheduleTestNotification();
-      toast.show('Test notification scheduled');
+      toast.show(t('notifications.test_scheduled'));
     }
     catch {
-      toast.show('Unable to schedule a test notification');
+      toast.show(t('notifications.unable_to_schedule'));
     }
-  }, [toast]);
+  }, [toast, t]);
 
   const firstTime = settings.notificationDefaults.first.time;
   const secondTime = settings.notificationDefaults.second?.time ?? '09:00';
@@ -150,14 +155,14 @@ export function SettingsNotificationSection() {
       <SwiftUI style={{ flex: 1, minHeight: 250 }}>
         <SwiftUI.Form scrollDisabled contentMargins={{ leading: 1, trailing: 1 }}>
           <SwiftUI.Section
-            header="Notifications"
-            footer="If Focus Modes are enabled, notifications might not appear."
+            header={t('notifications.section_header')}
+            footer={t('notifications.section_footer')}
           >
             <SwiftUI.HStack spacing={8}>
               <SwiftUI.Picker
-                label="First Reminder"
+                label={t('notifications.first_reminder')}
                 value={firstReminderValue}
-                options={REMINDER_DAYS_OPTIONS}
+                options={reminderDaysOptions}
                 pickerStyle="menu"
                 onChange={handleFirstDaysChange}
               />
@@ -172,9 +177,9 @@ export function SettingsNotificationSection() {
             </SwiftUI.HStack>
             <SwiftUI.HStack spacing={8}>
               <SwiftUI.Picker
-                label="Second Reminder"
+                label={t('notifications.second_reminder')}
                 value={secondReminderValue}
-                options={REMINDER_DAYS_OPTIONS}
+                options={reminderDaysOptions}
                 pickerStyle="menu"
                 onChange={handleSecondDaysChange}
               />
@@ -188,7 +193,7 @@ export function SettingsNotificationSection() {
               )}
             </SwiftUI.HStack>
             <SwiftUI.Button
-              title="Test Notification"
+              title={t('notifications.test_notification')}
               onPress={handleTestNotification}
             />
           </SwiftUI.Section>

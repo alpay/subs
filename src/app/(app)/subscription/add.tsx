@@ -8,6 +8,7 @@ import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import * as StoreReview from 'expo-store-review';
 import { Button, useToast } from 'heroui-native';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -31,6 +32,7 @@ import { toLocalDateString } from '@/lib/utils/subscription-dates';
 
 export default function AddSubscriptionScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const { toast } = useToast();
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
@@ -128,7 +130,7 @@ export default function AddSubscriptionScreen() {
     }
     const subscriptionCountBefore = useSubscriptionsStore.getState().subscriptions.length;
     add(payload);
-    toast.show('Subscription created');
+    toast.show(t('subscription.created'));
     Haptic.Success();
 
     // Ask for review once after first subscription
@@ -160,7 +162,7 @@ export default function AddSubscriptionScreen() {
     <>
       <Stack.Screen
         options={{
-          title: 'New Subscription',
+          title: t('subscription.new'),
           headerShown: true,
           headerTintColor: colors.text,
 
@@ -200,7 +202,7 @@ export default function AddSubscriptionScreen() {
             }}
             style={{ minWidth: 200 }}
           >
-            Create
+            {t('subscription.create')}
           </Button>
         </Stack.Toolbar.View>
         <Stack.Toolbar.Spacer />

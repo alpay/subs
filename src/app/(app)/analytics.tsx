@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 
 import { NativeSheet } from '@/components/native-sheet';
@@ -17,6 +18,7 @@ import {
 } from '@/lib/utils/totals';
 
 export default function AnalyticsScreen() {
+  const { t } = useTranslation();
   const { colors } = useTheme();
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState<number>(0);
 
@@ -72,18 +74,15 @@ export default function AnalyticsScreen() {
   const selectedCategory = categoryTotals[clampedSelectedIndex];
 
   return (
-    <NativeSheet title="Analytics">
+    <NativeSheet title={t('analytics.title')}>
       <View style={{ gap: 16 }}>
         <GlassCard>
           <View style={{ gap: 16, alignItems: 'center', paddingVertical: 20, paddingHorizontal: 16 }}>
             {activeCount > 0 && (
               <Text style={{ fontSize: 13, color: colors.textMuted }} selectable>
-                You have
-                {' '}
-                {activeCount}
-                {' '}
-                active subscription
-                {activeCount !== 1 ? 's' : ''}
+                {activeCount === 1
+                  ? t('analytics.active_count', { count: activeCount })
+                  : t('analytics.active_count_plural', { count: activeCount })}
               </Text>
             )}
             <View style={{ alignItems: 'center', justifyContent: 'center' }}>
@@ -141,14 +140,14 @@ export default function AnalyticsScreen() {
           </View>
         </GlassCard>
 
-        <View style={{ flexDirection: 'row', gap: 12 }}>
+            <View style={{ flexDirection: 'row', gap: 12 }}>
           <GlassCard style={{ flex: 1 }}>
             <View style={{ padding: 16, gap: 4 }}>
               <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
-                Yearly
+                {t('analytics.yearly_forecast')}
               </Text>
               <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
-                Forecast
+                {t('analytics.forecast')}
               </Text>
               <Text
                 style={{ fontSize: 20, fontWeight: '600', color: colors.text, fontVariant: ['tabular-nums'] }}
@@ -161,10 +160,10 @@ export default function AnalyticsScreen() {
           <GlassCard style={{ flex: 1 }}>
             <View style={{ padding: 16, gap: 4 }}>
               <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
-                Average
+                {t('analytics.average_monthly')}
               </Text>
               <Text style={{ fontSize: 12, color: colors.textMuted }} selectable>
-                Monthly Cost
+                {t('analytics.monthly_cost')}
               </Text>
               <Text
                 style={{ fontSize: 20, fontWeight: '600', color: colors.text, fontVariant: ['tabular-nums'] }}
@@ -180,7 +179,7 @@ export default function AnalyticsScreen() {
           <View style={{ padding: 16, gap: 12 }}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
               <Text style={{ fontSize: 14, color: colors.textMuted }} selectable>
-                Year to Date
+                {t('analytics.year_to_date')}
               </Text>
               <Pill tone="accent">
                 {formatAmount(yearToDate, settings.mainCurrency, settings.roundWholeNumbers)}
@@ -188,7 +187,7 @@ export default function AnalyticsScreen() {
             </View>
             {categoryTotals.length === 0 && (
               <Text style={{ color: colors.textMuted }} selectable>
-                No category spend yet.
+                {t('analytics.no_category_spend')}
               </Text>
             )}
             {categoryTotals.map(category => (

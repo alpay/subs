@@ -4,6 +4,7 @@ import { Image } from 'expo-image';
 import { Link, Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
 import { useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ActivityIndicator,
   Dimensions,
@@ -29,11 +30,11 @@ const GRID_GAP = 14;
 const CONTENT_WIDTH = SCREEN_WIDTH - CONTENT_PADDING * 2;
 const CARD_WIDTH = (CONTENT_WIDTH - GRID_GAP) / 2;
 
-const IMPORT_OPTIONS = [
-  { id: 'notion', label: 'Import from Notion', symbol: 'doc.text' },
-  { id: 'sheets', label: 'Import from Google Sheets', symbol: 'tablecells' },
-  { id: 'file', label: 'Import from file', symbol: 'doc' },
-  { id: 'apple', label: 'Import from Apple', symbol: 'apple.logo' },
+const IMPORT_OPTION_IDS = [
+  { id: 'notion', symbol: 'doc.text' },
+  { id: 'sheets', symbol: 'tablecells' },
+  { id: 'file', symbol: 'doc' },
+  { id: 'apple', symbol: 'apple.logo' },
 ] as const;
 
 const IMPORT_CARD_SIZE = 88;
@@ -42,12 +43,18 @@ const DEBOUNCE_MS = 400;
 
 export default function ServicesScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const params = useLocalSearchParams<{ startDate?: string }>();
   const insets = useSafeAreaInsets();
   const { colors, isDark } = useTheme();
   const { canAdd, countLabel, isPremium, showPaywall } = usePremiumGuard();
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
+
+  const importOptions = useMemo(
+    () => IMPORT_OPTION_IDS.map(opt => ({ ...opt, label: t(`services.import.${opt.id}`) })),
+    [t],
+  );
 
   const startDate = typeof params.startDate === 'string' ? params.startDate : undefined;
 
@@ -132,7 +139,7 @@ export default function ServicesScreen() {
     <>
       <Stack.Screen
         options={{
-          title: 'Services',
+          title: t('services.title'),
           headerTitleStyle: { color: colors.text },
 
           headerLeft: () => <BackButtonWithHaptic displayMode="minimal" />,
@@ -161,7 +168,7 @@ export default function ServicesScreen() {
 
       <Stack.Toolbar placement="bottom">
         <Stack.SearchBar
-          placeholder="Search services"
+          placeholder={t('services.search_placeholder')}
           onChangeText={(event) => {
             const text = typeof event === 'string' ? event : event.nativeEvent.text;
             setSearchQuery(text);
@@ -197,7 +204,7 @@ export default function ServicesScreen() {
                   gap: GRID_GAP,
                 }}
               >
-                {IMPORT_OPTIONS.map(opt => (
+                {importOptions.map(opt => (
                   <Pressable
                     key={opt.id}
                     style={({ pressed }) => [
@@ -254,7 +261,7 @@ export default function ServicesScreen() {
                       marginBottom: 10,
                     }}
                   >
-                    SEARCH RESULTS
+                    {t('services.search_results')}
                   </Text>
                   <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: GRID_GAP }}>
                     {/* First option: Add custom with user's query + */}
@@ -332,11 +339,7 @@ export default function ServicesScreen() {
 
               {debouncedQuery.length >= 2 && !isBrandSearching && brandResults.length === 0 && (
                 <Text style={{ fontSize: 14, color: colors.textMuted }}>
-                  No brands found. Tap the card above to add
-                  {' '}
-                  {displayQuery}
-                  {' '}
-                  as a custom service.
+                  {t('services.no_brands_found', { name: displayQuery })}
                 </Text>
               )}
             </>
@@ -354,7 +357,7 @@ export default function ServicesScreen() {
                     letterSpacing: 0.8,
                   }}
                 >
-                  POPULAR SERVICES
+                  {t('services.popular_services')}
                 </Text>
               </View>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: GRID_GAP }}>

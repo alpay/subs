@@ -4,6 +4,7 @@ import { Feather } from '@expo/vector-icons';
 import { Stack, useRouter } from 'expo-router';
 import LottieView from 'lottie-react-native';
 import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Dimensions,
   FlatList,
@@ -22,42 +23,29 @@ const windowWidth = Dimensions.get('window').width;
 
 const ONBOARDING_COMPLETED_KEY = 'ONBOARDING_COMPLETED';
 
-type Slide = {
-  id: string;
-  title: string;
-  description: string;
-  image: any;
-};
-
-const slides: Slide[] = [
-  {
-    id: '1',
-    title: 'Simple onboarding',
-    image: require('/assets/lottie/welcome-3.json'),
-    description: 'Complete shopping experience',
-  },
-  {
-    id: '2',
-    title: 'Copy and paste',
-    image: require('/assets/lottie/welcome-2.json'),
-    description: 'Elegant design for your shopping app',
-  },
-  {
-    id: '3',
-    title: 'Free to use',
-    image: require('/assets/lottie/welcome-1.json'),
-    description: 'Easily modify themes, layouts, and state management for your app.',
-  },
+const SLIDE_IDS = ['1', '2', '3'] as const;
+const SLIDE_IMAGES = [
+  require('/assets/lottie/welcome-3.json'),
+  require('/assets/lottie/welcome-2.json'),
+  require('/assets/lottie/welcome-1.json'),
 ];
 
 export default function OnboardingScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
+  const { t } = useTranslation();
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const flatListRef = useRef<FlatList<Slide> | null>(null);
+  const flatListRef = useRef<FlatList<{ id: string; title: string; description: string; image: any }> | null>(null);
+
+  const slides = SLIDE_IDS.map((id, i) => ({
+    id,
+    title: t(`onboarding.slides.${id}.title`),
+    description: t(`onboarding.slides.${id}.description`),
+    image: SLIDE_IMAGES[i],
+  }));
 
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     Haptic.Soft();
@@ -118,7 +106,7 @@ export default function OnboardingScreen() {
                 color: colors.text,
               }}
             >
-              Subs
+              {t('onboarding.brand')}
             </Text>
           </View>
 
@@ -136,7 +124,7 @@ export default function OnboardingScreen() {
                 color: colors.secondaryText,
               }}
             >
-              Skip
+              {t('onboarding.skip')}
             </Text>
           </Pressable>
         </View>
@@ -238,7 +226,7 @@ export default function OnboardingScreen() {
                 color: colors.iconOnColor,
               }}
             >
-              {currentIndex === slides.length - 1 ? 'Get started' : 'Next'}
+              {currentIndex === slides.length - 1 ? t('onboarding.get_started') : t('onboarding.next')}
             </Text>
             <Feather name="arrow-right" size={18} color={colors.iconOnColor} />
           </Pressable>

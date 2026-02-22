@@ -1,5 +1,6 @@
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { Pressable, Text } from 'react-native';
 
 import { Haptic } from '@/lib/haptics';
@@ -18,10 +19,12 @@ type BackButtonWithHapticProps = {
  */
 export function BackButtonWithHaptic({
   displayMode = 'minimal',
-  title = 'Back',
+  title,
 }: BackButtonWithHapticProps) {
   const router = useRouter();
+  const { t } = useTranslation();
   const { colors } = useTheme();
+  const label = title ?? t('common.accessibility.back_label');
 
   const handlePress = () => {
     Haptic.Light();
@@ -47,7 +50,7 @@ export function BackButtonWithHaptic({
           }}
           numberOfLines={1}
         >
-          {title}
+          {label}
         </Text>
       )}
     </Pressable>

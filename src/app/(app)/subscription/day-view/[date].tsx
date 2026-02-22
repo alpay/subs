@@ -2,6 +2,7 @@ import { format, isSameDay, isValid, parseISO, startOfMonth } from 'date-fns';
 import { Image } from 'expo-image';
 import { Link, useLocalSearchParams, useRouter } from 'expo-router';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { InteractionManager, Pressable, Text, View } from 'react-native';
 
 import { NativeSheet } from '@/components/native-sheet';
@@ -12,7 +13,7 @@ import { usePremiumGuard } from '@/lib/hooks/use-premium-guard';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { useCurrencyRatesStore, useSettingsStore, useSubscriptionsStore } from '@/lib/stores';
 import { convertCurrency, roundCurrency } from '@/lib/utils/currency';
-import { formatAmount } from '@/lib/utils/format';
+import { formatAmount, formatDateLong } from '@/lib/utils/format';
 import { getPaymentDatesForMonth } from '@/lib/utils/subscription-dates';
 
 function parseSelectedDay(dateParam: unknown): Date {
@@ -28,6 +29,7 @@ type Params = {
 
 export default function SubscriptionDayViewScreen() {
   const params = useLocalSearchParams<Params>();
+  const { t } = useTranslation();
 
   const { subscriptions } = useSubscriptionsStore();
   const router = useRouter();
@@ -73,12 +75,12 @@ export default function SubscriptionDayViewScreen() {
   }, [daySubscriptions, settings.mainCurrency, settings.roundWholeNumbers, rates]);
 
   const headerDate = useMemo(
-    () => format(selectedDay, 'd MMMM yyyy'),
+    () => formatDateLong(selectedDay),
     [selectedDay],
   );
 
   return (
-    <NativeSheet title="Subscriptions" subtitle={headerDate} showCloseIcon>
+    <NativeSheet title={t('subscription_day_view.title')} subtitle={headerDate} showCloseIcon>
       <View style={{ gap: 8 }}>
         {daySubscriptions.map(sub => (
           <GlassCard key={sub.id}>
@@ -165,7 +167,7 @@ export default function SubscriptionDayViewScreen() {
                 <Image source="sf:plus" style={{ width: 16, height: 16 }} tintColor={colors.text} />
               </View>
               <Text style={{ fontSize: 16, fontWeight: '600', color: colors.text }} selectable>
-                Add new subscription
+                {t('subscription_day_view.add_new')}
               </Text>
             </View>
           </Pressable>
@@ -182,7 +184,7 @@ export default function SubscriptionDayViewScreen() {
             }}
           >
             <Text style={{ fontSize: 18, fontWeight: '600', color: colors.textMuted }} selectable>
-              Total
+              {t('subscription_day_view.total')}
             </Text>
             <Text
               style={{

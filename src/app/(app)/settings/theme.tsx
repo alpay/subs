@@ -1,12 +1,13 @@
 import type { AppThemeId } from '@/lib/hooks/use-theme';
 import { Image } from 'expo-image';
-
+import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { NativeSheet } from '@/components/native-sheet';
 import { Haptic } from '@/lib/haptics';
 import { APP_THEME_COLORS, APP_THEMES, useTheme } from '@/lib/hooks/use-theme';
 
 export default function ThemeSettingsScreen() {
+  const { t } = useTranslation();
   const { isDark, appThemeId, setAppTheme } = useTheme();
 
   const handleSelect = (id: AppThemeId) => {
@@ -15,7 +16,7 @@ export default function ThemeSettingsScreen() {
   };
 
   return (
-    <NativeSheet title="Theme" showCloseIcon={false} showBackIcon>
+    <NativeSheet title={t('theme.title')} showCloseIcon={false} showBackIcon>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         showsVerticalScrollIndicator={false}
@@ -29,12 +30,14 @@ export default function ThemeSettingsScreen() {
             }}
             selectable
           >
-            Pick the vibe you like. This only changes the app&apos;s colors, not your system theme.
+            {t('theme.pick_vibe')}
           </Text>
 
           {APP_THEMES.map((theme) => {
             const palette = APP_THEME_COLORS[theme.id][isDark ? 'dark' : 'light'];
             const isSelected = appThemeId === theme.id;
+            const themeName = t(`theme.options.${theme.id}.name`);
+            const themeDescription = t(`theme.options.${theme.id}.description`);
 
             return (
               <Pressable
@@ -74,7 +77,7 @@ export default function ThemeSettingsScreen() {
                       }}
                       selectable
                     >
-                      {theme.name}
+                      {themeName}
                     </Text>
                     <Text
                       style={{
@@ -84,7 +87,7 @@ export default function ThemeSettingsScreen() {
                       }}
                       selectable
                     >
-                      {theme.description}
+                      {themeDescription}
                     </Text>
                   </View>
                   <View

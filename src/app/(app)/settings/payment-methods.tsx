@@ -3,6 +3,7 @@ import type { PaymentMethod } from '@/lib/db/schema';
 import { Image } from 'expo-image';
 import { Input, useToast } from 'heroui-native';
 import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, Pressable, Text, View } from 'react-native';
 
 import { NativeSheet } from '@/components/native-sheet';
@@ -77,6 +78,7 @@ function PaymentMethodRow({
 }
 
 export default function PaymentMethodsScreen() {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const { colors } = useTheme();
   const { methods, add, remove, update } = usePaymentMethodsStore();
@@ -86,12 +88,12 @@ export default function PaymentMethodsScreen() {
   const openRename = useCallback(
     (method: PaymentMethod) => {
       Alert.prompt(
-        'Rename Payment Method',
+        t('payment_methods.rename_title'),
         undefined,
         [
-          { text: 'Cancel', style: 'cancel' },
+          { text: t('common.cancel'), style: 'cancel' },
           {
-            text: 'Save',
+            text: t('common.save'),
             onPress: (value: string | undefined) => {
               Haptic.Light();
               const trimmed = value?.trim();
@@ -105,7 +107,7 @@ export default function PaymentMethodsScreen() {
         'default',
       );
     },
-    [update],
+    [update, t],
   );
 
   const handleAdd = useCallback(() => {
@@ -115,18 +117,18 @@ export default function PaymentMethodsScreen() {
       return;
     add(trimmed);
     setNewName('');
-    toast.show(`Payment method "${trimmed}" added`);
-  }, [add, newName, toast]);
+    toast.show(t('payment_methods.added', { name: trimmed }));
+  }, [add, newName, toast, t]);
 
   const handleDelete = useCallback(
     (method: PaymentMethod) => {
       Alert.alert(
-        'Delete Payment Method',
-        `Are you sure you want to delete "${method.name}"?`,
+        t('payment_methods.delete_title'),
+        t('payment_methods.delete_confirm', { name: method.name }),
         [
-          { text: 'Cancel', style: 'cancel' },
+          { text: t('common.cancel'), style: 'cancel' },
           {
-            text: 'Delete',
+            text: t('common.delete'),
             style: 'destructive',
             onPress: () => {
               Haptic.Light();
@@ -136,11 +138,11 @@ export default function PaymentMethodsScreen() {
         ],
       );
     },
-    [remove],
+    [remove, t],
   );
 
   return (
-    <NativeSheet title="Payment Methods" showCloseIcon={false} showBackIcon>
+    <NativeSheet title={t('payment_methods.title')} showCloseIcon={false} showBackIcon>
       <View style={{ gap: 16 }}>
         <View
           style={{
@@ -157,7 +159,7 @@ export default function PaymentMethodsScreen() {
           }}
         >
           <Input
-            placeholder="New Payment Method"
+            placeholder={t('payment_methods.new_placeholder')}
             value={newName}
             onChangeText={setNewName}
             placeholderTextColor={colors.textMuted}
@@ -175,7 +177,7 @@ export default function PaymentMethodsScreen() {
           />
           <Pressable onPress={handleAdd} style={({ pressed }) => [pressed && { opacity: 0.8 }]}>
             <Text style={{ fontSize: 16, fontWeight: '600', color: colors.accent }} selectable>
-              Add
+              {t('common.add')}
             </Text>
           </Pressable>
         </View>
@@ -193,7 +195,7 @@ export default function PaymentMethodsScreen() {
           {methods.length === 0 && (
             <View style={{ paddingVertical: 16, paddingHorizontal: 16 }}>
               <Text style={{ fontSize: 15, color: colors.textMuted }} selectable>
-                No payment methods yet.
+                {t('payment_methods.no_methods')}
               </Text>
             </View>
           )}
@@ -217,7 +219,7 @@ export default function PaymentMethodsScreen() {
           }}
           selectable
         >
-          We care about your security, so please do not store full card numbers or account details.
+          {t('payment_methods.security_note')}
         </Text>
       </View>
     </NativeSheet>

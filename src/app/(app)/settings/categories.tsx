@@ -5,6 +5,7 @@ import { Image } from 'expo-image';
 import { Input } from 'heroui-native';
 import { useCallback, useState } from 'react';
 
+import { useTranslation } from 'react-i18next';
 import { Alert, Pressable, Text, View } from 'react-native';
 import { NativeSheet } from '@/components/native-sheet';
 import { OTHER_CATEGORY_NAME } from '@/lib/data/seed-defaults';
@@ -97,6 +98,7 @@ function CategoryRow({
 }
 
 export default function CategoriesScreen() {
+  const { t } = useTranslation();
   const { colors } = useTheme();
   const { categories, add, remove, update } = useCategoriesStore();
 
@@ -116,12 +118,12 @@ export default function CategoriesScreen() {
   const openRename = useCallback(
     (category: Category) => {
       Alert.prompt(
-        'Rename Category',
+        t('categories.rename_title'),
         undefined,
         [
-          { text: 'Cancel', style: 'cancel' },
+          { text: t('common.cancel'), style: 'cancel' },
           {
-            text: 'Save',
+            text: t('common.save'),
             onPress: (value: string | undefined) => {
               Haptic.Light();
               const trimmed = value?.trim();
@@ -135,18 +137,18 @@ export default function CategoriesScreen() {
         'default',
       );
     },
-    [update],
+    [update, t],
   );
 
   const handleDelete = useCallback(
     (category: Category) => {
       Alert.alert(
-        'Delete Category',
-        `Are you sure you want to delete "${category.name}"?`,
+        t('categories.delete_title'),
+        t('categories.delete_confirm', { name: category.name }),
         [
-          { text: 'Cancel', style: 'cancel' },
+          { text: t('common.cancel'), style: 'cancel' },
           {
-            text: 'Delete',
+            text: t('common.delete'),
             style: 'destructive',
             onPress: () => {
               Haptic.Light();
@@ -156,12 +158,12 @@ export default function CategoriesScreen() {
         ],
       );
     },
-    [remove],
+    [remove, t],
   );
 
   return (
     <>
-      <NativeSheet title="Categories" showCloseIcon={false} showBackIcon>
+      <NativeSheet title={t('categories.title')} showCloseIcon={false} showBackIcon>
         <View style={{ gap: 16 }}>
           <View
             style={{
@@ -185,7 +187,7 @@ export default function CategoriesScreen() {
               />
             </Host>
             <Input
-              placeholder="New Category"
+              placeholder={t('categories.new_placeholder')}
               value={newName}
               onChangeText={setNewName}
               placeholderTextColor={colors.textMuted}
@@ -206,7 +208,7 @@ export default function CategoriesScreen() {
               style={({ pressed }) => [pressed && { opacity: 0.8 }]}
             >
               <Text style={{ fontSize: 16, fontWeight: '600', color: colors.accent }} selectable>
-                Add
+                {t('common.add')}
               </Text>
             </Pressable>
           </View>
@@ -246,8 +248,7 @@ export default function CategoriesScreen() {
             }}
             selectable
           >
-            The &apos;Other&apos; category cannot be deleted as it automatically serves as a default for subscriptions
-            without a specific category.
+            {t('categories.other_footer')}
           </Text>
         </View>
       </NativeSheet>

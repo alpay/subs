@@ -9,14 +9,22 @@
   "calendar": {
     "this_month": "Bu ay"
   },
+  "csv_export": {
+    "name": "Ad",
+    "period": "Sıklık",
+    "price": "Fiyat",
+    "start_date": "Başlangıç",
+    "category": "Kategori"
+  },
   "common": {
     "accessibility": {
-      "close_modal_hint": "Modali kapatır",
-      "close_modal_label": "Modali kapat"
+      "close_modal_hint": "Modalı kapatır",
+      "close_modal_label": "Modalı kapat",
+      "back_label": "Geri"
     },
     "cancel": "İptal",
     "close": "Kapat",
-    "coming_soon": "Çok yakında",
+    "coming_soon": "Yakında",
     "confirm": "Onayla",
     "delete": "Sil",
     "error": "Hata",
@@ -25,17 +33,343 @@
     "optional": "İsteğe bağlı",
     "pause": "Duraklat",
     "save": "Kaydet",
-    "saving": "Kaydediliyor...",
+    "saving": "Kaydediliyor…",
     "search": "Ara",
-    "select_placeholder": "Seç...",
-    "something_went_wrong": "Bir şeyler ters gitti"
+    "select_placeholder": "Seçin…",
+    "something_went_wrong": "Bir şeyler yanlış gitti",
+    "add": "Ekle",
+    "done": "Tamam",
+    "never": "Hiç",
+    "on": "Açık",
+    "off": "Kapalı",
+    "other": "Diğer",
+    "currency": "Para birimi",
+    "amount": "Tutar",
+    "unknown_error": "Bilinmeyen hata"
   },
   "diary": {
-    "lightbox_hint": "Kapatmak için yukarı veya aşağı kaydır"
+    "lightbox_hint": "Kapatmak için yukarı veya aşağı kaydırın"
   },
   "not_found": {
-    "cta": "Ana sayfaya dön",
-    "subtitle": "Bu ekran mevcut değil.",
-    "title": "Bulunamadı"
+    "title": "Bulunamadı",
+    "subtitle": "Bu sayfa mevcut değil.",
+    "cta": "Ana sayfaya git",
+    "page_title": "Sayfa bulunamadı",
+    "route_description": "Bu adres HeroUI akışında tanımlı değil.",
+    "back_to_home": "Ana sayfaya dön"
+  },
+  "home": {
+    "search_placeholder": "Abonelik ara",
+    "remaining": "Kalan"
+  },
+  "paywall": {
+    "features": {
+      "unlimited": {
+        "title": "Sınırsız abonelik",
+        "description": "Aboneliklerinizi sınır olmadan yönetin."
+      },
+      "icloud": {
+        "title": "iCloud senkronizasyonu",
+        "description": "Verileriniz tüm cihazlarınızda güvenle ve senkron şekilde saklanır."
+      },
+      "analytics": {
+        "title": "İstatistik ve analiz",
+        "description": "Detaylı harcama analizi ve tahminlerle takip edin."
+      },
+      "categories": {
+        "title": "Akıllı kategoriler",
+        "description": "Aboneliklerinizi kendi düzeninize göre kategorilere ayırın."
+      },
+      "support": {
+        "title": "Geliştiriciyi destekle",
+        "description": "Satın alımınız uygulamanın gelişmeye devam etmesi için motive eder."
+      },
+      "updates": {
+        "title": "Yeni özellikler ve güncellemeler",
+        "description": "Ömür boyu yeni işlevlere ve düzenli güncellemelere erişin."
+      }
+    },
+    "lifetime": "Ömür boyu",
+    "pay_once_forever": "Bir kez öde, hep kullan!",
+    "restoring": "Geri yükleniyor…",
+    "restore_purchases": "Satın alımları geri yükle",
+    "privacy": "Gizlilik",
+    "promo": "Promosyon",
+    "not_available_title": "Kullanılamıyor",
+    "not_available_message": "Bu derleme için uygulama içi satın alma yapılandırılmamış. Test için RevenueCat API anahtarlı geliştirme derlemesi kullanın.",
+    "restore_not_available": "Bu derlemede geri yükleme kullanılamıyor.",
+    "purchase_failed_title": "Satın alma başarısız",
+    "purchase_failed_message": "Satın alma başarısız. Lütfen tekrar deneyin.",
+    "restore_complete_title": "Geri yükleme tamamlandı",
+    "restore_complete_no_purchase": "Bu Apple ID için daha önce satın alım bulunamadı.",
+    "restore_failed_title": "Geri yükleme başarısız",
+    "restore_failed_message": "Geri yükleme başarısız. Lütfen tekrar deneyin."
+  },
+  "services": {
+    "title": "Hizmetler",
+    "search_placeholder": "Hizmet ara",
+    "search_results": "ARAMA SONUÇLARI",
+    "popular_services": "POPÜLER HİZMETLER",
+    "no_brands_found": "Marka bulunamadı. {{name}} öğesini özel hizmet olarak eklemek için yukarıdaki karta dokunun.",
+    "import": {
+      "notion": "Notion'dan içe aktar",
+      "sheets": "Google E-Tablolar'dan içe aktar",
+      "file": "Dosyadan içe aktar",
+      "apple": "Apple'dan içe aktar"
+    }
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "developer": "Geliştirici",
+    "reset_app": "Uygulamayı sıfırla",
+    "premium": "Premium",
+    "account": "Hesap",
+    "unlock_lifetime": "Ömür boyu lisansla tüm özelliklerin kilidini aç.",
+    "subscription_day": "Subscription Day",
+    "account_type": "Hesap türü",
+    "pro": "Pro",
+    "free": "Ücretsiz",
+    "general": "Genel",
+    "icloud_data": "iCloud ve veri",
+    "language": "Dil",
+    "main_currency": "Ana para birimi",
+    "round_whole_numbers": "Tam sayıya yuvarla",
+    "data": "Veri",
+    "lists": "Listeler",
+    "categories": "Kategoriler",
+    "payment_methods": "Ödeme yöntemleri",
+    "interface": "Arayüz",
+    "true_dark_colors": "Gerçek koyu renkler",
+    "theme": "Tema",
+    "preview_choose": "Önizle ve seç",
+    "haptic_feedback": "Dokunsal geri bildirim",
+    "currency_rates": "Döviz kurları",
+    "currency_rates_footer": "Kurlar genel bir API'den (ExchangeRate-API) alınır. Yenilemek için Şimdi güncelle'ye dokunun. Değerler yaklaşıktır, yerel kurlardan farklı olabilir.",
+    "last_updated": "Son güncelleme",
+    "update_now": "Şimdi güncelle",
+    "updating": "Güncelleniyor…",
+    "more": "Daha fazla",
+    "rate_review": "Değerlendir ve yorum yap",
+    "ideas_roadmap": "Fikirler ve yol haritası",
+    "contact_me": "İletişim",
+    "visit_website": "Web sitesini ziyaret et",
+    "share_friend": "Arkadaşınla paylaş",
+    "made_with_love": "Appps™ © 2026 — detaylara özenle hazırlandı",
+    "version": "Sürüm: {{version}}",
+    "reset_alert_title": "Uygulamayı sıfırla",
+    "reset_alert_message": "Tüm veriler silinecek ve ana sayfaya dönülecek. Devam edilsin mi?",
+    "reset_confirm": "Sıfırla",
+    "currency_updated": "Döviz kurları güncellendi",
+    "currency_update_failed": "Kurlar güncellenemedi. Bağlantınızı kontrol edin."
+  },
+  "onboarding": {
+    "brand": "Subs",
+    "skip": "Atla",
+    "get_started": "Başla",
+    "next": "İleri",
+    "slides": {
+      "1": {
+        "title": "Sade başlangıç",
+        "description": "Eksiksiz alışveriş deneyimi"
+      },
+      "2": {
+        "title": "Kopyala yapıştır",
+        "description": "Alışveriş uygulamanız için şık tasarım"
+      },
+      "3": {
+        "title": "Ücretsiz kullanım",
+        "description": "Tema, düzen ve state yönetimini uygulamanıza göre kolayca özelleştirin."
+      }
+    }
+  },
+  "subscription": {
+    "new": "Yeni abonelik",
+    "edit": "Aboneliği düzenle",
+    "edit_button": "Düzenle",
+    "create": "Oluştur",
+    "delete_title": "Aboneliği sil",
+    "delete_confirm": "\"{{name}}\" aboneliğini silmek istediğinize emin misiniz?",
+    "deleted": "Abonelik silindi",
+    "created": "Abonelik oluşturuldu",
+    "updated": "Abonelik güncellendi",
+    "next_payment": "Sonraki ödeme",
+    "total_spent": "Toplam harcama",
+    "notifications": "Bildirimler",
+    "category": "Kategori",
+    "list": "Liste",
+    "name": "Ad",
+    "schedule": "Sıklık",
+    "monthly": "Aylık",
+    "yearly": "Yıllık",
+    "weekly": "Haftalık",
+    "custom": "Özel",
+    "start_date": "Başlangıç tarihi",
+    "interval": "Aralık",
+    "month": "Ay",
+    "week": "Hafta",
+    "pay_with": "Ödeme yöntemi",
+    "payment_method": "Ödeme yöntemi",
+    "none": "Yok",
+    "add_notes_placeholder": "Not ekleyin",
+    "name_placeholder": "Cursor",
+    "status_active": "Aktif",
+    "status_paused": "Duraklatıldı",
+    "status_canceled": "İptal",
+    "status": "Durum",
+    "notification_default": "Varsayılan",
+    "notification_disabled": "Kapalı",
+    "notification_custom": "Özel",
+    "next_payment_today": "bugün",
+    "next_payment_in_one_day": "1 gün sonra",
+    "next_payment_in_days": "{{count}} gün sonra"
+  },
+  "subscription_day_view": {
+    "title": "Abonelikler",
+    "add_new": "Yeni abonelik ekle",
+    "total": "Toplam"
+  },
+  "home_search": {
+    "no_results": "Abonelik bulunamadı",
+    "tap_to_add_first": "İlk aboneliğinizi eklemek için buraya dokunun"
+  },
+  "subscription_status": {
+    "active": "Aktif",
+    "paused": "Duraklatıldı",
+    "canceled": "İptal"
+  },
+  "notifications": {
+    "section_header": "Bildirimler",
+    "section_footer": "Odak modları açıksa bildirimler görünmeyebilir.",
+    "first_reminder": "İlk hatırlatma",
+    "second_reminder": "İkinci hatırlatma",
+    "test_notification": "Test bildirimi",
+    "enable_in_settings": "Bildirimleri test etmek için Ayarlar'dan bildirimleri açın.",
+    "test_scheduled": "Test bildirimi planlandı",
+    "unable_to_schedule": "Test bildirimi planlanamadı",
+    "same_day": "Aynı gün",
+    "days": {
+      "1": "1 gün",
+      "2": "2 gün",
+      "3": "3 gün",
+      "4": "4 gün",
+      "5": "5 gün",
+      "10": "10 gün",
+      "15": "15 gün",
+      "30": "30 gün"
+    }
+  },
+  "currency": {
+    "select_title": "Para birimi seçin",
+    "search_placeholder": "Ara",
+    "favorites": "FAVORİLER",
+    "all": "TÜM PARA BİRİMLERİ",
+    "default_set": "Varsayılan para birimi {{code}} olarak ayarlandı"
+  },
+  "language": {
+    "select_title": "Dil"
+  },
+  "theme": {
+    "title": "Tema",
+    "pick_vibe": "Beğendiğiniz havayı seçin. Yalnızca uygulama renkleri değişir, sistem teması değişmez.",
+    "options": {
+      "classic": {
+        "name": "Klasik",
+        "description": "Dengeli nötr tonlarla sıcak turuncu vurgu."
+      },
+      "midnight": {
+        "name": "Gece yarısı",
+        "description": "Odaklı, sinematik bir görünüm için koyu maviler."
+      },
+      "forest": {
+        "name": "Orman",
+        "description": "Doğadan ilham alan yumuşak yeşiller."
+      },
+      "sunset": {
+        "name": "Gün batımı",
+        "description": "Sıcak kontrastlı altın saat turuncuları."
+      }
+    }
+  },
+  "categories": {
+    "title": "Kategoriler",
+    "new_placeholder": "Yeni kategori",
+    "rename_title": "Kategoriyi yeniden adlandır",
+    "delete_title": "Kategoriyi sil",
+    "delete_confirm": "\"{{name}}\" kategorisini silmek istediğinize emin misiniz?",
+    "other_footer": "'Diğer' kategorisi varsayılan olduğu için silinemez; özel kategorisi olmayan abonelikler buraya düşer."
+  },
+  "lists": {
+    "title": "Listeler",
+    "new_placeholder": "Yeni liste",
+    "added": "{{name}} eklendi",
+    "rename_title": "Listeyi yeniden adlandır",
+    "no_lists": "Henüz liste yok."
+  },
+  "payment_methods": {
+    "title": "Ödeme yöntemleri",
+    "new_placeholder": "Yeni ödeme yöntemi",
+    "added": "\"{{name}}\" ödeme yöntemi eklendi",
+    "rename_title": "Ödeme yöntemini yeniden adlandır",
+    "delete_title": "Ödeme yöntemini sil",
+    "delete_confirm": "\"{{name}}\" ödeme yöntemini silmek istediğinize emin misiniz?",
+    "no_methods": "Henüz ödeme yöntemi yok.",
+    "security_note": "Güvenliğiniz için lütfen tam kart numarası veya hesap bilgisi girmeyin."
+  },
+  "icloud": {
+    "title": "iCloud ve veri",
+    "syncing": "Senkronize ediliyor…",
+    "last_backup": "Son yedek: {{date}}",
+    "backup_footer": "Abonelik verileriniz iCloud Drive ile tüm cihazlarınızda güvenle senkronize edilir.",
+    "icloud_sync": "iCloud senkronizasyonu",
+    "backup": "Yedekle",
+    "backing_up": "Yedekleniyor…",
+    "restore": "iCloud'dan geri yükle",
+    "restoring": "Geri yükleniyor…",
+    "current_subs": "Mevcut abonelikler",
+    "active_one_time": "Aktif ve tek seferlik",
+    "canceled": "İptal edildi",
+    "archived": "Arşivlendi",
+    "export_csv": "Veriyi CSV olarak dışa aktar",
+    "exporting": "Dışa aktarılıyor…",
+    "delete_all": "Tüm veriyi sil",
+    "delete_all_confirm_title": "Tüm veriyi sil",
+    "delete_all_confirm_message": "Bu işlem cihazınızdaki tüm verileri kalıcı olarak siler. iCloud senkronizasyonu açıksa veriler iCloud'dan da kaldırılır.",
+    "delete_all_footer": "Bu işlem cihazınızdaki tüm verileri kalıcı olarak siler. iCloud senkronizasyonu açıksa veriler iCloud'dan da kaldırılır.",
+    "not_available": "iCloud kullanılamıyor. Ayarlar'dan iCloud ile giriş yapın.",
+    "not_available_short": "iCloud kullanılamıyor",
+    "last_backup_line": "Son yedek: {{date}}",
+    "subscriptions_in_backup": "Yedekteki abonelik sayısı: {{count}}",
+    "check_backup_failed": "iCloud yedeği kontrol edilemedi",
+    "sync_failed": "iCloud ile senkronize edilemedi",
+    "restored": "Veriler iCloud'dan geri yüklendi",
+    "restore_failed": "iCloud'dan geri yükleme başarısız",
+    "backup_found_title": "iCloud yedeği bulundu",
+    "backup_found_message": "Mevcut bir iCloud yedeği var. Ne yapmak istersiniz?",
+    "backup_found_with_summary": "{{summary}}\n\nNe yapmak istersiniz?",
+    "use_backup": "iCloud yedeğini kullan",
+    "keep_device": "Bu cihazın verisini koru",
+    "no_subs_to_export": "Dışa aktarılacak abonelik yok",
+    "export_dialog_title": "Abonelikleri dışa aktar",
+    "sharing_unavailable": "Bu cihazda paylaşım kullanılamıyor",
+    "export_failed": "Dışa aktarma başarısız",
+    "backup_success": "Yedekleme başarıyla tamamlandı",
+    "backup_failed": "Yedekleme başarısız: {{message}}",
+    "restore_confirm_title": "iCloud'dan geri yükle",
+    "restore_confirm_message": "Yerel veriniz iCloud yedeğiyle değiştirilecek. Devam edilsin mi?",
+    "restore_button": "Geri yükle"
+  },
+  "analytics": {
+    "title": "İstatistikler",
+    "active_count": "{{count}} aktif aboneliğiniz var",
+    "active_count_plural": "{{count}} aktif aboneliğiniz var",
+    "yearly_forecast": "Yıllık",
+    "forecast": "Tahmin",
+    "average_monthly": "Ortalama",
+    "monthly_cost": "Aylık maliyet",
+    "year_to_date": "Yıl başından bugüne",
+    "no_category_spend": "Henüz kategori harcaması yok."
+  },
+  "amount_picker": {
+    "amount_label": "TUTAR"
   }
 }

@@ -7,7 +7,7 @@ import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { Input, TextArea } from 'heroui-native';
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
-
+import { useTranslation } from 'react-i18next';
 import { Pressable, Text, View } from 'react-native';
 import { ServiceIcon } from '@/components/service-icon';
 import { GlassCard } from '@/components/ui/glass-card';
@@ -23,28 +23,10 @@ import {
 import { getCurrencySymbol } from '@/lib/utils/format';
 import { toLocalDateString } from '@/lib/utils/subscription-dates';
 
-const SCHEDULE_OPTIONS = [
-  { label: 'Monthly', value: 'monthly' },
-  { label: 'Yearly', value: 'yearly' },
-  { label: 'Weekly', value: 'weekly' },
-  { label: 'Custom', value: 'custom' },
-] as const;
-
-const STATUS_OPTIONS = [
-  { label: 'Active', value: 'active' },
-  { label: 'Paused', value: 'paused' },
-  { label: 'Canceled', value: 'canceled' },
-] as const;
-
-const NOTIFICATION_OPTIONS = [
-  { label: 'Default', value: 'default' },
-  { label: 'Disabled', value: 'disabled' },
-] as const;
-
-const INTERVAL_UNIT_OPTIONS = [
-  { label: 'Month', value: 'month' },
-  { label: 'Week', value: 'week' },
-] as const;
+const SCHEDULE_OPTION_VALUES = ['monthly', 'yearly', 'weekly', 'custom'] as const;
+const STATUS_OPTION_VALUES = ['active', 'paused', 'canceled'] as const;
+const NOTIFICATION_OPTION_VALUES = ['default', 'disabled'] as const;
+const INTERVAL_UNIT_VALUES = ['month', 'week'] as const;
 
 function isValidDateString(value: string) {
   return !Number.isNaN(new Date(value).getTime());
@@ -92,12 +74,30 @@ export function SubscriptionFormContent({
   onValidationChange,
 }: SubscriptionFormContentProps) {
   const router = useRouter();
+  const { t } = useTranslation();
   const { colors } = useTheme();
   const { categories } = useCategoriesStore();
   const { lists } = useListsStore();
   const { methods } = usePaymentMethodsStore();
   const { settings } = useSettingsStore();
   const draftStore = useAddSubscriptionDraftStore();
+
+  const scheduleOptions = useMemo(
+    () => SCHEDULE_OPTION_VALUES.map(value => ({ label: t(`subscription.${value}`), value })),
+    [t],
+  );
+  const statusOptions = useMemo(
+    () => STATUS_OPTION_VALUES.map(value => ({ label: t(`subscription.status_${value}`), value })),
+    [t],
+  );
+  const notificationOptions = useMemo(
+    () => NOTIFICATION_OPTION_VALUES.map(value => ({ label: t(`subscription.notification_${value}`), value })),
+    [t],
+  );
+  const intervalUnitOptions = useMemo(
+    () => INTERVAL_UNIT_VALUES.map(value => ({ label: t(`subscription.${value}`), value })),
+    [t],
+  );
 
   const [name, setName] = useState(initialState.name);
   const [scheduleType, setScheduleType] = useState<ScheduleType>(initialState.scheduleType);
@@ -121,13 +121,13 @@ export function SubscriptionFormContent({
     [lists],
   );
   const paymentMethodOptions = useMemo(
-    () => [{ label: 'None', value: '' }, ...methods.map(m => ({ label: m.name, value: m.id }))],
-    [methods],
+    () => [{ label: t('subscription.none'), value: '' }, ...methods.map(m => ({ label: m.name, value: m.id }))],
+    [methods, t],
   );
 
   const scheduleLabel = useMemo(
-    () => SCHEDULE_OPTIONS.find(o => o.value === scheduleType)?.label ?? 'Monthly',
-    [scheduleType],
+    () => scheduleOptions.find(o => o.value === scheduleType)?.label ?? t('subscription.monthly'),
+    [scheduleType, scheduleOptions, t],
   );
 
   useEffect(() => {
@@ -267,13 +267,13 @@ export function SubscriptionFormContent({
       <GlassCard style={{ marginBottom: 12 }}>
         <View style={rowStyle}>
           <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
-            Name
+            {t('subscription.name')}
           </Text>
           <View style={{ flex: 1, alignItems: 'flex-end' }}>
             <Input
               value={name}
               onChangeText={setName}
-              placeholder="Cursor"
+              placeholder={t('subscription.name_placeholder')}
               placeholderTextColor={colors.textMuted}
               style={inputStyle}
             />
@@ -282,11 +282,11 @@ export function SubscriptionFormContent({
         <View style={rowDivider} />
         <View style={rowStyle}>
           <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
-            Schedule
+            {t('subscription.schedule')}
           </Text>
           <Host matchContents>
             <Menu label={scheduleLabel} systemImage="chevron.up.chevron.down" modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass'), controlSize('mini')]}>
-              {SCHEDULE_OPTIONS.map(option => (
+              {scheduleOptions.map(option => (
                 <Button
                   systemImage={option.value === scheduleType ? 'checkmark' : undefined}
                   label={option.label}
@@ -305,7 +305,7 @@ export function SubscriptionFormContent({
             <View style={rowDivider} />
             <View style={rowStyle}>
               <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
-                Interval
+                {t('subscription.interval')}
               </Text>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
                 <Input
@@ -327,10 +327,10 @@ export function SubscriptionFormContent({
                 <Host matchContents>
                   <Menu
                     systemImage="chevron.up.chevron.down"
-                    label={INTERVAL_UNIT_OPTIONS.find(o => o.value === intervalUnit)?.label ?? 'Month'}
+                    label={intervalUnitOptions.find(o => o.value === intervalUnit)?.label ?? t('subscription.month')}
                     modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass'), controlSize('mini')]}
                   >
-                    {INTERVAL_UNIT_OPTIONS.map(option => (
+                    {intervalUnitOptions.map(option => (
                       <Button
                         key={option.value}
                         systemImage={option.value === intervalUnit ? 'checkmark' : undefined}
@@ -350,7 +350,7 @@ export function SubscriptionFormContent({
         <View style={rowDivider} />
         <View style={rowStyle}>
           <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
-            Start Date
+            {t('subscription.start_date')}
           </Text>
           <Host matchContents>
             <DatePicker
@@ -376,7 +376,7 @@ export function SubscriptionFormContent({
         >
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
             <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
-              Amount
+              {t('common.amount')}
             </Text>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
@@ -401,7 +401,7 @@ export function SubscriptionFormContent({
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
             <Image source="sf:tag" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
             <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
-              Category
+              {t('subscription.category')}
             </Text>
           </View>
           <Host matchContents>
@@ -410,7 +410,7 @@ export function SubscriptionFormContent({
               label={
                 categoryOptions.find(o => o.value === categoryId)?.label
                 || categoryOptions[0]?.label
-                || 'Category'
+                || t('subscription.category')
               }
               modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass'), controlSize('mini')]}
             >
@@ -435,7 +435,7 @@ export function SubscriptionFormContent({
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
             <Image source="sf:list.bullet" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
             <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
-              List
+              {t('subscription.list')}
             </Text>
           </View>
           <Host matchContents>
@@ -444,7 +444,7 @@ export function SubscriptionFormContent({
               label={
                 listOptions.find(o => o.value === listId)?.label
                 || listOptions[0]?.label
-                || 'List'
+                || t('subscription.list')
               }
               modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass'), controlSize('mini')]}
             >
@@ -474,20 +474,20 @@ export function SubscriptionFormContent({
                   tintColor={colors.textMuted}
                 />
                 <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
-                  Status
+                  {t('subscription.status')}
                 </Text>
               </View>
               <Host matchContents>
                 <Menu
                   systemImage="chevron.up.chevron.down"
                   label={
-                    STATUS_OPTIONS.find(o => o.value === status)?.label
-                    || STATUS_OPTIONS[0]?.label
-                    || 'Status'
+                    statusOptions.find(o => o.value === status)?.label
+                    || statusOptions[0]?.label
+                    || t('subscription.status')
                   }
                   modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass'), controlSize('mini')]}
                 >
-                  {STATUS_OPTIONS.map(option => (
+                  {statusOptions.map(option => (
                     <Button
                       key={option.value}
                       systemImage={option.value === status ? 'checkmark' : undefined}
@@ -514,7 +514,7 @@ export function SubscriptionFormContent({
               tintColor={colors.textMuted}
             />
             <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
-              Pay with
+              {t('subscription.pay_with')}
             </Text>
           </View>
           <Host matchContents>
@@ -523,7 +523,7 @@ export function SubscriptionFormContent({
               label={
                 paymentMethodOptions.find(o => o.value === paymentMethodId)?.label
                 || paymentMethodOptions[0]?.label
-                || 'Payment method'
+                || t('subscription.payment_method')
               }
               modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass'), controlSize('mini')]}
             >
@@ -548,20 +548,20 @@ export function SubscriptionFormContent({
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
             <Image source="sf:bell" style={{ width: 18, height: 18 }} tintColor={colors.textMuted} />
             <Text style={{ fontSize: 16, color: colors.textMuted }} selectable>
-              Notifications
+              {t('subscription.notifications')}
             </Text>
           </View>
           <Host matchContents>
             <Menu
               systemImage="chevron.up.chevron.down"
               label={
-                NOTIFICATION_OPTIONS.find(o => o.value === notificationMode)?.label
-                || NOTIFICATION_OPTIONS[0]?.label
-                || 'Notifications'
+                notificationOptions.find(o => o.value === notificationMode)?.label
+                || notificationOptions[0]?.label
+                || t('subscription.notifications')
               }
               modifiers={[fixedSize(), labelStyle('titleAndIcon'), buttonStyle('glass'), controlSize('mini')]}
             >
-              {NOTIFICATION_OPTIONS.map(option => (
+              {notificationOptions.map(option => (
                 <Button
                   key={option.value}
                   systemImage={option.value === notificationMode ? 'checkmark' : undefined}
@@ -582,7 +582,7 @@ export function SubscriptionFormContent({
           <TextArea
             value={notes}
             onChangeText={setNotes}
-            placeholder="Add any notes"
+            placeholder={t('subscription.add_notes_placeholder')}
             placeholderTextColor={colors.textMuted}
             numberOfLines={4}
             style={{

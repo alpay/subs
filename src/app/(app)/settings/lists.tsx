@@ -3,6 +3,7 @@ import type { List } from '@/lib/db/schema';
 import { Image } from 'expo-image';
 import { Input, useToast } from 'heroui-native';
 import { useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, Pressable, Text, View } from 'react-native';
 
 import { NativeSheet } from '@/components/native-sheet';
@@ -14,6 +15,7 @@ const ICON_SIZE = 20;
 const HIT_SLOP = { top: 10, bottom: 10, left: 10, right: 10 };
 
 export default function ListsScreen() {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const { colors } = useTheme();
   const { lists, add, update } = useListsStore();
@@ -26,18 +28,18 @@ export default function ListsScreen() {
       return;
     add(trimmed);
     setName('');
-    toast.show(`${trimmed} added`);
-  }, [add, name, toast]);
+    toast.show(t('lists.added', { name: trimmed }));
+  }, [add, name, toast, t]);
 
   const openRename = useCallback(
     (list: List) => {
       Alert.prompt(
-        'Rename List',
+        t('lists.rename_title'),
         undefined,
         [
-          { text: 'Cancel', style: 'cancel' },
+          { text: t('common.cancel'), style: 'cancel' },
           {
-            text: 'Save',
+            text: t('common.save'),
             onPress: (value: string | undefined) => {
               const trimmed = value?.trim();
               if (trimmed)
@@ -50,11 +52,11 @@ export default function ListsScreen() {
         'default',
       );
     },
-    [update],
+    [update, t],
   );
 
   return (
-    <NativeSheet title="Lists" showCloseIcon={false} showBackIcon>
+    <NativeSheet title={t('lists.title')} showCloseIcon={false} showBackIcon>
       <View style={{ gap: 16 }}>
         <View
           style={{
@@ -71,7 +73,7 @@ export default function ListsScreen() {
           }}
         >
           <Input
-            placeholder="New List"
+            placeholder={t('lists.new_placeholder')}
             value={name}
             onChangeText={setName}
             placeholderTextColor={colors.textMuted}
@@ -89,7 +91,7 @@ export default function ListsScreen() {
           />
           <Pressable onPress={handleAdd} style={({ pressed }) => [pressed && { opacity: 0.8 }]}>
             <Text style={{ fontSize: 16, fontWeight: '600', color: colors.accent }} selectable>
-              Add
+              {t('common.add')}
             </Text>
           </Pressable>
         </View>
@@ -107,7 +109,7 @@ export default function ListsScreen() {
           {lists.length === 0 && (
             <View style={{ paddingVertical: 16, paddingHorizontal: 16 }}>
               <Text style={{ fontSize: 15, color: colors.textMuted }} selectable>
-                No lists yet.
+                {t('lists.no_lists')}
               </Text>
             </View>
           )}

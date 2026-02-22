@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
+import { useTranslation } from 'react-i18next';
 import { Pressable, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -31,6 +32,7 @@ export function NativeSheet({
 }: NativeSheetProps) {
   const insets = useSafeAreaInsets();
   const router = useRouter();
+  const { t } = useTranslation();
   const { colors } = useTheme();
 
   const handleClose = () => {
@@ -48,7 +50,7 @@ export function NativeSheet({
     ? (
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Back"
+          accessibilityLabel={t('common.accessibility.back_label')}
           onPress={handleClose}
           style={{ borderRadius: 9999, backgroundColor: colors.surfaceMuted, padding: 8 }}
         >
@@ -61,7 +63,7 @@ export function NativeSheet({
     ? (
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Close"
+          accessibilityLabel={t('common.accessibility.close_modal_label')}
           style={{ borderRadius: 9999, backgroundColor: colors.surfaceMuted, padding: 8 }}
           onPress={handleClose}
         >

@@ -2,7 +2,7 @@ import type { CurrencyEntry } from '@/lib/data/currencies';
 import { SymbolView } from 'expo-symbols';
 import { useToast } from 'heroui-native';
 import { useCallback, useMemo, useState } from 'react';
-
+import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { NativeSheet } from '@/components/native-sheet';
 import { SearchBar } from '@/components/SearchBar';
@@ -24,6 +24,7 @@ function matchesSearch(entry: CurrencyEntry, query: string): boolean {
 type Section = { title: string; data: CurrencyEntry[] };
 
 export default function CurrencyScreen() {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const { colors } = useTheme();
   const { settings, update } = useSettingsStore();
@@ -41,18 +42,18 @@ export default function CurrencyScreen() {
     const all = filtered;
     const result: Section[] = [];
     if (favorites.length > 0) {
-      result.push({ title: 'FAVORITES', data: favorites });
+      result.push({ title: t('currency.favorites'), data: favorites });
     }
-    result.push({ title: 'ALL CURRENCIES', data: all });
+    result.push({ title: t('currency.all'), data: all });
     return result;
-  }, [searchQuery, favoriteCurrencies]);
+  }, [searchQuery, favoriteCurrencies, t]);
 
   const setDefault = useCallback(
     (code: string) => {
-      toast.show(`Default currency set to ${code}`);
+      toast.show(t('currency.default_set', { code }));
       update({ mainCurrency: code });
     },
-    [update, toast],
+    [update, toast, t],
   );
 
   const toggleFavorite = useCallback(
@@ -71,7 +72,7 @@ export default function CurrencyScreen() {
 
   return (
     <NativeSheet
-      title="Select Currency"
+      title={t('currency.select_title')}
       showCloseIcon={false}
       showBackIcon
     >
@@ -81,7 +82,7 @@ export default function CurrencyScreen() {
       >
         <View style={{ marginBottom: 8 }}>
           <SearchBar
-            placeholder="Search"
+            placeholder={t('currency.search_placeholder')}
             onSearch={setSearchQuery}
             onClear={() => setSearchQuery('')}
             enableWidthAnimation={false}
@@ -92,7 +93,7 @@ export default function CurrencyScreen() {
             key={section.title}
             style={{
               marginBottom: 8,
-              paddingTop: section.title === 'ALL CURRENCIES' ? 16 : 0,
+              paddingTop: section.title === t('currency.all') ? 16 : 0,
             }}
           >
             <Text
