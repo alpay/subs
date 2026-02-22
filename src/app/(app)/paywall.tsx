@@ -3,6 +3,7 @@ import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import {
+  ActivityIndicator,
   Alert,
   Dimensions,
   FlatList,
@@ -15,12 +16,12 @@ import { NativeSheet } from '@/components/native-sheet';
 import { RadialGlow } from '@/components/radial-glow';
 import { Haptic } from '@/lib/haptics';
 import {
+  getLifetimePackage,
   isRevenueCatConfigured,
   purchaseLifetime,
   restorePurchases,
 } from '@/lib/revenuecat';
 import { useSettingsStore } from '@/lib/stores';
-import { formatAmount } from '@/lib/utils/format';
 
 const AUTO_SCROLL_INTERVAL_MS = 5000;
 
@@ -71,14 +72,13 @@ const PAYWALL_FEATURES = [
   },
 ] as const;
 
-const LIFETIME_PRICE = 299.99;
-
 export default function PaywallScreen() {
   const router = useRouter();
   const { settings } = useSettingsStore();
   const [activeIndex, setActiveIndex] = useState(0);
   const [purchasing, setPurchasing] = useState(false);
   const [restoring, setRestoring] = useState(false);
+  const [lifetimePriceString, setLifetimePriceString] = useState<string | null>(null);
   const flatListRef = useRef<FlatList>(null);
   const activeIndexRef = useRef(0);
   const userHasScrolledRef = useRef(false);
@@ -86,6 +86,13 @@ export default function PaywallScreen() {
   const hasRevenueCat = isRevenueCatConfigured();
 
   activeIndexRef.current = activeIndex;
+
+  useEffect(() => {
+    if (!hasRevenueCat) return;
+    getLifetimePackage()
+      .then(pkg => (pkg ? setLifetimePriceString(pkg.product.priceString) : null))
+      .catch(() => {});
+  }, [hasRevenueCat]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -176,11 +183,7 @@ export default function PaywallScreen() {
     }
   }, [hasRevenueCat, router]);
 
-  const formattedPrice = formatAmount(
-    LIFETIME_PRICE,
-    settings.mainCurrency ?? 'TRY',
-    settings.roundWholeNumbers ?? false,
-  );
+  const displayPrice = lifetimePriceString ?? '—';
 
   return (
     <View>
@@ -272,9 +275,13 @@ export default function PaywallScreen() {
                 Pay once, use forever!
               </Text>
             </View>
-            <Text style={{ fontSize: 18, fontWeight: '700', color: 'white' }}>
-              {purchasing ? '…' : formattedPrice}
-            </Text>
+            {purchasing ? (
+              <ActivityIndicator size="small" color="white" />
+            ) : (
+              <Text style={{ fontSize: 18, fontWeight: '700', color: 'white' }}>
+                {displayPrice}
+              </Text>
+            )}
           </Pressable>
 
           {/* Footer links */}
