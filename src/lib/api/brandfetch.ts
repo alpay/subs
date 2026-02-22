@@ -37,9 +37,7 @@ export async function searchBrands(name: string): Promise<BrandSearchResult[]> {
 }
 
 /**
- * Logo API: URL for a brand's default icon by domain.
- * https://cdn.brandfetch.io/{domain}?c={clientId}
- * For retina, you can use path: /h/128/w/128 (see Brandfetch Logo API docs).
+ * Logo API: URL for a brand's default icon by domain (WebP).
  */
 export function getLogoUrl(domain: string): string {
   const cleanDomain = domain.replace(/^https?:\/\//i, '').split('/')[0] ?? domain;

@@ -2,7 +2,7 @@ import type {
   SubscriptionFormInitialState,
   SubscriptionFormPayload,
 } from '@/components/subscription-form-content';
-import type { NotificationMode, ScheduleType } from '@/lib/db/schema';
+import type { NotificationMode, ScheduleType, Subscription } from '@/lib/db/schema';
 
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import * as StoreReview from 'expo-store-review';
@@ -14,10 +14,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BackButtonWithHaptic } from '@/components/back-button-with-haptic';
 import { RadialGlow } from '@/components/radial-glow';
-import { getServiceColor } from '@/components/service-icon';
 import { SubscriptionFormContent } from '@/components/subscription-form-content';
 import { Haptic } from '@/lib/haptics';
 import { usePremiumGuard } from '@/lib/hooks/use-premium-guard';
+import { useSubscriptionGlowColor } from '@/lib/hooks/use-subscription-glow-color';
 import { useTheme } from '@/lib/hooks/use-theme';
 import { getItem, setItem } from '@/lib/storage';
 import {
@@ -61,6 +61,24 @@ export default function AddSubscriptionScreen() {
     () => (params.templateId ? templates.find(t => t.id === params.templateId) : undefined),
     [params.templateId, templates],
   );
+
+  const glowSubscription = useMemo(
+    () => (paramIconUri?.trim()
+      ? {
+          iconKey: paramIconKey ?? 'custom',
+          iconType: 'image' as const,
+          iconUri: paramIconUri.trim(),
+          id: '',
+        }
+      : {
+          iconKey: paramIconKey ?? 'custom',
+          iconType: 'builtIn' as const,
+          iconUri: undefined,
+          id: '',
+        }),
+    [paramIconKey, paramIconUri],
+  );
+  const glowColor = useSubscriptionGlowColor(glowSubscription as Subscription);
 
   const initialState = useMemo<SubscriptionFormInitialState>(
     () => ({
@@ -189,7 +207,7 @@ export default function AddSubscriptionScreen() {
       </Stack.Toolbar>
       <View style={{ flex: 1, backgroundColor: colors.background }}>
         <RadialGlow
-          color={getServiceColor(initialState.iconKey)}
+          color={glowColor}
           centerY="15%"
           maxOpacity={0.75}
         />
