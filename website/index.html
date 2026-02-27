@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Subs – Subscription Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .hero {
+      min-height: 60vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px;
+    }
+
+    .hero-icon {
+      font-size: 64px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: 40px;
+      margin-bottom: 8px;
+    }
+
+    .hero .tagline {
+      color: var(--text-muted);
+      font-size: 17px;
+      margin-bottom: 48px;
+    }
+
+    .page-links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .page-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 24px;
+      color: var(--text);
+      font-size: 15px;
+      font-weight: 500;
+      transition: border-color 0.15s, transform 0.1s;
+    }
+
+    .page-link:hover {
+      border-color: var(--accent);
+      color: var(--text);
+      transform: translateY(-1px);
+    }
+
+    .page-link .link-icon {
+      font-size: 18px;
+    }
+
+    @media (max-width: 480px) {
+      .hero h1 {
+        font-size: 30px;
+      }
+
+      .hero .tagline {
+        font-size: 15px;
+      }
+
+      .page-links {
+        flex-direction: column;
+        width: 100%;
+        padding: 0 16px;
+      }
+
+      .page-link {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="brand">Subs</a>
+      <div class="links">
+        <a href="privacy.html" data-i18n="nav.privacy">Privacy</a>
+        <a href="terms.html" data-i18n="nav.terms">Terms</a>
+        <a href="support.html" data-i18n="nav.support">Support</a>
+      </div>
+      <div class="controls"></div>
+    </div>
+  </nav>
+
+  <main class="hero">
+    <div class="hero-icon">💰</div>
+    <h1>Subs</h1>
+    <p class="tagline">Subscription Tracker for iOS</p>
+
+    <div class="page-links">
+      <a href="privacy.html" class="page-link">
+        <span class="link-icon">🔒</span>
+        Privacy Policy
+      </a>
+      <a href="terms.html" class="page-link">
+        <span class="link-icon">📄</span>
+        Terms of Service
+      </a>
+      <a href="support.html" class="page-link">
+        <span class="link-icon">💬</span>
+        Help & Support
+      </a>
+    </div>
+  </main>
+
+  <footer>
+    <span data-i18n="footer">&copy; 2026 Alpay Can Şener. All rights reserved.</span>
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
