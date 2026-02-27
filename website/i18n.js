@@ -46,7 +46,7 @@ const T = {
     "privacy.s7": "7. Changes to This Policy",
     "privacy.s7_text": "We may update this privacy policy from time to time. Changes will be posted on this page with an updated effective date.",
     "privacy.s8": "8. Contact",
-    "privacy.s8_text": "If you have questions about this privacy policy, please contact us at <a href=\"mailto:YOUR_EMAIL@gmail.com\">YOUR_EMAIL@gmail.com</a>.",
+    "privacy.s8_text": "If you have questions about this privacy policy, please contact us at <a href=\"mailto:hi@alpay.dev\">hi@alpay.dev</a>.",
 
     // Terms
     "terms.title": "Terms of Service",
@@ -76,7 +76,7 @@ const T = {
     "terms.s9": "9. Governing Law",
     "terms.s9_text": "These Terms are governed by and construed in accordance with the laws of the Republic of Turkey, without regard to conflict of law provisions.",
     "terms.s10": "10. Contact",
-    "terms.s10_text": "If you have questions about these Terms, please contact us at <a href=\"mailto:YOUR_EMAIL@gmail.com\">YOUR_EMAIL@gmail.com</a>.",
+    "terms.s10_text": "If you have questions about these Terms, please contact us at <a href=\"mailto:hi@alpay.dev\">hi@alpay.dev</a>.",
 
     // Support
     "support.title": "Help & Support",
@@ -141,7 +141,7 @@ const T = {
     "privacy.s7": "7. Politika De\u011Fi\u015Fiklikleri",
     "privacy.s7_text": "Bu gizlilik politikas\u0131n\u0131 zaman zaman g\u00FCncelleyebiliriz. De\u011Fi\u015Fiklikler bu sayfada g\u00FCncellenmi\u015F y\u00FCr\u00FCrl\u00FCk tarihiyle yay\u0131nlanacakt\u0131r.",
     "privacy.s8": "8. \u0130leti\u015Fim",
-    "privacy.s8_text": "Bu gizlilik politikas\u0131yla ilgili sorular\u0131n\u0131z i\u00E7in bize <a href=\"mailto:YOUR_EMAIL@gmail.com\">YOUR_EMAIL@gmail.com</a> adresinden ula\u015Fabilirsiniz.",
+    "privacy.s8_text": "Bu gizlilik politikas\u0131yla ilgili sorular\u0131n\u0131z i\u00E7in bize <a href=\"mailto:hi@alpay.dev\">hi@alpay.dev</a> adresinden ula\u015Fabilirsiniz.",
 
     "terms.title": "Kullan\u0131m Ko\u015Fullar\u0131",
     "terms.subtitle": "Y\u00FCr\u00FCrl\u00FCk tarihi: 26 \u015Eubat 2026",
@@ -170,7 +170,7 @@ const T = {
     "terms.s9": "9. Uygulanacak Hukuk",
     "terms.s9_text": "Bu Ko\u015Fullar, kanun ihtilaflar\u0131 h\u00FCk\u00FCmleri dikkate al\u0131nmaks\u0131z\u0131n T\u00FCrkiye Cumhuriyeti yasalar\u0131na g\u00F6re y\u00F6netilir ve yorumlan\u0131r.",
     "terms.s10": "10. \u0130leti\u015Fim",
-    "terms.s10_text": "Bu Ko\u015Fullarla ilgili sorular\u0131n\u0131z i\u00E7in bize <a href=\"mailto:YOUR_EMAIL@gmail.com\">YOUR_EMAIL@gmail.com</a> adresinden ula\u015Fabilirsiniz.",
+    "terms.s10_text": "Bu Ko\u015Fullarla ilgili sorular\u0131n\u0131z i\u00E7in bize <a href=\"mailto:hi@alpay.dev\">hi@alpay.dev</a> adresinden ula\u015Fabilirsiniz.",
 
     "support.title": "Yard\u0131m ve Destek",
     "support.subtitle": "S\u0131k sorulan sorular ve bize nas\u0131l ula\u015Fabilirsiniz.",
@@ -234,7 +234,7 @@ const T = {
     "privacy.s7": "7. \u00C4nderungen dieser Richtlinie",
     "privacy.s7_text": "Wir k\u00F6nnen diese Datenschutzrichtlinie von Zeit zu Zeit aktualisieren. \u00C4nderungen werden auf dieser Seite mit einem aktualisierten G\u00FCltigkeitsdatum ver\u00F6ffentlicht.",
     "privacy.s8": "8. Kontakt",
-    "privacy.s8_text": "Bei Fragen zu dieser Datenschutzrichtlinie kontaktieren Sie uns unter <a href=\"mailto:YOUR_EMAIL@gmail.com\">YOUR_EMAIL@gmail.com</a>.",
+    "privacy.s8_text": "Bei Fragen zu dieser Datenschutzrichtlinie kontaktieren Sie uns unter <a href=\"mailto:hi@alpay.dev\">hi@alpay.dev</a>.",
 
     "terms.title": "Nutzungsbedingungen",
     "terms.subtitle": "G\u00FCltig ab: 26. Februar 2026",
@@ -263,7 +263,7 @@ const T = {
     "terms.s9": "9. Anwendbares Recht",
     "terms.s9_text": "Diese Bedingungen unterliegen den Gesetzen der Republik T\u00FCrkei.",
     "terms.s10": "10. Kontakt",
-    "terms.s10_text": "Bei Fragen zu diesen Bedingungen kontaktieren Sie uns unter <a href=\"mailto:YOUR_EMAIL@gmail.com\">YOUR_EMAIL@gmail.com</a>.",
+    "terms.s10_text": "Bei Fragen zu diesen Bedingungen kontaktieren Sie uns unter <a href=\"mailto:hi@alpay.dev\">hi@alpay.dev</a>.",
 
     "support.title": "Hilfe & Support",
     "support.subtitle": "H\u00E4ufig gestellte Fragen und wie Sie uns erreichen.",
@@ -327,7 +327,7 @@ const T = {
     "privacy.s7": "7. Cambios en esta pol\u00EDtica",
     "privacy.s7_text": "Podemos actualizar esta pol\u00EDtica de privacidad. Los cambios se publicar\u00E1n en esta p\u00E1gina con una fecha de vigencia actualizada.",
     "privacy.s8": "8. Contacto",
-    "privacy.s8_text": "Si tienes preguntas sobre esta pol\u00EDtica, cont\u00E1ctanos en <a href=\"mailto:YOUR_EMAIL@gmail.com\">YOUR_EMAIL@gmail.com</a>.",
+    "privacy.s8_text": "Si tienes preguntas sobre esta pol\u00EDtica, cont\u00E1ctanos en <a href=\"mailto:hi@alpay.dev\">hi@alpay.dev</a>.",
 
     "terms.title": "T\u00E9rminos de Servicio",
     "terms.subtitle": "Fecha de vigencia: 26 de febrero de 2026",
@@ -356,7 +356,7 @@ const T = {
     "terms.s9": "9. Ley aplicable",
     "terms.s9_text": "Estos T\u00E9rminos se rigen por las leyes de la Rep\u00FAblica de Turqu\u00EDa.",
     "terms.s10": "10. Contacto",
-    "terms.s10_text": "Si tienes preguntas, cont\u00E1ctanos en <a href=\"mailto:YOUR_EMAIL@gmail.com\">YOUR_EMAIL@gmail.com</a>.",
+    "terms.s10_text": "Si tienes preguntas, cont\u00E1ctanos en <a href=\"mailto:hi@alpay.dev\">hi@alpay.dev</a>.",
 
     "support.title": "Ayuda y Soporte",
     "support.subtitle": "Preguntas frecuentes y c\u00F3mo contactarnos.",
@@ -419,7 +419,7 @@ const T = {
     "privacy.s7": "7. Modifiche a questa policy",
     "privacy.s7_text": "Potremmo aggiornare questa informativa. Le modifiche verranno pubblicate su questa pagina con una data aggiornata.",
     "privacy.s8": "8. Contatto",
-    "privacy.s8_text": "Per domande su questa policy, contattaci a <a href=\"mailto:YOUR_EMAIL@gmail.com\">YOUR_EMAIL@gmail.com</a>.",
+    "privacy.s8_text": "Per domande su questa policy, contattaci a <a href=\"mailto:hi@alpay.dev\">hi@alpay.dev</a>.",
 
     "terms.title": "Termini di Servizio",
     "terms.subtitle": "Data di decorrenza: 26 febbraio 2026",
@@ -448,7 +448,7 @@ const T = {
     "terms.s9": "9. Legge applicabile",
     "terms.s9_text": "Questi Termini sono regolati dalle leggi della Repubblica di Turchia.",
     "terms.s10": "10. Contatto",
-    "terms.s10_text": "Per domande, contattaci a <a href=\"mailto:YOUR_EMAIL@gmail.com\">YOUR_EMAIL@gmail.com</a>.",
+    "terms.s10_text": "Per domande, contattaci a <a href=\"mailto:hi@alpay.dev\">hi@alpay.dev</a>.",
 
     "support.title": "Aiuto e Supporto",
     "support.subtitle": "Domande frequenti e come contattarci.",
@@ -511,7 +511,7 @@ const T = {
     "privacy.s7": "7. Wijzigingen in dit beleid",
     "privacy.s7_text": "We kunnen dit privacybeleid bijwerken. Wijzigingen worden op deze pagina gepubliceerd.",
     "privacy.s8": "8. Contact",
-    "privacy.s8_text": "Neem contact met ons op via <a href=\"mailto:YOUR_EMAIL@gmail.com\">YOUR_EMAIL@gmail.com</a>.",
+    "privacy.s8_text": "Neem contact met ons op via <a href=\"mailto:hi@alpay.dev\">hi@alpay.dev</a>.",
 
     "terms.title": "Gebruiksvoorwaarden",
     "terms.subtitle": "Ingangsdatum: 26 februari 2026",
@@ -540,7 +540,7 @@ const T = {
     "terms.s9": "9. Toepasselijk recht",
     "terms.s9_text": "Deze Voorwaarden vallen onder het recht van de Republiek Turkije.",
     "terms.s10": "10. Contact",
-    "terms.s10_text": "Neem contact op via <a href=\"mailto:YOUR_EMAIL@gmail.com\">YOUR_EMAIL@gmail.com</a>.",
+    "terms.s10_text": "Neem contact op via <a href=\"mailto:hi@alpay.dev\">hi@alpay.dev</a>.",
 
     "support.title": "Hulp & Ondersteuning",
     "support.subtitle": "Veelgestelde vragen en hoe je ons kunt bereiken.",
@@ -603,7 +603,7 @@ const T = {
     "privacy.s7": "7. Altera\u00E7\u00F5es nesta pol\u00EDtica",
     "privacy.s7_text": "Podemos atualizar esta pol\u00EDtica. As altera\u00E7\u00F5es ser\u00E3o publicadas nesta p\u00E1gina.",
     "privacy.s8": "8. Contato",
-    "privacy.s8_text": "Entre em contato pelo <a href=\"mailto:YOUR_EMAIL@gmail.com\">YOUR_EMAIL@gmail.com</a>.",
+    "privacy.s8_text": "Entre em contato pelo <a href=\"mailto:hi@alpay.dev\">hi@alpay.dev</a>.",
 
     "terms.title": "Termos de Servi\u00E7o",
     "terms.subtitle": "Data de vigor: 26 de fevereiro de 2026",
@@ -632,7 +632,7 @@ const T = {
     "terms.s9": "9. Lei aplic\u00E1vel",
     "terms.s9_text": "Estes Termos s\u00E3o regidos pelas leis da Rep\u00FAblica da Turquia.",
     "terms.s10": "10. Contato",
-    "terms.s10_text": "Entre em contato pelo <a href=\"mailto:YOUR_EMAIL@gmail.com\">YOUR_EMAIL@gmail.com</a>.",
+    "terms.s10_text": "Entre em contato pelo <a href=\"mailto:hi@alpay.dev\">hi@alpay.dev</a>.",
 
     "support.title": "Ajuda e Suporte",
     "support.subtitle": "Perguntas frequentes e como nos contactar.",
@@ -695,7 +695,7 @@ const T = {
     "privacy.s7": "7. \u0418\u0437\u043C\u0435\u043D\u0435\u043D\u0438\u044F \u043F\u043E\u043B\u0438\u0442\u0438\u043A\u0438",
     "privacy.s7_text": "\u041C\u044B \u043C\u043E\u0436\u0435\u043C \u043E\u0431\u043D\u043E\u0432\u043B\u044F\u0442\u044C \u044D\u0442\u0443 \u043F\u043E\u043B\u0438\u0442\u0438\u043A\u0443. \u0418\u0437\u043C\u0435\u043D\u0435\u043D\u0438\u044F \u0431\u0443\u0434\u0443\u0442 \u043E\u043F\u0443\u0431\u043B\u0438\u043A\u043E\u0432\u0430\u043D\u044B \u043D\u0430 \u044D\u0442\u043E\u0439 \u0441\u0442\u0440\u0430\u043D\u0438\u0446\u0435.",
     "privacy.s8": "8. \u041A\u043E\u043D\u0442\u0430\u043A\u0442",
-    "privacy.s8_text": "\u0421\u0432\u044F\u0436\u0438\u0442\u0435\u0441\u044C \u0441 \u043D\u0430\u043C\u0438: <a href=\"mailto:YOUR_EMAIL@gmail.com\">YOUR_EMAIL@gmail.com</a>.",
+    "privacy.s8_text": "\u0421\u0432\u044F\u0436\u0438\u0442\u0435\u0441\u044C \u0441 \u043D\u0430\u043C\u0438: <a href=\"mailto:hi@alpay.dev\">hi@alpay.dev</a>.",
 
     "terms.title": "\u0423\u0441\u043B\u043E\u0432\u0438\u044F \u0438\u0441\u043F\u043E\u043B\u044C\u0437\u043E\u0432\u0430\u043D\u0438\u044F",
     "terms.subtitle": "\u0414\u0430\u0442\u0430 \u0432\u0441\u0442\u0443\u043F\u043B\u0435\u043D\u0438\u044F \u0432 \u0441\u0438\u043B\u0443: 26 \u0444\u0435\u0432\u0440\u0430\u043B\u044F 2026",
@@ -724,7 +724,7 @@ const T = {
     "terms.s9": "9. \u041F\u0440\u0438\u043C\u0435\u043D\u0438\u043C\u043E\u0435 \u043F\u0440\u0430\u0432\u043E",
     "terms.s9_text": "\u042D\u0442\u0438 \u0423\u0441\u043B\u043E\u0432\u0438\u044F \u0440\u0435\u0433\u0443\u043B\u0438\u0440\u0443\u044E\u0442\u0441\u044F \u0437\u0430\u043A\u043E\u043D\u0430\u043C\u0438 \u0420\u0435\u0441\u043F\u0443\u0431\u043B\u0438\u043A\u0438 \u0422\u0443\u0440\u0446\u0438\u044F.",
     "terms.s10": "10. \u041A\u043E\u043D\u0442\u0430\u043A\u0442",
-    "terms.s10_text": "\u041D\u0430\u043F\u0438\u0448\u0438\u0442\u0435 \u043D\u0430\u043C: <a href=\"mailto:YOUR_EMAIL@gmail.com\">YOUR_EMAIL@gmail.com</a>.",
+    "terms.s10_text": "\u041D\u0430\u043F\u0438\u0448\u0438\u0442\u0435 \u043D\u0430\u043C: <a href=\"mailto:hi@alpay.dev\">hi@alpay.dev</a>.",
 
     "support.title": "\u041F\u043E\u043C\u043E\u0449\u044C \u0438 \u043F\u043E\u0434\u0434\u0435\u0440\u0436\u043A\u0430",
     "support.subtitle": "\u0427\u0430\u0441\u0442\u044B\u0435 \u0432\u043E\u043F\u0440\u043E\u0441\u044B \u0438 \u043A\u0430\u043A \u0441 \u043D\u0430\u043C\u0438 \u0441\u0432\u044F\u0437\u0430\u0442\u044C\u0441\u044F.",
@@ -787,7 +787,7 @@ const T = {
     "privacy.s7": "7. \u653F\u7B56\u53D8\u66F4",
     "privacy.s7_text": "\u6211\u4EEC\u53EF\u80FD\u4F1A\u66F4\u65B0\u6B64\u653F\u7B56\u3002\u53D8\u66F4\u5C06\u53D1\u5E03\u5728\u6B64\u9875\u9762\u3002",
     "privacy.s8": "8. \u8054\u7CFB\u6211\u4EEC",
-    "privacy.s8_text": "\u8054\u7CFB\u6211\u4EEC\uFF1A<a href=\"mailto:YOUR_EMAIL@gmail.com\">YOUR_EMAIL@gmail.com</a>\u3002",
+    "privacy.s8_text": "\u8054\u7CFB\u6211\u4EEC\uFF1A<a href=\"mailto:hi@alpay.dev\">hi@alpay.dev</a>\u3002",
 
     "terms.title": "\u670D\u52A1\u6761\u6B3E",
     "terms.subtitle": "\u751F\u6548\u65E5\u671F\uFF1A2026\u5E742\u670826\u65E5",
@@ -816,7 +816,7 @@ const T = {
     "terms.s9": "9. \u9002\u7528\u6CD5\u5F8B",
     "terms.s9_text": "\u8FD9\u4E9B\u6761\u6B3E\u53D7\u571F\u8033\u5176\u5171\u548C\u56FD\u6CD5\u5F8B\u7BA1\u8F96\u3002",
     "terms.s10": "10. \u8054\u7CFB\u6211\u4EEC",
-    "terms.s10_text": "\u8054\u7CFB\u6211\u4EEC\uFF1A<a href=\"mailto:YOUR_EMAIL@gmail.com\">YOUR_EMAIL@gmail.com</a>\u3002",
+    "terms.s10_text": "\u8054\u7CFB\u6211\u4EEC\uFF1A<a href=\"mailto:hi@alpay.dev\">hi@alpay.dev</a>\u3002",
 
     "support.title": "\u5E2E\u52A9\u4E0E\u652F\u6301",
     "support.subtitle": "\u5E38\u89C1\u95EE\u9898\u548C\u8054\u7CFB\u65B9\u5F0F\u3002",
