@@ -45,7 +45,7 @@ export const DEFAULT_SERVICE_TEMPLATES: ServiceTemplate[] = [
 ];
 
 export const DEFAULT_SETTINGS: Settings = {
-  mainCurrency: 'EUR',
+  mainCurrency: 'USD',
   favoriteCurrencies: ['USD', 'EUR', 'GBP', 'JPY', 'TRY'],
   roundWholeNumbers: false,
   trueDarkColors: false,
