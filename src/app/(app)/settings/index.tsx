@@ -1,11 +1,12 @@
 import { SwiftUI } from '@mgcrea/react-native-swiftui';
 import { Image } from 'expo-image';
+import * as Linking from 'expo-linking';
 import { useRouter } from 'expo-router';
 import * as StoreReview from 'expo-store-review';
 import { useToast } from 'heroui-native';
 import { useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, ScrollView, Text, View } from 'react-native';
+import { Alert, ScrollView, Share, Text, View } from 'react-native';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -299,30 +300,48 @@ export default function SettingsScreen() {
             }}
           />
           <SettingsRow
-            icon="system:list.bullet.rectangle"
-            label={t('settings.ideas_roadmap')}
+            icon="system:hand.raised"
+            label={t('settings.privacy_agreement')}
             trailingIcon="arrow"
             buttonColor={colors.text}
-            onPress={() => {}}
+            onPress={() => {
+              Haptic.Light();
+              Linking.openURL('https://subs.alpay.dev/privacy');
+            }}
+          />
+          <SettingsRow
+            icon="system:doc.text"
+            label={t('settings.terms_of_service')}
+            trailingIcon="arrow"
+            buttonColor={colors.text}
+            onPress={() => {
+              Haptic.Light();
+              Linking.openURL('https://subs.alpay.dev/terms');
+            }}
           />
           <SettingsRow
             icon="system:envelope"
             label={t('settings.contact_me')}
             buttonColor={colors.text}
-            onPress={() => {}}
-          />
-          <SettingsRow
-            icon="system:globe"
-            label={t('settings.visit_website')}
-            trailingIcon="arrow"
-            buttonColor={colors.text}
-            onPress={() => {}}
+            onPress={() => {
+              Haptic.Light();
+              Linking.openURL('mailto:hi@alpay.dev');
+            }}
           />
           <SettingsRow
             icon="system:square.and.arrow.up"
             label={t('settings.share_friend')}
             buttonColor={colors.text}
-            onPress={() => {}}
+            onPress={async () => {
+              Haptic.Light();
+              try {
+                await Share.share({
+                  message: t('settings.share_message'),
+                  url: 'https://subs.alpay.dev',
+                });
+              }
+              catch {}
+            }}
           />
         </SettingsSection>
 

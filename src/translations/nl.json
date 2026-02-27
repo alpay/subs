@@ -232,7 +232,7 @@
     "not_available_title": "Niet beschikbaar",
     "pay_once_forever": "Eenmalig betalen, voor altijd gebruiken!",
     "privacy": "Privacy",
-    "promo": "Promo",
+    "terms": "Voorwaarden",
     "purchase_failed_message": "Aankoop mislukt. Probeer het opnieuw.",
     "purchase_failed_title": "Aankoop mislukt",
     "restore_complete_no_purchase": "Geen eerdere aankoop gevonden voor dit Apple ID.",
@@ -271,7 +271,7 @@
     "general": "Algemeen",
     "haptic_feedback": "Haptische feedback",
     "icloud_data": "iCloud en gegevens",
-    "ideas_roadmap": "Ideeën en roadmap",
+    "privacy_agreement": "Privacyovereenkomst",
     "interface": "Interface",
     "language": "Taal",
     "last_updated": "Laatst bijgewerkt",
@@ -290,6 +290,7 @@
     "reset_confirm": "Resetten",
     "round_whole_numbers": "Afronden op hele getallen",
     "share_friend": "Deel met een vriend",
+    "share_message": "Bekijk Subs - een eenvoudige app om al je abonnementen bij te houden!",
     "subscription_day": "Subscription Day",
     "theme": "Thema",
     "title": "Instellingen",
@@ -298,7 +299,7 @@
     "update_now": "Nu bijwerken",
     "updating": "Bijwerken…",
     "version": "Versie: {{version}}",
-    "visit_website": "Bezoek website"
+    "terms_of_service": "Gebruiksvoorwaarden"
   },
   "subscription": {
     "add_notes_placeholder": "Notities toevoegen",

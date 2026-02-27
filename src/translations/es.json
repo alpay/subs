@@ -232,7 +232,7 @@
     "not_available_title": "No disponible",
     "pay_once_forever": "Paga una vez, úsalo para siempre.",
     "privacy": "Privacidad",
-    "promo": "Promo",
+    "terms": "Términos",
     "purchase_failed_message": "La compra ha fallado. Inténtalo de nuevo.",
     "purchase_failed_title": "Compra fallida",
     "restore_complete_no_purchase": "No se encontró ninguna compra anterior para esta Apple ID.",
@@ -271,7 +271,7 @@
     "general": "General",
     "haptic_feedback": "Retroalimentación háptica",
     "icloud_data": "iCloud y datos",
-    "ideas_roadmap": "Ideas y hoja de ruta",
+    "privacy_agreement": "Acuerdo de Privacidad",
     "interface": "Interfaz",
     "language": "Idioma",
     "last_updated": "Última actualización",
@@ -290,6 +290,7 @@
     "reset_confirm": "Restablecer",
     "round_whole_numbers": "Redondear a números enteros",
     "share_friend": "Compartir con un amigo",
+    "share_message": "Mira Subs - una app sencilla para rastrear tus suscripciones y dejar de gastar de más!",
     "subscription_day": "Subscription Day",
     "theme": "Tema",
     "title": "Ajustes",
@@ -298,7 +299,7 @@
     "update_now": "Actualizar ahora",
     "updating": "Actualizando…",
     "version": "Versión: {{version}}",
-    "visit_website": "Visitar web"
+    "terms_of_service": "Términos de Servicio"
   },
   "subscription": {
     "add_notes_placeholder": "Añadir notas",

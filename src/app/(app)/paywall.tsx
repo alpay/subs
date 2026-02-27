@@ -14,6 +14,8 @@ import {
   View,
 } from 'react-native';
 
+import * as Linking from 'expo-linking';
+
 import { NativeSheet } from '@/components/native-sheet';
 import { RadialGlow } from '@/components/radial-glow';
 import { Haptic } from '@/lib/haptics';
@@ -289,15 +291,27 @@ export default function PaywallScreen() {
               </Text>
             </Pressable>
             <Text style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>•</Text>
-            <Pressable hitSlop={8} onPress={() => Haptic.Light()}>
+            <Pressable
+              hitSlop={8}
+              onPress={() => {
+                Haptic.Light();
+                Linking.openURL('https://subs.alpay.dev/privacy');
+              }}
+            >
               <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)' }}>
                 {t('paywall.privacy')}
               </Text>
             </Pressable>
             <Text style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)' }}>•</Text>
-            <Pressable hitSlop={8} onPress={() => Haptic.Light()}>
+            <Pressable
+              hitSlop={8}
+              onPress={() => {
+                Haptic.Light();
+                Linking.openURL('https://subs.alpay.dev/terms');
+              }}
+            >
               <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.6)' }}>
-                {t('paywall.promo')}
+                {t('paywall.terms')}
               </Text>
             </Pressable>
           </View>

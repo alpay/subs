@@ -232,7 +232,7 @@
     "not_available_title": "不可用",
     "pay_once_forever": "一次付费，永久使用！",
     "privacy": "隐私",
-    "promo": "优惠",
+    "terms": "条款",
     "purchase_failed_message": "购买失败，请重试。",
     "purchase_failed_title": "购买失败",
     "restore_complete_no_purchase": "未找到此 Apple ID 的既往购买记录。",
@@ -271,7 +271,7 @@
     "general": "通用",
     "haptic_feedback": "触觉反馈",
     "icloud_data": "iCloud 与数据",
-    "ideas_roadmap": "想法与路线图",
+    "privacy_agreement": "隐私协议",
     "interface": "界面",
     "language": "语言",
     "last_updated": "上次更新",
@@ -290,6 +290,7 @@
     "reset_confirm": "重置",
     "round_whole_numbers": "四舍五入为整数",
     "share_friend": "分享给好友",
+    "share_message": "看看 Subs - 一款简单的订阅跟踪应用！",
     "subscription_day": "Subscription Day",
     "theme": "主题",
     "title": "设置",
@@ -298,7 +299,7 @@
     "update_now": "立即更新",
     "updating": "更新中…",
     "version": "版本：{{version}}",
-    "visit_website": "访问网站"
+    "terms_of_service": "服务条款"
   },
   "subscription": {
     "add_notes_placeholder": "添加备注",

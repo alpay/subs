@@ -232,7 +232,7 @@
     "not_available_title": "Kullanılamıyor",
     "pay_once_forever": "Bir kez öde, hep kullan!",
     "privacy": "Gizlilik",
-    "promo": "Promosyon",
+    "terms": "Koşullar",
     "purchase_failed_message": "Satın alma başarısız. Lütfen tekrar deneyin.",
     "purchase_failed_title": "Satın alma başarısız",
     "restore_complete_no_purchase": "Bu Apple ID için daha önce satın alım bulunamadı.",
@@ -271,7 +271,7 @@
     "general": "Genel",
     "haptic_feedback": "Dokunsal geri bildirim",
     "icloud_data": "iCloud ve veri",
-    "ideas_roadmap": "Fikirler ve yol haritası",
+    "privacy_agreement": "Gizlilik Sözleşmesi",
     "interface": "Arayüz",
     "language": "Dil",
     "last_updated": "Son güncelleme",
@@ -290,6 +290,7 @@
     "reset_confirm": "Sıfırla",
     "round_whole_numbers": "Tam sayıya yuvarla",
     "share_friend": "Arkadaşınla paylaş",
+    "share_message": "Subs'a göz at - tüm aboneliklerini takip etmek ve gereksiz harcamaları durdurmak için basit bir uygulama!",
     "subscription_day": "Subscription Day",
     "theme": "Tema",
     "title": "Ayarlar",
@@ -298,7 +299,7 @@
     "update_now": "Şimdi güncelle",
     "updating": "Güncelleniyor…",
     "version": "Sürüm: {{version}}",
-    "visit_website": "Web sitesini ziyaret et"
+    "terms_of_service": "Kullanım Koşulları"
   },
   "subscription": {
     "add_notes_placeholder": "Not ekleyin",

@@ -121,6 +121,83 @@ nav .controls {
   justify-self: end;
 }
 
+/* ── Mobile nav toggle & menu ── */
+
+.nav-toggle {
+  display: none;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  margin-left: 4px;
+  border-radius: 8px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+}
+
+.nav-toggle .icon-hamburger {
+  display: block;
+}
+
+.nav-toggle .icon-close {
+  display: none;
+}
+
+.nav-toggle.open .icon-hamburger {
+  display: none;
+}
+
+.nav-toggle.open .icon-close {
+  display: block;
+}
+
+.nav-menu {
+  display: none;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+[data-theme="light"] .nav-menu {
+  background: var(--surface);
+}
+
+.nav-menu.open {
+  display: block;
+}
+
+.nav-menu-inner {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 8px 16px 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-menu-inner a {
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 500;
+  padding: 14px 8px;
+  border-bottom: 1px solid var(--border);
+  display: block;
+}
+
+.nav-menu-inner a:last-child {
+  border-bottom: none;
+}
+
+.nav-menu-inner a:hover {
+  color: var(--accent);
+}
+
+.nav-menu-inner a.active {
+  font-weight: 600;
+  color: var(--accent);
+}
+
 /* ── Theme Toggle ── */
 
 .theme-toggle {
@@ -455,11 +532,16 @@ footer {
   }
 
   nav .links {
-    gap: 16px;
+    display: none;
   }
 
-  nav .links a {
-    font-size: 13px;
+  .nav-toggle {
+    display: flex;
+  }
+
+  .nav-menu-inner {
+    padding-left: 16px;
+    padding-right: 16px;
   }
 
   .faq-question {

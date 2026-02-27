@@ -232,7 +232,7 @@
     "not_available_title": "Não disponível",
     "pay_once_forever": "Paga uma vez, usa para sempre!",
     "privacy": "Privacidade",
-    "promo": "Promo",
+    "terms": "Termos",
     "purchase_failed_message": "A compra falhou. Tenta novamente.",
     "purchase_failed_title": "Compra falhada",
     "restore_complete_no_purchase": "Nenhuma compra anterior encontrada para esta Apple ID.",
@@ -271,7 +271,7 @@
     "general": "Geral",
     "haptic_feedback": "Feedback háptico",
     "icloud_data": "iCloud e dados",
-    "ideas_roadmap": "Ideias e roadmap",
+    "privacy_agreement": "Acordo de Privacidade",
     "interface": "Interface",
     "language": "Idioma",
     "last_updated": "Última atualização",
@@ -290,6 +290,7 @@
     "reset_confirm": "Repor",
     "round_whole_numbers": "Arredondar a números inteiros",
     "share_friend": "Partilhar com um amigo",
+    "share_message": "Confira o Subs - um app simples para acompanhar todas as suas assinaturas!",
     "subscription_day": "Subscription Day",
     "theme": "Tema",
     "title": "Definições",
@@ -298,7 +299,7 @@
     "update_now": "Atualizar agora",
     "updating": "A atualizar…",
     "version": "Versão: {{version}}",
-    "visit_website": "Visitar site"
+    "terms_of_service": "Termos de Serviço"
   },
   "subscription": {
     "add_notes_placeholder": "Adicionar notas",

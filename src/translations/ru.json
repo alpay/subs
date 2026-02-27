@@ -232,7 +232,7 @@
     "not_available_title": "Недоступно",
     "pay_once_forever": "Заплати один раз — пользуйся вечно!",
     "privacy": "Конфиденциальность",
-    "promo": "Акция",
+    "terms": "Условия",
     "purchase_failed_message": "Покупка не удалась. Попробуйте снова.",
     "purchase_failed_title": "Покупка не выполнена",
     "restore_complete_no_purchase": "Для этого Apple ID предыдущих покупок не найдено.",
@@ -271,7 +271,7 @@
     "general": "Основные",
     "haptic_feedback": "Тактильная отдача",
     "icloud_data": "iCloud и данные",
-    "ideas_roadmap": "Идеи и план",
+    "privacy_agreement": "Соглашение о конфиденциальности",
     "interface": "Интерфейс",
     "language": "Язык",
     "last_updated": "Обновлено",
@@ -290,6 +290,7 @@
     "reset_confirm": "Сбросить",
     "round_whole_numbers": "Округлять до целых",
     "share_friend": "Поделиться с другом",
+    "share_message": "Посмотри Subs - простое приложение для отслеживания подписок!",
     "subscription_day": "Subscription Day",
     "theme": "Тема",
     "title": "Настройки",
@@ -298,7 +299,7 @@
     "update_now": "Обновить",
     "updating": "Обновление…",
     "version": "Версия: {{version}}",
-    "visit_website": "Открыть сайт"
+    "terms_of_service": "Условия использования"
   },
   "subscription": {
     "add_notes_placeholder": "Добавить заметки",
